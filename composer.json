@@ -12,9 +12,9 @@
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.3.*",
         "symfony/runtime": "7.3.*",
-        "symfony/yaml": "7.3.*"
-    },
-    "require-dev": {
+        "symfony/uid": "7.3.*",
+        "symfony/yaml": "7.3.*",
+        "webmozart/assert": "^1.11"
     },
     "config": {
         "allow-plugins": {
