@@ -134,14 +134,14 @@ class OffspringTest extends TestCase
 
         $this->assertArrayHasKey('id', $array);
         $this->assertArrayHasKey('attachment', $array);
-        $this->assertArrayHasKey('fruitingDate', $array);
-        $this->assertArrayHasKey('floweringDate', $array);
+        $this->assertArrayHasKey('fruiting_date', $array);
+        $this->assertArrayHasKey('flowering_date', $array);
         $this->assertArrayHasKey('mass', $array);
         $this->assertArrayHasKey('color', $array);
         $this->assertArrayHasKey('flavor', $array);
         $this->assertArrayHasKey('quantity', $array);
-        $this->assertArrayHasKey('createdAt', $array);
-        $this->assertArrayHasKey('updatedAt', $array);
+        $this->assertArrayHasKey('created_at', $array);
+        $this->assertArrayHasKey('updated_at', $array);
     }
 
     public function testGetIdThrowsExceptionWhenIdIsNull(): void

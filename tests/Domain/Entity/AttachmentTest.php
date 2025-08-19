@@ -126,21 +126,21 @@ class AttachmentTest extends TestCase
         $array = $attachment->toArray();
 
         $this->assertArrayHasKey('id', $array);
-        $this->assertArrayHasKey('photoLink', $array);
+        $this->assertArrayHasKey('photo_link', $array);
         $this->assertArrayHasKey('title', $array);
         $this->assertArrayHasKey('description', $array);
-        $this->assertArrayHasKey('photoDate', $array);
-        $this->assertArrayHasKey('attachableId', $array);
-        $this->assertArrayHasKey('attachableType', $array);
+        $this->assertArrayHasKey('photo_date', $array);
+        $this->assertArrayHasKey('attachable_id', $array);
+        $this->assertArrayHasKey('attachable_type', $array);
         $this->assertArrayHasKey('created_at', $array);
         $this->assertArrayHasKey('updated_at', $array);
 
-        $this->assertSame('https://example.com/image.jpg', $array['photoLink']);
+        $this->assertSame('https://example.com/image.jpg', $array['photo_link']);
         $this->assertSame('Image', $array['title']);
         $this->assertSame('A beautiful photo', $array['description']);
-        $this->assertSame('2024-01-01', $array['photoDate']);
-        $this->assertSame(123, $array['attachableId']);
-        $this->assertSame(\App\Domain\Entity\Plant::class, $array['attachableType']);
+        $this->assertSame('2024-01-01', $array['photo_date']);
+        $this->assertSame(123, $array['attachable_id']);
+        $this->assertSame(\App\Domain\Entity\Plant::class, $array['attachable_type']);
     }
 
     public function testGetIdThrowsExceptionWhenIdIsNull(): void

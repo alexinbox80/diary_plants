@@ -144,16 +144,18 @@ class PlantTest extends TestCase
         $this->assertArrayHasKey('id', $array);
         $this->assertArrayHasKey('oid', $array);
         $this->assertArrayHasKey('title', $array);
-        $this->assertArrayHasKey('isShown', $array);
+        $this->assertArrayHasKey('is_shown', $array);
         $this->assertArrayHasKey('description', $array);
-        $this->assertArrayHasKey('qrCodeBase64', $array);
+        $this->assertArrayHasKey('qr_code_base64', $array);
         $this->assertArrayHasKey('room', $array);
-        $this->assertArrayHasKey('purchaseDate', $array);
-        $this->assertArrayHasKey('vaccinationDate', $array);
-        $this->assertArrayHasKey('plantingDate', $array);
+        $this->assertArrayHasKey('purchase_date', $array);
+        $this->assertArrayHasKey('vaccination_date', $array);
+        $this->assertArrayHasKey('planting_date', $array);
         $this->assertArrayHasKey('manufacturer', $array);
         $this->assertArrayHasKey('price', $array);
         $this->assertArrayHasKey('soil', $array);
+        $this->assertArrayHasKey('created_at', $array);
+        $this->assertArrayHasKey('updated_at', $array);
     }
 
     public function testGetIdThrowsExceptionWhenIdIsNull(): void
