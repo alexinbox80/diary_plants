@@ -1,4 +1,4 @@
-<?php
+<?php //растение
 
 namespace App\Domain\Entity;
 
@@ -214,13 +214,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
             'id' => $this->id,
             'oid' => $this->oid,
             'title' => $this->title,
-            'isShown' => $this->isShown,
+            'is_shown' => $this->isShown,
             'description' => $this->description,
-            'qrCodeBase64' => $this->qrCodeBase64,
+            'qr_code_base64' => $this->qrCodeBase64,
             'room' => $this->room,
-            'purchaseDate' => $this->purchaseDate,
-            'vaccinationDate' => $this->vaccinationDate,
-            'plantingDate' => $this->plantingDate,
+            'purchase_date' => $this->purchaseDate,
+            'vaccination_date' => $this->vaccinationDate,
+            'planting_date' => $this->plantingDate,
             'manufacturer' => $this->manufacturer,
             'price' => $this->price,
             'soil' => $this->soil,
@@ -228,8 +228,8 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 //                static fn (Attachment $attachment) => $attachment->toArray(),
 //                $this->getAttachments()->toArray()
 //            ),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
             ];
     }
 }

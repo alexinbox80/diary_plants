@@ -1,4 +1,4 @@
-<?php
+<?php //плод
 
 namespace App\Domain\Entity;
 
@@ -125,14 +125,14 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return [
             'id' => $this->getId(),
             'attachment' => $this->getAttachment(),
-            'fruitingDate' => $this->getFruitingDate(),
-            'floweringDate' => $this->getFloweringDate(),
+            'fruiting_date' => $this->getFruitingDate(),
+            'flowering_date' => $this->getFloweringDate(),
             'mass' => $this->getMass(),
             'color' => $this->getColor(),
             'flavor' => $this->getFlavor(),
             'quantity' => $this->getQuantity(),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];
     }
 }

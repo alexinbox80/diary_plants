@@ -1,4 +1,4 @@
-<?php
+<?php //вложения
 
 namespace App\Domain\Entity;
 
@@ -119,12 +119,12 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     {
         return [
             'id' => $this->getId(),
-            'photoLink' => $this->getPhotoLink(),
+            'photo_link' => $this->getPhotoLink(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
-            'photoDate' => $this->getPhotoDate()->format('Y-m-d'),
-            'attachableId' => $this->getAttachableId(),
-            'attachableType' => $this->getAttachableType(),
+            'photo_date' => $this->getPhotoDate()->format('Y-m-d'),
+            'attachable_id' => $this->getAttachableId(),
+            'attachable_type' => $this->getAttachableType(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];
