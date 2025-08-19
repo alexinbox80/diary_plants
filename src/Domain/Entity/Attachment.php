@@ -17,7 +17,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
 
     private ?int $id = null;
 
-    private string $avatarLink;
+    private string $photoLink;
 
     private string $title;
 
@@ -25,30 +25,47 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
 
     private DateTime $photoDate;
 
+    private ?int $attachableId = null;
+
+    private ?string $attachableType = null; // Тип сущности (Plant, User и т.п.)
+
     public function __construct(
-        string $avatarLink,
+        string $photoLink,
         string $title,
-        ?string $description,
-        DateTime $photoDate
+        DateTime $photoDate,
+        ?string $description = null,
+        ?int $attachableId = null,
+        ?string $attachableType = null
     )
     {
-        $this->avatarLink = $avatarLink;
+        WebmozartAssert::stringNotEmpty($photoLink);
+        $this->photoLink = $photoLink;
+
+        WebmozartAssert::stringNotEmpty($title);
         $this->title = $title;
+
         $this->description = $description;
         $this->photoDate = $photoDate;
+
+        $this->attachableId = $attachableId;
+        $this->attachableType = $attachableType;
     }
 
     public function changeFields(
-        string $avatarLink,
+        string $photoLink,
         string $title,
         ?string $description,
-        DateTime $photoDate
+        DateTime $photoDate,
+        int $attachableId,
+        string $attachableType
     ): void
     {
-        $this->avatarLink = $avatarLink;
+        $this->photoLink = $photoLink;
         $this->title = $title;
         $this->description = $description;
         $this->photoDate = $photoDate;
+        $this->attachableId = $attachableId;
+        $this->attachableType = $attachableType;
     }
 
     public function getId(): int
@@ -58,9 +75,9 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->id;
     }
 
-    public function getAvatarLink(): string
+    public function getPhotoLink(): string
     {
-        return $this->avatarLink;
+        return $this->photoLink;
     }
 
     public function getTitle(): string
@@ -76,5 +93,40 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     public function getPhotoDate(): DateTime
     {
         return $this->photoDate;
+    }
+
+    public function getAttachableType(): ?string
+    {
+        return $this->attachableType;
+    }
+
+    public function setAttachableType(?string $type): void
+    {
+        $this->attachableType = $type;
+    }
+
+    public function getAttachableId(): ?int
+    {
+        return $this->attachableId;
+    }
+
+    public function setAttachableId(?int $id): void
+    {
+        $this->attachableId = $id;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'photoLink' => $this->getPhotoLink(),
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'photoDate' => $this->getPhotoDate()->format('Y-m-d'),
+            'attachableId' => $this->getAttachableId(),
+            'attachableType' => $this->getAttachableType(),
+            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
+        ];
     }
 }

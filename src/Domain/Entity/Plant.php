@@ -19,7 +19,7 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
     private ?int $id = null;
 
-    private ?int $attachemntId = null;
+    private ?Attachment $attachment = null;
 
     private ?OId $oid = null;
 
@@ -46,69 +46,86 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     private ?string $soil = null;
 
     public function __construct(
-        ?int $attachemntId = null,
         string $title,
-        ?string $description = null,
         string $room,
+        bool $isShown = true,
+        ?Attachment $attachment = null,
+        ?string $description = null,
         ?DateTime $purchaseDate = null,
         ?DateTime $vaccinationDate = null,
         ?DateTime $plantingDate = null,
         ?string $manufacturer = null,
         ?Price $price = null,
-        bool $isShown = true,
         ?string $soil = null
     )
     {
-        $this->attachemntId = $attachemntId;
-        $this->oid = OId::next();
-
         WebmozartAssert::stringNotEmpty($title);
         $this->title = $title;
-        $this->description = $description;
-        $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
-
         WebmozartAssert::stringNotEmpty($room);
         $this->room = $room;
+
+        $this->isShown = $isShown;
+
+        if ($attachment) {
+            $attachment->setAttachableType(Plant::class);
+            $attachment->setAttachableId($this->getId());
+        }
+
+        $this->attachment = $attachment;
+        $this->description = $description;
+
         $this->purchaseDate = $purchaseDate;
         $this->vaccinationDate = $vaccinationDate;
         $this->plantingDate = $plantingDate;
         $this->manufacturer = $manufacturer;
         $this->price = $price;
-        $this->isShown = $isShown;
         $this->soil = $soil;
+
+        $this->oid = OId::next();
+        $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
     }
 
     public function changeFields(
-        ?int $attachemntId = null,
         string $title,
-        ?string $description = null,
         string $room,
+        bool $isShown = true,
+        ?Attachment $attachment = null,
+        ?string $description = null,
         ?DateTime $purchaseDate = null,
         ?DateTime $vaccinationDate = null,
         ?DateTime $plantingDate = null,
         ?string $manufacturer = null,
         ?Price $price = null,
-        bool $isShown = true,
         ?string $soil = null
     ): void
     {
-        $this->attachemntId = $attachemntId;
-        $this->oid = OId::next();
+        if ($this->getDeletedAt() !== null) {
+            throw new \LogicException('Cannot modify a deleted plant.');
+        }
 
         WebmozartAssert::stringNotEmpty($title);
         $this->title = $title;
-        $this->description = $description;
-        $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
-
         WebmozartAssert::stringNotEmpty($room);
         $this->room = $room;
+
+        $this->isShown = $isShown;
+        if ($attachment) {
+            $attachment->setAttachableType(Plant::class);
+            $attachment->setAttachableId($this->getId());
+        }
+
+        $this->attachment = $attachment;
+        $this->description = $description;
+
         $this->purchaseDate = $purchaseDate;
         $this->vaccinationDate = $vaccinationDate;
         $this->plantingDate = $plantingDate;
         $this->manufacturer = $manufacturer;
         $this->price = $price;
-        $this->isShown = $isShown;
         $this->soil = $soil;
+
+        $this->oid = OId::next();
+        $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
     }
 
     public function getId(): int
@@ -118,9 +135,9 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->id;
     }
 
-    public function getAttachemntId(): ?int
+    public function getAttachment(): ?Attachment
     {
-        return $this->attachemntId;
+        return $this->attachment;
     }
 
     public function getOid(): ?OId
@@ -181,5 +198,38 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     public function getSoil(): ?string
     {
         return $this->soil;
+    }
+
+//    /**
+//     * @return Collection<int,Subscription>
+//     */
+//    public function getAttachments(): Collection
+//    {
+//        return $this->attachment;
+//    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'oid' => $this->oid,
+            'title' => $this->title,
+            'isShown' => $this->isShown,
+            'description' => $this->description,
+            'qrCodeBase64' => $this->qrCodeBase64,
+            'room' => $this->room,
+            'purchaseDate' => $this->purchaseDate,
+            'vaccinationDate' => $this->vaccinationDate,
+            'plantingDate' => $this->plantingDate,
+            'manufacturer' => $this->manufacturer,
+            'price' => $this->price,
+            'soil' => $this->soil,
+//            'attachment' => array_map(
+//                static fn (Attachment $attachment) => $attachment->toArray(),
+//                $this->getAttachments()->toArray()
+//            ),
+            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            ];
     }
 }
