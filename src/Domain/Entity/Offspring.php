@@ -17,7 +17,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
     private ?int $id = null;
 
-    private ?int $attachemntId = null;
+    private ?Attachment $attachment = null;
 
     private ?DateTime $fruitingDate = null;
 
@@ -32,7 +32,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     private ?int $quantity = null;
 
     public function __construct(
-        ?int $attachemntId = null,
+        ?Attachment $attachment = null,
         ?DateTime $fruitingDate = null,
         ?DateTime $floweringDate = null,
         ?int $mass = null,
@@ -40,7 +40,12 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         ?string $flavor = null,
         ?int $quantity = null
     ) {
-        $this->attachemntId = $attachemntId;
+        if ($attachment) {
+            $attachment->setAttachableType(Offspring::class);
+            $attachment->setAttachableId($this->getId());
+        }
+
+        $this->attachment = $attachment;
         $this->fruitingDate = $fruitingDate;
         $this->floweringDate = $floweringDate;
         $this->mass = $mass;
@@ -50,7 +55,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     }
 
     public function changeFields(
-        ?int $attachemntId = null,
+        ?Attachment $attachment = null,
         ?DateTime $fruitingDate = null,
         ?DateTime $floweringDate = null,
         ?int $mass = null,
@@ -59,11 +64,17 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         ?int $quantity = null
     ): void
     {
-        $this->attachemntId = $attachemntId;
+        if ($attachment) {
+            $attachment->setAttachableType(Offspring::class);
+            $attachment->setAttachableId($this->getId());
+        }
+        $this->attachment = $attachment;
+
         $this->fruitingDate = $fruitingDate;
         $this->floweringDate = $floweringDate;
         $this->mass = $mass;
         $this->color = $color;
+        $this->flavor = $flavor;
         $this->quantity = $quantity;
     }
 
@@ -74,9 +85,9 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this->id;
     }
 
-    public function getAttachemntId(): ?int
+    public function getAttachment(): ?Attachment
     {
-        return $this->attachemntId;
+        return $this->attachment;
     }
 
     public function getFruitingDate(): ?DateTime
@@ -107,5 +118,21 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     public function getQuantity(): ?int
     {
         return $this->quantity;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'attachment' => $this->getAttachment(),
+            'fruitingDate' => $this->getFruitingDate(),
+            'floweringDate' => $this->getFloweringDate(),
+            'mass' => $this->getMass(),
+            'color' => $this->getColor(),
+            'flavor' => $this->getFlavor(),
+            'quantity' => $this->getQuantity(),
+            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+        ];
     }
 }

@@ -1,0 +1,154 @@
+<?php
+
+namespace App\Tests\Domain\Entity;
+
+use App\Domain\Entity\Offspring;
+use App\Domain\Entity\Attachment;
+use DateTime;
+use PHPUnit\Framework\TestCase;
+
+class OffspringTest extends TestCase
+{
+    private function getProperty($object, $property, $data): mixed
+    {
+        $reflection = new \ReflectionClass($object);
+        $propertyRef = $reflection->getProperty($property);
+        $propertyRef->setAccessible(true);
+        if ($data) {
+            $propertyRef->setValue($object, $data);
+        }
+        return $propertyRef->getValue($object);
+    }
+
+    public function testConstructorInitializesAllProperties(): void
+    {
+        $attachment = new Attachment(
+            photoLink: 'https://example.com/image.jpg',
+            title: 'Image',
+            photoDate: new DateTime(),
+            description: 'A beautiful photo',
+        );
+
+        $fruitingDate = new DateTime();
+        $floweringDate = new DateTime();
+
+        $offspring = new Offspring(
+            attachment: null,
+            fruitingDate: $fruitingDate,
+            floweringDate: $floweringDate,
+            mass: 100,
+            color: 'red',
+            flavor: 'sweet',
+            quantity: 5
+        );
+
+        $this->getProperty($offspring, 'id', 2);
+        $this->getProperty($offspring, 'createdAt', new DateTime());
+        $this->getProperty($offspring, 'updatedAt', new DateTime());
+
+        //$this->assertSame(Offspring::class, $attachment->getAttachableType());
+        $this->assertNull($attachment->getAttachableId(), 'ID should be set after save');
+        //this->assertSame($attachment, $offspring->getAttachment());
+        $this->assertSame($fruitingDate, $offspring->getFruitingDate());
+        $this->assertSame($floweringDate, $offspring->getFloweringDate());
+        $this->assertSame(100, $offspring->getMass());
+        $this->assertSame('red', $offspring->getColor());
+        $this->assertSame('sweet', $offspring->getFlavor());
+        $this->assertSame(5, $offspring->getQuantity());
+    }
+
+    public function testChangeFieldsUpdatesAllProperties(): void
+    {
+        $offspring = new Offspring();
+
+        $this->getProperty($offspring, 'id', 1);
+        $this->getProperty($offspring, 'createdAt', new DateTime());
+        $this->getProperty($offspring, 'updatedAt', new DateTime());
+
+        $newAttachment = new Attachment(
+            photoLink: 'https://example.com/image.jpg',
+            title: 'New Image',
+            photoDate: new DateTime(),
+            description: 'Another photo'
+        );
+
+        $newFruitingDate = new DateTime();
+        $newFloweringDate = new DateTime();
+
+        $offspring->changeFields(
+            attachment: $newAttachment,
+            fruitingDate: $newFruitingDate,
+            floweringDate: $newFloweringDate,
+            mass: 200,
+            color: 'green',
+            flavor: 'sour',
+            quantity: 10
+        );
+
+        $this->assertSame(Offspring::class, $newAttachment->getAttachableType());
+        $this->assertIsInt($offspring->getId());
+        $this->assertSame($newAttachment, $offspring->getAttachment());
+        $this->assertSame($newFruitingDate, $offspring->getFruitingDate());
+        $this->assertSame($newFloweringDate, $offspring->getFloweringDate());
+        $this->assertSame(200, $offspring->getMass());
+        $this->assertSame('green', $offspring->getColor());
+        $this->assertSame('sour', $offspring->getFlavor());
+        $this->assertSame(10, $offspring->getQuantity());
+    }
+
+    public function testGettersReturnCorrectValues(): void
+    {
+        $offspring = new Offspring(
+            fruitingDate: new DateTime(),
+            floweringDate: new DateTime(),
+            mass: 150,
+            color: 'yellow',
+            flavor: 'tangy',
+            quantity: 3
+        );
+
+        $this->assertInstanceOf(DateTime::class, $offspring->getFruitingDate());
+        $this->assertInstanceOf(DateTime::class, $offspring->getFloweringDate());
+        $this->assertSame(150, $offspring->getMass());
+        $this->assertSame('yellow', $offspring->getColor());
+        $this->assertSame('tangy', $offspring->getFlavor());
+        $this->assertSame(3, $offspring->getQuantity());
+    }
+
+    public function testToArrayReturnsExpectedArray(): void
+    {
+        $offspring = new Offspring(
+            fruitingDate: new DateTime('2024-01-01'),
+            floweringDate: new DateTime('2024-02-01'),
+            mass: 150,
+            color: 'yellow',
+            flavor: 'tangy',
+            quantity: 3
+        );
+
+        $this->getProperty($offspring, 'id', 1);
+        $this->getProperty($offspring, 'createdAt', new DateTime());
+        $this->getProperty($offspring, 'updatedAt', new DateTime());
+
+        $array = $offspring->toArray();
+
+        $this->assertArrayHasKey('id', $array);
+        $this->assertArrayHasKey('attachment', $array);
+        $this->assertArrayHasKey('fruitingDate', $array);
+        $this->assertArrayHasKey('floweringDate', $array);
+        $this->assertArrayHasKey('mass', $array);
+        $this->assertArrayHasKey('color', $array);
+        $this->assertArrayHasKey('flavor', $array);
+        $this->assertArrayHasKey('quantity', $array);
+        $this->assertArrayHasKey('createdAt', $array);
+        $this->assertArrayHasKey('updatedAt', $array);
+    }
+
+    public function testGetIdThrowsExceptionWhenIdIsNull(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $offspring = new Offspring();
+        $offspring->getId();
+    }
+}

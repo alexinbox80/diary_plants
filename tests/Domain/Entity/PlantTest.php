@@ -12,6 +12,17 @@ use PHPUnit\Framework\TestCase;
 
 class PlantTest extends TestCase
 {
+    private function getProperty($object, $property, $data): mixed
+    {
+        $reflection = new \ReflectionClass($object);
+        $propertyRef = $reflection->getProperty($property);
+        $propertyRef->setAccessible(true);
+        if ($data) {
+            $propertyRef->setValue($object, $data);
+        }
+        return $propertyRef->getValue($object);
+    }
+
     public function testConstructorInitializesAllProperties(): void
     {
         $oid = OId::next();
@@ -106,6 +117,43 @@ class PlantTest extends TestCase
 
         $this->assertInstanceOf(OId::class, $plant->getOid());
         $this->assertStringStartsWith('data:image/png;base64,', $plant->getQrCodeBase64());
+    }
+
+    public function testToArrayReturnsExpectedArray(): void
+    {
+        $plant = new Plant(
+            title: 'Rose',
+            room: 'Living Room',
+            isShown: true,
+            attachment: null,
+            description: 'A beautiful flower',
+            purchaseDate: new DateTime(),
+            vaccinationDate: new DateTime(),
+            plantingDate: new DateTime(),
+            manufacturer: 'GreenHouse Inc.',
+            price: new Price(150, Currency::RUR),
+            soil: 'Clay'
+        );
+
+        $this->getProperty($plant, 'id', 1);
+        $this->getProperty($plant, 'createdAt', new DateTime());
+        $this->getProperty($plant, 'updatedAt', new DateTime());
+
+        $array = $plant->toArray();
+
+        $this->assertArrayHasKey('id', $array);
+        $this->assertArrayHasKey('oid', $array);
+        $this->assertArrayHasKey('title', $array);
+        $this->assertArrayHasKey('isShown', $array);
+        $this->assertArrayHasKey('description', $array);
+        $this->assertArrayHasKey('qrCodeBase64', $array);
+        $this->assertArrayHasKey('room', $array);
+        $this->assertArrayHasKey('purchaseDate', $array);
+        $this->assertArrayHasKey('vaccinationDate', $array);
+        $this->assertArrayHasKey('plantingDate', $array);
+        $this->assertArrayHasKey('manufacturer', $array);
+        $this->assertArrayHasKey('price', $array);
+        $this->assertArrayHasKey('soil', $array);
     }
 
     public function testGetIdThrowsExceptionWhenIdIsNull(): void
