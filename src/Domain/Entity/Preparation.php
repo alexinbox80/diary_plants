@@ -30,10 +30,9 @@ class Preparation
         WebmozartAssert::stringNotEmpty($manufacturer);
         $this->manufacturer = $manufacturer;
 
-        WebmozartAssert::stringNotEmpty($quantity);
+        WebmozartAssert::Numeric($quantity);
         $this->quantity = $quantity;
 
-        WebmozartAssert::stringNotEmpty($useDate);
         $this->useDate = $useDate;
 
         $this->description = $description;

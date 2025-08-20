@@ -8,6 +8,7 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
+use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
 
 class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
@@ -18,23 +19,29 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
     private Status $status;
 
+    private DateTime $date;
+
     private ?string $description = null;
 
     public function __construct(
         Status $status,
+        DateTime $date,
         ?string $description = null,
     )
     {
         $this->status = $status;
+        $this->date = $date;
         $this->description = $description;
     }
 
     public function changeFields(
         Status $status,
+        DateTime $date,
         ?string $description = null,
     ): void
     {
         $this->status = $status;
+        $this->date = $date;
         $this->description = $description;
     }
 
@@ -50,6 +57,11 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->status;
     }
 
+    public function getDate(): DateTime
+    {
+        return $this->date;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -60,6 +72,7 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return [
             'id' => $this->getId(),
             'status' => $this->getStatus()->toArray(),
+            'date' => $this->getDate()->format('Y-m-d'),
             'description' => $this->getDescription(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
