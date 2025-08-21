@@ -28,23 +28,6 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
         parent::__construct($title, $manufacturer, $quantity, $useDate, $description);
     }
 
-    public function changeFields(
-        string $title,
-        string $manufacturer,
-        int $quantity,
-        DateTime $useDate,
-        ?string $description = null,
-    ): void
-    {
-        $this->changeFields(
-            $title,
-            $manufacturer,
-            $quantity,
-            $useDate,
-            $description
-        );
-    }
-
     public function getId(): int
     {
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
