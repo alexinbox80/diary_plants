@@ -10,26 +10,44 @@ use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: 'offspring')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'offspring__plant_id__ind', columns: ['plant_id'])]
 class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
     private ?Attachment $attachment = null;
 
+    #[ORM\Column(name: 'fruiting_date', type: 'datetime', nullable: true)]
     private ?DateTime $fruitingDate = null;
 
+    #[ORM\Column(name: 'flowering_date', type: 'datetime', nullable: true)]
     private ?DateTime $floweringDate = null;
 
+    #[ORM\Column(name: 'mass', type: 'integer', nullable: true)]
     private ?int $mass = null;
 
+    #[ORM\Column(name: 'color', type: 'string', length: 64, nullable: true)]
     private ?string $color = null;
 
+    #[ORM\Column(name: 'flavor', type: 'string', length: 64, nullable: true)]
     private ?string $flavor = null;
 
+    #[ORM\Column(name: 'quantity', type: 'integer', nullable: true)]
     private ?int $quantity = null;
+
+    #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'offsprings')]
+    #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
+    private Plant $plant;
 
     public function __construct(
         ?Attachment $attachment = null,
@@ -42,7 +60,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     ) {
         if ($attachment) {
             $attachment->setAttachableType(Offspring::class);
-            $attachment->setAttachableId($this->getId());
+            $attachment->setAttachable($attachment);
         }
 
         $this->attachment = $attachment;
@@ -66,7 +84,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     {
         if ($attachment) {
             $attachment->setAttachableType(Offspring::class);
-            $attachment->setAttachableId($this->getId());
+            $attachment->setAttachable($attachment);
         }
         $this->attachment = $attachment;
 

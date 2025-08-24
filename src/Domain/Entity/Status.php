@@ -9,20 +9,34 @@ use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: 'status')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'string', length: 1, nullable: false)]
     private string $letter;
 
+    #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(type: 'string', length: 7, nullable: false)]
     private string $color;
 
+    #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private ?string $colorDescription = null;
+
+    #[ORM\OneToOne(targetEntity: Task::class, mappedBy: 'status')]
+    private Task $task;
 
     public function __construct(
         string $letter,

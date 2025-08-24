@@ -10,12 +10,24 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: 'pest')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'pest__plant_id__ind', columns: ['plant_id'])]
 class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'pests')]
+    #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
+    private Plant $plant;
 
     public function __construct(
         string $title,

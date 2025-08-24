@@ -10,12 +10,24 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: 'fertilizer')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'fertilizer__plant_id__ind', columns: ['plant_id'])]
 class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'fertilizers')]
+    #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
+    private Plant $plant;
 
     public function __construct(
         string $title,
@@ -33,6 +45,17 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
+    }
+
+    public function getPlant(): Plant
+    {
+        return $this->plant;
+    }
+
+    public function setPlant(?Plant $plant): self
+    {
+        $this->plant = $plant;
+        return $this;
     }
 
     public function toArray(): array

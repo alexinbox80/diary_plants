@@ -12,7 +12,7 @@ final readonly class OId
 {
     private UuidV4 $value;
 
-    final private function __construct(
+    final protected function __construct(
         UuidV4 $value
     ) {
         $this->value = $value;

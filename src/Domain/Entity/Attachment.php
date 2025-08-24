@@ -10,24 +10,37 @@ use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: 'attachment')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    #[ORM\Column(name: 'photo_link', type: 'string', length: 255, nullable: false)]
     private string $photoLink;
 
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
+    #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(name: 'photo_date', type: 'datetime', nullable: false)]
     private DateTime $photoDate;
 
+    #[ORM\Column(name: 'attachable_id', type: 'integer', nullable: true)]
     private ?int $attachableId = null;
 
-    private ?string $attachableType = null; // Тип сущности (Plant, User и т.п.)
+    #[ORM\Column(name: 'attachable_type', type: 'string', nullable: true)]
+    private ?string $attachableType = null;// Тип сущности (Plant, User и т.п.)
 
     public function __construct(
         string $photoLink,
@@ -105,14 +118,27 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         $this->attachableType = $type;
     }
 
-    public function getAttachableId(): ?int
+    public function getAttachable(): ?EntityInterface
     {
-        return $this->attachableId;
+        if (!$this->attachableId || !$this->attachableType) {
+            return null;
+        }
+
+        $className = $this->attachableType;
+        if (!is_subclass_of($className, EntityInterface::class)) {
+            throw new \InvalidArgumentException("Class $className does not implement AttachableInterface.");
+        }
+
+        //return $entityManager->getReference($className, $this->attachableId);
+        return null;
     }
 
-    public function setAttachableId(?int $id): void
+    public function setAttachable(?EntityInterface $attachable): self
     {
-        $this->attachableId = $id;
+        $this->attachableId = $attachable?->getId();
+        $this->attachableType = $attachable ? get_class($attachable) : null;
+
+        return $this;
     }
 
     public function toArray(): array
@@ -123,8 +149,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'photo_date' => $this->getPhotoDate()->format('Y-m-d'),
-            'attachable_id' => $this->getAttachableId(),
-            'attachable_type' => $this->getAttachableType(),
+            //'attachable_id' => $this->getAttachableId(),
+            //'attachable_type' => $this->getAttachableType(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];

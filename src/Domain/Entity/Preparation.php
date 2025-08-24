@@ -4,17 +4,24 @@ namespace App\Domain\Entity;
 
 use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\MappedSuperclass]
 class Preparation
 {
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
+    #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: false)]
     private ?string $description;
 
+    #[ORM\Column(name: 'manufacturer', type: 'string', length: 255, nullable: false)]
     private string $manufacturer;
 
+    #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
 
+    #[ORM\Column(name: 'use_date', type: 'datetime', nullable: false)]
     private DateTime $useDate;
 
     public function __construct(

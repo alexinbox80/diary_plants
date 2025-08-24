@@ -36,4 +36,16 @@ final class Price
         return $this->amount === $other->amount
             && $this->currency === $other->currency;
     }
+
+    public function toString(): string
+    {
+        return $this->amount . ' ' . $this->currency->value;
+    }
+
+    public static function fromString(string $value): self
+    {
+        [$amount, $currency] = explode(' ', $value);
+
+        return new self((int) $amount, Currency::tryFrom($currency));
+    }
 }

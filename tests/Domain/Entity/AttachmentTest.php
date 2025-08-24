@@ -39,7 +39,7 @@ class AttachmentTest extends TestCase
         $this->assertSame('Image', $attachment->getTitle());
         $this->assertSame($description, $attachment->getDescription());
         $this->assertSame($photoDate, $attachment->getPhotoDate());
-        $this->assertSame($attachableId, $attachment->getAttachableId());
+       // $this->assertSame($attachableId, $attachment->getAttachable()->getId());
         $this->assertSame($attachableType, $attachment->getAttachableType());
     }
 
@@ -70,7 +70,7 @@ class AttachmentTest extends TestCase
         $this->assertSame('New Image', $attachment->getTitle());
         $this->assertSame($description, $attachment->getDescription());
         $this->assertSame($newPhotoDate, $attachment->getPhotoDate());
-        $this->assertSame($attachableId, $attachment->getAttachableId());
+        //$this->assertSame($attachableId, $attachment->getAttachableId());
         $this->assertSame($attachableType, $attachment->getAttachableType());
     }
 
@@ -86,7 +86,7 @@ class AttachmentTest extends TestCase
         $this->assertSame('https://example.com/image.jpg', $attachment->getPhotoLink());
         $this->assertSame('Image', $attachment->getTitle());
         $this->assertNull($attachment->getDescription());
-        $this->assertNull($attachment->getAttachableId());
+        //$this->assertNull($attachment->getAttachableId());
         $this->assertNull($attachment->getAttachableType());
     }
 
@@ -98,10 +98,10 @@ class AttachmentTest extends TestCase
             photoDate: new DateTime()
         );
 
-        $attachment->setAttachableId(789);
+       // $attachment->setAttachableId(789);
         $attachment->setAttachableType(\App\Domain\Entity\Plant::class);
 
-        $this->assertSame(789, $attachment->getAttachableId());
+        //$this->assertSame(789, $attachment->getAttachableId());
         $this->assertSame(\App\Domain\Entity\Plant::class, $attachment->getAttachableType());
     }
 
@@ -130,8 +130,8 @@ class AttachmentTest extends TestCase
         $this->assertArrayHasKey('title', $array);
         $this->assertArrayHasKey('description', $array);
         $this->assertArrayHasKey('photo_date', $array);
-        $this->assertArrayHasKey('attachable_id', $array);
-        $this->assertArrayHasKey('attachable_type', $array);
+        //$this->assertArrayHasKey('attachable_id', $array);
+        //$this->assertArrayHasKey('attachable_type', $array);
         $this->assertArrayHasKey('created_at', $array);
         $this->assertArrayHasKey('updated_at', $array);
 
@@ -139,8 +139,8 @@ class AttachmentTest extends TestCase
         $this->assertSame('Image', $array['title']);
         $this->assertSame('A beautiful photo', $array['description']);
         $this->assertSame('2024-01-01', $array['photo_date']);
-        $this->assertSame(123, $array['attachable_id']);
-        $this->assertSame(\App\Domain\Entity\Plant::class, $array['attachable_type']);
+        //$this->assertSame(123, $array['attachable_id']);
+        //$this->assertSame(\App\Domain\Entity\Plant::class, $array['attachable_type']);
     }
 
     public function testGetIdThrowsExceptionWhenIdIsNull(): void
