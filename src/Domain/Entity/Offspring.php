@@ -9,6 +9,8 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,8 +26,6 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
-
-    private ?Attachment $attachment = null;
 
     #[ORM\Column(name: 'fruiting_date', type: 'datetime', nullable: true)]
     private ?DateTime $fruitingDate = null;
@@ -49,8 +49,14 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
+//    /**
+//     * @var Collection<int, Attachment>
+//     */
+//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
+//    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
+//    private Collection $attachments;
+
     public function __construct(
-        ?Attachment $attachment = null,
         ?DateTime $fruitingDate = null,
         ?DateTime $floweringDate = null,
         ?int $mass = null,
@@ -58,12 +64,9 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         ?string $flavor = null,
         ?int $quantity = null
     ) {
-        if ($attachment) {
-            $attachment->setAttachableType(Offspring::class);
-            $attachment->setAttachable($attachment);
-        }
 
-        $this->attachment = $attachment;
+        //$this->attachments = new ArrayCollection();
+
         $this->fruitingDate = $fruitingDate;
         $this->floweringDate = $floweringDate;
         $this->mass = $mass;
@@ -73,7 +76,6 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     }
 
     public function changeFields(
-        ?Attachment $attachment = null,
         ?DateTime $fruitingDate = null,
         ?DateTime $floweringDate = null,
         ?int $mass = null,
@@ -82,12 +84,6 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         ?int $quantity = null
     ): void
     {
-        if ($attachment) {
-            $attachment->setAttachableType(Offspring::class);
-            $attachment->setAttachable($attachment);
-        }
-        $this->attachment = $attachment;
-
         $this->fruitingDate = $fruitingDate;
         $this->floweringDate = $floweringDate;
         $this->mass = $mass;
@@ -103,9 +99,12 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this->id;
     }
 
-    public function getAttachment(): ?Attachment
+    /**
+     * @return Collection<int, Attachment>
+     */
+    public function getAttachments(): Collection
     {
-        return $this->attachment;
+        return $this->attachments;
     }
 
     public function getFruitingDate(): ?DateTime
@@ -138,11 +137,24 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this->quantity;
     }
 
+    public function addAttachment(Attachment $attachment): self
+    {
+        if (!$this->attachments->contains($attachment)) {
+            $this->attachments[] = $attachment;
+            $attachment->setAttachableType(self::class); // Set the type
+            $attachment->setAttachableId($this->getId()); // Set the ID
+        }
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'attachment' => $this->getAttachment(),
+//            'attachment' => array_map(
+//                static fn (Attachment $attachment) => $attachment->toArray(),
+//                $attachments
+//            ),
             'fruiting_date' => $this->getFruitingDate(),
             'flowering_date' => $this->getFloweringDate(),
             'mass' => $this->getMass(),

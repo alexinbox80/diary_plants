@@ -13,6 +13,7 @@ use App\Domain\Model\Price;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -81,17 +82,17 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'plant')]
     private Collection $stimulants;
 
-    /**
-     * @var Collection<int, Attachment>
-     */
-//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'plant', cascade: ['persist'])]
+//    /**
+//     * @var Collection<int, Attachment>
+//     */
+//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
+//    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
 //    private Collection $attachments;
 
     public function __construct(
         string $title,
         string $room,
         bool $isShown = true,
-        ?Attachment $attachment = null,
         ?string $description = null,
         ?DateTime $purchaseDate = null,
         ?DateTime $vaccinationDate = null,
@@ -108,12 +109,6 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
         $this->isShown = $isShown;
 
-        if ($attachment) {
-            $attachment->setAttachableType(Plant::class);
-            $attachment->setAttachable($attachment);
-        }
-
-        //$this->attachment = $attachment;
         $this->description = $description;
 
         $this->purchaseDate = $purchaseDate;
@@ -126,7 +121,7 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
 
-        $this->attachments = new ArrayCollection();
+//        $this->attachments = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         //$this->offersprings = new ArrayCollection();
         $this->fertilizers = new ArrayCollection();
@@ -138,7 +133,6 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         string $title,
         string $room,
         bool $isShown = true,
-        ?Attachment $attachment = null,
         ?string $description = null,
         ?DateTime $purchaseDate = null,
         ?DateTime $vaccinationDate = null,
@@ -158,12 +152,6 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->room = $room;
 
         $this->isShown = $isShown;
-        if ($attachment) {
-            $attachment->setAttachableType(Plant::class);
-            $attachment->setAttachable($attachment);
-        }
-
-        $this->attachment = $attachment;
         $this->description = $description;
 
         $this->purchaseDate = $purchaseDate;
@@ -182,11 +170,6 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
-    }
-
-    public function getAttachment(): ?Attachment
-    {
-        return $this->attachment;
     }
 
     public function getOid(): ?OId
@@ -249,34 +232,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->soil;
     }
 
-    /**
-     * @return Collection<int, Attachment>
-     */
-    public function getAttachments(): Collection
-    {
-        return $this->attachments;
-    }
-
     public function addAttachment(Attachment $attachment): self
     {
         if (!$this->attachments->contains($attachment)) {
             $this->attachments[] = $attachment;
-            //$attachment->setPlant($this);
-            $attachment->setAttachable($this);
+            $attachment->setAttachableType(self::class); // Set the type
+            $attachment->setAttachableId($this->getId()); // Set the ID
         }
-
-        return $this;
-    }
-
-    public function removeAttachment(Attachment $attachment): self
-    {
-        if ($this->attachments->removeElement($attachment)) {
-            // set the owning side to null (unless already changed)
-            if ($attachment->getAttachable() === $this) {
-                $attachment->setAttachable(null);
-            }
-        }
-
         return $this;
     }
 
@@ -323,10 +285,10 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
             'manufacturer' => $this->manufacturer,
             'price' => $this->price,
             'soil' => $this->soil,
-            'attachment' => array_map(
-                static fn (Attachment $attachment) => $attachment->toArray(),
-                $this->getAttachments()->toArray()
-            ),
+//            'attachment' => array_map(
+//                static fn (Attachment $attachment) => $attachment->toArray(),
+//                $attachments
+//            ),
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
             ];

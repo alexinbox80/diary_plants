@@ -108,37 +108,24 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->photoDate;
     }
 
+    public function getAttachableId(): ?int
+    {
+        return $this->attachableId;
+    }
+
     public function getAttachableType(): ?string
     {
         return $this->attachableType;
     }
 
-    public function setAttachableType(?string $type): void
+    public function setAttachableType(?string $attachableType): void
     {
-        $this->attachableType = $type;
+        $this->attachableType = $attachableType;
     }
 
-    public function getAttachable(): ?EntityInterface
+    public function setAttachableId(?int $attachableId): void
     {
-        if (!$this->attachableId || !$this->attachableType) {
-            return null;
-        }
-
-        $className = $this->attachableType;
-        if (!is_subclass_of($className, EntityInterface::class)) {
-            throw new \InvalidArgumentException("Class $className does not implement AttachableInterface.");
-        }
-
-        //return $entityManager->getReference($className, $this->attachableId);
-        return null;
-    }
-
-    public function setAttachable(?EntityInterface $attachable): self
-    {
-        $this->attachableId = $attachable?->getId();
-        $this->attachableType = $attachable ? get_class($attachable) : null;
-
-        return $this;
+        $this->attachableId = $attachableId;
     }
 
     public function toArray(): array
@@ -149,8 +136,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'photo_date' => $this->getPhotoDate()->format('Y-m-d'),
-            //'attachable_id' => $this->getAttachableId(),
-            //'attachable_type' => $this->getAttachableType(),
+            'attachable_id' => $this->getAttachableId(),
+            'attachable_type' => $this->getAttachableType(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];

@@ -45,7 +45,7 @@ class PlantTest extends TestCase
             title: 'Rose',
             room: 'Living Room',
             isShown: true,
-            attachment: null,
+            //attachment: null,
             description: 'A beautiful flower',
             purchaseDate: $purchaseDate,
             vaccinationDate: $vaccinationDate,
@@ -86,7 +86,7 @@ class PlantTest extends TestCase
             title: 'Cactus',
             room: 'Office',
             isShown: false,
-            attachment: null,
+            //attachment: null,
         );
 
         $plant->changeFields(
@@ -125,7 +125,7 @@ class PlantTest extends TestCase
             title: 'Rose',
             room: 'Living Room',
             isShown: true,
-            attachment: null,
+            //attachment: null,
             description: 'A beautiful flower',
             purchaseDate: new DateTime(),
             vaccinationDate: new DateTime(),
@@ -161,7 +161,7 @@ class PlantTest extends TestCase
     public function testGetIdThrowsExceptionWhenIdIsNull(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $plant = new Plant(title: 'Test', room: 'Room', isShown: true, attachment: null);
+        $plant = new Plant(title: 'Test', room: 'Room', isShown: true,);// attachment: null);
         $plant->getId(); // id is null
     }
 }

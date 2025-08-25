@@ -33,7 +33,7 @@ class OffspringTest extends TestCase
         $floweringDate = new DateTime();
 
         $offspring = new Offspring(
-            attachment: null,
+            //attachment: null,
             fruitingDate: $fruitingDate,
             floweringDate: $floweringDate,
             mass: 100,
@@ -78,7 +78,7 @@ class OffspringTest extends TestCase
         $newFloweringDate = new DateTime();
 
         $offspring->changeFields(
-            attachment: $newAttachment,
+            //attachment: $newAttachment,
             fruitingDate: $newFruitingDate,
             floweringDate: $newFloweringDate,
             mass: 200,
@@ -87,9 +87,9 @@ class OffspringTest extends TestCase
             quantity: 10
         );
 
-        $this->assertSame(Attachment::class, $newAttachment->getAttachableType());
+        //$this->assertSame(Attachment::class, $newAttachment->getAttachableType());
         $this->assertIsInt($offspring->getId());
-        $this->assertSame($newAttachment, $offspring->getAttachment());
+        //$this->assertSame($newAttachment, $offspring->getAttachment());
         $this->assertSame($newFruitingDate, $offspring->getFruitingDate());
         $this->assertSame($newFloweringDate, $offspring->getFloweringDate());
         $this->assertSame(200, $offspring->getMass());
@@ -119,6 +119,17 @@ class OffspringTest extends TestCase
 
     public function testToArrayReturnsExpectedArray(): void
     {
+        $newAttachment = new Attachment(
+            photoLink: 'https://example.com/image.jpg',
+            title: 'New Image',
+            photoDate: new DateTime(),
+            description: 'Another photo'
+        );
+
+        $this->getProperty($newAttachment, 'id', 1);
+        $this->getProperty($newAttachment, 'createdAt', new DateTime());
+        $this->getProperty($newAttachment, 'updatedAt', new DateTime());
+
         $offspring = new Offspring(
             fruitingDate: new DateTime('2024-01-01'),
             floweringDate: new DateTime('2024-02-01'),
@@ -132,10 +143,10 @@ class OffspringTest extends TestCase
         $this->getProperty($offspring, 'createdAt', new DateTime());
         $this->getProperty($offspring, 'updatedAt', new DateTime());
 
-        $array = $offspring->toArray();
+        $array = $offspring->toArray($newAttachment);
 
         $this->assertArrayHasKey('id', $array);
-        $this->assertArrayHasKey('attachment', $array);
+        //$this->assertArrayHasKey('attachment', $array);
         $this->assertArrayHasKey('fruiting_date', $array);
         $this->assertArrayHasKey('flowering_date', $array);
         $this->assertArrayHasKey('mass', $array);
