@@ -4,6 +4,8 @@ namespace App\Domain\Service;
 
 use App\Domain\Model\OId;
 use App\Domain\Model\Plant\CreatePlantModel;
+use App\Domain\Model\Price;
+use DateTime;
 use stdClass;
 
 class CsvService
@@ -57,16 +59,15 @@ class CsvService
 
                 if (!empty($array)) {
                     $plantModel = new CreatePlantModel(
-                        $array['oid'],
                         $array['title'],
                         $array['room'],
                         $array['is_shown'],
                         $array['description'],
-                        $array['purchase_date'],
-                        $array['vaccination_date'],
-                        $array['planting_date'],
+                        isset($array['purchase_date']) ? new DateTime($array['purchase_date']) : null,
+                        isset($array['purchase_date']) ? new DateTime($array['vaccination_date']) : null,
+                        isset($array['purchase_date']) ? new DateTime($array['planting_date']) : null,
                         $array['manufacturer'],
-                        $array['price'],
+                        Price::fromString($array['price']),
                         $array['soil']
                     );
                     $plantService->create($plantModel);

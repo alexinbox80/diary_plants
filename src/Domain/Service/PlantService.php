@@ -75,11 +75,11 @@ class PlantService
             $createPlantModel->room,
             $createPlantModel->isShown,
             $createPlantModel->description,
-            new DateTime($createPlantModel->purchaseDate),
-            new DateTime($createPlantModel->vaccinationDate),
-            new DateTime($createPlantModel->plantingDate),
+            $createPlantModel->purchaseDate,
+            $createPlantModel->vaccinationDate,
+            $createPlantModel->plantingDate,
             $createPlantModel->manufacturer,
-            Price::fromString($createPlantModel->price),
+            $createPlantModel->price,
             $createPlantModel->soil
         );
 
