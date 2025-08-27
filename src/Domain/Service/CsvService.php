@@ -2,26 +2,24 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\Model\OId;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Price;
 use DateTime;
-use stdClass;
 
 class CsvService
 {
-//    public function __construct(
-//        private readonly PlantService $plantService
-//    )
-//    {
-//    }
+    public function __construct(
+        private readonly PlantService $plantService
+    )
+    {
+    }
 
     /**
      * @param string $filePath
      * @return \Generator
      * @throws \Exception
      */
-    public static function convertCsv(string $filePath): \Generator
+    public function convertCsv(string $filePath): \Generator
     {
         $handle = fopen($filePath, 'rb');
         if (!$handle) {
@@ -40,12 +38,12 @@ class CsvService
         fclose($handle);
     }
 
-    public static function process(PlantService $plantService, string $filePath): int
+    public function process(string $filePath): int
     {
         $array = [];
         $keys = [];
         $rowNum = 0;
-        foreach (self::convertCsv($filePath) as $rowNum => $row) {
+        foreach ($this->convertCsv($filePath) as $rowNum => $row) {
             if (!empty($row)) {
                 foreach ($row as $key => $item) {
                     if ($rowNum === 0 && $key < count($row) - 1) {
@@ -70,11 +68,12 @@ class CsvService
                         Price::fromString($array['price']),
                         $array['soil']
                     );
-                    $plantService->create($plantModel);
+                    $this->plantService->create($plantModel);
                 }
 
             }
         }
+
         return $rowNum;
     }
 }

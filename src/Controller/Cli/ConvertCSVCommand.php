@@ -30,18 +30,6 @@ final class ConvertCSVCommand extends Command
             ->setDescription(self::CONVERT_CSV_DESCRIPTION);
     }
 
-    private function generateData(int $authorId, int $start, int $count, $faker): \Generator
-    {
-        for ($i = $start; $i <= $count + $start; $i++) {
-            yield [
-                'authorId' => $authorId + 1,
-                'title' => $faker->words(rand(2, 5), true),
-                'description' => $faker->text(rand(100, 200))
-            ];
-        }
-    }
-
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $count = 0;
@@ -50,7 +38,7 @@ final class ConvertCSVCommand extends Command
 
         $localPath =  $this->csvFilePrefix . 'plant.csv';
 
-        $count += $this->csvService->process($this->plantService, $localPath);
+        $count += $this->csvService->process($localPath);
 
         $output->write("<info> " . $count . " records were created</info>\n");
 
