@@ -8,6 +8,7 @@ use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Price;
 use App\Domain\Repository\PlantRepositoryInterface;
+use DateTime;
 use Psr\Cache\InvalidArgumentException;
 
 class PlantService
@@ -74,11 +75,11 @@ class PlantService
             $createPlantModel->room,
             $createPlantModel->isShown,
             $createPlantModel->description,
-            $createPlantModel->purchaseDate,
-            $createPlantModel->vaccinationDate,
-            $createPlantModel->plantingDate,
+            new DateTime($createPlantModel->purchaseDate),
+            new DateTime($createPlantModel->vaccinationDate),
+            new DateTime($createPlantModel->plantingDate),
             $createPlantModel->manufacturer,
-            $createPlantModel->price,
+            Price::fromString($createPlantModel->price),
             $createPlantModel->soil
         );
 

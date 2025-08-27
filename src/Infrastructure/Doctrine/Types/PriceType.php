@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 
 final class PriceType extends StringType
 {
-    public const NAME = 'myPrice';
+    public const NAME = 'Price';
 
     public function getName(): string
     {
