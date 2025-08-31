@@ -19,9 +19,13 @@ class CreatePlantModel
         public readonly ?DateTime $purchaseDate = null,
         public readonly ?DateTime $vaccinationDate = null,
         public readonly ?DateTime $plantingDate = null,
-        public readonly ?string $manufacturer = null,
+        public readonly ?string $seller = null,
+        public readonly ?string $nursery = null,
         public readonly ?Price $price = null,
+        public readonly ?Price $shipping_cost = null,
+        public readonly ?Price $packaging_cost = null,
         public readonly ?string $soil = null,
+        public readonly ?string $comment = null
     ) {
     }
 }

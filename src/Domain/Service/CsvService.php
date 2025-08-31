@@ -50,7 +50,7 @@ class CsvService
                         $keys[] = $item;
                     }
 
-                    if ($rowNum > 1 && $key < count($row) - 1) {
+                    if ($rowNum >= 1 && $key < count($row) - 1) {
                         $array[$keys[$key]] = $item;
                     }
                 }
@@ -61,16 +61,19 @@ class CsvService
                         $array['room'],
                         $array['is_shown'],
                         $array['description'],
-                        isset($array['purchase_date']) ? new DateTime($array['purchase_date']) : null,
-                        isset($array['purchase_date']) ? new DateTime($array['vaccination_date']) : null,
-                        isset($array['purchase_date']) ? new DateTime($array['planting_date']) : null,
-                        $array['manufacturer'],
-                        Price::fromString($array['price']),
-                        $array['soil']
+                        $array['purchase_date'] !== '' ? new DateTime($array['purchase_date']) : null,
+                        $array['purchase_date'] !== '' ? new DateTime($array['vaccination_date']) : null,
+                        $array['purchase_date'] !== '' ? new DateTime($array['planting_date']) : null,
+                        $array['seller'],
+                        $array['nursery'],
+                        $array['price'] !== '' ? Price::fromString($array['price']) : null,
+                        $array['shipping_cost'] !== '' ? Price::fromString($array['shipping_cost']) : null,
+                        $array['packaging_cost'] !== '' ? Price::fromString($array['packaging_cost']) : null,
+                        $array['soil'],
+                        $array['comment']
                     );
                     $this->plantService->create($plantModel);
                 }
-
             }
         }
 

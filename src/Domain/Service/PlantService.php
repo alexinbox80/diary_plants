@@ -8,7 +8,6 @@ use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Price;
 use App\Domain\Repository\PlantRepositoryInterface;
-use DateTime;
 use Psr\Cache\InvalidArgumentException;
 
 class PlantService
@@ -78,9 +77,13 @@ class PlantService
             $createPlantModel->purchaseDate,
             $createPlantModel->vaccinationDate,
             $createPlantModel->plantingDate,
-            $createPlantModel->manufacturer,
+            $createPlantModel->seller,
+            $createPlantModel->nursery,
             $createPlantModel->price,
-            $createPlantModel->soil
+            $createPlantModel->shipping_cost,
+            $createPlantModel->packaging_cost,
+            $createPlantModel->soil,
+            $createPlantModel->comment
         );
 
         $this->plantRepository->create($plant);
@@ -95,9 +98,13 @@ class PlantService
             $plant->getPurchaseDate(),
             $plant->getVaccinationDate(),
             $plant->getPlantingDate(),
-            $plant->getManufacturer(),
+            $plant->getSeller(),
+            $plant->getNursery(),
             $plant->getPrice(),
+            $plant->getShippingCost(),
+            $plant->getPackagingCost(),
             $plant->getSoil(),
+            $plant->getComment(),
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );
@@ -119,9 +126,13 @@ class PlantService
             $updatePlantModel->purchaseDate,
             $updatePlantModel->vaccinationDate,
             $updatePlantModel->plantingDate,
-            $updatePlantModel->manufacturer,
+            $updatePlantModel->seller,
+            $updatePlantModel->nursery,
             $updatePlantModel->price,
-            $updatePlantModel->soil
+            $updatePlantModel->shipping_cost,
+            $updatePlantModel->packaging_cost,
+            $updatePlantModel->soil,
+            $updatePlantModel->comment
         );
 
         $this->plantRepository->update();
@@ -136,9 +147,13 @@ class PlantService
             $plant->getPurchaseDate(),
             $plant->getVaccinationDate(),
             $plant->getPlantingDate(),
-            $plant->getManufacturer(),
+            $plant->getSeller(),
+            $plant->getNursery(),
             $plant->getPrice(),
+            $plant->getShippingCost(),
+            $plant->getPackagingCost(),
             $plant->getSoil(),
+            $plant->getComment(),
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );

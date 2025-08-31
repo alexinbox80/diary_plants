@@ -9,20 +9,24 @@ use DateTime;
 class PlantModel
 {
     public function __construct(
-        public readonly int $id,
-        public readonly OId $oid,
-        public readonly string $title,
-        public readonly string $room,
-        public readonly bool $isShown = true,
-        public readonly ?string $description = null,
-        public readonly ?DateTime $purchaseDate = null,
-        public readonly ?DateTime $vaccinationDate = null,
-        public readonly ?DateTime $plantingDate = null,
-        public readonly ?string $manufacturer = null,
-        public readonly ?Price $price = null,
-        public readonly ?string $soil = null,
-        public readonly DateTime $createdAt,
-        public readonly DateTime $updatedAt
+        private readonly int $id,
+        private readonly OId $oid,
+        private readonly string $title,
+        private readonly string $room,
+        private readonly bool $isShown = true,
+        private readonly ?string $description = null,
+        private readonly ?DateTime $purchaseDate = null,
+        private readonly ?DateTime $vaccinationDate = null,
+        private readonly ?DateTime $plantingDate = null,
+        private readonly ?string $seller = null,
+        private readonly ?string $nursery = null,
+        private readonly ?Price $price = null,
+        private readonly ?Price $shipping_cost = null,
+        private readonly ?Price $packaging_cost = null,
+        private readonly ?string $soil = null,
+        private readonly ?string $comment = null,
+        private readonly DateTime $createdAt,
+        private readonly DateTime $updatedAt
     ) {
     }
 
@@ -71,9 +75,14 @@ class PlantModel
         return $this->plantingDate;
     }
 
-    public function getManufacturer(): ?string
+    public function getSeller(): ?string
     {
-        return $this->manufacturer;
+        return $this->seller;
+    }
+
+    public function getNursery(): ?string
+    {
+        return $this->nursery;
     }
 
     public function getPrice(): ?Price
@@ -81,9 +90,24 @@ class PlantModel
         return $this->price;
     }
 
+    public function getShippingCost(): ?Price
+    {
+        return $this->shipping_cost;
+    }
+
+    public function getPackagingCost(): ?Price
+    {
+        return $this->packaging_cost;
+    }
+
     public function getSoil(): ?string
     {
         return $this->soil;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
     }
 
     public function getCreatedAt(): DateTime

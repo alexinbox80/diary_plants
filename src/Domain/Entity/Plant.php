@@ -25,59 +25,93 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    //идентификатор
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //UUIDv4
     #[ORM\Column(type: 'oid', unique: true, nullable: true)]
     private ?OId $oid = null;
 
+    //название растение
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
+    //описание растения
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(name: 'qr_code_base64', type: 'string', length: 64, nullable: true)]
+    //qr код
+    #[ORM\Column(name: 'qr_code_base64', type: 'string', length: 94, nullable: true)]
     private ?string $qrCodeBase64 = null;
 
+    //помещение
     #[ORM\Column(name: 'room', type: 'string', length: 64, nullable: false)]
     private string $room;
 
+    //дата покупки
     #[ORM\Column(name: 'purchase_date', type: 'datetime', nullable: true)]
     private ?DateTime $purchaseDate = null;
 
+    //дата прививки
     #[ORM\Column(name: 'vaccination_date', type: 'datetime', nullable: true)]
     private ?DateTime $vaccinationDate = null;
 
+    //дата посадки
     #[ORM\Column(name: 'planting_date', type: 'datetime', nullable: true)]
     private ?DateTime $plantingDate = null;
 
-    #[ORM\Column(name: 'manufacturer', type: 'string', length: 255, nullable: true)]
-    private ?string $manufacturer = null;
+    //продавец
+    #[ORM\Column(name: 'seller', type: 'string', length: 255, nullable: true)]
+    private ?string $seller = null;
 
+    //питомник
+    #[ORM\Column(name: 'nursery', type: 'string', length: 255, nullable: true)]
+    private ?string $nursery = null;
+
+    //стоимость
     #[ORM\Column(type: 'price', length:10, nullable: true)]
     private ?Price $price = null;
 
+    //стоимость доставки
+    #[ORM\Column(type: 'price', length:10, nullable: true)]
+    private ?Price $shippingCost = null;
+
+    //стоимость упаковки
+    #[ORM\Column(type: 'price', length:10, nullable: true)]
+    private ?Price $packagingCost = null;
+
+    //показывать растение
     #[ORM\Column(name: 'is_shown', type: 'boolean', options: ['default' => true])]
     private bool $isShown = true;
 
+    //описание грунта
     #[ORM\Column(name: 'soil', type: 'string', length: 255, nullable: true)]
     private ?string $soil = null;
 
+    //комментарии к растению
+    #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
+    private ?string $comment = null;
+
+    //связь с задачами
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'plant')]
     private Collection $tasks;
 
+    //связь с плодами
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
+    //связь с удобрениями
     #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'plant')]
     private Collection $fertilizers;
 
+    //связь с вредителями
     #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'plant')]
     private Collection $pests;
 
+    //связь со стимуляторами
     #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'plant')]
     private Collection $stimulants;
 
@@ -96,9 +130,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         ?DateTime $purchaseDate = null,
         ?DateTime $vaccinationDate = null,
         ?DateTime $plantingDate = null,
-        ?string $manufacturer = null,
+        ?string $seller = null,
+        ?string $nursery = null,
         ?Price $price = null,
-        ?string $soil = null
+        ?Price $shippingCost = null,
+        ?Price $packagingCost = null,
+        ?string $soil = null,
+        ?string $comment = null,
     )
     {
         WebmozartAssert::stringNotEmpty($title);
@@ -113,9 +151,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->purchaseDate = $purchaseDate;
         $this->vaccinationDate = $vaccinationDate;
         $this->plantingDate = $plantingDate;
-        $this->manufacturer = $manufacturer;
+        $this->seller = $seller;
+        $this->nursery = $nursery;
         $this->price = $price;
+        $this->shippingCost = $shippingCost;
+        $this->packagingCost = $packagingCost;
         $this->soil = $soil;
+        $this->comment = $comment;
 
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
@@ -136,9 +178,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         ?DateTime $purchaseDate = null,
         ?DateTime $vaccinationDate = null,
         ?DateTime $plantingDate = null,
-        ?string $manufacturer = null,
+        ?string $seller = null,
+        ?string $nursery = null,
         ?Price $price = null,
-        ?string $soil = null
+        ?Price $shippingCost = null,
+        ?Price $packagingCost = null,
+        ?string $soil = null,
+        ?string $comment = null
     ): void
     {
         if ($this->getDeletedAt() !== null) {
@@ -156,9 +202,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->purchaseDate = $purchaseDate;
         $this->vaccinationDate = $vaccinationDate;
         $this->plantingDate = $plantingDate;
-        $this->manufacturer = $manufacturer;
+        $this->seller = $seller;
+        $this->nursery = $nursery;
         $this->price = $price;
+        $this->shippingCost = $shippingCost;
+        $this->packagingCost = $packagingCost;
         $this->soil = $soil;
+        $this->comment = $comment;
 
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
@@ -211,14 +261,29 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->plantingDate;
     }
 
-    public function getManufacturer(): ?string
+    public function getSeller(): ?string
     {
-        return $this->manufacturer;
+        return $this->seller;
+    }
+
+    public function getNursery(): ?string
+    {
+        return $this->nursery;
     }
 
     public function getPrice(): ?Price
     {
         return $this->price;
+    }
+
+    public function getShippingCost(): ?Price
+    {
+        return $this->shippingCost;
+    }
+
+    public function getPackagingCost(): ?Price
+    {
+        return $this->packagingCost;
     }
 
     public function isShown(): bool
@@ -229,6 +294,11 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     public function getSoil(): ?string
     {
         return $this->soil;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
     }
 
     public function addAttachment(Attachment $attachment): self
@@ -281,15 +351,19 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
             'purchase_date' => $this->purchaseDate,
             'vaccination_date' => $this->vaccinationDate,
             'planting_date' => $this->plantingDate,
-            'manufacturer' => $this->manufacturer,
+            'seller' => $this->seller,
+            'nursery' => $this->nursery,
             'price' => $this->price,
+            'shipping_cost' => $this->shippingCost,
+            'packaging_cost' => $this->packagingCost,
             'soil' => $this->soil,
 //            'attachment' => array_map(
 //                static fn (Attachment $attachment) => $attachment->toArray(),
 //                $attachments
 //            ),
+            'comment' => $this->comment,
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
-            ];
+        ];
     }
 }
