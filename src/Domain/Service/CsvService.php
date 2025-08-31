@@ -19,7 +19,7 @@ class CsvService
      * @return \Generator
      * @throws \Exception
      */
-    public function convertCsv(string $filePath): \Generator
+    private function convertCsv(string $filePath): \Generator
     {
         $handle = fopen($filePath, 'rb');
         if (!$handle) {
@@ -38,10 +38,43 @@ class CsvService
         fclose($handle);
     }
 
+    private function createPlantModel(array $plantModel): CreatePlantModel
+    {
+        return new CreatePlantModel(
+            $plantModel['title'],
+            $plantModel['room'],
+            $plantModel['is_shown'],
+            $plantModel['description'],
+            $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['purchase_date']) : null,
+            $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['vaccination_date']) : null,
+            $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['planting_date']) : null,
+            $plantModel['seller'],
+            $plantModel['nursery'],
+            $plantModel['price'] !== '' ? Price::fromString($plantModel['price']) : null,
+            $plantModel['shipping_cost'] !== '' ? Price::fromString($plantModel['shipping_cost']) : null,
+            $plantModel['packaging_cost'] !== '' ? Price::fromString($plantModel['packaging_cost']) : null,
+            $plantModel['soil'],
+            $plantModel['comment']
+        );
+    }
+
+    private function createEntity(array $array, string $fileName): void
+    {
+        switch ($fileName) {
+            case 'plant':
+                $plantModel = $this->createPlantModel($array);
+                $this->plantService->create($plantModel);
+                break;
+            case 'status':
+
+                break;
+        }
+    }
+
     public function process(string $filePath): int
     {
         $arr = explode('/', $filePath);
-        [$filename, $filenameExtension] = explode('.', end($arr));
+        [$fileNumber, $fileName, $fileExtension] = explode('.', end($arr));
 
         $array = [];
         $keys = [];
@@ -60,30 +93,7 @@ class CsvService
                 }
 
                 if (!empty($array)) {
-                    switch ($filename) {
-                        case 'plant':
-                            $plantModel = new CreatePlantModel(
-                                $array['title'],
-                                $array['room'],
-                                $array['is_shown'],
-                                $array['description'],
-                                $array['purchase_date'] !== '' ? new DateTime($array['purchase_date']) : null,
-                                $array['purchase_date'] !== '' ? new DateTime($array['vaccination_date']) : null,
-                                $array['purchase_date'] !== '' ? new DateTime($array['planting_date']) : null,
-                                $array['seller'],
-                                $array['nursery'],
-                                $array['price'] !== '' ? Price::fromString($array['price']) : null,
-                                $array['shipping_cost'] !== '' ? Price::fromString($array['shipping_cost']) : null,
-                                $array['packaging_cost'] !== '' ? Price::fromString($array['packaging_cost']) : null,
-                                $array['soil'],
-                                $array['comment']
-                            );
-                            $this->plantService->create($plantModel);
-                            break;
-                        case 'status':
-
-                            break;
-                    }
+                   $this->createEntity($array, $fileName);
                 }
             }
         }
