@@ -40,10 +40,14 @@ class CsvService
 
     public function process(string $filePath): int
     {
+        $arr = explode('/', $filePath);
+        [$filename, $filenameExtension] = explode('.', end($arr));
+
         $array = [];
         $keys = [];
         $rowNum = 0;
-        foreach ($this->convertCsv($filePath) as $rowNum => $row) {
+        $data = $this->convertCsv($filePath);
+        foreach ($data as $rowNum => $row) {
             if (!empty($row)) {
                 foreach ($row as $key => $item) {
                     if ($rowNum === 0 && $key < count($row) - 1) {
@@ -56,23 +60,30 @@ class CsvService
                 }
 
                 if (!empty($array)) {
-                    $plantModel = new CreatePlantModel(
-                        $array['title'],
-                        $array['room'],
-                        $array['is_shown'],
-                        $array['description'],
-                        $array['purchase_date'] !== '' ? new DateTime($array['purchase_date']) : null,
-                        $array['purchase_date'] !== '' ? new DateTime($array['vaccination_date']) : null,
-                        $array['purchase_date'] !== '' ? new DateTime($array['planting_date']) : null,
-                        $array['seller'],
-                        $array['nursery'],
-                        $array['price'] !== '' ? Price::fromString($array['price']) : null,
-                        $array['shipping_cost'] !== '' ? Price::fromString($array['shipping_cost']) : null,
-                        $array['packaging_cost'] !== '' ? Price::fromString($array['packaging_cost']) : null,
-                        $array['soil'],
-                        $array['comment']
-                    );
-                    $this->plantService->create($plantModel);
+                    switch ($filename) {
+                        case 'plant':
+                            $plantModel = new CreatePlantModel(
+                                $array['title'],
+                                $array['room'],
+                                $array['is_shown'],
+                                $array['description'],
+                                $array['purchase_date'] !== '' ? new DateTime($array['purchase_date']) : null,
+                                $array['purchase_date'] !== '' ? new DateTime($array['vaccination_date']) : null,
+                                $array['purchase_date'] !== '' ? new DateTime($array['planting_date']) : null,
+                                $array['seller'],
+                                $array['nursery'],
+                                $array['price'] !== '' ? Price::fromString($array['price']) : null,
+                                $array['shipping_cost'] !== '' ? Price::fromString($array['shipping_cost']) : null,
+                                $array['packaging_cost'] !== '' ? Price::fromString($array['packaging_cost']) : null,
+                                $array['soil'],
+                                $array['comment']
+                            );
+                            $this->plantService->create($plantModel);
+                            break;
+                        case 'status':
+
+                            break;
+                    }
                 }
             }
         }

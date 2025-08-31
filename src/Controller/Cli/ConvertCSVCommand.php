@@ -33,14 +33,20 @@ final class ConvertCSVCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $count = 0;
+        $output->write(sprintf("<info> Run command %s </info>\n", self::CONVERT_CSV_COMMAND_NAME ));
 
-        $output->write("<info> Run command " . self::CONVERT_CSV_COMMAND_NAME . " </info>\n");
+        // Get all entries (files and directories)
+        $allEntries = scandir($this->csvFilePrefix);
 
-        $localPath =  $this->csvFilePrefix . 'plant.csv';
+        // Filter out '.' (current directory) and '..' (parent directory)
+        $files = array_diff($allEntries, array('.', '..'));
 
-        $count += $this->csvService->process($localPath);
+        // Print the list of files
+        foreach ($files as $file) {
+            $count = $this->csvService->process($this->csvFilePrefix . $file);
 
-        $output->write("<info> " . $count . " records were created</info>\n");
+            $output->write(sprintf("<info> From file %s %d records were created</info>\n", $file, $count));
+        }
 
         return self::SUCCESS;
     }
