@@ -9,7 +9,8 @@ use DateTime;
 class CsvService
 {
     public function __construct(
-        private readonly PlantService $plantService
+        private readonly PlantService $plantService,
+        private readonly ModelFactory $modelFactory,
     )
     {
     }
@@ -40,22 +41,24 @@ class CsvService
 
     private function createPlantModel(array $plantModel): CreatePlantModel
     {
-        return new CreatePlantModel(
-            $plantModel['title'],
-            $plantModel['room'],
-            $plantModel['is_shown'],
-            $plantModel['description'],
-            $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['purchase_date']) : null,
-            $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['vaccination_date']) : null,
-            $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['planting_date']) : null,
-            $plantModel['seller'],
-            $plantModel['nursery'],
-            $plantModel['price'] !== '' ? Price::fromString($plantModel['price']) : null,
-            $plantModel['shipping_cost'] !== '' ? Price::fromString($plantModel['shipping_cost']) : null,
-            $plantModel['packaging_cost'] !== '' ? Price::fromString($plantModel['packaging_cost']) : null,
-            $plantModel['soil'],
-            $plantModel['comment']
-        );
+        return $this->modelFactory
+            ->makeModel(
+                CreatePlantModel::class,
+                $plantModel['title'],
+                $plantModel['room'],
+                $plantModel['is_shown'],
+                $plantModel['description'],
+                $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['purchase_date']) : null,
+                $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['vaccination_date']) : null,
+                $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['planting_date']) : null,
+                $plantModel['seller'],
+                $plantModel['nursery'],
+                $plantModel['price'] !== '' ? Price::fromString($plantModel['price']) : null,
+                $plantModel['shipping_cost'] !== '' ? Price::fromString($plantModel['shipping_cost']) : null,
+                $plantModel['packaging_cost'] !== '' ? Price::fromString($plantModel['packaging_cost']) : null,
+                $plantModel['soil'],
+                $plantModel['comment']
+            );
     }
 
     private function createEntity(array $array, string $fileName): void
@@ -76,28 +79,28 @@ class CsvService
         $arr = explode('/', $filePath);
         [$fileNumber, $fileName, $fileExtension] = explode('.', end($arr));
 
-        $array = [];
         $keys = [];
         $rowNum = 0;
         $data = $this->convertCsv($filePath);
         foreach ($data as $rowNum => $row) {
-            if (!empty($row)) {
-                foreach ($row as $key => $item) {
-                    if ($rowNum === 0 && $key < count($row) - 1) {
-                        $keys[] = $item;
-                    }
+            if (empty($row)) {
+                continue;
+            }
 
-                    if ($rowNum >= 1 && $key < count($row) - 1) {
-                        $array[$keys[$key]] = $item;
-                    }
-                }
+            if ($rowNum === 0) {
+                // первая строка — заголовки
+                $keys = $row;
+            } else {
+                // остальные строки — данные
+                $array = array_combine($keys, $row);
 
+                // пропускаем пустые массивы
                 if (!empty($array)) {
-                   $this->createEntity($array, $fileName);
+                    $this->createEntity($array, $fileName);
                 }
             }
         }
 
-        return $rowNum;
+        return $rowNum - 1;
     }
 }
