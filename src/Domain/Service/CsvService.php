@@ -9,8 +9,9 @@ use DateTime;
 class CsvService
 {
     public function __construct(
-        private readonly PlantService $plantService,
+        private readonly string $csvSeparator,
         private readonly ModelFactory $modelFactory,
+        private readonly PlantService $plantService,
     )
     {
     }
@@ -32,7 +33,7 @@ class CsvService
         while (!feof($handle)) {
             // читаем строку
             // и генерируем значение
-            yield fgetcsv($handle, separator: ';');
+            yield fgetcsv($handle, separator: $this->csvSeparator);
         }
 
         // закрываем
