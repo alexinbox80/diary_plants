@@ -22,6 +22,8 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Controller\Cli\ConvertCSVCommand:
+        class: App\Controller\Cli\ConvertCSVCommand
+        tags: [ 'console.command' ]
         arguments:
             $csvFilePrefix: '%csvFilePrefix%'
 

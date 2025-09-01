@@ -8,12 +8,14 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'status')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: 'letter', message: 'This letter is already in use.')]
 class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -23,7 +25,7 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 1, nullable: false)]
+    #[ORM\Column(type: 'string', length: 1, unique: true, nullable: false)]
     private string $letter;
 
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]

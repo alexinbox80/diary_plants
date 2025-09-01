@@ -4,6 +4,7 @@ namespace App\Domain\Service;
 
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Price;
+use App\Domain\Model\Status\CreateStatusModel;
 use DateTime;
 
 class CsvService
@@ -12,6 +13,7 @@ class CsvService
         private readonly string $csvSeparator,
         private readonly ModelFactory $modelFactory,
         private readonly PlantService $plantService,
+        private readonly StatusService $statusService,
     )
     {
     }
@@ -62,6 +64,18 @@ class CsvService
             );
     }
 
+    private function createStatusModel(array $statusModel): CreateStatusModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateStatusModel::class,
+                $statusModel['letter'],
+                $statusModel['color'],
+                $statusModel['description'],
+                $statusModel['color_description']
+            );
+    }
+
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
@@ -70,7 +84,8 @@ class CsvService
                 $this->plantService->create($plantModel);
                 break;
             case 'status':
-
+                $statusModel = $this->createStatusModel($array);
+                $this->statusService->create($statusModel);
                 break;
         }
     }

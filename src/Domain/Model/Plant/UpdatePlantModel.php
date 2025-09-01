@@ -2,8 +2,6 @@
 
 namespace App\Domain\Model\Plant;
 
-namespace App\Domain\Model\Plant;
-
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Domain\Model\OId;
 use App\Domain\Model\Price;

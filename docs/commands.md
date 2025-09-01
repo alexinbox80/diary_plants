@@ -63,3 +63,6 @@ php bin/console doctrine:migrations:migrate prev
 
 php bin/console doctrine:migrations:execute --up DoctrineMigrations\\Version20250402090731 --no-interaction
 php bin/console doctrine:migrations:execute --down DoctrineMigrations\\Version20250402090731 --no-interaction
+
+#check console command
+php bin/console debug:container --tag=console.command

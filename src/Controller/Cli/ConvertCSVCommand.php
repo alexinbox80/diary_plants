@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: self::CONVERT_CSV_COMMAND_NAME, description: self::CONVERT_CSV_DESCRIPTION, hidden: true)]
+#[AsCommand(name: self::CONVERT_CSV_COMMAND_NAME, hidden: false)]
 final class ConvertCSVCommand extends Command
 {
     public const CONVERT_CSV_COMMAND_NAME = 'database:convert:csv';
@@ -26,7 +26,7 @@ final class ConvertCSVCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName(self::CONVERT_CSV_COMMAND_NAME)
+        $this//->setName(self::CONVERT_CSV_COMMAND_NAME)
             ->setDescription(self::CONVERT_CSV_DESCRIPTION);
     }
 
