@@ -15,10 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'task')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Index(name: 'task__status_id__ind', columns: ['status_id'])]
-#[ORM\UniqueConstraint(name: 'task__status_id__uniq', fields: ['status'], options: ['where' => '(deleted_at IS NULL)'])]
-#[ORM\Index(name: 'task__plant_id__ind', columns: ['plant_id'])]
-#[ORM\UniqueConstraint(name: 'task__plant_id__uniq', fields: ['plant'], options: ['where' => '(deleted_at IS NULL)'])]
 class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -28,37 +24,45 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //статус
     #[ORM\OneToOne(targetEntity: Status::class, inversedBy: 'task', fetch: 'EAGER')]
     private Status $status;
 
+    //дата события
     #[ORM\Column(name: 'date', type: 'datetime', nullable: false)]
     private DateTime $date;
 
+    //описание
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
+    //растение
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
     public function __construct(
         Status $status,
+        Plant $plant,
         DateTime $date,
         ?string $description = null,
     )
     {
         $this->status = $status;
+        $this->plant = $plant;
         $this->date = $date;
         $this->description = $description;
     }
 
     public function changeFields(
         Status $status,
+        Plant $plant,
         DateTime $date,
         ?string $description = null,
     ): void
     {
         $this->status = $status;
+        $this->plant = $plant;
         $this->date = $date;
         $this->description = $description;
     }
@@ -73,6 +77,11 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     public function getStatus(): Status
     {
         return $this->status;
+    }
+
+    public function getPlant(): Plant
+    {
+        return $this->plant;
     }
 
     public function getDate(): DateTime
@@ -90,6 +99,7 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return [
             'id' => $this->getId(),
             'status' => $this->getStatus()->toArray(),
+            'plant' => $this->getPlant()->toArray(),
             'date' => $this->getDate()->format('Y-m-d'),
             'description' => $this->getDescription(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),

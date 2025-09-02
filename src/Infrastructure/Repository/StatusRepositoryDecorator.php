@@ -36,9 +36,18 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
 
     /**
      * @param int $statusId
+     * @return Status|null
+     */
+    public function find(int $statusId): ?Status
+    {
+        return $this->statusRepository->find($statusId);
+    }
+
+    /**
+     * @param int $statusId
      * @return StatusModel|null
      */
-    public function find(int $statusId): ?StatusModel
+    public function findModel(int $statusId): ?StatusModel
     {
         $status = $this->statusRepository->find($statusId);
 

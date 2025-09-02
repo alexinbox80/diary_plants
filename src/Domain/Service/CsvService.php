@@ -6,16 +6,18 @@ use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Price;
 use App\Domain\Model\Status\CreateStatusModel;
+use App\Domain\Model\Task\CreateTaskModel;
 use DateTime;
 
 class CsvService
 {
     public function __construct(
-        private readonly string        $csvSeparator,
-        private readonly ModelFactory  $modelFactory,
-        private readonly PlantService  $plantService,
+        private readonly string $csvSeparator,
+        private readonly ModelFactory $modelFactory,
+        private readonly PlantService $plantService,
         private readonly StatusService $statusService,
-        private readonly OffspringService $offspringService
+        private readonly OffspringService $offspringService,
+        private readonly TaskService $taskService
     ) {
     }
 
@@ -93,6 +95,18 @@ class CsvService
             );
     }
 
+    private function createTaskModel(array $taskModel): CreateTaskModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateTaskModel::class,
+                (int) $taskModel['status_id'],
+                (int) $taskModel['plant_id'],
+                new DateTime($taskModel['date']),
+                $taskModel['description']
+            );
+    }
+
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
@@ -107,6 +121,10 @@ class CsvService
             case 'offspring':
                 $offspringModel = $this->createOffspringModel($array);
                 $this->offspringService->create($offspringModel);
+                break;
+            case 'task':
+                $taskModel = $this->createTaskModel($array);
+                $this->taskService->create($taskModel);
                 break;
         }
     }
