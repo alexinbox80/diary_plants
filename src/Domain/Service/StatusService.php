@@ -13,8 +13,7 @@ class StatusService
 {
     public function __construct(
         private readonly StatusRepositoryInterface $statusRepository
-    )
-    {
+    ) {
     }
 
     /**

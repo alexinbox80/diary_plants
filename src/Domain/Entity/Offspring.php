@@ -27,24 +27,35 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //дата сбора
     #[ORM\Column(name: 'fruiting_date', type: 'datetime', nullable: true)]
     private ?DateTime $fruitingDate = null;
 
+    //дата цветения
     #[ORM\Column(name: 'flowering_date', type: 'datetime', nullable: true)]
     private ?DateTime $floweringDate = null;
 
+    //масса гр
     #[ORM\Column(name: 'mass', type: 'integer', nullable: true)]
     private ?int $mass = null;
 
+    //цвет
     #[ORM\Column(name: 'color', type: 'string', length: 64, nullable: true)]
     private ?string $color = null;
 
+    //вкус
     #[ORM\Column(name: 'flavor', type: 'string', length: 64, nullable: true)]
     private ?string $flavor = null;
 
+    //количество
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: true)]
     private ?int $quantity = null;
 
+    //комментарии к плоду
+    #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
+    private ?string $comment = null;
+
+    //идентификатор растения
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'offsprings')]
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
@@ -57,39 +68,47 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 //    private Collection $attachments;
 
     public function __construct(
+        Plant $plant,
         ?DateTime $fruitingDate = null,
         ?DateTime $floweringDate = null,
         ?int $mass = null,
         ?string $color = null,
         ?string $flavor = null,
-        ?int $quantity = null
+        ?int $quantity = null,
+        ?string $comment = null,
     ) {
 
         //$this->attachments = new ArrayCollection();
 
+        $this->plant = $plant;
         $this->fruitingDate = $fruitingDate;
         $this->floweringDate = $floweringDate;
         $this->mass = $mass;
         $this->color = $color;
         $this->flavor = $flavor;
         $this->quantity = $quantity;
+        $this->comment = $comment;
     }
 
     public function changeFields(
+        Plant $plant,
         ?DateTime $fruitingDate = null,
         ?DateTime $floweringDate = null,
         ?int $mass = null,
         ?string $color = null,
         ?string $flavor = null,
-        ?int $quantity = null
+        ?int $quantity = null,
+        ?string $comment = null,
     ): void
     {
+        $this->plant = $plant;
         $this->fruitingDate = $fruitingDate;
         $this->floweringDate = $floweringDate;
         $this->mass = $mass;
         $this->color = $color;
         $this->flavor = $flavor;
         $this->quantity = $quantity;
+        $this->comment = $comment;
     }
 
     public function getId(): int
@@ -137,6 +156,11 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this->quantity;
     }
 
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
     public function addAttachment(Attachment $attachment): self
     {
         if (!$this->attachments->contains($attachment)) {
@@ -147,6 +171,11 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this;
     }
 
+    public function getPlant(): Plant
+    {
+        return $this->plant;
+    }
+
     public function toArray(): array
     {
         return [
@@ -155,12 +184,14 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 //                static fn (Attachment $attachment) => $attachment->toArray(),
 //                $attachments
 //            ),
+            'plant' => $this->getPlant()->toArray(),
             'fruiting_date' => $this->getFruitingDate(),
             'flowering_date' => $this->getFloweringDate(),
             'mass' => $this->getMass(),
             'color' => $this->getColor(),
             'flavor' => $this->getFlavor(),
             'quantity' => $this->getQuantity(),
+            'comment' => $this->getComment(),
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];

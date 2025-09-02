@@ -48,7 +48,7 @@ class StatusRepository extends AbstractRepository
      */
     public function findStatusesByLetter(string $letter): array
     {
-        return $this->entityManager->getRepository(status::class)->findBy(['letter' => $letter]);
+        return $this->entityManager->getRepository(Status::class)->findBy(['letter' => $letter]);
     }
 
     /**
@@ -57,7 +57,7 @@ class StatusRepository extends AbstractRepository
      */
     public function findStatusesByColor(string $color): array
     {
-        return $this->entityManager->getRepository(status::class)->findBy(['color' => $color]);
+        return $this->entityManager->getRepository(Status::class)->findBy(['color' => $color]);
     }
 
     /**

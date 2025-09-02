@@ -45,6 +45,7 @@ final class Version20250825201143 extends AbstractMigration
                     color VARCHAR(64) DEFAULT NULL,
                     flavor VARCHAR(64) DEFAULT NULL,
                     quantity INT DEFAULT NULL,
+                    comment VARCHAR(1024) DEFAULT NULL,
                     created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                     updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                     deleted_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL,

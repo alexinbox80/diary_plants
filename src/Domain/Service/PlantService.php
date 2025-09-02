@@ -14,8 +14,7 @@ class PlantService
 {
     public function __construct(
         private readonly PlantRepositoryInterface $plantRepository
-    )
-    {
+    ) {
     }
 
     /**

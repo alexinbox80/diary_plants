@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Price;
 use App\Domain\Model\Status\CreateStatusModel;
@@ -10,12 +11,12 @@ use DateTime;
 class CsvService
 {
     public function __construct(
-        private readonly string $csvSeparator,
-        private readonly ModelFactory $modelFactory,
-        private readonly PlantService $plantService,
+        private readonly string        $csvSeparator,
+        private readonly ModelFactory  $modelFactory,
+        private readonly PlantService  $plantService,
         private readonly StatusService $statusService,
-    )
-    {
+        private readonly OffspringService $offspringService
+    ) {
     }
 
     /**
@@ -76,6 +77,22 @@ class CsvService
             );
     }
 
+    private function createOffspringModel(array $offspringModel): CreateOffspringModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateOffspringModel::class,
+                $offspringModel['plant_id'],
+                $offspringModel['fruiting_date'] !== '' ? new DateTime($offspringModel['fruiting_date']) : null,
+                $offspringModel['flowering_date'] !== '' ? new DateTime($offspringModel['flowering_date']) : null,
+                (int) $offspringModel['mass'],
+                $offspringModel['color'],
+                $offspringModel['flavor'],
+                (int) $offspringModel['quantity'],
+                $offspringModel['comment'],
+            );
+    }
+
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
@@ -86,6 +103,10 @@ class CsvService
             case 'status':
                 $statusModel = $this->createStatusModel($array);
                 $this->statusService->create($statusModel);
+                break;
+            case 'offspring':
+                $offspringModel = $this->createOffspringModel($array);
+                $this->offspringService->create($offspringModel);
                 break;
         }
     }

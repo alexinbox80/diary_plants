@@ -48,9 +48,18 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
 
     /**
      * @param int $plantId
+     * @return Plant|null
+     */
+    public function find(int $plantId): ?Plant
+    {
+        return $this->plantRepository->find($plantId);
+    }
+
+    /**
+     * @param int $plantId
      * @return PlantModel|null
      */
-    public function find(int $plantId): ?PlantModel
+    public function findModel(int $plantId): ?PlantModel
     {
         $plant = $this->plantRepository->find($plantId);
 
