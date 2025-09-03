@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'attachment')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'attachment__attachable__ind', columns: ['attachable_type', 'attachable_id'])]
 class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -24,8 +25,11 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'photo_link', type: 'string', length: 255, nullable: false)]
-    private string $photoLink;
+    #[ORM\Column(name: 'filename', type: 'string', length: 255, nullable: false)]
+    private string $filename;
+
+    #[ORM\Column(name: 'path', type: 'string', length: 255, nullable: false)]
+    private string $path;
 
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
@@ -33,8 +37,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(name: 'photo_date', type: 'datetime', nullable: false)]
-    private DateTime $photoDate;
+    #[ORM\Column(name: 'file_date', type: 'datetime', nullable: false)]
+    private DateTime $fileDate;
 
     #[ORM\Column(name: 'attachable_id', type: 'integer', nullable: true)]
     private ?int $attachableId = null;
@@ -43,42 +47,54 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     private ?string $attachableType = null;// Тип сущности (Plant, User и т.п.)
 
     public function __construct(
-        string $photoLink,
+        string $filename,
+        string $path,
         string $title,
-        DateTime $photoDate,
+        DateTime $fileDate,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
     )
     {
-        WebmozartAssert::stringNotEmpty($photoLink);
-        $this->photoLink = $photoLink;
+        $this->setCommonFields($filename, $path, $title, $fileDate, $description, $attachableId, $attachableType);
+    }
+
+    private function setCommonFields(
+        string $filename,
+        string $path,
+        string $title,
+        DateTime $fileDate,
+        ?string $description = null,
+        ?int $attachableId = null,
+        ?string $attachableType = null
+    ): void {
+        WebmozartAssert::stringNotEmpty($filename);
+        $this->filename = $filename;
+
+        WebmozartAssert::stringNotEmpty($path);
+        $this->path = $path;
 
         WebmozartAssert::stringNotEmpty($title);
         $this->title = $title;
 
         $this->description = $description;
-        $this->photoDate = $photoDate;
+        $this->fileDate = $fileDate;
 
         $this->attachableId = $attachableId;
         $this->attachableType = $attachableType;
     }
 
     public function changeFields(
-        string $photoLink,
+        string $filename,
+        string $path,
         string $title,
-        ?string $description,
-        DateTime $photoDate,
-        int $attachableId,
-        string $attachableType
+        DateTime $fileDate,
+        ?string $description = null,
+        ?int $attachableId = null,
+        ?string $attachableType = null
     ): void
     {
-        $this->photoLink = $photoLink;
-        $this->title = $title;
-        $this->description = $description;
-        $this->photoDate = $photoDate;
-        $this->attachableId = $attachableId;
-        $this->attachableType = $attachableType;
+        $this->setCommonFields($filename, $path, $title, $fileDate, $description, $attachableId, $attachableType);
     }
 
     public function getId(): int
@@ -88,9 +104,14 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->id;
     }
 
-    public function getPhotoLink(): string
+    public function getFilename(): string
     {
-        return $this->photoLink;
+        return $this->filename;
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
     }
 
     public function getTitle(): string
@@ -103,9 +124,9 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->description;
     }
 
-    public function getPhotoDate(): DateTime
+    public function getfileDate(): DateTime
     {
-        return $this->photoDate;
+        return $this->fileDate;
     }
 
     public function getAttachableId(): ?int
@@ -132,10 +153,11 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     {
         return [
             'id' => $this->getId(),
-            'photo_link' => $this->getPhotoLink(),
+            'filename' => $this->getFilename(),
+            'path' => $this->getPath(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
-            'photo_date' => $this->getPhotoDate()->format('Y-m-d'),
+            'file_date' => $this->getFileDate()->format('Y-m-d'),
             'attachable_id' => $this->getAttachableId(),
             'attachable_type' => $this->getAttachableType(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),

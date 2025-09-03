@@ -115,12 +115,12 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'plant')]
     private Collection $stimulants;
 
-//    /**
-//     * @var Collection<int, Attachment>
-//     */
-//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
-//    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
-//    private Collection $attachments;
+    /**
+     * @var Collection<int, Attachment>
+     */
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
+    private Collection $attachments;
 
     public function __construct(
         string $title,
@@ -162,7 +162,7 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
 
-//        $this->attachments = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         //$this->offersprings = new ArrayCollection();
         $this->fertilizers = new ArrayCollection();
@@ -301,6 +301,11 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->comment;
     }
 
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
+    }
+
     public function addAttachment(Attachment $attachment): self
     {
         if (!$this->attachments->contains($attachment)) {
@@ -308,6 +313,12 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
             $attachment->setAttachableType(self::class); // Set the type
             $attachment->setAttachableId($this->getId()); // Set the ID
         }
+        return $this;
+    }
+
+    public function removeAttachment(Attachment $attachment): self
+    {
+        $this->attachments->removeElement($attachment);
         return $this;
     }
 
@@ -357,10 +368,10 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
             'shipping_cost' => $this->shippingCost,
             'packaging_cost' => $this->packagingCost,
             'soil' => $this->soil,
-//            'attachment' => array_map(
-//                static fn (Attachment $attachment) => $attachment->toArray(),
-//                $attachments
-//            ),
+            'attachment' => array_map(
+                static fn (Attachment $attachment) => $attachment->toArray(),
+                $this->getAttachments()->toArray()
+            ),
             'comment' => $this->comment,
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),

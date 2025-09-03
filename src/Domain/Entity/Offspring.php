@@ -60,12 +60,12 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
-//    /**
-//     * @var Collection<int, Attachment>
-//     */
-//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
-//    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
-//    private Collection $attachments;
+    /**
+     * @var Collection<int, Attachment>
+     */
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
+    private Collection $attachments;
 
     public function __construct(
         Plant $plant,
@@ -78,7 +78,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         ?string $comment = null,
     ) {
 
-        //$this->attachments = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
 
         $this->plant = $plant;
         $this->fruitingDate = $fruitingDate;
@@ -171,6 +171,12 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this;
     }
 
+    public function removeAttachment(Attachment $attachment): self
+    {
+        $this->attachments->removeElement($attachment);
+        return $this;
+    }
+
     public function getPlant(): Plant
     {
         return $this->plant;
@@ -180,10 +186,10 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     {
         return [
             'id' => $this->getId(),
-//            'attachment' => array_map(
-//                static fn (Attachment $attachment) => $attachment->toArray(),
-//                $attachments
-//            ),
+            'attachment' => array_map(
+                static fn (Attachment $attachment) => $attachment->toArray(),
+                $this->getAttachments()->toArray()
+            ),
             'plant' => $this->getPlant()->toArray(),
             'fruiting_date' => $this->getFruitingDate(),
             'flowering_date' => $this->getFloweringDate(),
