@@ -30,14 +30,18 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     private Plant $plant;
 
     public function __construct(
-        string $title,
-        string $manufacturer,
-        int $quantity,
+        Plant    $plant,
+        string   $title,
+        string   $manufacturer,
+        int      $quantity,
         DateTime $useDate,
-        ?string $description = null,
+        ?string  $description = null,
+        ?string  $comment = null
     )
     {
-        parent::__construct($title, $manufacturer, $quantity, $useDate, $description);
+        parent::__construct($title, $manufacturer, $quantity, $useDate, $description, $comment);
+
+        $this->plant = $plant;
     }
 
     public function getId(): int
@@ -47,16 +51,35 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
         return $this->id;
     }
 
+    public function getPlant(): Plant
+    {
+        return $this->plant;
+    }
+
+    public function changeFieldsWithPlant(
+        string   $title,
+        string   $manufacturer,
+        int      $quantity,
+        DateTime $useDate,
+        Plant    $plant,
+        ?string  $description = null,
+        ?string  $comment = null,
+    ): void
+    {
+        parent::changeFields($title, $manufacturer, $quantity, $useDate, $description, $comment);
+        $this->plant = $plant;
+    }
+
     public function toArray(): array
     {
-        return
-            array_merge(
-                parent::toArray(),
-                [
-                    'id' => $this->id,
-                    'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-                    'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
-                ]
-            );
+        return array_merge(
+            parent::toArray(),
+            [
+                'id' => $this->id,
+                'plant' => $this->getPlant()->toArray(),
+                'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
+                'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
+            ]
+        );
     }
 }

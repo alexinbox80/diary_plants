@@ -30,6 +30,7 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
     private Plant $plant;
 
     public function __construct(
+        Plant $plant,
         string $title,
         string $manufacturer,
         int $quantity,
@@ -38,6 +39,8 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
     )
     {
         parent::__construct($title, $manufacturer, $quantity, $useDate, $description);
+
+        $this->plant = $plant;
     }
 
     public function getId(): int
@@ -47,6 +50,25 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
         return $this->id;
     }
 
+    public function getPlant(): Plant
+    {
+        return $this->plant;
+    }
+
+    public function changeFieldsWithPlant(
+        string   $title,
+        string   $manufacturer,
+        int      $quantity,
+        DateTime $useDate,
+        Plant    $plant,
+        ?string  $description = null,
+        ?string  $comment = null,
+    ): void
+    {
+        parent::changeFields($title, $manufacturer, $quantity, $useDate, $description, $comment);
+        $this->plant = $plant;
+    }
+
     public function toArray(): array
     {
         return
@@ -54,6 +76,7 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
                 parent::toArray(),
                 [
                     'id' => $this->id,
+                    'plant' => $this->getPlant()->toArray(),
                     'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
                     'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
                 ]

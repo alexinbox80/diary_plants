@@ -30,6 +30,7 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
     private Plant $plant;
 
     public function __construct(
+        Plant $plant,
         string $title,
         string $manufacturer,
         int $quantity,
@@ -38,6 +39,8 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
     )
     {
         parent::__construct($title, $manufacturer, $quantity, $useDate, $description);
+
+        $this->plant = $plant;
     }
 
     public function getId(): int
@@ -52,10 +55,18 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
         return $this->plant;
     }
 
-    public function setPlant(?Plant $plant): self
+    public function changeFieldsWithPlant(
+        string   $title,
+        string   $manufacturer,
+        int      $quantity,
+        DateTime $useDate,
+        Plant    $plant,
+        ?string  $description = null,
+        ?string  $comment = null,
+    ): void
     {
+        parent::changeFields($title, $manufacturer, $quantity, $useDate, $description, $comment);
         $this->plant = $plant;
-        return $this;
     }
 
     public function toArray(): array
@@ -65,6 +76,7 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
                 parent::toArray(),
                 [
                     'id' => $this->id,
+                    'plant' => $this->getPlant()->toArray(),
                     'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
                     'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
                 ]
