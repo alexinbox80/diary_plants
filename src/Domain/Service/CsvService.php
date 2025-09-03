@@ -2,10 +2,13 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
+use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Price;
 use App\Domain\Model\Status\CreateStatusModel;
+use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Task\CreateTaskModel;
 use DateTime;
 
@@ -17,7 +20,10 @@ class CsvService
         private readonly PlantService $plantService,
         private readonly StatusService $statusService,
         private readonly OffspringService $offspringService,
-        private readonly TaskService $taskService
+        private readonly TaskService $taskService,
+        private readonly PestService $pestService,
+        private readonly FertilizerService $fertilizerService,
+        private readonly StimulantService $stimulantService
     ) {
     }
 
@@ -107,6 +113,51 @@ class CsvService
             );
     }
 
+    private function createPestModel(array $pestModel): CreatePestModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreatePestModel::class,
+                (int) $pestModel['plant_id'],
+                $pestModel['title'],
+                $pestModel['manufacturer'],
+                (int) $pestModel['quantity'],
+                new DateTime($pestModel['use_date']),
+                $pestModel['description'] === '' ?? null,
+                $pestModel['comment'] === '' ?? null
+            );
+    }
+
+    private function createFertilizerModel(array $fertilizerModel): CreateFertilizerModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateFertilizerModel::class,
+                (int) $fertilizerModel['plant_id'],
+                $fertilizerModel['title'],
+                $fertilizerModel['manufacturer'],
+                (int) $fertilizerModel['quantity'],
+                new DateTime($fertilizerModel['use_date']),
+                $fertilizerModel['description'] === '' ?? null,
+                $fertilizerModel['comment'] === '' ?? null
+            );
+    }
+
+    private function createStimulantModel(array $stimulantModel): CreateStimulantModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateStimulantModel::class,
+                (int) $stimulantModel['plant_id'],
+                $stimulantModel['title'],
+                $stimulantModel['manufacturer'],
+                (int) $stimulantModel['quantity'],
+                new DateTime($stimulantModel['use_date']),
+                $stimulantModel['description'] === '' ?? null,
+                $stimulantModel['comment'] === '' ?? null
+            );
+    }
+
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
@@ -125,6 +176,18 @@ class CsvService
             case 'task':
                 $taskModel = $this->createTaskModel($array);
                 $this->taskService->create($taskModel);
+                break;
+            case 'pest':
+                $pestModel = $this->createPestModel($array);
+                $this->pestService->create($pestModel);
+                break;
+            case 'fertilizer':
+                $fertilizerModel = $this->createFertilizerModel($array);
+                $this->fertilizerService->create($fertilizerModel);
+                break;
+            case 'stimulant':
+                $stimulantModel = $this->createStimulantModel($array);
+                $this->stimulantService->create($stimulantModel);
                 break;
         }
     }

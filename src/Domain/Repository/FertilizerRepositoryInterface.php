@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Domain\Repository;
+
+use App\Domain\Entity\Fertilizer;
+use App\Domain\Model\Fertilizer\FertilizerModel;
+use DateTime;
+
+interface FertilizerRepositoryInterface
+{
+    public function getFertilizersPaginated(int $page, int $perPage): array;
+    public function find(int $fertilizerId): ?Fertilizer;
+    public function findModel(int $fertilizerId): ?FertilizerModel;
+    public function findAll(): array;
+    public function findFertilizersByTitle(string $title): array;
+    public function findFertilizersByManufacturer(string $manufacturer): array;
+    public function findFertilizersByUseDate(DateTime $date): array;
+    public function create(Fertilizer $fertilizer): int;
+    public function update(): void;
+    public function remove(Fertilizer $fertilizer): void;
+}

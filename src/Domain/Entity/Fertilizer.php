@@ -36,9 +36,10 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
         int $quantity,
         DateTime $useDate,
         ?string $description = null,
+        ?string $comment = null
     )
     {
-        parent::__construct($title, $manufacturer, $quantity, $useDate, $description);
+        parent::__construct($title, $manufacturer, $quantity, $useDate, $description, $comment);
 
         $this->plant = $plant;
     }

@@ -36,9 +36,10 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
         int $quantity,
         DateTime $useDate,
         ?string $description = null,
+        ?string $comment = null
     )
     {
-        parent::__construct($title, $manufacturer, $quantity, $useDate, $description);
+        parent::__construct($title, $manufacturer, $quantity, $useDate, $description, $comment);
 
         $this->plant = $plant;
     }

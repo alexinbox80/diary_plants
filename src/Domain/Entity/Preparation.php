@@ -55,7 +55,7 @@ abstract class Preparation
         $this->setCommonFields($title, $manufacturer, $quantity, $useDate, $description, $comment);
     }
 
-    public function changeFields(
+    protected function changeFields(
         string $title,
         string $manufacturer,
         int $quantity,
