@@ -37,7 +37,7 @@ final class Version20250825201143 extends AbstractMigration
         $this->addSql('CREATE TABLE fertilizer (
                     title VARCHAR(255) NOT NULL,
                     description VARCHAR(1024) DEFAULT NULL,
-                    manufacturer VARCHAR(255) NOT NULL,
+                    manufacturer VARCHAR(255) DEFAULT NULL,
                     quantity INT NOT NULL,
                     use_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                     comment VARCHAR(1024) DEFAULT NULL,
@@ -67,7 +67,7 @@ final class Version20250825201143 extends AbstractMigration
         $this->addSql('CREATE TABLE pest (
                     title VARCHAR(255) NOT NULL,
                     description VARCHAR(1024) DEFAULT NULL,
-                    manufacturer VARCHAR(255) NOT NULL,
+                    manufacturer VARCHAR(255) DEFAULT NULL,
                     quantity INT NOT NULL,
                     use_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                     comment VARCHAR(1024) DEFAULT NULL,
@@ -110,7 +110,7 @@ final class Version20250825201143 extends AbstractMigration
         $this->addSql('CREATE TABLE stimulant (
                     title VARCHAR(255) NOT NULL,
                     description VARCHAR(1024) DEFAULT NULL,
-                    manufacturer VARCHAR(255) NOT NULL,
+                    manufacturer VARCHAR(255) DEFAULT NULL,
                     quantity INT NOT NULL,
                     use_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                     comment VARCHAR(1024) DEFAULT NULL,

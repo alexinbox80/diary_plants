@@ -83,9 +83,9 @@ class PestService
         $pest = new Pest(
             $plant,
             $createPestModel->title,
-            $createPestModel->manufacturer,
             $createPestModel->quantity,
             $createPestModel->useDate,
+            $createPestModel->manufacturer,
             $createPestModel->description,
             $createPestModel->comment
         );
@@ -96,9 +96,9 @@ class PestService
             $pest->getId(),
             $pest->getPlant()->getId(),
             $pest->getTitle(),
-            $pest->getManufacturer(),
             $pest->getQuantity(),
             $pest->getUseDate(),
+            $pest->getManufacturer(),
             $pest->getDescription(),
             $pest->getComment(),
             $pest->getCreatedAt(),
@@ -118,10 +118,10 @@ class PestService
 
         $pest->changeFieldsWithPlant(
             $updatePestModel->title,
-            $updatePestModel->manufacturer,
             $updatePestModel->quantity,
             $updatePestModel->useDate,
             $plant,
+            $updatePestModel->manufacturer,
             $updatePestModel->description,
             $updatePestModel->comment
         );
@@ -132,9 +132,9 @@ class PestService
             $pest->getId(),
             $pest->getPlant()->getId(),
             $pest->getTitle(),
-            $pest->getManufacturer(),
             $pest->getQuantity(),
             $pest->getUseDate(),
+            $pest->getManufacturer(),
             $pest->getDescription(),
             $pest->getComment(),
             $pest->getCreatedAt(),

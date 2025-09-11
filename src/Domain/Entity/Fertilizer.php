@@ -32,14 +32,14 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
     public function __construct(
         Plant $plant,
         string $title,
-        string $manufacturer,
         int $quantity,
         DateTime $useDate,
+        string $manufacturer,
         ?string $description = null,
         ?string $comment = null
     )
     {
-        parent::__construct($title, $manufacturer, $quantity, $useDate, $description, $comment);
+        parent::__construct($title, $quantity, $useDate, $manufacturer, $description, $comment);
 
         $this->plant = $plant;
     }
@@ -58,15 +58,15 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
 
     public function changeFieldsWithPlant(
         string   $title,
-        string   $manufacturer,
         int      $quantity,
         DateTime $useDate,
+        string   $manufacturer,
         Plant    $plant,
         ?string  $description = null,
         ?string  $comment = null,
     ): void
     {
-        parent::changeFields($title, $manufacturer, $quantity, $useDate, $description, $comment);
+        parent::changeFields($title, $quantity, $useDate, $manufacturer, $description, $comment);
         $this->plant = $plant;
     }
 

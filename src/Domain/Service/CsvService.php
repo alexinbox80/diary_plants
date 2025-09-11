@@ -120,11 +120,11 @@ class CsvService
                 CreatePestModel::class,
                 (int) $pestModel['plant_id'],
                 $pestModel['title'],
-                $pestModel['manufacturer'],
                 (int) $pestModel['quantity'],
                 new DateTime($pestModel['use_date']),
-                $pestModel['description'] === '' ?? null,
-                $pestModel['comment'] === '' ?? null
+                $pestModel['manufacturer'] !== '' ? $pestModel['manufacturer'] : null,
+                $pestModel['description'] !== '' ? $pestModel['description'] : null,
+                $pestModel['comment'] !== '' ? $pestModel['comment'] : null
             );
     }
 
@@ -135,11 +135,11 @@ class CsvService
                 CreateFertilizerModel::class,
                 (int) $fertilizerModel['plant_id'],
                 $fertilizerModel['title'],
-                $fertilizerModel['manufacturer'],
                 (int) $fertilizerModel['quantity'],
                 new DateTime($fertilizerModel['use_date']),
-                $fertilizerModel['description'] === '' ?? null,
-                $fertilizerModel['comment'] === '' ?? null
+                $fertilizerModel['manufacturer'] !== '' ? $fertilizerModel['manufacturer'] : null,
+                $fertilizerModel['description'] !== '' ? $fertilizerModel['description'] : null,
+                $fertilizerModel['comment'] !== '' ? $fertilizerModel['comment'] : null
             );
     }
 

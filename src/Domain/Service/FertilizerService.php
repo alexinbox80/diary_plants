@@ -83,9 +83,9 @@ class FertilizerService
         $fertilizer= new Fertilizer(
             $plant,
             $createFertilizerModel->title,
-            $createFertilizerModel->manufacturer,
             $createFertilizerModel->quantity,
             $createFertilizerModel->useDate,
+            $createFertilizerModel->manufacturer,
             $createFertilizerModel->description,
             $createFertilizerModel->comment
         );
@@ -96,9 +96,9 @@ class FertilizerService
             $fertilizer->getId(),
             $fertilizer->getPlant()->getId(),
             $fertilizer->getTitle(),
-            $fertilizer->getManufacturer(),
             $fertilizer->getQuantity(),
             $fertilizer->getUseDate(),
+            $fertilizer->getManufacturer(),
             $fertilizer->getDescription(),
             $fertilizer->getComment(),
             $fertilizer->getCreatedAt(),
@@ -118,9 +118,9 @@ class FertilizerService
 
         $fertilizer->changeFieldsWithPlant(
             $updateFertilizerModel->title,
-            $updateFertilizerModel->manufacturer,
             $updateFertilizerModel->quantity,
             $updateFertilizerModel->useDate,
+            $updateFertilizerModel->manufacturer,
             $plant,
             $updateFertilizerModel->description,
             $updateFertilizerModel->comment
@@ -132,9 +132,9 @@ class FertilizerService
             $fertilizer->getId(),
             $fertilizer->getPlant()->getId(),
             $fertilizer->getTitle(),
-            $fertilizer->getManufacturer(),
             $fertilizer->getQuantity(),
             $fertilizer->getUseDate(),
+            $fertilizer->getManufacturer(),
             $fertilizer->getDescription(),
             $fertilizer->getComment(),
             $fertilizer->getCreatedAt(),
