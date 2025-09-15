@@ -122,6 +122,114 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
     private Collection $attachments;
 
+    private function setCommonFields(
+        string $title,
+        string $room,
+        bool $isShown = true,
+        ?string $description = null,
+        ?DateTime $purchaseDate = null,
+        ?DateTime $vaccinationDate = null,
+        ?DateTime $plantingDate = null,
+        ?string $seller = null,
+        ?string $nursery = null,
+        ?Price $price = null,
+        ?Price $shippingCost = null,
+        ?Price $packagingCost = null,
+        ?string $soil = null,
+        ?string $comment = null,
+    ): void {
+        $this->setTitleValidate($title);
+        $this->setRoomValidate($room);
+        $this->setIsShownValidate($isShown);
+        $this->setDesscriptionValidate($description);
+        $this->setPurchaseDateValidate($purchaseDate);
+        $this->setVaccinationDateValidate($vaccinationDate);
+        $this->setPlantingDateValidate($plantingDate);
+        $this->setSellerValidate($seller);
+        $this->setNurseryValidate($nursery);
+        $this->setPriceValidate($price);
+        $this->setShippingCostValidate($shippingCost);
+        $this->setPackagingCostValidate($packagingCost);
+        $this->setSoilValidate($soil);
+        $this->setCommentValidate($comment);
+    }
+
+    private function setTitleValidate(string $title): void
+    {
+        WebmozartAssert::stringNotEmpty($title, 'Title should not be empty. Got: %s');
+        WebmozartAssert::lengthBetween($title, 2, 255, 'Title must be a string valid length of 2-255 letters. Got: %s');
+
+        $this->title = $title;
+    }
+
+    private function setRoomValidate(string $room): void
+    {
+        WebmozartAssert::stringNotEmpty($room, 'Room should not be empty. Got: %s');
+        WebmozartAssert::lengthBetween($room, 2, 64, 'Room must be a string valid length of 2-255 letters. Got: %s');
+
+        $this->room = $room;
+    }
+
+    private function setIsShownValidate(bool $isShown): void
+    {
+        $this->isShown = $isShown;
+    }
+
+    private function setDesscriptionValidate(?string $description = null): void
+    {
+        $this->description = $description;
+    }
+
+    private function setPurchaseDateValidate(?DateTime $purchaseDate = null): void
+    {
+        $this->purchaseDate = $purchaseDate;
+    }
+
+    private function setVaccinationDateValidate(?DAteTime $vaccinationDate = null): void
+    {
+        $this->vaccinationDate = $vaccinationDate;
+    }
+
+    private function setPlantingDateValidate(?DateTime $plantingDate = null): void
+    {
+        $this->plantingDate = $plantingDate;
+    }
+
+    private function setSellerValidate(?string $seller = null): void
+    {
+        $this->seller = $seller;
+    }
+
+    private function setNurseryValidate(?string $nursery = null): void
+    {
+        $this->nursery = $nursery;
+    }
+
+    private function setPriceValidate(?Price $price = null): void
+    {
+        $this->price = $price;
+    }
+
+    private function setShippingCostValidate(?Price $shippingCost = null): void
+    {
+        $this->shippingCost = $shippingCost;
+    }
+
+    private function setPackagingCostValidate(?Price $packagingCost = null): void
+    {
+        $this->packagingCost = $packagingCost;
+    }
+
+    private function setSoilValidate(?string $soil = null): void
+    {
+        $this->soil = $soil;
+    }
+
+    private function setCommentValidate(?string $comment = null): void
+    {
+        $this->comment = $comment;
+    }
+
     public function __construct(
         string $title,
         string $room,
@@ -139,25 +247,22 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         ?string $comment = null,
     )
     {
-        WebmozartAssert::stringNotEmpty($title);
-        $this->title = $title;
-        WebmozartAssert::stringNotEmpty($room);
-        $this->room = $room;
-
-        $this->isShown = $isShown;
-
-        $this->description = $description;
-
-        $this->purchaseDate = $purchaseDate;
-        $this->vaccinationDate = $vaccinationDate;
-        $this->plantingDate = $plantingDate;
-        $this->seller = $seller;
-        $this->nursery = $nursery;
-        $this->price = $price;
-        $this->shippingCost = $shippingCost;
-        $this->packagingCost = $packagingCost;
-        $this->soil = $soil;
-        $this->comment = $comment;
+        $this->setCommonFields(
+            $title,
+            $room,
+            $isShown,
+            $description,
+            $purchaseDate,
+            $vaccinationDate,
+            $plantingDate,
+            $seller,
+            $nursery,
+            $price,
+            $shippingCost,
+            $packagingCost,
+            $soil,
+            $comment,
+        );
 
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
@@ -191,24 +296,22 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
             throw new \LogicException('Cannot modify a deleted plant.');
         }
 
-        WebmozartAssert::stringNotEmpty($title);
-        $this->title = $title;
-        WebmozartAssert::stringNotEmpty($room);
-        $this->room = $room;
-
-        $this->isShown = $isShown;
-        $this->description = $description;
-
-        $this->purchaseDate = $purchaseDate;
-        $this->vaccinationDate = $vaccinationDate;
-        $this->plantingDate = $plantingDate;
-        $this->seller = $seller;
-        $this->nursery = $nursery;
-        $this->price = $price;
-        $this->shippingCost = $shippingCost;
-        $this->packagingCost = $packagingCost;
-        $this->soil = $soil;
-        $this->comment = $comment;
+        $this->setCommonFields(
+            $title,
+            $room,
+            $isShown,
+            $description,
+            $purchaseDate,
+            $vaccinationDate,
+            $plantingDate,
+            $seller,
+            $nursery,
+            $price,
+            $shippingCost,
+            $packagingCost,
+            $soil,
+            $comment,
+        );
 
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);

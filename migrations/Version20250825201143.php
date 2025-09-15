@@ -33,7 +33,6 @@ final class Version20250825201143 extends AbstractMigration
                     deleted_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL,
                     PRIMARY KEY (id))');
 
-
         $this->addSql('CREATE TABLE fertilizer (
                     title VARCHAR(255) NOT NULL,
                     description VARCHAR(1024) DEFAULT NULL,

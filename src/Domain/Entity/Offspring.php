@@ -67,6 +67,72 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
     private Collection $attachments;
 
+    private function setCommonFields(
+        Plant $plant,
+        ?DateTime $fruitingDate = null,
+        ?DateTime $floweringDate = null,
+        ?int $mass = null,
+        ?string $color = null,
+        ?string $flavor = null,
+        ?int $quantity = null,
+        ?string $comment = null,
+    ): void {
+        $this->setPlantValidate($plant);
+        $this->setFruitingDateValidate($fruitingDate);
+        $this->setFloweringDateValidate($floweringDate);
+        $this->setMassValidate($mass);
+        $this->setColorValidate($color);
+        $this->setFlavorValidate($flavor);
+        $this->setQuantityValidate($quantity);
+        $this->setCommentValidate($comment);
+    }
+
+    private function setPlantValidate(Plant $plant): void
+    {
+        $this->plant = $plant;
+    }
+
+    private function setFruitingDateValidate(?DateTime $fruitingDate = null): void
+    {
+        if ($fruitingDate !== null) {
+            WebmozartAssert::isInstanceOf($fruitingDate, DateTime::class, 'Use date must be a DateTime instance');
+            $this->fruitingDate = $fruitingDate;
+        }
+    }
+
+    private function setFloweringDateValidate(?DateTime $floweringDate = null): void
+    {
+        if ($floweringDate !== null) {
+            WebmozartAssert::isInstanceOf($floweringDate, DateTime::class, 'Use date must be a DateTime instance');
+            $this->floweringDate = $floweringDate;
+        }
+    }
+
+    private function setMassValidate(?int $mass = null): void
+    {
+        $this->mass = $mass;
+    }
+
+    private function setColorValidate(?string $color = null): void
+    {
+        $this->color = $color;
+    }
+
+    private function setFlavorValidate(?string $flavor = null): void
+    {
+        $this->flavor = $flavor;
+    }
+
+    private function setQuantityValidate(?int $quantity = null): void
+    {
+        $this->quantity = $quantity;
+    }
+
+    private function setCommentValidate(?string $comment = null): void
+    {
+        $this->comment = $comment;
+    }
+
     public function __construct(
         Plant $plant,
         ?DateTime $fruitingDate = null,
@@ -80,14 +146,16 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
         $this->attachments = new ArrayCollection();
 
-        $this->plant = $plant;
-        $this->fruitingDate = $fruitingDate;
-        $this->floweringDate = $floweringDate;
-        $this->mass = $mass;
-        $this->color = $color;
-        $this->flavor = $flavor;
-        $this->quantity = $quantity;
-        $this->comment = $comment;
+        $this->setCommonFields(
+            $plant,
+            $fruitingDate,
+            $floweringDate,
+            $mass,
+            $color,
+            $flavor,
+            $quantity,
+            $comment
+        );
     }
 
     public function changeFields(
@@ -101,14 +169,16 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         ?string $comment = null,
     ): void
     {
-        $this->plant = $plant;
-        $this->fruitingDate = $fruitingDate;
-        $this->floweringDate = $floweringDate;
-        $this->mass = $mass;
-        $this->color = $color;
-        $this->flavor = $flavor;
-        $this->quantity = $quantity;
-        $this->comment = $comment;
+        $this->setCommonFields(
+            $plant,
+            $fruitingDate,
+            $floweringDate,
+            $mass,
+            $color,
+            $flavor,
+            $quantity,
+            $comment
+        );
     }
 
     public function getId(): int

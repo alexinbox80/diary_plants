@@ -41,6 +41,39 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
+    private function setCommonFields(
+        Status $status,
+        Plant $plant,
+        DateTime $date,
+        ?string $description = null,
+    ): void {
+        $this->setStatusValidate($status);
+        $this->setPlantValidate($plant);
+        $this->setDateValidate($date);
+        $this->setDescriptionValidate($description);
+    }
+
+    private function setStatusValidate(Status $status): void
+    {
+        $this->status = $status;
+    }
+
+    private function setPlantValidate(Plant $plant): void
+    {
+        $this->plant = $plant;
+    }
+
+    private function setDateValidate(DateTime $date): void
+    {
+        WebmozartAssert::isInstanceOf($date, DateTime::class, 'Use date must be a DateTime instance');
+        $this->date = $date;
+    }
+
+    private function setDescriptionValidate(?string $description = null): void
+    {
+        $this->description = $description;
+    }
+
     public function __construct(
         Status $status,
         Plant $plant,
@@ -48,10 +81,7 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         ?string $description = null,
     )
     {
-        $this->status = $status;
-        $this->plant = $plant;
-        $this->date = $date;
-        $this->description = $description;
+        $this->setCommonFields($status, $plant, $date, $description);
     }
 
     public function changeFields(
@@ -61,10 +91,7 @@ class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         ?string $description = null,
     ): void
     {
-        $this->status = $status;
-        $this->plant = $plant;
-        $this->date = $date;
-        $this->description = $description;
+        $this->setCommonFields($status, $plant, $date, $description);
     }
 
     public function getId(): int

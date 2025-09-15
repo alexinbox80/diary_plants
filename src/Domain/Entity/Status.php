@@ -40,6 +40,54 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     #[ORM\OneToOne(targetEntity: Task::class, mappedBy: 'status')]
     private Task $task;
 
+    private function setCommonFields(
+        string $letter,
+        string $color,
+        ?string $description = null,
+        ?string $colorDescription = null
+    ): void {
+        $this->setLetterValidate($letter);
+        $this->setColorValidate($color);
+        $this->setDescriptionValidate($description);
+        $this->setColorDescriptionValidate($colorDescription);
+    }
+
+    private function setLetterValidate(string $letter): void
+    {
+        WebmozartAssert::stringNotEmpty($letter, 'Letter should not be empty. Got: %s');
+        WebmozartAssert::lengthBetween($letter, 1, 2, 'Title must be a string valid length of 1-2 letters. Got: %s');
+
+        $this->letter = $letter;
+    }
+
+    private function setColorValidate(string $color): void
+    {
+        WebmozartAssert::stringNotEmpty($color, 'Color should not be empty. Got: %s');
+        WebmozartAssert::lengthBetween($color, 7, 7, 'Color must be a string valid length of 7 letters. Got: %s');
+
+        WebmozartAssert::regex(
+            $color,
+            '/^#([A-Fa-f0-9]{6})$/',
+            'Invalid color format. Expected #RRGGBB. Got: %s'
+        );
+
+        $this->color = $color;
+    }
+
+    private function setDescriptionValidate(?string $description = null): void
+    {
+        WebmozartAssert::lengthBetween($description, 3, 1024, 'Description must be a string valid length of of 3-1024 letters. Got: %s');
+
+        $this->description = $description;
+    }
+
+    private function setColorDescriptionValidate(?string $colorDescription = null): void
+    {
+        WebmozartAssert::lengthBetween($colorDescription, 3, 1024, 'Description must be a string valid length of of 3-1024 letters. Got: %s');
+
+        $this->colorDescription = $colorDescription;
+    }
+
     public function __construct(
         string $letter,
         string $color,
@@ -47,14 +95,7 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         ?string $colorDescription = null
     )
     {
-        WebmozartAssert::stringNotEmpty($letter);
-        $this->letter = $letter;
-
-        WebmozartAssert::stringNotEmpty($color);
-        $this->color = $color;
-
-        $this->description = $description;
-        $this->colorDescription = $colorDescription;
+        $this->setCommonFields($letter, $color, $description, $colorDescription);
     }
 
     public function changeFields(
@@ -64,10 +105,7 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         ?string $colorDescription = null
     ): void
     {
-        $this->letter = $letter;
-        $this->color = $color;
-        $this->description = $description;
-        $this->colorDescription = $colorDescription;
+        $this->setCommonFields($letter, $color, $description, $colorDescription);
     }
 
     public function getId(): int
