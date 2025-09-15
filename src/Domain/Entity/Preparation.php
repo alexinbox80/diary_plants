@@ -90,7 +90,7 @@ abstract class Preparation
         if ($manufacturer !== null) {
             WebmozartAssert::regex(
                 $manufacturer,
-                '/^[\p{Cyrillic}0-9\s\-_]+$/u',
+                '/^[\p{Cyrillic}0-9\s\-_()]+$/u',
                 'Manufacturer must contain only Cyrillic letters, digits, spaces, hyphens, or underscores. Got: %s'
             );
             WebmozartAssert::lengthBetween($manufacturer, 2, 255, 'Manufacturer must be a string valid length of 2-255 letters. Got: %s');

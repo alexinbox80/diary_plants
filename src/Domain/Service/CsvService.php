@@ -150,11 +150,11 @@ class CsvService
                 CreateStimulantModel::class,
                 (int) $stimulantModel['plant_id'],
                 $stimulantModel['title'],
-                $stimulantModel['manufacturer'],
                 (int) $stimulantModel['quantity'],
                 new DateTime($stimulantModel['use_date']),
-                $stimulantModel['description'] === '' ?? null,
-                $stimulantModel['comment'] === '' ?? null
+                $stimulantModel['manufacturer'] !== '' ? $stimulantModel['manufacturer'] : null,
+                $stimulantModel['description'] !== '' ? $stimulantModel['description'] : null,
+                $stimulantModel['comment'] !== '' ? $stimulantModel['comment'] : null
             );
     }
 

@@ -83,9 +83,9 @@ class StimulantService
         $stimulant = new Stimulant(
             $plant,
             $createStimulantModel->title,
-            $createStimulantModel->manufacturer,
             $createStimulantModel->quantity,
             $createStimulantModel->useDate,
+            $createStimulantModel->manufacturer,
             $createStimulantModel->description,
             $createStimulantModel->comment
         );
@@ -96,9 +96,9 @@ class StimulantService
             $stimulant->getId(),
             $stimulant->getPlant()->getId(),
             $stimulant->getTitle(),
-            $stimulant->getManufacturer(),
             $stimulant->getQuantity(),
             $stimulant->getUseDate(),
+            $stimulant->getManufacturer(),
             $stimulant->getDescription(),
             $stimulant->getComment(),
             $stimulant->getCreatedAt(),
@@ -118,10 +118,10 @@ class StimulantService
 
         $stimulant->changeFieldsWithPlant(
             $updateStimulantModel->title,
-            $updateStimulantModel->manufacturer,
             $updateStimulantModel->quantity,
             $updateStimulantModel->useDate,
             $plant,
+            $updateStimulantModel->manufacturer,
             $updateStimulantModel->description,
             $updateStimulantModel->comment
         );
@@ -132,9 +132,9 @@ class StimulantService
             $stimulant->getId(),
             $stimulant->getPlant()->getId(),
             $stimulant->getTitle(),
-            $stimulant->getManufacturer(),
             $stimulant->getQuantity(),
             $stimulant->getUseDate(),
+            $stimulant->getManufacturer(),
             $stimulant->getDescription(),
             $stimulant->getComment(),
             $stimulant->getCreatedAt(),

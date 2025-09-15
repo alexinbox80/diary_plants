@@ -32,14 +32,14 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
     public function __construct(
         Plant $plant,
         string $title,
-        string $manufacturer,
         int $quantity,
         DateTime $useDate,
+        ?string $manufacturer = null,
         ?string $description = null,
         ?string $comment = null
     )
     {
-        parent::__construct($title, $manufacturer, $quantity, $useDate, $description, $comment);
+        parent::__construct($title, $quantity, $useDate, $manufacturer, $description, $comment);
 
         $this->plant = $plant;
     }
@@ -58,15 +58,15 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
 
     public function changeFieldsWithPlant(
         string   $title,
-        string   $manufacturer,
         int      $quantity,
         DateTime $useDate,
         Plant    $plant,
+        ?string   $manufacturer = null,
         ?string  $description = null,
         ?string  $comment = null,
     ): void
     {
-        parent::changeFields($title, $manufacturer, $quantity, $useDate, $description, $comment);
+        parent::changeFields($title, $quantity, $useDate, $manufacturer, $description, $comment);
         $this->plant = $plant;
     }
 
