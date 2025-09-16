@@ -3,11 +3,10 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Attachment;
+use DateTime;
 
 /**
- * @method Attachment|null find($id, $lockMode = null, $lockVersion = null)
  * @method Attachment|null findOneBy(array $criteria, array $orderBy = null)
- * @method Attachment[]    findAll()
  * @method Attachment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AttachmentRepository extends AbstractRepository
@@ -75,5 +74,104 @@ class AttachmentRepository extends AbstractRepository
             ->setParameter('attachmentId', $attachmentId)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @return Attachment[]
+     */
+    public function getAttachmentsPaginated(int $page, int $perPage): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->select('s')
+            ->from(Attachment::class, 'a')
+            ->orderBy('a.id', 'DESC')
+            ->setFirstResult($perPage * $page)
+            ->setMaxResults($perPage);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param int $attachmentId
+     * @return Attachment|null
+     */
+    public function find(int $attachmentId): ?Attachment
+    {
+        $repository = $this->entityManager->getRepository(Attachment::class);
+        /** @var Attachment|null $attachment */
+        $attachment = $repository->find($attachmentId);
+
+        return $attachment;
+    }
+
+    /**
+     * @return Attachment[]
+     */
+    public function findAll(): array
+    {
+        return $this->entityManager->getRepository(Attachment::class)->findAll();
+    }
+
+    /**
+     * @param string $title
+     * @return Attachment[]
+     */
+    public function findAttachmentsByTitle(string $title): array
+    {
+        return $this->entityManager->getRepository(Attachment::class)->findBy(['title' => $title]);
+    }
+
+    /**
+     * @param string $filename
+     * @return Attachment[]
+     */
+    public function findAttachmentsByFilename(string $filename): array
+    {
+        return $this->entityManager->getRepository(Attachment::class)->findBy(['filename' => $filename]);
+    }
+
+    /**
+     * @param DateTime $fileDate
+     * @return Attachment[]
+     */
+    public function findAttachmentsByFileDate(DateTime $fileDate): array
+    {
+        return $this->entityManager->getRepository(Attachment::class)->findBy(['file_date' => $fileDate]);
+    }
+
+    /**
+     * @param string $path
+     * @return Attachment[]
+     */
+    public function findAttachmentsByPath(string $path): array
+    {
+        return $this->entityManager->getRepository(Attachment::class)->findBy(['path' => $path]);
+    }
+
+    /**
+     * @param Attachment $attachment
+     * @return int
+     */
+    public function create(Attachment $attachment): int
+    {
+        return $this->store($attachment);
+    }
+
+    /**
+     * @return void
+     */
+    public function update(): void
+    {
+        $this->flush();
+    }
+
+    /**
+     * @param Attachment $attachment
+     * @return void
+     */
+    public function remove(Attachment $attachment): void
+    {
+        $attachment->setDeletedAt();
+        $this->flush();
     }
 }

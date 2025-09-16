@@ -124,7 +124,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->description;
     }
 
-    public function getfileDate(): DateTime
+    public function getFileDate(): DateTime
     {
         return $this->fileDate;
     }
@@ -139,12 +139,12 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->attachableType;
     }
 
-    public function setAttachableType(?string $attachableType): void
+    public function setAttachableType(?string $attachableType = null): void
     {
         $this->attachableType = $attachableType;
     }
 
-    public function setAttachableId(?int $attachableId): void
+    public function setAttachableId(?int $attachableId = null): void
     {
         $this->attachableId = $attachableId;
     }
