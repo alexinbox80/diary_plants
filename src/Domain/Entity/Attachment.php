@@ -34,7 +34,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(name: 'file_date', type: 'datetime', nullable: false)]

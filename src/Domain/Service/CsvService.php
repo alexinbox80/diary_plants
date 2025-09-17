@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Pest\CreatePestModel;
@@ -23,7 +24,8 @@ class CsvService
         private readonly TaskService $taskService,
         private readonly PestService $pestService,
         private readonly FertilizerService $fertilizerService,
-        private readonly StimulantService $stimulantService
+        private readonly StimulantService $stimulantService,
+        private readonly AttachmentService $attachmentService
     ) {
     }
 
@@ -158,6 +160,21 @@ class CsvService
             );
     }
 
+    private function createAttachmentModel(array $attachmentModel): CreateAttachmentModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateAttachmentModel::class,
+                $attachmentModel['filename'],
+                $attachmentModel['path'],
+                $attachmentModel['title'],
+                new DateTime($attachmentModel['file_date']),
+                $attachmentModel['attachable_id'],
+                $attachmentModel['attachable_type'],
+                $attachmentModel['description'] !== '' ? $attachmentModel['description'] : null,
+            );
+    }
+
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
@@ -188,6 +205,10 @@ class CsvService
             case 'stimulant':
                 $stimulantModel = $this->createStimulantModel($array);
                 $this->stimulantService->create($stimulantModel);
+                break;
+            case 'attachment':
+                $attachmentModel = $this->createAttachmentModel($array);
+                $this->attachmentService->create($attachmentModel);
                 break;
         }
     }
