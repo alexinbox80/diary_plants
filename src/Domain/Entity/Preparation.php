@@ -2,7 +2,6 @@
 
 namespace App\Domain\Entity;
 
-use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +11,9 @@ abstract class Preparation
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
+    #[ORM\Column(name: 'letter', type: 'string', length: 2, nullable: false)]
+    private string $letter;
+
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
@@ -20,9 +22,6 @@ abstract class Preparation
 
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
-
-    #[ORM\Column(name: 'use_date', type: 'datetime', nullable: false)]
-    private DateTime $useDate;
 
     #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
     private ?string $comment = null;
@@ -145,12 +144,12 @@ abstract class Preparation
     public function toArray(): array
     {
         return [
-            'title' => $this->title,
-            'description' => $this->description,
-            'manufacturer' => $this->manufacturer,
-            'quantity' => $this->quantity,
-            'use_date' => $this->useDate,
-            'comment' => $this->comment,
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'manufacturer' => $this->getManufacturer(),
+            'quantity' => $this->getQuantity(),
+            'letter' => $this->getLetter(),
+            'comment' => $this->getComment(),
         ];
     }
 }

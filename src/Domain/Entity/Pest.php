@@ -9,6 +9,7 @@ use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +29,14 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'pests')]
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
+
+    /**
+     * @var Collection<int, Usage>
+     */
+    #[ORM\OneToMany(targetEntity: Usage::class, mappedBy: 'usage', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'usable_id', nullable: true)]
+    private Collection $usages;
+
 
     public function __construct(
         Plant    $plant,
@@ -70,15 +79,36 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
         $this->plant = $plant;
     }
 
+    public function getUsages(): Collection
+    {
+        return $this->usages;
+    }
+
+    public function addUsage(Usage $usage): self
+    {
+        if (!$this->usages->contains($usage)) {
+            $this->usages[] = $usage;
+            $usage->setUsableType(self::class); // Set the type
+            $usage->setUsableId($this->getId()); // Set the ID
+        }
+        return $this;
+    }
+
+    public function removeUsage(Usage $usage): self
+    {
+        $this->usages->removeElement($usage);
+        return $this;
+    }
+
     public function toArray(): array
     {
         return array_merge(
             parent::toArray(),
             [
-                'id' => $this->id,
+                'id' => $this->getId(),
                 'plant' => $this->getPlant()->toArray(),
-                'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-                'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
+                'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+                'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
             ]
         );
     }

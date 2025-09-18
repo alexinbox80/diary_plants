@@ -99,21 +99,13 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'plant')]
     private Collection $tasks;
 
+    //связь с использованием удобрений, стимуляторов и обнаруженными вредителями
+    #[ORM\OneToMany(targetEntity: Usage::class, mappedBy: 'plant')]
+    private Collection $usages;
+
     //связь с плодами
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
-
-    //связь с удобрениями
-    #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'plant')]
-    private Collection $fertilizers;
-
-    //связь с вредителями
-    #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'plant')]
-    private Collection $pests;
-
-    //связь со стимуляторами
-    #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'plant')]
-    private Collection $stimulants;
 
     /**
      * @var Collection<int, Attachment>
@@ -269,10 +261,8 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
         $this->attachments = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        //$this->offersprings = new ArrayCollection();
-        $this->fertilizers = new ArrayCollection();
-        $this->pests = new ArrayCollection();
-        $this->stimulants = new ArrayCollection();
+        $this->offsprings = new ArrayCollection();
+        $this->usages = new ArrayCollection();
     }
 
     public function changeFields(
@@ -425,59 +415,32 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this;
     }
 
-    public function getFertilizers(): Collection
-    {
-        return $this->fertilizers;
-    }
-
-    public function addFertilizer(Fertilizer $fertilizer): self
-    {
-        if (!$this->fertilizers->contains($fertilizer)) {
-            $this->fertilizers[] = $fertilizer;
-            $fertilizer->setPlant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFertilizer(Fertilizer $fertilizer): self
-    {
-        if ($this->fertilizers->removeElement($fertilizer)) {
-            // set the owning side to null (unless already changed)
-            if ($fertilizer->getPlant() === $this) {
-                $fertilizer->setPlant(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'oid' => $this->oid,
-            'title' => $this->title,
-            'is_shown' => $this->isShown,
-            'description' => $this->description,
-            'qr_code_base64' => $this->qrCodeBase64,
-            'room' => $this->room,
-            'purchase_date' => $this->purchaseDate,
-            'vaccination_date' => $this->vaccinationDate,
-            'planting_date' => $this->plantingDate,
-            'seller' => $this->seller,
-            'nursery' => $this->nursery,
-            'price' => $this->price,
-            'shipping_cost' => $this->shippingCost,
-            'packaging_cost' => $this->packagingCost,
-            'soil' => $this->soil,
+            'id' => $this->getId(),
+            'oid' => $this->getOid(),
+            'title' => $this->getTitle(),
+            'is_shown' => $this->isShown(),
+            'description' => $this->getDescription(),
+            'qr_code_base64' => $this->getQrCodeBase64(),
+            'room' => $this->getRoom(),
+            'purchase_date' => $this->getPurchaseDate(),
+            'vaccination_date' => $this->getVaccinationDate(),
+            'planting_date' => $this->getPlantingDate(),
+            'seller' => $this->getSeller(),
+            'nursery' => $this->getNursery(),
+            'price' => $this->getPrice(),
+            'shipping_cost' => $this->getShippingCost(),
+            'packaging_cost' => $this->getPackagingCost(),
+            'soil' => $this->getSoil(),
             'attachment' => array_map(
                 static fn (Attachment $attachment) => $attachment->toArray(),
                 $this->getAttachments()->toArray()
             ),
-            'comment' => $this->comment,
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'comment' => $this->getComment(),
+            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
         ];
     }
 }
