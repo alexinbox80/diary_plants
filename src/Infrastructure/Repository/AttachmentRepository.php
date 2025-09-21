@@ -7,7 +7,7 @@ use DateTime;
 
 /**
  * @method Attachment|null findOneBy(array $criteria, array $orderBy = null)
- * @method Attachment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Attachment[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AttachmentRepository extends AbstractRepository
 {

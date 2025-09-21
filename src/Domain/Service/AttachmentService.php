@@ -35,6 +35,7 @@ class AttachmentService
 
         return null;
     }
+
     /**
      * @param int $attachmentId
      * @return ?Attachment
