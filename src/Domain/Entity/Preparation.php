@@ -29,7 +29,7 @@ abstract class Preparation
     private function setCommonFields(
         string $title,
         int $quantity,
-        DateTime $useDate,
+        string $letter,
         ?string $manufacturer = null,
         ?string $description = null,
         ?string $comment = null
@@ -37,7 +37,7 @@ abstract class Preparation
         $this->setTitleValidate($title);
         $this->setManufacturerValidate($manufacturer);
         $this->setQuantityValidate($quantity);
-        $this->setUseDateValidate($useDate);
+        $this->setLetterValidate($letter);
 
         $this->description = $description;
         $this->comment = $comment;
@@ -46,24 +46,24 @@ abstract class Preparation
     public function __construct(
         string $title,
         int $quantity,
-        DateTime $useDate,
+        string $letter,
         ?string $manufacturer = null,
         ?string $description = null,
         ?string $comment = null
     ) {
-        $this->setCommonFields($title, $quantity, $useDate, $manufacturer, $description, $comment);
+        $this->setCommonFields($title, $quantity, $letter, $manufacturer, $description, $comment);
     }
 
     protected function changeFields(
         string $title,
         int $quantity,
-        DateTime $useDate,
+        string $letter,
         ?string $manufacturer = null,
         ?string $description = null,
         ?string $comment = null
     ): void
     {
-        $this->setCommonFields($title, $quantity, $useDate, $manufacturer, $description, $comment);
+        $this->setCommonFields($title, $quantity, $letter, $manufacturer, $description, $comment);
     }
 
     private function setTitleValidate(string $title): void
@@ -105,10 +105,12 @@ abstract class Preparation
         $this->quantity = $quantity;
     }
 
-    private function setUseDateValidate(DateTime $useDate): void
+    private function setLetterValidate(string $letter): void
     {
-        WebmozartAssert::isInstanceOf($useDate, DateTime::class, 'Use date must be a DateTime instance');
-        $this->useDate = $useDate;
+        WebmozartAssert::stringNotEmpty($letter, 'Room should not be empty. Got: %s');
+        WebmozartAssert::lengthBetween($letter, 2, 2, 'Room must be a string valid length of 2 letters. Got: %s');
+
+        $this->letter = $letter;
     }
 
     public function getTitle(): string
@@ -131,9 +133,9 @@ abstract class Preparation
         return $this->quantity;
     }
 
-    public function getUseDate(): DateTime
+    public function getLetter(): string
     {
-        return $this->useDate;
+        return $this->letter;
     }
 
     public function getComment(): ?string

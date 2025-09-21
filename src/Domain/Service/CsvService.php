@@ -123,7 +123,7 @@ class CsvService
                 (int) $pestModel['plant_id'],
                 $pestModel['title'],
                 (int) $pestModel['quantity'],
-                new DateTime($pestModel['use_date']),
+                $pestModel['letter'],
                 $pestModel['manufacturer'] !== '' ? $pestModel['manufacturer'] : null,
                 $pestModel['description'] !== '' ? $pestModel['description'] : null,
                 $pestModel['comment'] !== '' ? $pestModel['comment'] : null
@@ -138,7 +138,7 @@ class CsvService
                 (int) $fertilizerModel['plant_id'],
                 $fertilizerModel['title'],
                 (int) $fertilizerModel['quantity'],
-                new DateTime($fertilizerModel['use_date']),
+                $fertilizerModel['letter'],
                 $fertilizerModel['manufacturer'] !== '' ? $fertilizerModel['manufacturer'] : null,
                 $fertilizerModel['description'] !== '' ? $fertilizerModel['description'] : null,
                 $fertilizerModel['comment'] !== '' ? $fertilizerModel['comment'] : null
@@ -153,7 +153,7 @@ class CsvService
                 (int) $stimulantModel['plant_id'],
                 $stimulantModel['title'],
                 (int) $stimulantModel['quantity'],
-                new DateTime($stimulantModel['use_date']),
+                $stimulantModel['letter'],
                 $stimulantModel['manufacturer'] !== '' ? $stimulantModel['manufacturer'] : null,
                 $stimulantModel['description'] !== '' ? $stimulantModel['description'] : null,
                 $stimulantModel['comment'] !== '' ? $stimulantModel['comment'] : null

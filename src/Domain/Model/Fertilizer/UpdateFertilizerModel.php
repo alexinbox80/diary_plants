@@ -3,7 +3,6 @@
 namespace App\Domain\Model\Fertilizer;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use DateTime;
 
 class UpdateFertilizerModel
 {
@@ -18,7 +17,8 @@ class UpdateFertilizerModel
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public readonly int $quantity,
         #[Assert\NotBlank]
-        public readonly DateTime $useDate,
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        public readonly string $letter,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $manufacturer,

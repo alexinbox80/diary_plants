@@ -8,7 +8,6 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -33,13 +32,13 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
         Plant $plant,
         string $title,
         int $quantity,
-        DateTime $useDate,
+        string $letter,
         string $manufacturer,
         ?string $description = null,
         ?string $comment = null
     )
     {
-        parent::__construct($title, $quantity, $useDate, $manufacturer, $description, $comment);
+        parent::__construct($title, $quantity, $letter, $manufacturer, $description, $comment);
 
         $this->plant = $plant;
     }
@@ -59,14 +58,14 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
     public function changeFieldsWithPlant(
         string   $title,
         int      $quantity,
-        DateTime $useDate,
+        string   $letter,
         string   $manufacturer,
         Plant    $plant,
         ?string  $description = null,
         ?string  $comment = null,
     ): void
     {
-        parent::changeFields($title, $quantity, $useDate, $manufacturer, $description, $comment);
+        parent::changeFields($title, $quantity, $letter, $manufacturer, $description, $comment);
         $this->plant = $plant;
     }
 

@@ -100,7 +100,7 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
     private function setUseDateValidate(DateTime $useDate): void
     {
-        WebmozartAssert::stringNotEmpty($useDate, 'Use date should not be empty. Got: %s');
+        WebmozartAssert::notNull($useDate, 'Use date must not be null.');
         WebmozartAssert::isInstanceOf($useDate, DateTime::class, 'Use date must be a DateTime instance');
         $this->useDate = $useDate;
     }

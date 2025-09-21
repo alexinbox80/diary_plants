@@ -11,7 +11,7 @@ class PestModel
         private readonly int $plantId,
         private readonly string $title,
         private readonly int $quantity,
-        private readonly DateTime $useDate,
+        private readonly string $letter,
         private readonly ?string $manufacturer = null,
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
@@ -45,9 +45,9 @@ class PestModel
         return $this->quantity;
     }
 
-    public function getUseDate(): DateTime
+    public function getLetter(): string
     {
-        return $this->useDate;
+        return $this->letter;
     }
 
     public function getDescription(): ?string

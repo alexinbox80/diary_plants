@@ -42,13 +42,13 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
         Plant    $plant,
         string   $title,
         int      $quantity,
-        DateTime $useDate,
+        string   $letter,
         ?string  $manufacturer = null,
         ?string  $description = null,
         ?string  $comment = null
     )
     {
-        parent::__construct($title, $quantity, $useDate, $manufacturer, $description, $comment);
+        parent::__construct($title, $quantity, $letter, $manufacturer, $description, $comment);
 
         $this->plant = $plant;
     }
@@ -68,14 +68,14 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     public function changeFieldsWithPlant(
         string   $title,
         int      $quantity,
-        DateTime $useDate,
+        string   $letter,
         Plant    $plant,
         ?string  $manufacturer = null,
         ?string  $description = null,
         ?string  $comment = null,
     ): void
     {
-        parent::changeFields($title, $quantity, $useDate, $manufacturer, $description, $comment);
+        parent::changeFields($title, $quantity, $letter, $manufacturer, $description, $comment);
         $this->plant = $plant;
     }
 
