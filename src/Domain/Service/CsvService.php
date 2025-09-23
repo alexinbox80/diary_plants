@@ -11,6 +11,7 @@ use App\Domain\Model\Price;
 use App\Domain\Model\Status\CreateStatusModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Task\CreateTaskModel;
+use App\Domain\Model\Usage\CreateUsageModel;
 use DateTime;
 
 class CsvService
@@ -25,7 +26,8 @@ class CsvService
         private readonly PestService $pestService,
         private readonly FertilizerService $fertilizerService,
         private readonly StimulantService $stimulantService,
-        private readonly AttachmentService $attachmentService
+        private readonly AttachmentService $attachmentService,
+        private readonly UsageService $usageService
     ) {
     }
 
@@ -175,6 +177,19 @@ class CsvService
             );
     }
 
+    private function createUsageModel(array $usageModel): CreateUsageModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateUsageModel::class,
+                new DateTime($usageModel['use_date']),
+                $usageModel['plant_id'],
+                $usageModel['comment'] !== '' ? $usageModel['comment'] : null,
+                $usageModel['usable_id'] ,
+                $usageModel['usable_type'] ,
+            );
+    }
+
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
@@ -209,6 +224,10 @@ class CsvService
             case 'attachment':
                 $attachmentModel = $this->createAttachmentModel($array);
                 $this->attachmentService->create($attachmentModel);
+                break;
+            case 'usage':
+                $usageModel = $this->createUsageModel($array);
+                $this->usageService->create($usageModel);
                 break;
         }
     }
