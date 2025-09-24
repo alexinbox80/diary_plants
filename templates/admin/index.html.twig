@@ -20,9 +20,10 @@
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
-    <link rel="stylesheet" href="assets/css/vertical-light-layout/style.css">
+{#    <link rel="stylesheet" href="assets/css/vertical-light-layout/style.css">#}
+    <link rel="stylesheet" href="{{ asset('assets/css/vertical-light-layout/style.css') }}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="assets/images/favicon.png" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
 </head>
 <body>
 <div class="container-scroller">
@@ -48,10 +49,12 @@
     <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
             <a class="navbar-brand brand-logo" href="index.html">
-                <img src="assets/images/logo.svg" alt="logo" class="logo-dark" />
-                <img src="assets/images/logo-light.svg" alt="logo-light" class="logo-light">
+                <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" class="logo-dark" />
+                <img src="{{ asset('assets/images/logo-light.svg') }}" alt="logo-light" class="logo-light">
             </a>
-            <a class="navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+            <a class="navbar-brand brand-logo-mini" href="index.html">
+                <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
+            </a>
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                 <span class="icon-menu"></span>
             </button>
@@ -78,7 +81,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item preview-item">
                             <div class="preview-thumbnail">
-                                <img src="assets/images/faces/face10.jpg" alt="image" class="img-sm profile-pic">
+                                <img src="{{ asset('assets/images/faces/face10.jpg') }}" alt="image" class="img-sm profile-pic">
                             </div>
                             <div class="preview-item-content flex-grow py-2">
                                 <p class="preview-subject ellipsis font-weight-medium text-dark">Marian Garner </p>
@@ -87,7 +90,7 @@
                         </a>
                         <a class="dropdown-item preview-item">
                             <div class="preview-thumbnail">
-                                <img src="assets/images/faces/face12.jpg" alt="image" class="img-sm profile-pic">
+                                <img src="{{ asset('assets/images/faces/face12.jpg') }}" alt="image" class="img-sm profile-pic">
                             </div>
                             <div class="preview-item-content flex-grow py-2">
                                 <p class="preview-subject ellipsis font-weight-medium text-dark">David Grey </p>
@@ -96,7 +99,7 @@
                         </a>
                         <a class="dropdown-item preview-item">
                             <div class="preview-thumbnail">
-                                <img src="assets/images/faces/face1.jpg" alt="image" class="img-sm profile-pic">
+                                <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="image" class="img-sm profile-pic">
                             </div>
                             <div class="preview-item-content flex-grow py-2">
                                 <p class="preview-subject ellipsis font-weight-medium text-dark">Travis Jenkins </p>
@@ -125,10 +128,10 @@
                 </li>
                 <li class="nav-item dropdown d-none d-xl-inline-flex user-dropdown">
                     <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img class="img-xs rounded-circle ms-2" src="assets/images/faces/face8.jpg" alt="Profile image"> <span class="font-weight-normal"> Henry Klein </span></a>
+                        <img class="img-xs rounded-circle ms-2" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="Profile image"> <span class="font-weight-normal"> Henry Klein </span></a>
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                         <div class="dropdown-header text-center">
-                            <img class="img-md rounded-circle" src="assets/images/faces/face8.jpg" alt="Profile image">
+                            <img class="img-md rounded-circle" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="Profile image">
                             <p class="mb-1 mt-3">Henry Klein</p>
                             <p class="font-weight-light text-muted mb-0">kleinhenry@gmail.com</p>
                         </div>
@@ -151,12 +154,14 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item navbar-brand-mini-wrapper">
-                    <a class="nav-link navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+                    <a class="nav-link navbar-brand brand-logo-mini" href="index.html">
+                        <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
+                    </a>
                 </li>
                 <li class="nav-item nav-profile">
                     <a href="#" class="nav-link">
                         <div class="profile-image">
-                            <img class="img-xs rounded-circle" src="assets/images/faces/face8.jpg" alt="profile image">
+                            <img class="img-xs rounded-circle" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="profile image">
                             <div class="dot-indicator bg-success"></div>
                         </div>
                         <div class="text-wrapper">
@@ -186,9 +191,9 @@
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Dropdowns</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/ui-features/buttons.html') }}">Buttons</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/ui-features/dropdowns.html') }}">Dropdowns</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/ui-features/typography.html') }}">Typography</a></li>
                         </ul>
                     </div>
                 </li>
@@ -199,7 +204,7 @@
                     </a>
                     <div class="collapse" id="icons">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/icons/font-awesome.html">Font Awesome</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/icons/font-awesome.html') }}">Font Awesome</a></li>
                         </ul>
                     </div>
                 </li>
@@ -210,7 +215,7 @@
                     </a>
                     <div class="collapse" id="forms">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/forms/basic_elements.html">Form Elements</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/forms/basic_elements.html') }}">Form Elements</a></li>
                         </ul>
                     </div>
                 </li>
@@ -221,7 +226,7 @@
                     </a>
                     <div class="collapse" id="charts">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/charts/chartjs.html') }}">ChartJs</a></li>
                         </ul>
                     </div>
                 </li>
@@ -232,7 +237,7 @@
                     </a>
                     <div class="collapse" id="tables">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic Table</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/tables/basic-table.html') }}">Basic Table</a></li>
                         </ul>
                     </div>
                 </li>
@@ -244,17 +249,17 @@
                     </a>
                     <div class="collapse" id="auth">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                            <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/samples/blank-page.html') }}"> Blank Page </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/samples/login.html') }}"> Login </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/samples/register.html') }}"> Register </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/samples/error-404.html') }}"> 404 </a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('pages/samples/error-500.html') }}"> 500 </a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="nav-item nav-category"><span class="nav-link">Help</span></li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../../docs/documentation.html" target="_blank">
+                    <a class="nav-link" href="{{ asset('docs/documentation.html') }}" target="_blank">
                         <span class="menu-title">Documentation</span>
                         <i class="icon-folder-alt menu-icon"></i>
                     </a>
@@ -420,10 +425,11 @@
                                     <h4 class="card-title mb-sm-0">Products Inventory</h4>
                                     <a href="#" class="text-dark ms-auto mb-3 mb-sm-0"> View all Products</a>
                                 </div>
-                                <div class="table-responsive border rounded p-1">
-                                    <table class="table">
+                                <div class="table-responsive border rounded pt-1">
+                                    <table class="table table-striped">
                                         <thead>
                                         <tr>
+                                            <th class="font-weight-bold">#</th>
                                             <th class="font-weight-bold">Store ID</th>
                                             <th class="font-weight-bold">Amount</th>
                                             <th class="font-weight-bold">Gateway</th>
@@ -434,11 +440,12 @@
                                         </thead>
                                         <tbody>
                                         <tr>
+                                            <td>1</td>
                                             <td>
-                                                <img class="img-sm rounded-circle" src="assets/images/faces/face1.jpg" alt="profile image"> Katie Holmes
+                                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile image"> Katie Holmes
                                             </td>
                                             <td>$3621</td>
-                                            <td><img src="assets/images/dashboard/alipay.png" alt="alipay" class="gateway-icon me-2"> alipay</td>
+                                            <td><img src="{{ asset('assets/images/dashboard/alipay.png') }}" alt="alipay" class="gateway-icon me-2"> alipay</td>
                                             <td>04 Jun 2019</td>
                                             <td>18 Jul 2019</td>
                                             <td>
@@ -446,11 +453,12 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>2</td>
                                             <td>
-                                                <img class="img-sm rounded-circle" src="assets/images/faces/face2.jpg" alt="profile image"> Minnie Copeland
+                                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face2.jpg') }}" alt="profile image"> Minnie Copeland
                                             </td>
                                             <td>$6245</td>
-                                            <td><img src="assets/images/dashboard/paypal.png" alt="alipay" class="gateway-icon me-2"> Paypal</td>
+                                            <td><img src="{{ asset('assets/images/dashboard/paypal.png') }}" alt="alipay" class="gateway-icon me-2"> Paypal</td>
                                             <td>25 Sep 2019</td>
                                             <td>07 Oct 2019</td>
                                             <td>
@@ -458,11 +466,12 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>3</td>
                                             <td>
-                                                <img class="img-sm rounded-circle" src="assets/images/faces/face3.jpg" alt="profile image"> Rodney Sims
+                                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face3.jpg') }}" alt="profile image"> Rodney Sims
                                             </td>
                                             <td>$9265</td>
-                                            <td><img src="assets/images/dashboard/alipay.png" alt="alipay" class="gateway-icon me-2"> alipay</td>
+                                            <td><img src="{{ asset('assets/images/dashboard/alipay.png') }}" alt="alipay" class="gateway-icon me-2"> alipay</td>
                                             <td>12 dec 2019</td>
                                             <td>26 Aug 2019</td>
                                             <td>
@@ -470,11 +479,12 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>4</td>
                                             <td>
-                                                <img class="img-sm rounded-circle" src="assets/images/faces/face4.jpg" alt="profile image"> Carolyn Barker
+                                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face4.jpg') }}" alt="profile image"> Carolyn Barker
                                             </td>
                                             <td>$2263</td>
-                                            <td><img src="assets/images/dashboard/alipay.png" alt="alipay" class="gateway-icon me-2"> alipay</td>
+                                            <td><img src="{{ asset('assets/images/dashboard/alipay.png') }}" alt="alipay" class="gateway-icon me-2"> alipay</td>
                                             <td>30 Sep 2019</td>
                                             <td>20 Oct 2019</td>
                                             <td>
@@ -507,7 +517,7 @@
             <!-- partial:partials/_footer.html -->
             <footer class="footer">
                 <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2024 Stellar. All rights reserved. <a href="#"> Terms of use</a><a href="#">Privacy Policy</a></span>
+                    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © {{ 'now'|date('Y') }} Stellar. All rights reserved. <a href="#"> Terms of use</a><a href="#">Privacy Policy</a></span>
                     <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="icon-heart text-danger"></i></span>
                 </div>
             </footer>
@@ -540,7 +550,7 @@
 <script src="assets/js/todolist.js"></script>
 <!-- endinject -->
 <!-- Custom js for this page -->
-<script src="assets/js/dashboard.js"></script>
+<script src="{{ asset('assets/js/dashboard.js') }}"></script>
 <!-- End custom js for this page -->
 </body>
 </html>
