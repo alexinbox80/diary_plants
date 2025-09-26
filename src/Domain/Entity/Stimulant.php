@@ -8,7 +8,6 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use DateTime;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 

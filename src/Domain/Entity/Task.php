@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'task')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-class Task  implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
