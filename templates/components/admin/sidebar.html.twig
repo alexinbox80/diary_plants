@@ -2,7 +2,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <li class="nav-item navbar-brand-mini-wrapper">
-            <a class="nav-link navbar-brand brand-logo-mini" href="index.html">
+            <a class="nav-link navbar-brand brand-logo-mini" href="{{ path('admin.index') }}">
                 <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
             </a>
         </li>
@@ -26,49 +26,50 @@
             <span class="nav-link">Панель</span>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if app.request.attributes.get('_route') == 'admin_render_index_page' %}active{% endif %}" href="{{ path('admin_render_index_page') }}">
+{#            {% if app.request.attributes.get('_route') == 'admin.plant.index' %}active{% endif %}#}
+            <a class="nav-link" href="{{ path('admin.plant.index') }}">
                 <span class="menu-title">Растения</span>
                 <i class="fa-brands fa-pagelines menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="{{ path('admin.offspring.index') }}">
                 <span class="menu-title">Плоды</span>
                 <i class="far fa-lemon menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="#">
                 <span class="menu-title">Еженедельник</span>
                 <i class="fas fa-book menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="#">
                 <span class="menu-title">Вредители</span>
                 <i class="fas fa-bug menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="#">
                 <span class="menu-title">Стимуляторы</span>
                 <i class="fas fa-flask-vial menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="#">
                 <span class="menu-title">Удобрения</span>
                 <i class="fas fa-sack-xmark menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="#">
                 <span class="menu-title">Галерея</span>
                 <i class="fas fa-images menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_render_index_page') }}">
+            <a class="nav-link" href="#">
                 <span class="menu-title">Пользователи</span>
                 <i class="fas fa-users menu-icon"></i>
             </a>

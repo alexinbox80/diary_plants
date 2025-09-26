@@ -19,6 +19,8 @@ services:
         image: nginx
         container_name: 'dplants_nginx'
         working_dir: /app
+        depends_on:
+            - dplants_php
         ports:
             - '8080:80'
         volumes:
