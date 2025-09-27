@@ -25265,6 +25265,11 @@ div.tagsinput span.tag a {
   -ms-flex-align: center;
   align-items: center;
 }
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.user-dropdown .dropdown-toggle {
+    margin-right: 0;
+    margin-left: 24px;
+    border-left: 1px solid #ecf0f4;
+}
 @media (min-width: 992px) {
   .navbar .navbar-menu-wrapper .navbar-nav.navbar-nav-right {
     margin-left: auto;

@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-sm-flex align-items-center mb-4">
-                    <h4 class="card-title mb-sm-0">Products Inventory</h4>
+                    <h4 class="card-title mb-sm-0">{% if title is defined %} {{ title }} {% endif %}</h4>
                     <a href="#" class="text-dark ms-auto mb-3 mb-sm-0"> View all Products</a>
                 </div>
                 <div class="table-responsive border rounded pt-1">

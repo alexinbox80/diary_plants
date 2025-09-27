@@ -1,7 +1,7 @@
 {% extends 'layout/admin.html.twig' %}
 
 {% block header %}
-    {% include 'components/admin/navbar.html.twig' %}
+    {% include 'components/admin/navbar.html.twig' with {'title': 'Плоды'} %}
 {% endblock %}
 
 {% block body %}
@@ -9,7 +9,7 @@
         {% include 'components/admin/sidebar.html.twig' %}
         <div class="main-panel">
             <div class="content-wrapper">
-                {% include 'components/admin/table.html.twig' %}
+                {% include 'components/admin/table.html.twig' with {'title': 'Список плодов'} %}
             </div>
             <!-- content-wrapper ends -->
             {% include 'components/admin/footer.html.twig' %}
