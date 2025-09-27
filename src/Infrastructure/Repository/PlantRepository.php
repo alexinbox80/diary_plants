@@ -13,9 +13,9 @@ class PlantRepository extends AbstractRepository
     public function getPlantsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
+        $queryBuilder->select('p')
             ->from(Plant::class, 'p')
-            ->orderBy('p.id', 'DESC')
+            ->orderBy('p.updatedAt', 'DESC')
             ->setFirstResult($perPage * $page)
             ->setMaxResults($perPage);
 

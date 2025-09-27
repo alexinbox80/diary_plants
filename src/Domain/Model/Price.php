@@ -37,9 +37,9 @@ final class Price
             && $this->currency === $other->currency;
     }
 
-    public function toString(): string
+    public function toString(): ?string
     {
-        return $this->amount . ' ' . $this->currency->value;
+        return $this->amount != null ? $this->amount . ' ' . $this->currency->value : null;
     }
 
     public static function fromString(string $value): self

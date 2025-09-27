@@ -25,8 +25,8 @@ class UpdatePlantModel
         public readonly ?string $seller = null,
         public readonly ?string $nursery = null,
         public readonly ?Price $price = null,
-        public readonly ?Price $shipping_cost = null,
-        public readonly ?Price $packaging_cost = null,
+        public readonly ?Price $shippingCost = null,
+        public readonly ?Price $packagingCost = null,
         public readonly ?string $soil = null,
         public readonly ?string $comment = null
     ) {

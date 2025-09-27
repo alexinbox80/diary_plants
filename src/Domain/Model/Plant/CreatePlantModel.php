@@ -28,9 +28,9 @@ class CreatePlantModel
         #[Assert\Type(type: ['null', Price::class])]
         public readonly ?Price $price = null,
         #[Assert\Type(type: ['null', Price::class])]
-        public readonly ?Price $shipping_cost = null,
+        public readonly ?Price $shippingCost = null,
         #[Assert\Type(type: ['null', Price::class])]
-        public readonly ?Price $packaging_cost = null,
+        public readonly ?Price $packagingCost = null,
         public readonly ?string $soil = null,
         public readonly ?string $comment = null
     ) {

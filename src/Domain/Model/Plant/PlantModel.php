@@ -21,8 +21,8 @@ class PlantModel
         private readonly ?string $seller = null,
         private readonly ?string $nursery = null,
         private readonly ?Price $price = null,
-        private readonly ?Price $shipping_cost = null,
-        private readonly ?Price $packaging_cost = null,
+        private readonly ?Price $shippingCost = null,
+        private readonly ?Price $packagingCost = null,
         private readonly ?string $soil = null,
         private readonly ?string $comment = null,
         private readonly DateTime $createdAt,
@@ -92,12 +92,12 @@ class PlantModel
 
     public function getShippingCost(): ?Price
     {
-        return $this->shipping_cost;
+        return $this->shippingCost;
     }
 
     public function getPackagingCost(): ?Price
     {
-        return $this->packaging_cost;
+        return $this->packagingCost;
     }
 
     public function getSoil(): ?string
@@ -118,5 +118,29 @@ class PlantModel
     public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'oid' => $this->oid->toString(),
+            'title' => $this->title,
+            'room' => $this->room,
+            'is_shown' => $this->isShown,
+            'description' => $this->description,
+            'purchase_date' => $this->purchaseDate->format('d.m.Y'),
+            'vaccination_date' => $this->vaccinationDate->format('d.m.Y'),
+            'planting_date' => $this->plantingDate->format('d.m.Y'),
+            'seller' => $this->seller,
+            'nursery' => $this->nursery,
+            'price' => $this->price?->toString(),
+            'shipping_cost' => $this->shippingCost?->toString(),
+            'packaging_cost' => $this->packagingCost?->toString(),
+            'soil' => $this->soil,
+            'comment' => $this->comment,
+            'created_at' => $this->createdAt->format('d.m.Y'),
+            'updated_at' => $this->updatedAt->format('d.m.Y')
+        ];
     }
 }

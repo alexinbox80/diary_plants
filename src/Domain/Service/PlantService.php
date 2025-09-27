@@ -79,8 +79,8 @@ class PlantService
             $createPlantModel->seller,
             $createPlantModel->nursery,
             $createPlantModel->price,
-            $createPlantModel->shipping_cost,
-            $createPlantModel->packaging_cost,
+            $createPlantModel->shippingCost,
+            $createPlantModel->packagingCost,
             $createPlantModel->soil,
             $createPlantModel->comment
         );
@@ -128,8 +128,8 @@ class PlantService
             $updatePlantModel->seller,
             $updatePlantModel->nursery,
             $updatePlantModel->price,
-            $updatePlantModel->shipping_cost,
-            $updatePlantModel->packaging_cost,
+            $updatePlantModel->shippingCost,
+            $updatePlantModel->packagingCost,
             $updatePlantModel->soil,
             $updatePlantModel->comment
         );

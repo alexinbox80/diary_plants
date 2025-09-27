@@ -6,6 +6,29 @@
                     <h4 class="card-title mb-sm-0">{% if title is defined %} {{ title }} {% endif %}</h4>
                     <a href="#" class="text-dark ms-auto mb-3 mb-sm-0"> View all Products</a>
                 </div>
+                {% if array is defined %}
+                    {% for item in array %}
+                        <li>{{ item['id'] }}</li>
+                        <li>{{ item['oid'] }}</li>
+                        <li>{{ item.title }}</li>
+                        <li>{{ item.room }}</li>
+                        <li>{{ item.is_shown }}</li>
+                        <li>{{ item.description }}</li>
+                        <li>{{ item.purchase_date }}</li>
+                        <li>{{ item.vaccination_date }}</li>
+                        <li>{{ item.planting_date }}</li>
+                        <li>{{ item.seller }}</li>
+                        <li>{{ item.nursery }}</li>
+                        <li>{{ item.price }}</li>
+                        <li>{{ item.shipping_cost }}</li>
+                        <li>{{ item.packaging_cost }}</li>
+                        <li>{{ item.soil }}</li>
+                        <li>{{ item.comment }}</li>
+                        <li>{{ item.created_at }}</li>
+                        <li>{{ item.updated_at }}</li>
+                        <li></li>
+                    {% endfor %}
+                {% endif %}
                 <div class="table-responsive border rounded pt-1">
                     <table class="table table-striped">
                         <thead>
