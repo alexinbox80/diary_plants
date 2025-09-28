@@ -74,11 +74,6 @@
                         </tbody>
                     </table>
                 </div>
-                {% else %}
-                    <div class="d-flex mt-4 flex-wrap align-items-center">
-                        <p class="text-muted mb-sm-0">Нет данных</p>
-                    </div>
-                    {% endif %}
                 <div class="d-flex mt-4 flex-wrap align-items-center">
                     <p class="text-muted mb-sm-0">Showing 1 to 10 of 57 entries</p>
                     <nav class="ms-auto">
@@ -92,6 +87,12 @@
                         </ul>
                     </nav>
                 </div>
+                {% else %}
+                    <div class="d-flex mt-4 flex-wrap align-items-center">
+                        <p class="text-muted mb-sm-0">Нет данных</p>
+                    </div>
+
+                {% endif %}
             </div>
         </div>
     </div>
