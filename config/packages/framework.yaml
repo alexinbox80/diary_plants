@@ -1,4 +1,7 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
+parameters:
+    # item count per page
+    items_per_page: '%env(int:ITEMS_PER_PAGE)%'
 framework:
     secret: '%env(APP_SECRET)%'
 

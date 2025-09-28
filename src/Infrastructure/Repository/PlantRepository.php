@@ -8,6 +8,8 @@ use App\Domain\Model\Price;
 class PlantRepository extends AbstractRepository
 {
     /**
+     * @param int $page
+     * @param int $perPage
      * @return Plant[]
      */
     public function getPlantsPaginated(int $page, int $perPage): array
@@ -20,6 +22,16 @@ class PlantRepository extends AbstractRepository
             ->setMaxResults($perPage);
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlantsCount(): int
+    {
+        $repository = $this->entityManager->getRepository(Plant::class);
+
+        return $repository->count([]);
     }
 
     /**

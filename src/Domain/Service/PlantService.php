@@ -53,12 +53,19 @@ class PlantService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return PlantModel[]
      * @throws InvalidArgumentException
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
         return $this->plantRepository->getPlantsPaginated($page, $perPage);
+    }
+
+    public function getPlantsCount(): int
+    {
+        return $this->plantRepository->getPlantsCount();
     }
 
     /**

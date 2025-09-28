@@ -16,7 +16,15 @@ class Controller extends AbstractController
     #[Route(path: '/admin/plant', name: 'admin.plant.index', methods: ['GET'])]
     public function __invoke(): Response
     {
-        $plants = $this->manager->getPlants($page ?? 0, $perPage ?? 20);
-        return $this->render('admin/plant/index.html.twig', ['plants' => $plants]);
+        $itemsPerPage = $this->getParameter('items_per_page');
+        $plants = $this->manager->getPlants($page ?? 0, $perPage ?? $itemsPerPage);
+        $pages = [
+            'first' => 1,
+            'last' => $itemsPerPage,
+            'total' => $plants['plantsCount'],
+        ];
+        $plants = ['table_header' => $plants['tableHeader'], 'table_body' => $plants['tableBody']];
+
+        return $this->render('admin/plant/index.html.twig', ['plants' => $plants, 'pages' => $pages]);
     }
 }

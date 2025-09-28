@@ -15,6 +15,8 @@ class PestRepositoryDecorator implements PestRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return PestModel[]
      */
     public function getPestsPaginated(int $page, int $perPage): array

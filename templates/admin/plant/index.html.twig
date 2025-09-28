@@ -9,7 +9,7 @@
         {% include 'components/admin/sidebar.html.twig' %}
         <div class="main-panel">
             <div class="content-wrapper">
-                {% include 'components/admin/table.html.twig' with {'title': 'Список растений', 'array': plants} %}
+                {% include 'components/admin/table.html.twig' with {'title': 'Список растений', 'array': plants, 'pages': pages} %}
             </div>
             <!-- content-wrapper ends -->
             {% include 'components/admin/footer.html.twig' %}

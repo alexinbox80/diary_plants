@@ -129,8 +129,8 @@ class PlantModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => 'Идентификатор',
-            'oid' => 'Универсальный уникальный идентификатор',
+            'id' => '#',
+            'oid' => 'Универсальный идентификатор',
             'title' => 'Название',
             'room' => 'Помещение',
             'is_shown' => 'Показать',

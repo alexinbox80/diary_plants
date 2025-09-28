@@ -15,6 +15,8 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return PlantModel[]
      */
     public function getPlantsPaginated(int $page, int $perPage): array
@@ -45,6 +47,14 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             ),
             $plants
         );
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlantsCount(): int
+    {
+        return $this->plantRepository->getPlantsCount();
     }
 
     /**

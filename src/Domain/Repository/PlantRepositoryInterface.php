@@ -9,6 +9,7 @@ use App\Domain\Model\Price;
 interface PlantRepositoryInterface
 {
     public function getPlantsPaginated(int $page, int $perPage): array;
+    public function getPlantsCount(): int;
     public function find(int $plantId): ?Plant;
     public function findModel(int $plantId): ?PlantModel;
     public function findAll(): array;

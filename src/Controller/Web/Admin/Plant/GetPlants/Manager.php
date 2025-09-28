@@ -18,6 +18,7 @@ class Manager
     public function getPlants(?int $page, ?int $perPage): array
     {
         $plantModels = $this->plantService->getPlantsPaginated($page, $perPage);
+        $plantsCount = $this->plantService->getPlantsCount();
 
         $tableHeader = PlantModel::getTableHeaderRu();
 
@@ -27,8 +28,9 @@ class Manager
         );
 
         return [
-            'table_header' => $tableHeader,
-            'table_body' => $tableBody,
+            'tableHeader' => $tableHeader,
+            'tableBody' => $tableBody,
+            'plantsCount' => $plantsCount,
         ];
     }
 }
