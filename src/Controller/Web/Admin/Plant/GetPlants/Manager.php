@@ -19,9 +19,16 @@ class Manager
     {
         $plantModels = $this->plantService->getPlantsPaginated($page, $perPage);
 
-        return array_map(
+        $tableHeader = PlantModel::getTableHeaderRu();
+
+        $tableBody = array_map(
             static fn (PlantModel $model): array => $model->toArray(),
             $plantModels
         );
+
+        return [
+            'table_header' => $tableHeader,
+            'table_body' => $tableBody,
+        ];
     }
 }

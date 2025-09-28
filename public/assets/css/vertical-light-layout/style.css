@@ -6204,6 +6204,9 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
   right: 0;
   left: auto;
 }
+.dropdown-menu-edit-remove {
+    min-width: 50%;
+}
 
 @media (min-width: 576px) {
   .dropdown-menu-sm-start {
@@ -17243,6 +17246,8 @@ code {
   border: 1px solid #ff4d6b;
   background: #ff4d6b;
   color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
 }
 
 .badge-light {
@@ -20428,8 +20433,8 @@ dl li {
 .pagination-info .jsgrid .jsgrid-pager .active.jsgrid-pager-page a,
 .jsgrid .jsgrid-pager .pagination-info .active.jsgrid-pager-page .page-link,
 .jsgrid .jsgrid-pager .pagination-info .active.jsgrid-pager-page a {
-  background: #8e32e9;
-  border-color: #8e32e9;
+  background: #38ce3c;
+  border-color: #38ce3c;
 }
 .pagination-info .page-item .page-link:hover, .jsgrid .jsgrid-pager .jsgrid-pager-nav-button .pagination-info .page-item a:hover,
 .jsgrid .jsgrid-pager .jsgrid-pager-page .pagination-info .page-item a:hover, .pagination-info .jsgrid .jsgrid-pager .jsgrid-pager-nav-button .page-link:hover, .pagination-info .jsgrid .jsgrid-pager .jsgrid-pager-nav-button a:hover, .jsgrid .jsgrid-pager .pagination-info .jsgrid-pager-nav-button .page-link:hover, .jsgrid .jsgrid-pager .pagination-info .jsgrid-pager-nav-button a:hover,
@@ -20437,8 +20442,8 @@ dl li {
 .pagination-info .jsgrid .jsgrid-pager .jsgrid-pager-page a:hover,
 .jsgrid .jsgrid-pager .pagination-info .jsgrid-pager-page .page-link:hover,
 .jsgrid .jsgrid-pager .pagination-info .jsgrid-pager-page a:hover {
-  background: #9b49eb;
-  border-color: #8e32e9;
+  background: #38ce3c;
+  border-color: #38ce3c;
   color: #ffffff;
 }
 
@@ -25264,6 +25269,8 @@ div.tagsinput span.tag a {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.user-dropdown .dropdown-toggle {
     margin-right: 0;
@@ -25434,7 +25441,9 @@ div.tagsinput span.tag a {
   display: -ms-flexbox;
   display: flex;
   border-top: none;
-  padding: 10px 0;
+  margin: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
 }
 .sidebar .nav .nav-item.nav-profile .nav-link .profile-image {
   margin-right: 15px;

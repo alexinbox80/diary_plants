@@ -15,6 +15,7 @@ class PlantModel
         private readonly string $room,
         private readonly bool $isShown = true,
         private readonly ?string $description = null,
+        private readonly ?string $qrCodeBase64 = null,
         private readonly ?DateTime $purchaseDate = null,
         private readonly ?DateTime $vaccinationDate = null,
         private readonly ?DateTime $plantingDate = null,
@@ -58,6 +59,11 @@ class PlantModel
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getQrCodeBase64(): ?string
+    {
+        return $this->qrCodeBase64;
     }
 
     public function getPurchaseDate(): ?DateTime
@@ -120,6 +126,31 @@ class PlantModel
         return $this->updatedAt;
     }
 
+    public static function getTableHeaderRu(): array
+    {
+        return [
+            'id' => 'Идентификатор',
+            'oid' => 'Универсальный уникальный идентификатор',
+            'title' => 'Название',
+            'room' => 'Помещение',
+            'is_shown' => 'Показать',
+            'description' => 'Описание',
+            'qr_code_base64' => 'QR код',
+            'purchase_date' => 'Дата покупки',
+            'vaccination_date' => 'Дата прививки',
+            'planting_date' => 'Дата посадки',
+            'seller' => 'Продавец',
+            'nursery' => 'Питомник',
+            'price' => 'Стоимость',
+            'shipping_cost' => 'Стоимость доставки',
+            'packaging_cost' => 'Стоимость упаковки',
+            'soil' => 'Грунт',
+            'comment' => 'Комментарий',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления'
+        ];
+    }
+
     public function toArray(): array
     {
         return [
@@ -129,6 +160,7 @@ class PlantModel
             'room' => $this->room,
             'is_shown' => $this->isShown,
             'description' => $this->description,
+            'qr_code_base64' => $this->qrCodeBase64,
             'purchase_date' => $this->purchaseDate->format('d.m.Y'),
             'vaccination_date' => $this->vaccinationDate->format('d.m.Y'),
             'planting_date' => $this->plantingDate->format('d.m.Y'),

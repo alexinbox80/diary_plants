@@ -7,97 +7,72 @@
                     <a href="#" class="text-dark ms-auto mb-3 mb-sm-0"> View all Products</a>
                 </div>
                 {% if array is defined %}
-                    {% for item in array %}
-                        <li>{{ item['id'] }}</li>
-                        <li>{{ item['oid'] }}</li>
-                        <li>{{ item.title }}</li>
-                        <li>{{ item.room }}</li>
-                        <li>{{ item.is_shown }}</li>
-                        <li>{{ item.description }}</li>
-                        <li>{{ item.purchase_date }}</li>
-                        <li>{{ item.vaccination_date }}</li>
-                        <li>{{ item.planting_date }}</li>
-                        <li>{{ item.seller }}</li>
-                        <li>{{ item.nursery }}</li>
-                        <li>{{ item.price }}</li>
-                        <li>{{ item.shipping_cost }}</li>
-                        <li>{{ item.packaging_cost }}</li>
-                        <li>{{ item.soil }}</li>
-                        <li>{{ item.comment }}</li>
-                        <li>{{ item.created_at }}</li>
-                        <li>{{ item.updated_at }}</li>
-                        <li></li>
-                    {% endfor %}
-                {% endif %}
-                <div class="table-responsive border rounded pt-1">
+                    <div class="table-responsive border rounded pt-1">
                     <table class="table table-striped">
                         <thead>
-                        <tr>
-                            <th class="font-weight-bold">#</th>
-                            <th class="font-weight-bold">Store ID</th>
-                            <th class="font-weight-bold">Amount</th>
-                            <th class="font-weight-bold">Gateway</th>
-                            <th class="font-weight-bold">Created at</th>
-                            <th class="font-weight-bold">Paid at</th>
-                            <th class="font-weight-bold">Status</th>
-                        </tr>
+                            {% for title in array.table_header %}
+                                <th class="font-weight-bold">{{ title }}</th>
+                            {% endfor %}
+                            <th class="font-weight-bold">Действия</th>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>
-                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile image"> Katie Holmes
-                            </td>
-                            <td>$3621</td>
-                            <td><img src="{{ asset('assets/images/dashboard/alipay.png') }}" alt="alipay" class="gateway-icon me-2"> alipay</td>
-                            <td>04 Jun 2019</td>
-                            <td>18 Jul 2019</td>
-                            <td>
-                                <div class="badge badge-success p-2">Paid</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>
-                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face2.jpg') }}" alt="profile image"> Minnie Copeland
-                            </td>
-                            <td>$6245</td>
-                            <td><img src="{{ asset('assets/images/dashboard/paypal.png') }}" alt="alipay" class="gateway-icon me-2"> Paypal</td>
-                            <td>25 Sep 2019</td>
-                            <td>07 Oct 2019</td>
-                            <td>
-                                <div class="badge badge-danger p-2">Pending</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>
-                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face3.jpg') }}" alt="profile image"> Rodney Sims
-                            </td>
-                            <td>$9265</td>
-                            <td><img src="{{ asset('assets/images/dashboard/alipay.png') }}" alt="alipay" class="gateway-icon me-2"> alipay</td>
-                            <td>12 dec 2019</td>
-                            <td>26 Aug 2019</td>
-                            <td>
-                                <div class="badge badge-warning p-2">Failed</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>
-                                <img class="img-sm rounded-circle" src="{{ asset('assets/images/faces/face4.jpg') }}" alt="profile image"> Carolyn Barker
-                            </td>
-                            <td>$2263</td>
-                            <td><img src="{{ asset('assets/images/dashboard/alipay.png') }}" alt="alipay" class="gateway-icon me-2"> alipay</td>
-                            <td>30 Sep 2019</td>
-                            <td>20 Oct 2019</td>
-                            <td>
-                                <div class="badge badge-success p-2">Paid</div>
-                            </td>
-                        </tr>
+                            {% for item in array.table_body %}
+                            <tr>
+                                {% for key in array.table_header|keys %}
+                                    <td>
+                                        {% if item[key] is not null %}
+                                            {% if item[key] == 1 %}Да
+                                            {% elseif item[key] == 0 %}Нет
+                                            {% else %}
+                                                {{ item[key] }}
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                                <td>
+                                    <div class="dropdown dropdown-menu-edit-remove-div">
+                                        <div
+                                            class="dropdown-toggle border-0"
+                                            type="button"
+                                            id="dropdownMenuButton{{ loop.index }}"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </div>
+                                        <div
+                                            class="dropdown-menu dropdown-menu-end dropdown-menu-edit-remove"
+                                            aria-labelledby="dropdownMenuButton{{ loop.index }}"
+                                        >
+                                            <div class="d-flex">
+                                                <a
+                                                    href="/edit/{{ item.id }}"
+                                                    class="dropdown-item px-3"
+                                                    title="Редактировать"
+                                                >
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a
+                                                    href="/delete/{{ item.id }}"
+                                                    class="dropdown-item px-3 text-danger"
+                                                    title="Удалить"
+                                                >
+                                                    <i class="fas fa-trash text-danger"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
+                {% else %}
+                    <div class="d-flex mt-4 flex-wrap align-items-center">
+                        <p class="text-muted mb-sm-0">Нет данных</p>
+                    </div>
+                    {% endif %}
                 <div class="d-flex mt-4 flex-wrap align-items-center">
                     <p class="text-muted mb-sm-0">Showing 1 to 10 of 57 entries</p>
                     <nav class="ms-auto">
