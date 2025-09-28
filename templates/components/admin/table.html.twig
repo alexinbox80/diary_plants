@@ -16,18 +16,24 @@
                             <th class="font-weight-bold">Действия</th>
                         </thead>
                         <tbody>
-                            {% for item in array.table_body %}
+                            {% for row_number, item in array.table_body %}
                             <tr>
-                                {% for key in array.table_header|keys %}
-                                    <td>
-                                        {% if item[key] is not null %}
-                                            {% if item[key] == 1 %}Да
-                                            {% elseif item[key] == 0 %}Нет
-                                            {% else %}
-                                                {{ item[key] }}
+                                {% for column_number, key in array.table_header|keys %}
+                                    {% if column_number > 0 %}
+                                        <td>
+                                            {% if item[key] is not null %}
+                                                {% if item[key] == 1 %}Да
+                                                {% elseif item[key] == 0 %}Нет
+                                                {% else %}
+                                                    {{ item[key] }}
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
-                                    </td>
+                                        </td>
+                                    {% else %}
+                                        <td title="{{ item[key] }}">
+                                            {{ row_number + 1 }}
+                                        </td>
+                                    {% endif %}
                                 {% endfor %}
                                 <td>
                                     <div class="dropdown dropdown-menu-edit-remove-div">
