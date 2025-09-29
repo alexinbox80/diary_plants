@@ -4,94 +4,87 @@
             <div class="card-body">
                 <div class="d-sm-flex align-items-center mb-4">
                     <h4 class="card-title mb-sm-0">{% if title is defined %} {{ title }} {% endif %}</h4>
-                    <a href="#" class="text-dark ms-auto mb-3 mb-sm-0"> View all Products</a>
+                    {% if pagination is defined %}
+                        <a href="{{ path(route_index) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать все записи</a>
+                    {% else %}
+                        <a href="{{ path(route_pagination) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать записи с пагинацией</a>
+                    {% endif %}
                 </div>
                 {% if array is defined %}
                     <div class="table-responsive border rounded pt-1">
-                    <table class="table table-striped">
-                        <thead>
-                            {% for title in array.table_header %}
-                                <th class="font-weight-bold">{{ title }}</th>
-                            {% endfor %}
-                            <th class="font-weight-bold">Действия</th>
-                        </thead>
-                        <tbody>
-                            {% for row_number, item in array.table_body %}
-                            <tr>
-                                {% for column_number, key in array.table_header|keys %}
-                                    {% if column_number > 0 %}
-                                        <td>
-                                            {% if item[key] is not null %}
-                                                {% if item[key] == 1 %}Да
-                                                {% elseif item[key] == 0 %}Нет
-                                                {% else %}
-                                                    {{ item[key] }}
-                                                {% endif %}
-                                            {% endif %}
-                                        </td>
-                                    {% else %}
-                                        <td title="{{ item[key] }}">
-                                            {{ row_number + 1 }}
-                                        </td>
-                                    {% endif %}
+                        <table class="table table-striped">
+                            <thead>
+                                {% for title in array.table_header %}
+                                    <th class="font-weight-bold">{{ title }}</th>
                                 {% endfor %}
-                                <td>
-                                    <div class="dropdown dropdown-menu-edit-remove-div">
-                                        <div
-                                            class="dropdown-toggle border-0"
-                                            type="button"
-                                            id="dropdownMenuButton{{ loop.index }}"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </div>
-                                        <div
-                                            class="dropdown-menu dropdown-menu-end dropdown-menu-edit-remove"
-                                            aria-labelledby="dropdownMenuButton{{ loop.index }}"
-                                        >
-                                            <div class="d-flex">
-                                                <a
-                                                    href="/edit/{{ item.id }}"
-                                                    class="dropdown-item px-3"
-                                                    title="Редактировать"
+                                <th class="font-weight-bold">Действия</th>
+                            </thead>
+                            <tbody>
+                                {% for row_number, item in array.table_body %}
+                                    <tr>
+                                        {% for column_number, key in array.table_header|keys %}
+                                            {% if column_number > 0 %}
+                                                <td>
+                                                    {% if item[key] is not null %}
+                                                        {% if item[key] == 1 %}Да
+                                                        {% elseif item[key] == 0 %}Нет
+                                                        {% else %}
+                                                            {{ item[key] }}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
+                                            {% else %}
+                                                <td title="{{ item[key] }}">
+                                                    {{ row_number + 1 }}
+                                                </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>
+                                            <div class="dropdown dropdown-menu-edit-remove-div">
+                                                <div
+                                                    class="dropdown-toggle border-0"
+                                                    type="button"
+                                                    id="dropdownMenuButton{{ loop.index }}"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
                                                 >
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a
-                                                    href="/delete/{{ item.id }}"
-                                                    class="dropdown-item px-3 text-danger"
-                                                    title="Удалить"
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </div>
+                                                <div
+                                                    class="dropdown-menu dropdown-menu-end dropdown-menu-edit-remove"
+                                                    aria-labelledby="dropdownMenuButton{{ loop.index }}"
                                                 >
-                                                    <i class="fas fa-trash text-danger"></i>
-                                                </a>
+                                                    <div class="d-flex">
+                                                        <a
+                                                            href="/edit/{{ item.id }}"
+                                                            class="dropdown-item px-3"
+                                                            title="Редактировать"
+                                                        >
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a
+                                                            href="/delete/{{ item.id }}"
+                                                            class="dropdown-item px-3 text-danger"
+                                                            title="Удалить"
+                                                        >
+                                                            <i class="fas fa-trash text-danger"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="d-flex mt-4 flex-wrap align-items-center">
-                    <p class="text-muted mb-sm-0">Показано с {{ pages.first }} по {{ pages.last }} из {{ pages.total }} записей</p>
-                    <nav class="ms-auto">
-                        <ul class="pagination separated pagination-info mb-sm-0">
-                            <li class="page-item"><a href="#" class="page-link"><i class="icon-arrow-left"></i></a></li>
-                            <li class="page-item active"><a href="#" class="page-link">1</a></li>
-                            <li class="page-item"><a href="#" class="page-link">2</a></li>
-                            <li class="page-item"><a href="#" class="page-link">3</a></li>
-                            <li class="page-item"><a href="#" class="page-link">4</a></li>
-                            <li class="page-item"><a href="#" class="page-link"><i class="icon-arrow-right"></i></a></li>
-                        </ul>
-                    </nav>
-                </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if pagination is defined %}
+                        {% include 'components/admin/pagination.html.twig' with { 'pagination': pagination } %}
+                    {% endif %}
                 {% else %}
                     <div class="d-flex mt-4 flex-wrap align-items-center">
                         <p class="text-muted mb-sm-0">Нет данных</p>
                     </div>
-
                 {% endif %}
             </div>
         </div>

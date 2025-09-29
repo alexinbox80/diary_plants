@@ -27,7 +27,7 @@ class PlantService
     }
 
     /**
-     * @return Plant[]
+     * @return PlantModel[]
      */
     public function findAll(): array
     {
@@ -55,7 +55,7 @@ class PlantService
     /**
      * @param int $page
      * @param int $perPage
-     * @return PlantModel[]
+     * @return array
      * @throws InvalidArgumentException
      */
     public function getPlantsPaginated(int $page, int $perPage): array

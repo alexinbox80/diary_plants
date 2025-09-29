@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Web\Admin\Plant\GetPlants;
+namespace App\Controller\Web\Admin\Plant\GetPlantsPaginated;
 
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Service\PlantService;
@@ -18,18 +18,19 @@ class Manager
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function getPlants(): array
+    public function getPlantsPaginated(int $page, int $perPage): array
     {
-        $plantsModel = $this->plantService->findAll();
+        $plantsModel = $this->plantService->getPlantsPaginated($page, $perPage);
         $tableHeader = PlantModel::getTableHeaderRu();
         $tableBody = array_map(
             static fn (PlantModel $model): array => $model->toArray(),
-            $plantsModel
+            $plantsModel['plantsModel']
         );
 
         return [
             'tableHeader' => $tableHeader,
-            'tableBody' => $tableBody
+            'tableBody' => $tableBody,
+            'pagination' => $plantsModel['pagination'],
         ];
     }
 }

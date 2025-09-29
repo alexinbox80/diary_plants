@@ -17,13 +17,18 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     /**
      * @param int $page
      * @param int $perPage
-     * @return PlantModel[]
+     * @return array
+     * @return array{plantsModel: plantModel[], pagination: array}
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
-        $plants = $this->plantRepository->getPlantsPaginated($page, $perPage);
+        $plantsPaginated = $this->plantRepository->getPlantsPaginated($page, $perPage);
 
-        return array_map(
+        if (!is_array($plantsPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for plants');
+        }
+
+        $plantsModel = array_map(
             static fn (Plant $plant): PlantModel => new PlantModel(
                 $plant->getId(),
                 $plant->getOid(),
@@ -45,8 +50,13 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
                 $plant->getCreatedAt(),
                 $plant->getUpdatedAt()
             ),
-            $plants
+            $plantsPaginated['items']
         );
+
+        return [
+            'plantsModel' => $plantsModel,
+            'pagination' => $plantsPaginated['pagination']
+        ];
     }
 
     /**

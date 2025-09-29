@@ -25,8 +25,8 @@
         <li class="nav-item nav-category">
             <span class="nav-link">Панель</span>
         </li>
-        <li class="nav-item {% if app.request.attributes.get('_route') starts with 'admin.plant.' %}active{% endif %}">
-            <a class="nav-link" href="{{ path('admin.plant.index') }}">
+        <li class="nav-item {% if app.request.attributes.get('_route') starts with 'admin.plants' %}active{% endif %}">
+            <a class="nav-link" href="{{ path('admin.plants_paginated.index') }}">
                 <span class="menu-title">Растения</span>
                 <i class="fa-brands fa-pagelines menu-icon"></i>
             </a>
