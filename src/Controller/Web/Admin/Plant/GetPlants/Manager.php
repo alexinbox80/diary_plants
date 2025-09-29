@@ -13,8 +13,6 @@ class Manager
     }
 
     /**
-     * @param int $page
-     * @param int $perPage
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
