@@ -3,5 +3,5 @@
 
 <div class="d-flex mt-4 flex-wrap align-items-center">
     {{ pagination_header.header(pagination.first, pagination.last, pagination.total) }}
-    {{ pagination_nav.navigation(pagination.pages, pagination.current, 'path_page') }}
+    {{ pagination_nav.navigation(pagination.pages, pagination.current, path(page_url)) }}
 </div>

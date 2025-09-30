@@ -4297,7 +4297,9 @@ progress {
 .table > thead, .jsgrid .jsgrid-table > thead {
   vertical-align: bottom;
 }
-
+.dropdown-menu-edit-remove-div .dropdown-toggle i, .dropdown-menu-edit-remove div .dropdown-item i {
+    color: #9c9fa6;
+}
 .table-group-divider {
   border-top: calc(var(--bs-border-width) * 2) solid currentcolor;
 }

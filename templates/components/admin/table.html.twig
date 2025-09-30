@@ -79,7 +79,7 @@
                         </table>
                     </div>
                     {% if pagination is defined %}
-                        {% include 'components/admin/pagination.html.twig' with { 'pagination': pagination } %}
+                        {% include 'components/admin/pagination.html.twig' with { 'pagination': pagination, 'page_url': route_pagination } %}
                     {% endif %}
                 {% else %}
                     <div class="d-flex mt-4 flex-wrap align-items-center">
