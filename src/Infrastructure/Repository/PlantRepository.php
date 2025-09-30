@@ -14,13 +14,15 @@ class PlantRepository extends AbstractRepository
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
-        $query = $this->entityManager
-            ->getRepository(Plant::class)
-            ->createQueryBuilder('p')
-            ->select('p')
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->select('p')
+            ->from(Plant::class, 'p')
+            ->orderBy('p.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
             ->getQuery();
 
-        return $this->getPaginatedResults($query, $page, $perPage);
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**

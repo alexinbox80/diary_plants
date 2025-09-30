@@ -7908,7 +7908,13 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
   padding-left: 0;
   list-style: none;
 }
-
+nav .pagination .page-item .page-link i {
+    color: #9c9fa6;
+}
+nav .pagination .page-item .page-link {
+    color: #9c9fa6;
+    font-color: #9c9fa6;
+}
 .page-link, .jsgrid .jsgrid-pager .jsgrid-pager-nav-button a,
 .jsgrid .jsgrid-pager .jsgrid-pager-page a {
   position: relative;

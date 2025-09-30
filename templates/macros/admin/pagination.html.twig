@@ -1,0 +1,40 @@
+{% macro navigation(total, current, url, nearbyPagesLimit = 2) %}
+    {% set url = url ~ '?page=' %}
+    {% apply spaceless %}
+        {% if total > 1 %}
+            <nav class="ms-auto">
+                <ul class="pagination separated pagination-info mb-sm-0">
+                        <li class="page-item" title="Первая страница"><a href="{{ (url ~ 1)|e }}" class="page-link"><i class="fas fa-angle-left"></i></a></li>
+                    {% if current > 1 %}
+                        <li class="page-item" title="Предыдущая страница"><a class="page-link" href="{{ (url ~ (current - 1))|e }}"><i class="fas fa-angles-left"></i></a></li>
+                    {% endif %}
+                    {% for i in 1..total %}
+                        {% if 0 == (current - nearbyPagesLimit) - loop.index %}
+                            <li class="page-item"><a href="{{ (url ~ 1)|e }}" class="page-link">1</a></li>
+                            {% if 1 != loop.index %}
+                                <li class="page-item"><span class="page-link">...</span></li>
+                            {% endif %}
+                            {% elseif 0 == (current + nearbyPagesLimit) - loop.index  and (current + nearbyPagesLimit) < total %}
+                                <li class="page-item"><span class="page-link">...</span></li>
+                            {% elseif 0 < (current - nearbyPagesLimit) - loop.index %}
+                            {% elseif 0 > (current + nearbyPagesLimit) - loop.index %}
+                        {% else %}
+                            {% if current == loop.index %}
+                                <li class="page-item active"><span class="page-link">{{ loop.index }}</span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="{{ url ~ loop.index }}">{{ loop.index }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if current != total and (current + nearbyPagesLimit) < total %}
+                        <li class="page-item"><a class="page-link" href="{{ (url ~ total)|e }}">{{ total }}</a></li>
+                    {% endif %}
+                    {% if current < total %}
+                        <li class="page-item" title="Последующая страница"><a class="page-link" href="{{ (url ~ (current + 1))|e }}"><i class="fas fa-angles-right"></i></a></li>
+                    {% endif %}
+                    <li class="page-item" title="Последняя страница"><a href="{{ (url ~ total)|e }}" class="page-link"><i class="fas fa-angle-right"></i></a></li>
+                </ul>
+            </nav>
+        {% endif %}
+    {% endapply %}
+{% endmacro %}

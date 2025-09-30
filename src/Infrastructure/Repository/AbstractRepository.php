@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 
 /**
@@ -21,20 +21,17 @@ abstract class AbstractRepository
     /**
      * Получает данные с пагинацией.
      *
-     * @param Query $query
+     * @param QueryBuilder $query
      * @param int $page
      * @param int $perPage
      * @return array{plants: object[], pagination: array}
      */
-    protected function getPaginatedResults(Query $query, int $page, int $perPage): array
+    protected function getPaginatedResults(QueryBuilder $query, int $page, int $perPage): array
     {
         $doctrinePaginator = new DoctrinePaginator($query);
         $doctrinePaginator->setUseOutputWalkers(true);
 
         $offset = ($page - 1) * $perPage;
-        $doctrinePaginator->getQuery()
-            ->setFirstResult($offset)
-            ->setMaxResults($perPage);
 
         $totalItems = count($doctrinePaginator);
         $totalPages = (int) ceil($totalItems / $perPage);

@@ -1,0 +1,5 @@
+{% macro header(first, last, total) %}
+    {% apply spaceless %}
+        <p class="text-muted mb-sm-0">Показано с {{ first }} по {{ last }} из {{ total }} записей</p>
+    {% endapply %}
+{% endmacro %}
