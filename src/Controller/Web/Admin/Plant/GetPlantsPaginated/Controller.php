@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Admin\Plant\GetPlantsPaginated;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -13,8 +14,16 @@ class Controller extends AbstractController
     ) {
     }
 
-    #[Route(path: '/admin/plants-paginated', name: 'admin.plants_paginated.index', methods: ['GET'])]
-    public function __invoke(): Response
+    #[Route(
+        path: '/admin/plants-paginated',
+        name: 'admin.plants_paginated.index',
+        requirements: ['page' => '\d+', 'perPage' => '\d+'],
+        methods: ['GET']
+    )]
+    public function __invoke(
+        #[MapQueryParameter(filter: \FILTER_VALIDATE_INT)] ?int $page = null,
+        #[MapQueryParameter(filter: \FILTER_VALIDATE_INT)] ?int $perPage = null,
+    ): Response
     {
         $itemsPerPage = $this->getParameter('items_per_page');
         $plantsModel = $this->manager->getPlantsPaginated($page ?? 1, $perPage ?? $itemsPerPage);

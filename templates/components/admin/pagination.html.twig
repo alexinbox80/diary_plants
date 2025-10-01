@@ -3,5 +3,69 @@
 
 <div class="d-flex mt-4 flex-wrap align-items-center">
     {{ pagination_header.header(pagination.first, pagination.last, pagination.total) }}
+    <div class="d-flex align-items-center ms-auto">
+        <label class="text-muted mb-sm-0" for="per-page-select">Элементов на странице : </label>
+        <select id="per-page-select" name="per-page" class="dropdown border-0 text-muted">
+            {% for option in [20, 40, 60, 80] %}
+                <option class="text-muted" value="{{ option }}" {{ option == pagination.count ? 'selected' : '' }}>{{ option }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="dropdown">
+        <div class="dropdown-toggle text-muted" type="button" id="dropdown-per-page" data-bs-toggle="dropdown" aria-expanded="false">
+            Выбрать колонки
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-per-page">
+            <li>
+                <a class="dropdown-item" href="#">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Колонка 1
+                    </label>
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <label class="form-check-label" for="flexCheckChecked">
+                        Колонка 2
+                    </label>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-close-white dropdown-toggle text-muted border-0" type="button" id="dropdownMenuButton123" data-bs-toggle="dropdown" aria-expanded="false">
+            Выбрать колонки
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton123">
+            <li>
+                <a class="dropdown-item" href="#">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Колонка 1
+                    </label>
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <label class="form-check-label" for="flexCheckChecked">
+                        Колонка 2
+                    </label>
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                    <label class="form-check-label" for="flexCheckChecked">
+                        Колонка 3
+                    </label>
+                </a>
+            </li>
+        </ul>
+    </div>
+
     {{ pagination_nav.navigation(pagination.pages, pagination.current, path(page_url)) }}
 </div>

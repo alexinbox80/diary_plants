@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="d-sm-flex align-items-center mb-4">
                     <h4 class="card-title mb-sm-0">{% if title is defined %} {{ title }} {% endif %}</h4>
-                    {% if pagination is defined %}
+                    {% if pagination is defined and pagination.count < 101 %}
                         <a href="{{ path(route_index) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать все записи</a>
                     {% else %}
                         <a href="{{ path(route_pagination) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать записи с пагинацией</a>
