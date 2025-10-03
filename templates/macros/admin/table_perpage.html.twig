@@ -1,0 +1,19 @@
+{% macro table_rows(url, count) %}
+    {% set url = url ~ '?page=1&per_page=' %}
+    <div class="dropdown ms-auto">
+        <div class="dropdown-toggle text-muted" type="button" id="dropdown-per-page" data-bs-toggle="dropdown" aria-expanded="false">
+            Элементов на странице : {{ count }}
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-per-page">
+            {% for option in [20, 40, 60, 80] %}
+                <li>
+                    <a class="dropdown-item" href="{{ url ~ option }}">
+                        <span class="text-muted">
+                            {{ option }}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}
