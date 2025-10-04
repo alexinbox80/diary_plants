@@ -15,26 +15,26 @@ export default class TableColumn {
     #init() {
         this.#defaultVisibleColumns = {
             id: true,
-            title: true,
-            description: true,
             created_at: true,
             updated_at: true
         };
 
-        this.#setStateToCheckboxes(this.#defaultVisibleColumns);
-        this.#visibleColumns = this.#getInitialStateFromCheckboxes();
+        this.#stateToCheckboxes = this.#defaultVisibleColumns;
+        this.#visibleColumns = this.#initialStateFromCheckboxes;
+
+        this.visibleColumns = this.#visibleColumns;
         this.#bindEvents();
         this.#updateTable()
     }
 
-    #setStateToCheckboxes(visibleColumns) {
+    set #stateToCheckboxes(visibleColumns) {
         document.querySelectorAll('.form-check-input').forEach(input => {
             const key = input.dataset.column;
             input.checked = visibleColumns[key];
         });
     }
 
-    #getInitialStateFromCheckboxes() {
+    get #initialStateFromCheckboxes() {
         const state = {};
         document.querySelectorAll('.form-check-input').forEach(input => {
             const key = input.dataset.column;
@@ -71,6 +71,16 @@ export default class TableColumn {
                 }
             });
         }
+    }
+
+    /**
+    * Устанавливает состояние видимости колонок
+    * @param {Object} state - объект вида { id: true, title: false, ... }
+    */
+    set visibleColumns(state) {
+        this.#visibleColumns = { ...this.#initialStateFromCheckboxes, ...state };
+        this.#stateToCheckboxes = this.#visibleColumns;
+        this.#updateTable();
     }
 
     get visibleColumns() {
