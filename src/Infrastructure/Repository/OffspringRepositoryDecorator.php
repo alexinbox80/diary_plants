@@ -16,11 +16,15 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     /**
      * @return OffspringModel[]
      */
-    public function getOffspingsPaginated(int $page, int $perPage): array
+    public function getOffspringsPaginated(int $page, int $perPage): array
     {
-        $offsprings = $this->offspringRepository->getOffspringsPaginated($page, $perPage);
+        $offspringsPaginated = $this->offspringRepository->getOffspringsPaginated($page, $perPage);
 
-        return array_map(
+        if (!is_array($offspringsPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for plants');
+        }
+
+        $offspringsModel = array_map(
             static fn (Offspring $offspring): OffspringModel => new OffspringModel(
                 $offspring->getId(),
                 $offspring->getPlant()->getId(),
@@ -34,8 +38,13 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
                 $offspring->getCreatedAt(),
                 $offspring->getUpdatedAt()
             ),
-            $offsprings
+            $offspringsPaginated['items']
         );
+
+        return [
+            'offspringsModel' => $offspringsModel,
+            'pagination' => $offspringsPaginated['pagination']
+        ];
     }
 
     /**

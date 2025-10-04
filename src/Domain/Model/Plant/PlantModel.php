@@ -154,25 +154,25 @@ class PlantModel
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->getId(),
             'oid' => $this->oid->toString(),
-            'title' => $this->title,
-            'room' => $this->room,
-            'is_shown' => $this->isShown,
-            'description' => $this->description,
-            'qr_code_base64' => $this->qrCodeBase64,
+            'title' => $this->getTitle(),
+            'room' => $this->getRoom(),
+            'is_shown' => $this->isShown() ? 'Да' : 'Нет',
+            'description' => $this->getDescription(),
+            'qr_code_base64' => $this->getQrCodeBase64(),
             'purchase_date' => $this->purchaseDate->format('d.m.Y'),
             'vaccination_date' => $this->vaccinationDate->format('d.m.Y'),
             'planting_date' => $this->plantingDate->format('d.m.Y'),
-            'seller' => $this->seller,
-            'nursery' => $this->nursery,
+            'seller' => $this->getSeller(),
+            'nursery' => $this->getNursery(),
             'price' => $this->price?->toString(),
             'shipping_cost' => $this->shippingCost?->toString(),
             'packaging_cost' => $this->packagingCost?->toString(),
-            'soil' => $this->soil,
-            'comment' => $this->comment,
-            'created_at' => $this->createdAt->format('d.m.Y'),
-            'updated_at' => $this->updatedAt->format('d.m.Y')
+            'soil' => $this->getSoil(),
+            'comment' => $this->getComment(),
+            'created_at' => $this->createdAt->format('d.m.Y H:i:s'),
+            'updated_at' => $this->updatedAt->format('d.m.Y H:i:s'),
         ];
     }
 }

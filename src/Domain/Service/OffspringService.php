@@ -62,12 +62,12 @@ class OffspringService
     }
 
     /**
-     * @return OffspringModel[]
+     * @return array
      * @throws InvalidArgumentException
      */
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
-        return $this->offspringRepository->getOffspingsPaginated($page, $perPage);
+        return $this->offspringRepository->getOffspringsPaginated($page, $perPage);
     }
 
     /**

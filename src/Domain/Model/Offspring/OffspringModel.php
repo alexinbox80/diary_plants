@@ -75,4 +75,39 @@ class OffspringModel
     {
         return $this->updatedAt;
     }
+
+    public static function getTableHeaderRu(): array
+    {
+        return [
+            'id' => '#',
+            'plant_id' => 'Идентификатор растения',
+            'fruiting_date' => 'Дата сбора',
+            'flowering_date' => 'Дата цветения',
+            'mass' => 'Масса гр.',
+            'color' => 'Цвет',
+            'flavor' => 'Вкус',
+            'quantity' => 'Количество',
+            'comment' => 'Комментарий',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления'
+        ];
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'attachment' => null,
+            'plant_id' => $this->getPlantId(),
+            'fruiting_date' => $this->getFruitingDate()?->format('d.m.Y'),
+            'flowering_date' => $this->getFloweringDate()?->format('d.m.Y'),
+            'mass' => $this->getMass(),
+            'color' => $this->getColor(),
+            'flavor' => $this->getFlavor(),
+            'quantity' => $this->getQuantity(),
+            'comment' => $this->getComment(),
+            'created_at' => $this->getCreatedAt()->format('d.m.Y H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->format('d.m.Y H:i:s'),
+        ];
+    }
 }

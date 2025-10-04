@@ -12,13 +12,14 @@ class OffspringRepository extends AbstractRepository
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
+        $queryBuilder->select('o')
             ->from(Offspring::class, 'o')
-            ->orderBy('o.id', 'DESC')
-            ->setFirstResult($perPage * $page)
-            ->setMaxResults($perPage);
+            ->orderBy('o.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery();
 
-        return $queryBuilder->getQuery()->getResult();
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**

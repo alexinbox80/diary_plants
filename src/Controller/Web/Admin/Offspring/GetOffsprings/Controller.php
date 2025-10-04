@@ -8,9 +8,22 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class Controller extends AbstractController
 {
-    #[Route(path: '/admin/offspring', name: 'admin.offspring.index', methods: ['GET'])]
+    public function __construct(
+        private readonly Manager $manager
+    ) {
+    }
+
+    #[Route(path: '/admin/offsprings', name: 'admin.offsprings.index', methods: ['GET'])]
     public function __invoke(): Response
     {
-        return $this->render('admin/offspring/index.html.twig');
+        $offspringsModel = $this->manager->getOffsprings();
+        $offsprings = ['table_header' => $offspringsModel['tableHeader'], 'table_body' => $offspringsModel['tableBody']];
+
+        return $this->render(
+            'admin/offspring/index.html.twig',
+            [
+                'offsprings' => $offsprings
+            ]
+        );
     }
 }

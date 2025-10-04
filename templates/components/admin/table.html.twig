@@ -28,11 +28,11 @@
                                             {% if column_number > 0 %}
                                                 <td data-column="{{ key }}">
                                                     {% if item[key] is not null %}
-                                                        {% if item[key] == 1 %}Да
-                                                        {% elseif item[key] == 0 %}Нет
-                                                        {% else %}
+{#                                                        {% if item[key] == 1 %}Да#}
+{#                                                        {% elseif item[key] == 0 %}Нет#}
+{#                                                        {% else %}#}
                                                             {{ item[key] }}
-                                                        {% endif %}
+{#                                                        {% endif %}#}
                                                     {% endif %}
                                                 </td>
                                             {% else %}
