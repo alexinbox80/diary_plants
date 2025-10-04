@@ -1,29 +1,17 @@
 {% macro show(header) %}
     <div class="dropdown ms-auto">
-        <div class="dropdown-toggle" type="button" id="dropdown-column" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="dropdown-toggle" type="button" id="dropdown-table-column" data-bs-toggle="dropdown" aria-expanded="false">
             Выбрать колонки
         </div>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-column">
-            {% for title in header %}
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-table-column" id="dropdown-table-column-toggle">
+            {% for key, title in header %}
             <li class="dropdown-item d-flex align-items-center">
-                <input class="form-check-input me-2" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label mb-0" for="flexCheckDefault">
+                <input class="form-check-input me-2" type="checkbox" value="" id="flexCheck{{ key|capitalize }}" data-column="{{ key }}">
+                <label class="form-check-label mb-0" for="flexCheck{{ key|capitalize }}">
                     {{ title }}
                 </label>
             </li>
             {% endfor %}
-            <li class="dropdown-item d-flex align-items-center">
-                <input class="form-check-input me-2" type="checkbox" value="" id="flexCheckTitle">
-                <label class="form-check-label mb-0" for="flexCheckTitle">
-                    Заголовок
-                </label>
-            </li>
-            <li class="dropdown-item d-flex align-items-center">
-                <input class="form-check-input me-2" type="checkbox" value="" id="flexCheckDescription">
-                <label class="form-check-label mb-0" for="flexCheckDescription">
-                    Описание
-                </label>
-            </li>
         </ul>
     </div>
 {% endmacro %}

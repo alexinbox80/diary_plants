@@ -6395,7 +6395,10 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
 .dropdown-item.active, .dropdown-item:active {
   color: var(--bs-dropdown-link-active-color);
   text-decoration: none;
-  background-color: var(--bs-dropdown-link-active-bg);
+  background-color: #38ce3c;
+}
+.dropdown-item.active span {
+    color: white !important;
 }
 .dropdown-item.disabled, .dropdown-item:disabled {
   color: var(--bs-dropdown-link-disabled-color);
@@ -26680,5 +26683,9 @@ div.tagsinput span.tag a {
   .doughnutjs-wrapper {
     height: auto !important;
   }
+}
+
+.hidden {
+    display: none;
 }
 /*# sourceMappingURL=style.css.map */

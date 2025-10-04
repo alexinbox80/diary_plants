@@ -36,3 +36,8 @@
         <!-- main-panel ends -->
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/admin/table/main.js') }}" ></script>
+{% endblock %}

@@ -16,8 +16,8 @@
                     <div class="table-responsive border rounded pt-1">
                         <table class="table table-striped">
                             <thead>
-                                {% for title in array.table_header %}
-                                    <th class="font-weight-bold">{{ title }}</th>
+                                {% for key, title in array.table_header %}
+                                    <th class="font-weight-bold" data-column="{{ key }}">{{ title }}</th>
                                 {% endfor %}
                                 <th class="font-weight-bold">Действия</th>
                             </thead>
@@ -26,7 +26,7 @@
                                     <tr>
                                         {% for column_number, key in array.table_header|keys %}
                                             {% if column_number > 0 %}
-                                                <td>
+                                                <td data-column="{{ key }}">
                                                     {% if item[key] is not null %}
                                                         {% if item[key] == 1 %}Да
                                                         {% elseif item[key] == 0 %}Нет
@@ -36,7 +36,7 @@
                                                     {% endif %}
                                                 </td>
                                             {% else %}
-                                                <td title="{{ item[key] }}">
+                                                <td title="{{ item[key] }}" data-column="{{ key }}">
                                                     {{ row_number + 1 }}
                                                 </td>
                                             {% endif %}

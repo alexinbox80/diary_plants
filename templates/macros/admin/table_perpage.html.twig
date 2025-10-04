@@ -7,7 +7,7 @@
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-per-page">
             {% for option in [20, 40, 60, 80] %}
                 <li>
-                    <a class="dropdown-item" href="{{ url ~ option }}">
+                    <a class="dropdown-item {% if option == count %}active{% endif %}" href="{{ url ~ option }}">
                         <span class="text-muted">
                             {{ option }}
                         </span>
