@@ -26688,4 +26688,24 @@ div.tagsinput span.tag a {
 .hidden {
     display: none;
 }
+.sortable {
+    cursor: pointer;
+}
+.sortable .sort-arrow {
+    display: inline-block;
+    width: 1em; /* Размер для стрелки */
+    height: 1em;
+    margin-left: 0.5em;
+    font-size: 0.8em;
+}
+.sort-arrow::before {
+    content: "";
+    /* Здесь можно вставлять SVG или символы стрелок */
+}
+.sort-arrow.asc::before {
+    content: "\2191"; /* Стрелка вверх */
+}
+.sort-arrow.desc::before {
+    content: "\2193"; /* Стрелка вниз */
+}
 /*# sourceMappingURL=style.css.map */
