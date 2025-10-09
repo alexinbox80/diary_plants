@@ -26708,4 +26708,13 @@ div.tagsinput span.tag a {
 .sort-arrow.desc::before {
     content: "\2193"; /* Стрелка вниз */
 }
+.form-error {
+    color: #dc3545; /* Красный цвет */
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+.form-error ul {
+    list-style: none;
+    padding-left: 0;
+}
 /*# sourceMappingURL=style.css.map */

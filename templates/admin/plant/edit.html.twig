@@ -1,0 +1,49 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block header %}
+    {% include 'components/admin/navbar.html.twig' with {'title': 'Редактировать растение'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/admin/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            {{ form_start(form) }}
+                                {{ form_errors(form) }}
+                                {% for child in form %}
+                                    {% if child.vars.name not in ['isShown'] %}
+                                    <div class="form-group mb-3">
+                                        {{ form_label(child) }}
+                                        {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="form-error">
+                                            {{ form_errors(child) }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="form-check form-check-flat form-check-primary">
+                                    <label class="form-check-label">
+                                        {{ form_widget(form.isShown, {'attr': {'class': 'form-check-input'}}) }}
+                                        Показывать растение
+                                    </label>
+                                    <div class="form-error">
+                                        {{ form_errors(form.isShown) }}
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary me-2">Сохранить</button>
+                                <a class="btn btn-light" href="{{ path('admin.plants_paginated.index') }}">Отмена</a>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/admin/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}

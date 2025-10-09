@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Controller\Form;
+
+use App\Controller\Web\Admin\Plant\EditPlant\Input\EditPlantDTO;
+use App\Domain\Model\Plant\PlantModel;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class PlantType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $labels = PlantModel::getTableHeaderRu();
+
+        $builder
+            ->add('title', TextType::class, [
+                'label' => $labels['title'],
+                'required' => true,
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => $labels['description'],
+                'required' => false,
+            ])
+            ->add('room', TextType::class, [
+                'label' => $labels['room'],
+                'required' => true,
+            ])
+            ->add('purchaseDate', DateTimeType::class, [
+                'label' => $labels['purchase_date'],
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('vaccinationDate', DateTimeType::class, [
+                'label' => $labels['vaccination_date'],
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('plantingDate', DateTimeType::class, [
+                'label' => $labels['planting_date'],
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('seller', TextType::class, [
+                'label' => $labels['seller'],
+                'required' => false,
+            ])
+            ->add('nursery', TextType::class, [
+                'label' => $labels['nursery'],
+                'required' => false,
+            ])
+            ->add('price', TextType::class, [
+                'label' => $labels['price'],
+                'required' => false,
+                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+            ])
+            ->add('shippingCost', TextType::class, [
+                'label' => $labels['shipping_cost'],
+                'required' => false,
+                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+            ])
+            ->add('packagingCost', TextType::class, [
+                'label' => $labels['packaging_cost'],
+                'required' => false,
+                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+            ])
+            ->add('isShown', CheckboxType::class, [
+                'label' => $labels['is_shown'],
+                'required' => false,
+                'attr' => ['title' => 'Отображать растение на сайте'],
+            ])
+            ->add('soil', TextType::class, [
+                'label' => $labels['soil'],
+                'required' => false,
+            ])
+            ->add('comment', TextareaType::class, [
+                'label' => $labels['comment'],
+                'required' => false,
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => EditPlantDTO::class,
+            'empty_data' => new EditPlantDTO()
+        ]);
+    }
+}

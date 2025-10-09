@@ -21,6 +21,11 @@ final class Price
         $this->currency = $currency;
     }
 
+    public function __toString(): string
+    {
+        return sprintf('%s %s', $this->amount, $this->currency->value);
+    }
+
     public function getAmount(): int
     {
         return $this->amount;

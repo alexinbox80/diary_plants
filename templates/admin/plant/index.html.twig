@@ -16,7 +16,8 @@
                             'array': plants,
                             'pagination': pagination,
                             'route_index': 'admin.plants.index',
-                            'route_pagination': 'admin.plants_paginated.index'
+                            'route_pagination': 'admin.plants_paginated.index',
+                            'route_edit': 'admin.plants.edit'
                         }
                     %}
                 {% else %}
@@ -25,7 +26,8 @@
                             'title': 'Список растений',
                             'array': plants,
                             'route_index': 'admin.plants.index',
-                            'route_pagination': 'admin.plants_paginated.index'
+                            'route_pagination': 'admin.plants_paginated.index',
+                            'route_edit': 'admin.plants.edit'
                         }
                     %}
                 {% endif %}
