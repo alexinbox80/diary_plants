@@ -40,17 +40,9 @@
 {% endblock %}
 
 {% block content %}
+    {% include 'components/admin/alert.html.twig' with {'flashes': app.flashes} %}
     <div class="container-scroller">
         {% block header %}{% endblock %}
-        {% block body %}
-            {% for type, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ type }} mb-3">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endfor %}
-            {{ block('content') }}
-        {% endblock %}
+        {% block body %}{% endblock %}
     </div>
 {% endblock %}

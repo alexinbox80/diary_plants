@@ -11,6 +11,7 @@
                     {% else %}
                         <a href="{{ path(route_pagination) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать записи с пагинацией</a>
                     {% endif %}
+                    <a class="btn btn-primary ms-auto" href="{{ path(route_create) }}">Создать</a>
                 </div>
                 {% if array is defined %}
                     <div class="table-responsive border rounded pt-1">

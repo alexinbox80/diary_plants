@@ -26717,10 +26717,18 @@ div.tagsinput span.tag a {
     list-style: none;
     padding-left: 0;
 }
-.alert {}
+.alert {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
 .alert-success {
     color: #155724;
     background-color: #d4edda;
     border-color: #c3e6cb;
+}
+#dropdown-table-column-toggle li,
+#dropdown-table-column-toggle li input,
+#dropdown-table-column-toggle li label {
+    cursor: pointer;
 }
 /*# sourceMappingURL=style.css.map */

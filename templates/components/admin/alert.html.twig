@@ -1,0 +1,10 @@
+{% for type, messages in flashes %}
+    {% for message in messages %}
+        <div class="position-absolute top-50 start-50 translate-middle z-1">
+            <div class="alert alert-{{ type }} alert-dismissible show d-flex justify-content-between" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <span class="me-auto">{{ message }}</span>
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}
