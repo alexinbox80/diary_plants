@@ -14,7 +14,7 @@ class OffspringRepository extends AbstractRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('o')
             ->from(Offspring::class, 'o')
-            ->orderBy('o.createdAt', 'DESC')
+            ->orderBy('o.updatedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage)
             ->getQuery();
@@ -40,7 +40,14 @@ class OffspringRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Offspring::class)->findAll();
+        //return $this->entityManager->getRepository(Offspring::class)->findAll();
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        return $queryBuilder
+            ->select('o')
+            ->from(Offspring::class, 'o')
+            ->orderBy('o.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

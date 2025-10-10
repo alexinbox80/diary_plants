@@ -14,17 +14,18 @@
                     </div>
                 {% endif %}
             {% endfor %}
-            <div class="form-check form-check-flat form-check-primary">
-                <label class="form-check-label">
-                    {{ form_widget(form.isShown, {'attr': {'class': 'form-check-input'}}) }}
-                    Показывать растение
-                </label>
-                <div class="form-error">
-                    {{ form_errors(form.isShown) }}
+            {% if form.isShown is defined %}
+                <div class="form-check form-check-flat form-check-primary">
+                    <label class="form-check-label">
+                        {{ form_widget(form.isShown, {'attr': {'class': 'form-check-input'}}) }}
+                        Показывать растение
+                    </label>
+                    <div class="form-error">
+                        {{ form_errors(form.isShown) }}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             <button type="submit" class="btn btn-primary me-2">Сохранить</button>
-{#            {{ form_row(form.submit) }}#}
             <a class="btn btn-light" href="{{ path(route_cancel) }}">Отмена</a>
             {{ form_end(form) }}
         </div>

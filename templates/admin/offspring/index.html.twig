@@ -16,7 +16,9 @@
                             'array': offsprings,
                             'pagination': pagination,
                             'route_index': 'admin.offsprings.index',
-                            'route_pagination': 'admin.offsprings_paginated.index'
+                            'route_pagination': 'admin.offsprings_paginated.index',
+                            'route_edit': 'admin.offsprings.edit',
+                            'route_create': 'admin.offsprings.create'
                         }
                     %}
                 {% else %}
@@ -25,7 +27,9 @@
                             'title': 'Список плодов',
                             'array': offsprings,
                             'route_index': 'admin.offsprings.index',
-                            'route_pagination': 'admin.offsprings_paginated.index'
+                            'route_pagination': 'admin.offsprings_paginated.index',
+                            'route_edit': 'admin.offsprings.edit',
+                            'route_create': 'admin.offsprings.create'
                         }
                     %}
                 {% endif %}
