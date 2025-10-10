@@ -13,9 +13,7 @@ class CreatePlantModel
         public readonly string $title,
         #[Assert\NotBlank]
         public readonly string $room,
-        #[Assert\NotBlank]
-        #[Assert\Type(type: 'bool', message: 'The value must be a boolean.')]
-        public readonly bool $isShown = true,
+        public readonly bool $isShown,
         public readonly ?string $description = null,
         #[Assert\Type(type: ['null', DateTime::class])]
         public readonly ?DateTime $purchaseDate = null,

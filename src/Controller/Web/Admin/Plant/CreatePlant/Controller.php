@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Controller\Web\Admin\Plant\EditPlant;
+namespace App\Controller\Web\Admin\Plant\CreatePlant;
 
-use App\Domain\Entity\Plant;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +14,10 @@ class Controller extends AbstractController
     ) {
     }
 
-    #[Route(path: '/admin/plants/{id}/edit', name: 'admin.plants.edit', methods: ['GET', 'PATCH'])]
-    public function __invoke(Request $request, #[MapEntity(id: 'id')] Plant $plant): Response
+    #[Route(path: '/admin/plants/create', name: 'admin.plants.create', methods: ['GET', 'POST'])]
+    public function __invoke(Request $request): Response
     {
-        $result = $this->manager->editFormData($request, $plant);
+        $result = $this->manager->createFormData($request);
 
         if (isset($result['success']) && $result['success'] === true) {
 
@@ -34,6 +32,6 @@ class Controller extends AbstractController
             return $this->redirectToRoute('admin.plants_paginated.index');
         }
 
-        return $this->render('admin/plant/edit.html.twig', $result);
+        return $this->render('admin/plant/create.html.twig', $result);
     }
 }

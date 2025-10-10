@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Admin\Plant\GetPlants;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -14,8 +15,11 @@ class Controller extends AbstractController
     }
 
     #[Route(path: '/admin/plants', name: 'admin.plants.index', methods: ['GET'])]
-    public function __invoke(): Response
+    public function __invoke(Request $request): Response
     {
+        //перед вызовом контроллера редактирования установить переменную сессии
+        $request->getSession()->set('_previous_route', $request->getRequestUri());
+
         $plantsModel = $this->manager->getPlants();
         $plants = ['table_header' => $plantsModel['tableHeader'], 'table_body' => $plantsModel['tableBody']];
 

@@ -17,7 +17,7 @@ class PlantRepository extends AbstractRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('p')
             ->from(Plant::class, 'p')
-            ->orderBy('p.createdAt', 'DESC')
+            ->orderBy('p.updatedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage)
             ->getQuery();
@@ -53,7 +53,14 @@ class PlantRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Plant::class)->findAll();
+        //return $this->entityManager->getRepository(Plant::class)->findAll();
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        return $queryBuilder
+            ->select('p')
+            ->from(Plant::class, 'p')
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

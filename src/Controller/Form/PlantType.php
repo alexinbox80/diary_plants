@@ -3,6 +3,7 @@
 namespace App\Controller\Form;
 
 use App\Controller\Web\Admin\Plant\EditPlant\Input\EditPlantDTO;
+use App\Controller\Web\Admin\Plant\CreatePlant\Input\CreatePlantDTO;
 use App\Domain\Model\Plant\PlantModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -84,14 +85,16 @@ class PlantType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => $labels['comment'],
                 'required' => false,
-            ]);
+            ])
+            ->setMethod($options['isNew'] ? 'POST' : 'PATCH');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => EditPlantDTO::class,
-            'empty_data' => new EditPlantDTO()
+            'empty_data' => new CreatePlantDTO(),
+            'isNew' => false,
         ]);
     }
 }

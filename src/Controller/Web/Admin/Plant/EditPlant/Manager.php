@@ -67,6 +67,9 @@ class Manager
             );
 
             $this->plantService->update($plant, $updatePlantModel);
+
+            $request->getSession()->getFlashBag()->add('success', 'Растение успешно обновлено.');
+            return ['success' => true];
         }
 
         return [
