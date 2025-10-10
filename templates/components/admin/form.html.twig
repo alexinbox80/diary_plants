@@ -4,7 +4,7 @@
             {{ form_start(form) }}
             {{ form_errors(form) }}
             {% for child in form %}
-                {% if child.vars.name not in ['isShown', 'submit'] %}
+                {% if child.vars.name not in ['isShown', 'submit', '_token'] %}
                     <div class="form-group mb-3">
                         {{ form_label(child) }}
                         {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}

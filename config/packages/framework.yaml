@@ -8,8 +8,14 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    csrf_protection: ~
+
     #esi: true
     #fragments: true
+#    form:
+#        csrf_protection:
+#            enabled: true
+#            field_name: '_token' # Customize the hidden field name
 
 when@test:
     framework:

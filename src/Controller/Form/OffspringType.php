@@ -64,6 +64,9 @@ class OffspringType extends AbstractType
             'data_class' => EditOffspringDTO::class,
             'empty_data' => new CreateOffspringDTO(),
             'isNew' => false,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'unique_form_identifier',
         ]);
     }
 }

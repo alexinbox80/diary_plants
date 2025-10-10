@@ -95,6 +95,9 @@ class PlantType extends AbstractType
             'data_class' => EditPlantDTO::class,
             'empty_data' => new CreatePlantDTO(),
             'isNew' => false,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'unique_form_identifier',
         ]);
     }
 }
