@@ -6,3 +6,6 @@ cli-test:
 
 convert:
 	php bin/console database:convert:csv
+
+php-shell:
+	docker exec -it -u www-data dplants_php-fpm bash

@@ -4,7 +4,7 @@ services:
         build:
             dockerfile: Dockerfile
             context: ./docker/php-fpm
-        container_name: 'dplants_php'
+        container_name: 'dplants_php-fpm'
         depends_on:
             - dplants_postgres
         ports:
@@ -20,7 +20,7 @@ services:
         container_name: 'dplants_nginx'
         working_dir: /app
         depends_on:
-            - dplants_php
+            - dplants_php-fpm
         ports:
             - '8080:80'
         volumes:

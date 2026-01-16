@@ -11,6 +11,8 @@ doctrine:
         types:
             oid: App\Infrastructure\Doctrine\Types\OIdType
             price: App\Infrastructure\Doctrine\Types\PriceType
+        options:
+            1002: "SET timezone='UTC'"
 
     orm:
         auto_generate_proxy_classes: true

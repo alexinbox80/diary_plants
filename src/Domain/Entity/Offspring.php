@@ -28,11 +28,11 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     private ?int $id = null;
 
     //дата сбора
-    #[ORM\Column(name: 'fruiting_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'fruiting_date', type: 'datetimetz', nullable: true)]
     private ?DateTime $fruitingDate = null;
 
     //дата цветения
-    #[ORM\Column(name: 'flowering_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'flowering_date', type: 'datetimetz', nullable: true)]
     private ?DateTime $floweringDate = null;
 
     //масса гр

@@ -31,12 +31,27 @@ class AttachmentRepository extends AbstractRepository
 
     /**
      * Получить все вложения для определённой сущности, включая удалённые.
+     *
+     * @param class-string $attachableType Полное имя класса (например, App\Domain\Entity\Plant)
+     * @param int $attachableId
+     * @return Attachment[]
      */
     public function findByAttachableWithDeleted(string $attachableType, int $attachableId): array
     {
-        return $this->entityManager->createQueryBuilder('a')
-            ->andWhere('a.attachableType = :type')
+//        return $this->entityManager->createQueryBuilder('a')
+//            ->andWhere('a.attachableType = :type')
+//            ->andWhere('a.attachableId = :id')
+//            ->setParameter('type', $attachableType)
+//            ->setParameter('id', $attachableId)
+//            ->getQuery()
+//            ->getResult();
+
+        return $this->entityManager->createQueryBuilder()
+            ->select('a')
+            ->from(Attachment::class, 'a')
+            ->where('a.attachableType = :type')
             ->andWhere('a.attachableId = :id')
+            ->andWhere('a.deletedAt IS NULL')
             ->setParameter('type', $attachableType)
             ->setParameter('id', $attachableId)
             ->getQuery()

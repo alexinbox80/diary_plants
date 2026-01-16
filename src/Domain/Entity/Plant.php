@@ -52,15 +52,15 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     private string $room;
 
     //дата покупки
-    #[ORM\Column(name: 'purchase_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'purchase_date', type: 'datetimetz', nullable: true)]
     private ?DateTime $purchaseDate = null;
 
     //дата прививки
-    #[ORM\Column(name: 'vaccination_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'vaccination_date', type: 'datetimetz', nullable: true)]
     private ?DateTime $vaccinationDate = null;
 
     //дата посадки
-    #[ORM\Column(name: 'planting_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'planting_date', type: 'datetimetz', nullable: true)]
     private ?DateTime $plantingDate = null;
 
     //продавец
