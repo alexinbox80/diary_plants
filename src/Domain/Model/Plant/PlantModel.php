@@ -5,6 +5,7 @@ namespace App\Domain\Model\Plant;
 use App\Domain\Model\OId;
 use App\Domain\Model\Price;
 use DateTime;
+use DateTimeZone;
 
 class PlantModel
 {
@@ -153,6 +154,8 @@ class PlantModel
 
     public function toArray(): array
     {
+        $timezone = new DateTimeZone('Europe/Moscow');
+
         return [
             'id' => $this->getId(),
             'oid' => $this->oid->toString(),
@@ -171,8 +174,8 @@ class PlantModel
             'packaging_cost' => $this->packagingCost?->toString(),
             'soil' => $this->getSoil(),
             'comment' => $this->getComment(),
-            'created_at' => $this->createdAt->format('d.m.Y H:i:s'),
-            'updated_at' => $this->updatedAt->format('d.m.Y H:i:s'),
+            'created_at' => $this->createdAt->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'updated_at' => $this->updatedAt->setTimezone($timezone)->format('d.m.Y H:i:s'),
         ];
     }
 }
