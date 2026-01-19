@@ -6,7 +6,8 @@ services:
             context: ./docker/php-fpm
         container_name: 'dplants_php-fpm'
         depends_on:
-            - dplants_postgres
+            dplants_postgres:
+                condition: service_healthy
         ports:
             - '9000:9000'
         volumes:
@@ -36,6 +37,11 @@ services:
         container_name: 'dplants_postgres'
         working_dir: /app
         restart: always
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U user -d dplants" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
         environment:
             POSTGRES_DB: 'dplants'
             POSTGRES_USER: 'user'
