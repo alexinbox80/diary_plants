@@ -24,7 +24,7 @@ export default class MenuController {
             document.body.classList.remove('sidebar-icon-only');
             this.#saveToLocalStorage(this.#shortMenuFlagName, 'true');
             this.#shortMenu = true;
-        } else{
+        } else {
             document.body.classList.add('sidebar-icon-only');
             this.#removeFromLocalStorage(this.#shortMenuFlagName);
             this.#shortMenu = false;
