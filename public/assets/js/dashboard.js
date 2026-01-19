@@ -2,6 +2,11 @@
   'use strict';
   $(function () {
 
+    if (typeof moment === 'undefined') {
+        console.warn('moment.js is not loaded. Please include it before this script.');
+        return;
+    }
+
     var start = moment().subtract(29, 'days');
     var end = moment();
 
