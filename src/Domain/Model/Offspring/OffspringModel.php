@@ -3,6 +3,7 @@
 namespace App\Domain\Model\Offspring;
 
 use DateTime;
+use DateTimeZone;
 
 class OffspringModel
 {
@@ -95,6 +96,8 @@ class OffspringModel
 
     public function toArray(): array
     {
+        $timezone = new DateTimeZone('Europe/Moscow');
+
         return [
             'id' => $this->getId(),
             'attachment' => null,
@@ -106,8 +109,8 @@ class OffspringModel
             'flavor' => $this->getFlavor(),
             'quantity' => $this->getQuantity(),
             'comment' => $this->getComment(),
-            'created_at' => $this->getCreatedAt()->format('d.m.Y H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('d.m.Y H:i:s'),
+            'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
         ];
     }
 }

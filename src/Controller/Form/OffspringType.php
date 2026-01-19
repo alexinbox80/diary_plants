@@ -6,9 +6,9 @@ use App\Controller\Web\Admin\Offspring\EditOffspring\Input\EditOffspringDTO;
 use App\Controller\Web\Admin\Offspring\CreateOffspring\Input\CreateOffspringDTO;
 use App\Domain\Model\Offspring\OffspringModel;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,17 +23,19 @@ class OffspringType extends AbstractType
                 'label' => $labels['plant_id'],
                 'required' => true
             ])
-            ->add('fruitingDate', DateTimeType::class, [
+            ->add('fruitingDate', DateType::class, [
                 'label' => $labels['fruiting_date'],
                 'required' => false,
                 'widget' => 'single_text',
                 'html5' => true,
+                'format' => 'yyyy-MM-dd',
             ])
-            ->add('floweringDate', DateTimeType::class, [
+            ->add('floweringDate', DateType::class, [
                 'label' => $labels['flowering_date'],
                 'required' => false,
                 'widget' => 'single_text',
                 'html5' => true,
+                'format' => 'yyyy-MM-dd',
             ])
             ->add('mass', TextType::class, [
                 'label' => $labels['mass'],
