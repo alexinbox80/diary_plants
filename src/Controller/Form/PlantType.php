@@ -9,7 +9,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,17 +39,19 @@ class PlantType extends AbstractType
                 'html5' => true,
                 'format' => 'yyyy-MM-dd',
             ])
-            ->add('vaccinationDate', DateTimeType::class, [
+            ->add('vaccinationDate', DateType::class, [
                 'label' => $labels['vaccination_date'],
                 'required' => false,
                 'widget' => 'single_text',
                 'html5' => true,
+                'format' => 'yyyy-MM-dd',
             ])
-            ->add('plantingDate', DateTimeType::class, [
+            ->add('plantingDate', DateType::class, [
                 'label' => $labels['planting_date'],
                 'required' => false,
                 'widget' => 'single_text',
                 'html5' => true,
+                'format' => 'yyyy-MM-dd',
             ])
             ->add('seller', TextType::class, [
                 'label' => $labels['seller'],

@@ -18678,7 +18678,7 @@ code {
   width: 18px;
   height: 18px;
   border-radius: 2px;
-  border: solid #1bdbe0;
+  border: solid #38ce3c;
   border-width: 2px;
   -webkit-transition: all;
   transition: all;
@@ -26725,6 +26725,9 @@ div.tagsinput span.tag a {
     color: #155724;
     background-color: #d4edda;
     border-color: #c3e6cb;
+}
+.alert .alert-content svg {
+    width: 1.5rem;
 }
 #dropdown-table-column-toggle li,
 #dropdown-table-column-toggle li input,
