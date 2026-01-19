@@ -20,15 +20,12 @@ export default class MenuController {
     }
 
     #emitEvent() {
-        if (configure.debug) {
-            console.log('Call emit Event!');
-        }
-
-        if (!this.#shortMenu) {
-            this.#saveToLocalStorage(this.#shortMenuFlagName, true);
-            this.#shortMenu = true;
-        } else {
+        if (this.#shortMenu === false) {
             document.body.classList.remove('sidebar-icon-only');
+            this.#saveToLocalStorage(this.#shortMenuFlagName, 'true');
+            this.#shortMenu = true;
+        } else{
+            document.body.classList.add('sidebar-icon-only');
             this.#removeFromLocalStorage(this.#shortMenuFlagName);
             this.#shortMenu = false;
         }
@@ -39,7 +36,7 @@ export default class MenuController {
 
         element.addEventListener('click', (event) => {
             if (configure.debug) {
-                console.log('Элемент с id main-sidebar-menu был нажат!', event.target);
+                console.log('Element with id main-sidebar-menu was click!', event.target);
             }
 
             this.#emitEvent();
