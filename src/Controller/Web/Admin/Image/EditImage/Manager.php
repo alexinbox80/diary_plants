@@ -2,79 +2,68 @@
 
 namespace App\Controller\Web\Admin\Image\EditImage;
 
-use App\Controller\Web\Admin\Plant\EditPlant\Input\EditPlantDTO;
-use App\Domain\Entity\Plant;
-use App\Domain\Model\Plant\UpdatePlantModel;
-use App\Domain\Model\Price;
+use App\Controller\Form\ImageType;
+use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
+use App\Domain\Entity\Attachment;
+use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use App\Domain\Service\ModelFactory;
-use App\Domain\Service\PlantService;
-use App\Controller\Form\PlantType;
+use App\Domain\Service\AttachmentService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Manager
 {
     public function __construct(
-        private readonly PlantService $plantService,
+        private readonly AttachmentService $attachmentService,
         private readonly FormFactoryInterface $formFactory,
         private readonly ModelFactory $modelFactory
     ) {
     }
 
-    public function editFormData(Request $request, Plant $plant): array
+    public function editFormData(Request $request, Attachment $attachment): array
     {
 
-        $formData = new EditPlantDTO(
-            $plant->getTitle(),
-            $plant->getRoom(),
-            $plant->isShown(),
-            $plant->getDescription(),
-            $plant->getPurchaseDate(),
-            $plant->getVaccinationDate(),
-            $plant->getPlantingDate(),
-            $plant->getSeller(),
-            $plant->getNursery(),
-            $plant->getPrice(),
-            $plant->getShippingCost(),
-            $plant->getPackagingCost(),
-            $plant->getSoil(),
-            $plant->getComment()
+        $formData = new EditImageDTO(
+            $attachment->getFilename(),
+            $attachment->getPath(),
+            $attachment->getMimeType(),
+            $attachment->getAlt(),
+            $attachment->getTitle(),
+            $attachment->getFileDate(),
+            $attachment->getDescription(),
+            $attachment->getAttachableId(),
+            $attachment->getAttachableType()
         );
 
-        $form = $this->formFactory->create(PlantType::class, $formData);
+        $form = $this->formFactory->create(ImageType::class, $formData);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var EditPlantDTO $editPlantDTO */
-            $editPlantDTO = $form->getData();
+            /** @var EditImageDTO $editImageDTO */
+            $editImageDTO = $form->getData();
 
-            $updatePlantModel = $this->modelFactory->makeModel(
-                UpdatePlantModel::class,
-                $editPlantDTO->title,
-                $editPlantDTO->room,
-                $editPlantDTO->isShown,
-                $editPlantDTO->description,
-                $editPlantDTO->plantingDate,
-                $editPlantDTO->vaccinationDate,
-                $editPlantDTO->plantingDate,
-                $editPlantDTO->seller,
-                $editPlantDTO->nursery,
-                $editPlantDTO->price !== null ? Price::fromString($editPlantDTO->price) : null,
-                $editPlantDTO->shippingCost !== null ? Price::fromString($editPlantDTO->shippingCost) : null,
-                $editPlantDTO->packagingCost !== null ? Price::fromString($editPlantDTO->packagingCost) : null,
-                $editPlantDTO->soil,
-                $editPlantDTO->comment
+            $updateAttachmentModel = $this->modelFactory->makeModel(
+                UpdateAttachmentModel::class,
+                $editImageDTO->filename,
+                $editImageDTO->path,
+                $editImageDTO->mimeType,
+                $editImageDTO->alt,
+                $editImageDTO->title,
+                $editImageDTO->fileDate,
+                $editImageDTO->attachableId,
+                $editImageDTO->attachableType,
+                $editImageDTO->description,
             );
 
-            $this->plantService->update($plant, $updatePlantModel);
+            $this->attachmentService->update($attachment, $updateAttachmentModel);
 
-            $request->getSession()->getFlashBag()->add('success', 'Растение успешно обновлено.');
+            $request->getSession()->getFlashBag()->add('success', 'Изображение успешно обновлено.');
             return ['success' => true];
         }
 
         return [
             'form' => $form,
-            'plant' => $plant
+            'image' => $attachment
         ];
     }
 }

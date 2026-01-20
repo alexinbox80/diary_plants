@@ -1,7 +1,7 @@
 {% extends 'layout/admin.html.twig' %}
 
 {% block header %}
-    {% include 'components/admin/navbar.html.twig' with {'title': 'Создать растение'} %}
+    {% include 'components/admin/navbar.html.twig' with {'title': 'Создать изображение'} %}
 {% endblock %}
 
 {% block body %}
@@ -11,7 +11,7 @@
             <div class="content-wrapper">
                 {% include 'components/admin/form.html.twig' with {
                     'form': form,
-                    'route_cancel': 'admin.plants_paginated.index'
+                    'route_cancel': 'admin.images_paginated.index'
                 } %}
             </div>
             <!-- content-wrapper ends -->

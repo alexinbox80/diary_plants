@@ -2,13 +2,13 @@
 
 namespace App\Controller\Web\Admin\Image\GetImages;
 
-use App\Domain\Model\Plant\PlantModel;
-use App\Domain\Service\PlantService;
+use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Service\AttachmentService;
 
 class Manager
 {
     public function __construct(
-        private readonly PlantService $plantService
+        private readonly AttachmentService $attachmentService
     ) {
     }
 
@@ -18,11 +18,11 @@ class Manager
      */
     public function getPlants(): array
     {
-        $plantsModel = $this->plantService->findAll();
-        $tableHeader = PlantModel::getTableHeaderRu();
+        $attachmentsModel = $this->attachmentService->findAll();
+        $tableHeader = AttachmentModel::getTableHeaderRu();
         $tableBody = array_map(
-            static fn (PlantModel $model): array => $model->toArray(),
-            $plantsModel
+            static fn (AttachmentModel $model): array => $model->toArray(),
+            $attachmentsModel
         );
 
         return [

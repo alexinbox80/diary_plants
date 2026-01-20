@@ -2,20 +2,18 @@
 
 namespace App\Controller\Web\Admin\Image\CreateImage;
 
-use App\Controller\Web\Admin\Plant\CreatePlant\Input\CreatePlantDTO;
-use App\Domain\Entity\Plant;
-use App\Domain\Model\Plant\CreatePlantModel;
-use App\Domain\Model\Price;
+use App\Controller\Form\ImageType;
+use App\Controller\Web\Admin\Image\CreateImage\Input\CreateImageDTO;
+use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Service\ModelFactory;
-use App\Domain\Service\PlantService;
-use App\Controller\Form\PlantType;
+use App\Domain\Service\AttachmentService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Manager
 {
     public function __construct(
-        private readonly PlantService $plantService,
+        private readonly AttachmentService $attachmentService,
         private readonly FormFactoryInterface $formFactory,
         private readonly ModelFactory $modelFactory
     ) {
@@ -25,34 +23,29 @@ class Manager
     {
         $isNew = true;
 
-        $form = $this->formFactory->create(PlantType::class, null, ['isNew' => $isNew]);
+        $form = $this->formFactory->create(ImageType::class, null, ['isNew' => $isNew]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var CreatePlantDTO $createPlantDTO */
-            $createPlantDTO = $form->getData();
+            /** @var CreateImageDTO $createImageDTO */
+            $createImageDTO = $form->getData();
 
-            $createPlantModel = $this->modelFactory->makeModel(
-                CreatePlantModel::class,
-                $createPlantDTO->title,
-                $createPlantDTO->room,
-                $createPlantDTO->isShown,
-                $createPlantDTO->description,
-                $createPlantDTO->plantingDate,
-                $createPlantDTO->vaccinationDate,
-                $createPlantDTO->plantingDate,
-                $createPlantDTO->seller,
-                $createPlantDTO->nursery,
-                $createPlantDTO->price !== null ? Price::fromString($createPlantDTO->price) : null,
-                $createPlantDTO->shippingCost !== null ? Price::fromString($createPlantDTO->shippingCost) : null,
-                $createPlantDTO->packagingCost !== null ? Price::fromString($createPlantDTO->packagingCost) : null,
-                $createPlantDTO->soil,
-                $createPlantDTO->comment
+            $createImageModel = $this->modelFactory->makeModel(
+                CreateAttachmentModel::class,
+                $createImageDTO->filename,
+                $createImageDTO->path,
+                $createImageDTO->mimeType,
+                $createImageDTO->alt,
+                $createImageDTO->title,
+                $createImageDTO->fileDate,
+                $createImageDTO->attachableId,
+                $createImageDTO->attachableType,
+                $createImageDTO->description,
             );
 
-            $plantModel = $this->plantService->create($createPlantModel);
+            $imageModel = $this->attachmentService->create($createImageModel);
 
-            $request->getSession()->getFlashBag()->add('success', 'Растение успешно создано.');
+            $request->getSession()->getFlashBag()->add('success', 'Изображение успешно сохранено.');
             return ['success' => true];
         }
 

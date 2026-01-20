@@ -21,9 +21,6 @@ class Controller extends AbstractController
 
         if (isset($result['success']) && $result['success'] === true) {
 
-            //перед вызовом контроллера редактирования установить переменную сессии
-            //$request->getSession()->set('_previous_route', $request->getRequestUri());
-
             $previousRoute = $request->getSession()->get('_previous_route');
             if ($previousRoute) {
                 return $this->redirect($previousRoute);

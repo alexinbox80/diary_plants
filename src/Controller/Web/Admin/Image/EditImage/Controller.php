@@ -2,7 +2,7 @@
 
 namespace App\Controller\Web\Admin\Image\EditImage;
 
-use App\Domain\Entity\Plant;
+use App\Domain\Entity\Attachment;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,14 +17,11 @@ class Controller extends AbstractController
     }
 
     #[Route(path: '/admin/images/{id}/edit', name: 'admin.images.edit', methods: ['GET', 'PATCH'])]
-    public function __invoke(Request $request, #[MapEntity(id: 'id')] Plant $plant): Response
+    public function __invoke(Request $request, #[MapEntity(id: 'id')] Attachment $attachment): Response
     {
-        $result = $this->manager->editFormData($request, $plant);
+        $result = $this->manager->editFormData($request, $attachment);
 
         if (isset($result['success']) && $result['success'] === true) {
-
-            //перед вызовом контроллера редактирования установить переменную сессии
-            //$request->getSession()->set('_previous_route', $request->getRequestUri());
 
             $previousRoute = $request->getSession()->get('_previous_route');
             if ($previousRoute) {

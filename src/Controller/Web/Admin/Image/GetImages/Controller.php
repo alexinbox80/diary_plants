@@ -20,13 +20,13 @@ class Controller extends AbstractController
         //перед вызовом контроллера редактирования установить переменную сессии
         $request->getSession()->set('_previous_route', $request->getRequestUri());
 
-        $plantsModel = $this->manager->getPlants();
-        $plants = ['table_header' => $plantsModel['tableHeader'], 'table_body' => $plantsModel['tableBody']];
+        $attachmentsModel = $this->manager->getPlants();
+        $images = ['table_header' => $attachmentsModel['tableHeader'], 'table_body' => $attachmentsModel['tableBody']];
 
         return $this->render(
             'admin/image/index.html.twig',
             [
-                'images' => $plants,
+                'images' => $images,
             ]
         );
     }
