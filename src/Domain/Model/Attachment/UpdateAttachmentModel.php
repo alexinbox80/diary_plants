@@ -3,7 +3,7 @@
 namespace App\Domain\Model\Attachment;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use DateTime;
+use DateTimeImmutable;
 
 class UpdateAttachmentModel
 {
@@ -18,7 +18,7 @@ class UpdateAttachmentModel
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $title,
         #[Assert\NotBlank]
-        public readonly DateTime $fileDate,
+        public readonly DateTimeImmutable $fileDate,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public readonly int $attachableId,

@@ -7,7 +7,7 @@ use App\Domain\Entity\Plant;
 use App\Domain\Model\OId;
 use App\Domain\Model\Price;
 use App\Domain\Model\Currency;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class PlantTest extends TestCase
@@ -28,9 +28,9 @@ class PlantTest extends TestCase
         $oid = OId::next();
         $price = new Price(100, Currency::USD);
 
-        $purchaseDate = new DateTime();
-        $vaccinationDate = new DateTime();
-        $plantingDate = new DateTime();
+        $purchaseDate = new DateTimeImmutable();
+        $vaccinationDate = new DateTimeImmutable();
+        $plantingDate = new DateTimeImmutable();
 
         $attachment = new Attachment(
             photoLink: 'https://example.com/image.jpg',
@@ -78,9 +78,9 @@ class PlantTest extends TestCase
     {
         $oid = OId::next();
         $price = new Price(150, Currency::EUR);
-        $purchaseDate = new DateTime();
-        $vaccinationDate = new DateTime();
-        $plantingDate = new DateTime();
+        $purchaseDate = new DateTimeImmutable();
+        $vaccinationDate = new DateTimeImmutable();
+        $plantingDate = new DateTimeImmutable();
 
         $plant = new Plant(
             title: 'Cactus',
@@ -127,17 +127,17 @@ class PlantTest extends TestCase
             isShown: true,
             //attachment: null,
             description: 'A beautiful flower',
-            purchaseDate: new DateTime(),
-            vaccinationDate: new DateTime(),
-            plantingDate: new DateTime(),
+            purchaseDate: new DateTimeImmutable(),
+            vaccinationDate: new DateTimeImmutable(),
+            plantingDate: new DateTimeImmutable(),
             manufacturer: 'GreenHouse Inc.',
             price: new Price(150, Currency::RUR),
             soil: 'Clay'
         );
 
         $this->getProperty($plant, 'id', 1);
-        $this->getProperty($plant, 'createdAt', new DateTime());
-        $this->getProperty($plant, 'updatedAt', new DateTime());
+        $this->getProperty($plant, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($plant, 'updatedAt', new DateTimeImmutable());
 
         $array = $plant->toArray();
 

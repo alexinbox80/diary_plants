@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Status;
 
-use DateTime;
+use DateTimeImmutable;
 
 class StatusModel
 {
@@ -12,8 +12,8 @@ class StatusModel
         private readonly string $color,
         private readonly ?string $description = null,
         private readonly ?string $colorDescription = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -42,12 +42,12 @@ class StatusModel
         return $this->colorDescription;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

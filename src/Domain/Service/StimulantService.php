@@ -7,7 +7,7 @@ use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Stimulant\UpdateStimulantModel;
 use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
 
 class StimulantService
@@ -54,10 +54,10 @@ class StimulantService
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return StimulantModel[]
      */
-    public function findStimulantsByUseDate(DateTime $date): array
+    public function findStimulantsByUseDate(DateTimeImmutable $date): array
     {
         return $this->stimulantRepository->findStimulantsByUseDate($date);
     }

@@ -7,7 +7,7 @@ use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Fertilizer\UpdateFertilizerModel;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
 
 class FertilizerService
@@ -54,10 +54,10 @@ class FertilizerService
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return FertilizerModel[]
      */
-    public function findFertilizersByUseDate(DateTime $date): array
+    public function findFertilizersByUseDate(DateTimeImmutable $date): array
     {
         return $this->fertilizerRepository->findFertilizersByUseDate($date);
     }

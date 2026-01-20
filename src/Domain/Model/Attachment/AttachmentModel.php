@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Attachment;
 
-use DateTime;
+use DateTimeImmutable;
 
 class AttachmentModel
 {
@@ -11,12 +11,12 @@ class AttachmentModel
         private readonly string $filename,
         private readonly string $path,
         private readonly string $title,
-        private readonly DateTime $fileDate,
+        private readonly DateTimeImmutable $fileDate,
         private readonly ?string $description = null,
         private readonly ?int $attachableId = null,
         private readonly ?string $attachableType = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -40,7 +40,7 @@ class AttachmentModel
         return $this->title;
     }
 
-    public function getFileDate(): DateTime
+    public function getFileDate(): DateTimeImmutable
     {
         return $this->fileDate;
     }
@@ -60,12 +60,12 @@ class AttachmentModel
         return $this->attachableType;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

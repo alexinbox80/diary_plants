@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Stimulant;
-use DateTime;
+use DateTimeImmutable;
 
 class StimulantRepository extends AbstractRepository
 {
@@ -62,10 +62,10 @@ class StimulantRepository extends AbstractRepository
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return Stimulant[]
      */
-    public function findStimulantsByUseDate(DateTime $date): array
+    public function findStimulantsByUseDate(DateTimeImmutable $date): array
     {
         return $this->entityManager->getRepository(Stimulant::class)->findBy(['use_date' => $date]);
     }

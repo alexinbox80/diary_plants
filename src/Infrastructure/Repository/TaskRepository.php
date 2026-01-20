@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Task;
-use DateTime;
+use DateTimeImmutable;
 
 class TaskRepository extends AbstractRepository
 {
@@ -62,10 +62,10 @@ class TaskRepository extends AbstractRepository
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return Task[]
      */
-    public function findPlantsByDate(DateTime $date): array
+    public function findPlantsByDate(DateTimeImmutable $date): array
     {
         return $this->entityManager->getRepository(Task::class)->findBy(['date' => $date]);
     }

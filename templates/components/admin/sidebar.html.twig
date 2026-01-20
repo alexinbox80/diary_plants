@@ -61,8 +61,8 @@
                 <i class="fas fa-sack-xmark menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">
+        <li class="nav-item {% if app.request.attributes.get('_route') starts with 'admin.images' %}active{% endif %}">
+            <a class="nav-link" href="{{ path('admin.images_paginated.index') }}">
                 <span class="menu-title">Галерея</span>
                 <i class="fas fa-images menu-icon"></i>
             </a>

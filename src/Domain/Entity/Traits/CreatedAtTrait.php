@@ -2,16 +2,16 @@
 
 namespace App\Domain\Entity\Traits;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 
 trait CreatedAtTrait
 {
-    #[ORM\Column(name: 'created_at', type: 'datetimetz', nullable: false)]
-    private DateTime $createdAt;
+    #[ORM\Column(name: 'created_at', type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $createdAt;
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -19,6 +19,6 @@ trait CreatedAtTrait
     #[ORM\PrePersist]
     public function setCreatedAt(): void
     {
-        $this->createdAt = new DateTime('now', new DateTimeZone('UTC'));
+        $this->createdAt = new DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 }

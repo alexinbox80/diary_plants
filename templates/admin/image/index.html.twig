@@ -1,0 +1,47 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block header %}
+    {% include 'components/admin/navbar.html.twig' with {'title': 'Галерея изображений'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/admin/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/admin/table.html.twig' with
+                        {
+                            'title': 'Список изображений',
+                            'array': images,
+                            'pagination': pagination,
+                            'route_index': 'admin.images.index',
+                            'route_pagination': 'admin.images_paginated.index',
+                            'route_edit': 'admin.images.edit',
+                            'route_create': 'admin.images.create'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/admin/table.html.twig' with
+                        {
+                            'title': 'Список изображений',
+                            'array': images,
+                            'route_index': 'admin.images.index',
+                            'route_pagination': 'admin.images_paginated.index',
+                            'route_edit': 'admin.images.edit',
+                            'route_create': 'admin.images.create'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/admin/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/admin/table/main.js') }}" data-entity="image"></script>
+{% endblock %}

@@ -8,7 +8,7 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert as WebmozartAssert;
 
@@ -25,8 +25,8 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'use_date', type: 'datetimetz', nullable: false)]
-    private DateTime $useDate;
+    #[ORM\Column(name: 'use_date', type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $useDate;
 
     #[ORM\Column(type: 'text', length: 1024, nullable: true)]
     private ?string $comment = null;
@@ -58,7 +58,7 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->id;
     }
 
-    public function getUseDate(): DateTime
+    public function getUseDate(): DateTimeImmutable
     {
         return $this->useDate;
     }
@@ -84,7 +84,7 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     }
 
     private function setCommonFields(
-        DateTime $useDate,
+        DateTimeImmutable $useDate,
         Plant $plant,
         ?string $comment = null,
         ?int $usableId = null,
@@ -98,10 +98,10 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->setUsableTypeValidate($usableType);
     }
 
-    private function setUseDateValidate(DateTime $useDate): void
+    private function setUseDateValidate(DateTimeImmutable $useDate): void
     {
         WebmozartAssert::notNull($useDate, 'Use date must not be null.');
-        WebmozartAssert::isInstanceOf($useDate, DateTime::class, 'Use date must be a DateTime instance');
+        WebmozartAssert::isInstanceOf($useDate, DateTimeImmutable::class, 'Use date must be a DateTime instance');
         $this->useDate = $useDate;
     }
 
@@ -126,7 +126,7 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     }
 
     public function __construct(
-        DateTime $useDate,
+        DateTimeImmutable $useDate,
         Plant $plant,
         ?string $comment = null,
         ?int $usableId = null,
@@ -136,7 +136,7 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     }
 
     public function changeFields(
-        DateTime $useDate,
+        DateTimeImmutable $useDate,
         Plant $plant,
         ?string $comment = null,
         ?int $usableId = null,

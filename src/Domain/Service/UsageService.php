@@ -7,7 +7,7 @@ use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Usage\UpdateUsageModel;
 use App\Domain\Repository\UsageRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 use InvalidArgumentException;
 
 class UsageService
@@ -36,10 +36,10 @@ class UsageService
     }
 
     /**
-     * @param DateTime $useDate
+     * @param DateTimeImmutable $useDate
      * @return UsageModel[]
      */
-    public function findUsagesByUseDate(DateTime $useDate): array
+    public function findUsagesByUseDate(DateTimeImmutable $useDate): array
     {
         return $this->usageRepository->findUsagesByUseDate($useDate);
     }

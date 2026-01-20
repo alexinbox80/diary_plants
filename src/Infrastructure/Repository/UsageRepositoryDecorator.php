@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Usage;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Repository\UsageRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
 class UsageRepositoryDecorator implements UsageRepositoryInterface
 {
@@ -143,10 +143,10 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     }
 
     /**
-     * @param DateTime $useDate
+     * @param DateTimeImmutable $useDate
      * @return UsageModel[]
      */
-    public function findUsagesByUseDate(DateTime $useDate): array
+    public function findUsagesByUseDate(DateTimeImmutable $useDate): array
     {
         $usages = $this->usageRepository->findUsagesByUseDate($useDate);
 

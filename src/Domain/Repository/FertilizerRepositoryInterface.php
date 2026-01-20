@@ -4,7 +4,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Fertilizer\FertilizerModel;
-use DateTime;
+use DateTimeImmutable;
 
 interface FertilizerRepositoryInterface
 {
@@ -14,7 +14,7 @@ interface FertilizerRepositoryInterface
     public function findAll(): array;
     public function findFertilizersByTitle(string $title): array;
     public function findFertilizersByManufacturer(string $manufacturer): array;
-    public function findFertilizersByUseDate(DateTime $date): array;
+    public function findFertilizersByUseDate(DateTimeImmutable $date): array;
     public function create(Fertilizer $fertilizer): int;
     public function update(): void;
     public function remove(Fertilizer $fertilizer): void;

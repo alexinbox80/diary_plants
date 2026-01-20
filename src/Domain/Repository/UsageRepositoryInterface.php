@@ -4,7 +4,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Entity\Usage;
 use App\Domain\Model\Usage\UsageModel;
-use DateTime;
+use DateTimeImmutable;
 
 interface UsageRepositoryInterface
 {
@@ -16,7 +16,7 @@ interface UsageRepositoryInterface
     public function find(int $usageId): ?Usage;
     public function findModel(int $usageId): ?UsageModel;
     public function findAll(): array;
-    public function findUsagesByUseDate(DateTime $useDate): array;
+    public function findUsagesByUseDate(DateTimeImmutable $useDate): array;
     public function create(Usage $usage): int;
     public function update(): void;
     public function remove(Usage $usage): void;

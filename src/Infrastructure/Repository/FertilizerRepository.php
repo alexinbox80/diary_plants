@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Fertilizer;
-use DateTime;
+use DateTimeImmutable;
 
 class FertilizerRepository extends AbstractRepository
 {
@@ -62,10 +62,10 @@ class FertilizerRepository extends AbstractRepository
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return Fertilizer[]
      */
-    public function findFertilizersByUseDate(DateTime $date): array
+    public function findFertilizersByUseDate(DateTimeImmutable $date): array
     {
         return $this->entityManager->getRepository(Fertilizer::class)->findBy(['use_date' => $date]);
     }

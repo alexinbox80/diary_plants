@@ -2,16 +2,16 @@
 
 namespace App\Domain\Entity\Traits;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 
 trait DeletedAtTrait
 {
-    #[ORM\Column(name: 'deleted_at', type: 'datetimetz', nullable: true)]
-    private ?DateTime $deletedAt = null;
+    #[ORM\Column(name: 'deleted_at', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $deletedAt = null;
 
-    public function getDeletedAt(): ?DateTime
+    public function getDeletedAt(): ?DateTimeImmutable
     {
         return $this->deletedAt;
     }
@@ -19,7 +19,7 @@ trait DeletedAtTrait
     public function setDeletedAt(): void
     {
         if ($this->deletedAt === null) {
-            $this->deletedAt = new DateTime('now', new DateTimeZone('UTC'));
+            $this->deletedAt = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         }
     }
 }

@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Stimulant;
 use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
 class StimulantRepositoryDecorator implements StimulantRepositoryInterface
 {
@@ -144,10 +144,10 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return StimulantModel[]
      */
-    public function findStimulantsByUseDate(DateTime $date): array
+    public function findStimulantsByUseDate(DateTimeImmutable $date): array
     {
         $stimulants = $this->stimulantRepository->findStimulantsByUseDate($date);
 

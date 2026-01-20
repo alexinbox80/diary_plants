@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entity;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
@@ -28,12 +28,12 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     private ?int $id = null;
 
     //дата сбора
-    #[ORM\Column(name: 'fruiting_date', type: 'datetimetz', nullable: true)]
-    private ?DateTime $fruitingDate = null;
+    #[ORM\Column(name: 'fruiting_date', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $fruitingDate = null;
 
     //дата цветения
-    #[ORM\Column(name: 'flowering_date', type: 'datetimetz', nullable: true)]
-    private ?DateTime $floweringDate = null;
+    #[ORM\Column(name: 'flowering_date', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $floweringDate = null;
 
     //масса гр
     #[ORM\Column(name: 'mass', type: 'integer', nullable: true)]
@@ -69,8 +69,8 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
     private function setCommonFields(
         Plant $plant,
-        ?DateTime $fruitingDate = null,
-        ?DateTime $floweringDate = null,
+        ?DateTimeImmutable $fruitingDate = null,
+        ?DateTimeImmutable $floweringDate = null,
         ?int $mass = null,
         ?string $color = null,
         ?string $flavor = null,
@@ -92,18 +92,18 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         $this->plant = $plant;
     }
 
-    private function setFruitingDateValidate(?DateTime $fruitingDate = null): void
+    private function setFruitingDateValidate(?DateTimeImmutable $fruitingDate = null): void
     {
         if ($fruitingDate !== null) {
-            WebmozartAssert::isInstanceOf($fruitingDate, DateTime::class, 'Use date must be a DateTime instance');
+            WebmozartAssert::isInstanceOf($fruitingDate, DateTimeImmutable::class, 'Use date must be a DateTime instance');
             $this->fruitingDate = $fruitingDate;
         }
     }
 
-    private function setFloweringDateValidate(?DateTime $floweringDate = null): void
+    private function setFloweringDateValidate(?DateTimeImmutable $floweringDate = null): void
     {
         if ($floweringDate !== null) {
-            WebmozartAssert::isInstanceOf($floweringDate, DateTime::class, 'Use date must be a DateTime instance');
+            WebmozartAssert::isInstanceOf($floweringDate, DateTimeImmutable::class, 'Use date must be a DateTime instance');
             $this->floweringDate = $floweringDate;
         }
     }
@@ -135,8 +135,8 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
     public function __construct(
         Plant $plant,
-        ?DateTime $fruitingDate = null,
-        ?DateTime $floweringDate = null,
+        ?DateTimeImmutable $fruitingDate = null,
+        ?DateTimeImmutable $floweringDate = null,
         ?int $mass = null,
         ?string $color = null,
         ?string $flavor = null,
@@ -160,8 +160,8 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
     public function changeFields(
         Plant $plant,
-        ?DateTime $fruitingDate = null,
-        ?DateTime $floweringDate = null,
+        ?DateTimeImmutable $fruitingDate = null,
+        ?DateTimeImmutable $floweringDate = null,
         ?int $mass = null,
         ?string $color = null,
         ?string $flavor = null,
@@ -196,12 +196,12 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         return $this->attachments;
     }
 
-    public function getFruitingDate(): ?DateTime
+    public function getFruitingDate(): ?DateTimeImmutable
     {
         return $this->fruitingDate;
     }
 
-    public function getFloweringDate(): ?DateTime
+    public function getFloweringDate(): ?DateTimeImmutable
     {
         return $this->floweringDate;
     }

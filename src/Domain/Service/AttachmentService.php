@@ -7,7 +7,7 @@ use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use App\Domain\Repository\AttachmentRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -72,10 +72,10 @@ class AttachmentService
     }
 
     /**
-     * @param DateTime $fileDate
+     * @param DateTimeImmutable $fileDate
      * @return AttachmentModel[]
      */
-    public function findAttachmentsByFileDate(DateTime $fileDate): array
+    public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array
     {
         return $this->attachmentRepository->findAttachmentsByFileDate($fileDate);
     }

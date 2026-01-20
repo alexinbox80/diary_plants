@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Task;
 
-use DateTime;
+use DateTimeImmutable;
 
 class TaskModel
 {
@@ -10,10 +10,10 @@ class TaskModel
         private readonly int $id,
         private readonly int $statusId,
         private readonly int $plantId,
-        private readonly DateTime $date,
+        private readonly DateTimeImmutable $date,
         private readonly ?string $description = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -32,7 +32,7 @@ class TaskModel
         return $this->plantId;
     }
 
-    public function getDate(): DateTime
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }
@@ -42,12 +42,12 @@ class TaskModel
         return $this->description;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

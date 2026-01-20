@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Pest;
-use DateTime;
+use DateTimeImmutable;
 
 class PestRepository extends AbstractRepository
 {
@@ -62,10 +62,10 @@ class PestRepository extends AbstractRepository
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return Pest[]
      */
-    public function findPestsByUseDate(DateTime $date): array
+    public function findPestsByUseDate(DateTimeImmutable $date): array
     {
         return $this->entityManager->getRepository(Pest::class)->findBy(['use_date' => $date]);
     }

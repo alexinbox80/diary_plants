@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Task;
 use App\Domain\Model\Task\TaskModel;
 use App\Domain\Repository\TaskRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
 class TaskRepositoryDecorator implements TaskRepositoryInterface
 {
@@ -129,10 +129,10 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return TaskModel[]
      */
-    public function findTasksByDate(DateTime $date): array
+    public function findTasksByDate(DateTimeImmutable $date): array
     {
         $tasks = $this->taskRepository->findPlantsByDate($date);
 

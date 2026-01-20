@@ -4,7 +4,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Entity\Task;
 use App\Domain\Model\Task\TaskModel;
-use DateTime;
+use DateTimeImmutable;
 
 interface TaskRepositoryInterface
 {
@@ -14,7 +14,7 @@ interface TaskRepositoryInterface
     public function findAll(): array;
     public function findTasksByStatusId(string $statusId): array;
     public function findTasksByPlantId(string $plantId): array;
-    public function findTasksByDate(DateTime $date): array;
+    public function findTasksByDate(DateTimeImmutable $date): array;
     public function create(Task $task): int;
     public function update(): void;
     public function remove(Task $task): void;

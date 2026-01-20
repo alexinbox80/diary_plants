@@ -2,16 +2,16 @@
 
 namespace App\Domain\Entity\Traits;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 
 trait UpdatedAtTrait
 {
-    #[ORM\Column(name: 'updated_at', type: 'datetimetz', nullable: false)]
-    private DateTime $updatedAt;
+    #[ORM\Column(name: 'updated_at', type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $updatedAt;
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -20,6 +20,6 @@ trait UpdatedAtTrait
     #[ORM\PreUpdate]
     public function setUpdatedAt(): void
     {
-        $this->updatedAt = new DateTime('now', new DateTimeZone('UTC'));
+        $this->updatedAt = new DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 }

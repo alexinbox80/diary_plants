@@ -10,7 +10,7 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use App\Domain\Model\OId;
 use App\Domain\Model\Price;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Webmozart\Assert\Assert as WebmozartAssert;
@@ -52,16 +52,16 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     private string $room;
 
     //дата покупки
-    #[ORM\Column(name: 'purchase_date', type: 'datetimetz', nullable: true)]
-    private ?DateTime $purchaseDate = null;
+    #[ORM\Column(name: 'purchase_date', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $purchaseDate = null;
 
     //дата прививки
-    #[ORM\Column(name: 'vaccination_date', type: 'datetimetz', nullable: true)]
-    private ?DateTime $vaccinationDate = null;
+    #[ORM\Column(name: 'vaccination_date', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $vaccinationDate = null;
 
     //дата посадки
-    #[ORM\Column(name: 'planting_date', type: 'datetimetz', nullable: true)]
-    private ?DateTime $plantingDate = null;
+    #[ORM\Column(name: 'planting_date', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $plantingDate = null;
 
     //продавец
     #[ORM\Column(name: 'seller', type: 'string', length: 255, nullable: true)]
@@ -119,9 +119,9 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         string $room,
         bool $isShown = true,
         ?string $description = null,
-        ?DateTime $purchaseDate = null,
-        ?DateTime $vaccinationDate = null,
-        ?DateTime $plantingDate = null,
+        ?DateTimeImmutable $purchaseDate = null,
+        ?DateTimeImmutable $vaccinationDate = null,
+        ?DateTimeImmutable $plantingDate = null,
         ?string $seller = null,
         ?string $nursery = null,
         ?Price $price = null,
@@ -172,17 +172,17 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->description = $description;
     }
 
-    private function setPurchaseDateValidate(?DateTime $purchaseDate = null): void
+    private function setPurchaseDateValidate(?DateTimeImmutable $purchaseDate = null): void
     {
         $this->purchaseDate = $purchaseDate;
     }
 
-    private function setVaccinationDateValidate(?DAteTime $vaccinationDate = null): void
+    private function setVaccinationDateValidate(?DateTimeImmutable $vaccinationDate = null): void
     {
         $this->vaccinationDate = $vaccinationDate;
     }
 
-    private function setPlantingDateValidate(?DateTime $plantingDate = null): void
+    private function setPlantingDateValidate(?DateTimeImmutable $plantingDate = null): void
     {
         $this->plantingDate = $plantingDate;
     }
@@ -227,9 +227,9 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         string $room,
         bool $isShown = true,
         ?string $description = null,
-        ?DateTime $purchaseDate = null,
-        ?DateTime $vaccinationDate = null,
-        ?DateTime $plantingDate = null,
+        ?DateTimeImmutable $purchaseDate = null,
+        ?DateTimeImmutable $vaccinationDate = null,
+        ?DateTimeImmutable $plantingDate = null,
         ?string $seller = null,
         ?string $nursery = null,
         ?Price $price = null,
@@ -270,9 +270,9 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         string $room,
         bool $isShown = true,
         ?string $description = null,
-        ?DateTime $purchaseDate = null,
-        ?DateTime $vaccinationDate = null,
-        ?DateTime $plantingDate = null,
+        ?DateTimeImmutable $purchaseDate = null,
+        ?DateTimeImmutable $vaccinationDate = null,
+        ?DateTimeImmutable $plantingDate = null,
         ?string $seller = null,
         ?string $nursery = null,
         ?Price $price = null,
@@ -339,17 +339,17 @@ class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->room;
     }
 
-    public function getPurchaseDate(): ?DateTime
+    public function getPurchaseDate(): ?DateTimeImmutable
     {
         return $this->purchaseDate;
     }
 
-    public function getVaccinationDate(): ?DateTime
+    public function getVaccinationDate(): ?DateTimeImmutable
     {
         return $this->vaccinationDate;
     }
 
-    public function getPlantingDate(): ?DateTime
+    public function getPlantingDate(): ?DateTimeImmutable
     {
         return $this->plantingDate;
     }

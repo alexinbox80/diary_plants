@@ -4,7 +4,7 @@ namespace App\Domain\Model\Plant;
 
 use App\Domain\Model\OId;
 use App\Domain\Model\Price;
-use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 
 class PlantModel
@@ -17,9 +17,9 @@ class PlantModel
         private readonly bool $isShown = true,
         private readonly ?string $description = null,
         private readonly ?string $qrCodeBase64 = null,
-        private readonly ?DateTime $purchaseDate = null,
-        private readonly ?DateTime $vaccinationDate = null,
-        private readonly ?DateTime $plantingDate = null,
+        private readonly ?DateTimeImmutable $purchaseDate = null,
+        private readonly ?DateTimeImmutable $vaccinationDate = null,
+        private readonly ?DateTimeImmutable $plantingDate = null,
         private readonly ?string $seller = null,
         private readonly ?string $nursery = null,
         private readonly ?Price $price = null,
@@ -27,8 +27,8 @@ class PlantModel
         private readonly ?Price $packagingCost = null,
         private readonly ?string $soil = null,
         private readonly ?string $comment = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -67,17 +67,17 @@ class PlantModel
         return $this->qrCodeBase64;
     }
 
-    public function getPurchaseDate(): ?DateTime
+    public function getPurchaseDate(): ?DateTimeImmutable
     {
         return $this->purchaseDate;
     }
 
-    public function getVaccinationDate(): ?DateTime
+    public function getVaccinationDate(): ?DateTimeImmutable
     {
         return $this->vaccinationDate;
     }
 
-    public function getPlantingDate(): ?DateTime
+    public function getPlantingDate(): ?DateTimeImmutable
     {
         return $this->plantingDate;
     }
@@ -117,12 +117,12 @@ class PlantModel
         return $this->comment;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

@@ -4,7 +4,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
-use DateTime;
+use DateTimeImmutable;
 
 interface AttachmentRepositoryInterface
 {
@@ -18,7 +18,7 @@ interface AttachmentRepositoryInterface
     public function findAll(): array;
     public function findAttachmentsByTitle(string $title): array;
     public function findAttachmentsByFilename(string $filename): array;
-    public function findAttachmentsByFileDate(DateTime $fileDate): array;
+    public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array;
     public function findAttachmentsByPath(string $path): array;
     public function create(Attachment $attachment): int;
     public function update(): void;

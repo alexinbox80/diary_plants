@@ -7,7 +7,7 @@ use App\Domain\Model\Task\CreateTaskModel;
 use App\Domain\Model\Task\UpdateTaskModel;
 use App\Domain\Model\Task\TaskModel;
 use App\Domain\Repository\TaskRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
 
 class TaskService
@@ -55,10 +55,10 @@ class TaskService
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return TaskModel[]
      */
-    public function findTasksByDate(DateTime $date): array
+    public function findTasksByDate(DateTimeImmutable $date): array
     {
         return $this->taskRepository->findTasksByDate($date);
     }

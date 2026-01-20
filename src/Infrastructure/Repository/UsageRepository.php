@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Usage;
-use DateTime;
+use DateTimeImmutable;
 
 /**
  * @method Usage|null findOneBy(array $criteria, array $orderBy = null)
@@ -113,10 +113,10 @@ class UsageRepository extends AbstractRepository
     }
 
     /**
-     * @param DateTime $useDate
+     * @param DateTimeImmutable $useDate
      * @return Usage[]
      */
-    public function findUsagesByUseDate(DateTime $useDate): array
+    public function findUsagesByUseDate(DateTimeImmutable $useDate): array
     {
         return $this->entityManager->getRepository(Usage::class)->findBy(['use_date' => $useDate]);
     }

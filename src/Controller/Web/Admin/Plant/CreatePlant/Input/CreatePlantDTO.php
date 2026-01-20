@@ -2,7 +2,7 @@
 
 namespace App\Controller\Web\Admin\Plant\CreatePlant\Input;
 
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePlantDTO
@@ -21,12 +21,12 @@ class CreatePlantDTO
         #[Assert\Length(min:2)]
         #[Assert\Length(max:1024)]
         public ?string $description = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public ?DateTime $purchaseDate = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public ?DateTime $vaccinationDate = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public ?DateTime $plantingDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public ?DateTimeImmutable $purchaseDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public ?DateTimeImmutable $vaccinationDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public ?DateTimeImmutable $plantingDate = null,
         public ?string $seller = null,
         public ?string $nursery = null,
         public ?string $price = null,

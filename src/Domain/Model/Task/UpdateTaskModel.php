@@ -3,7 +3,7 @@
 namespace App\Domain\Model\Task;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use DateTime;
+use DateTimeImmutable;
 
 class UpdateTaskModel
 {
@@ -16,7 +16,7 @@ class UpdateTaskModel
         public readonly int $plantId,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'DateTime::class')]
-        public readonly DateTime $date,
+        public readonly DateTimeImmutable $date,
         public readonly ?string $description = null
     ) {
     }

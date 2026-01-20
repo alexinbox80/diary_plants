@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Attachment;
-use DateTime;
+use DateTimeImmutable;
 
 /**
  * @method Attachment|null findOneBy(array $criteria, array $orderBy = null)
@@ -146,10 +146,10 @@ class AttachmentRepository extends AbstractRepository
     }
 
     /**
-     * @param DateTime $fileDate
+     * @param DateTimeImmutable $fileDate
      * @return Attachment[]
      */
-    public function findAttachmentsByFileDate(DateTime $fileDate): array
+    public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array
     {
         return $this->entityManager->getRepository(Attachment::class)->findBy(['file_date' => $fileDate]);
     }

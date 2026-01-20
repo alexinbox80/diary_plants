@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\AttachmentRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
 class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 {
@@ -204,10 +204,10 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     }
 
     /**
-     * @param DateTime $fileDate
+     * @param DateTimeImmutable $fileDate
      * @return AttachmentModel[]
      */
-    public function findAttachmentsByFileDate(DateTime $fileDate): array
+    public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array
     {
         $attachments = $this->attachmentRepository->findAttachmentsByFileDate($fileDate);
 

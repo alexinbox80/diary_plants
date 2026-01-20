@@ -2,7 +2,7 @@
 
 namespace App\Controller\Web\Admin\Offspring\CreateOffspring\Input;
 
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateOffspringDTO
@@ -10,10 +10,10 @@ class CreateOffspringDTO
     public function __construct(
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public ?int $plantId = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public ?DateTime $fruitingDate = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public ?DateTime $floweringDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public ?DateTimeImmutable $fruitingDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public ?DateTimeImmutable $floweringDate = null,
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         #[Assert\Positive]
         public ?int $mass = null,

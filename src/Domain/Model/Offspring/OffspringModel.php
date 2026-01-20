@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Offspring;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 
 class OffspringModel
@@ -10,15 +10,15 @@ class OffspringModel
     public function __construct(
         private readonly int $id,
         private readonly int $plantId,
-        private readonly ?DateTime $fruitingDate = null,
-        private readonly ?DateTime $floweringDate = null,
+        private readonly ?DateTimeImmutable $fruitingDate = null,
+        private readonly ?DateTimeImmutable $floweringDate = null,
         private readonly ?int $mass = null,
         private readonly ?string $color = null,
         private readonly ?string $flavor = null,
         private readonly ?int $quantity = null,
         private readonly ?string $comment = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -32,12 +32,12 @@ class OffspringModel
         return $this->plantId;
     }
 
-    public function getFruitingDate(): ?DateTime
+    public function getFruitingDate(): ?DateTimeImmutable
     {
         return $this->fruitingDate;
     }
 
-    public function getFloweringDate(): ?DateTime
+    public function getFloweringDate(): ?DateTimeImmutable
     {
         return $this->floweringDate;
     }
@@ -67,12 +67,12 @@ class OffspringModel
         return $this->comment;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

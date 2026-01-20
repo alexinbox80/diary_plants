@@ -1,8 +1,23 @@
 <?php //вложения
-
+/*
+ * структура папок на фс
+ * public/
+        └── uploads/
+            └── videos/
+            └── images/
+                └── plant/
+                    offspring/
+                    pest/
+                    ...
+                    └── uid/
+                        ├── original/
+                        │   └── abc123.jpg
+                        └── thumbnails/
+                            └── thumb_abc123.jpg
+         * */
 namespace App\Domain\Entity;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
@@ -37,8 +52,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(name: 'file_date', type: 'datetimetz', nullable: false)]
-    private DateTime $fileDate;
+    #[ORM\Column(name: 'file_date', type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $fileDate;
 
     #[ORM\Column(name: 'attachable_id', type: 'integer', nullable: true)]
     private ?int $attachableId = null;
@@ -50,7 +65,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         string $filename,
         string $path,
         string $title,
-        DateTime $fileDate,
+        DateTimeImmutable $fileDate,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
@@ -63,7 +78,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         string $filename,
         string $path,
         string $title,
-        DateTime $fileDate,
+        DateTimeImmutable $fileDate,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
@@ -88,7 +103,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         string $filename,
         string $path,
         string $title,
-        DateTime $fileDate,
+        DateTimeImmutable $fileDate,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
@@ -124,7 +139,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return $this->description;
     }
 
-    public function getFileDate(): DateTime
+    public function getFileDate(): DateTimeImmutable
     {
         return $this->fileDate;
     }

@@ -3,7 +3,7 @@
 namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Status;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class StatusTest extends TestCase
@@ -23,13 +23,13 @@ class StatusTest extends TestCase
     {
         $status = new Status('K', '#aabbdd');
 
-        $this->getProperty($status, 'createdAt', new DateTime());
-        $this->getProperty($status, 'updatedAt', new DateTime());
+        $this->getProperty($status, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($status, 'updatedAt', new DateTimeImmutable());
 
         $this->assertSame('K', $status->getLetter());
         $this->assertSame('#aabbdd', $status->getColor());
-        $this->assertInstanceOf(DateTime::class, $status->getCreatedAt());
-        $this->assertInstanceOf(DateTime::class, $status->getUpdatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $status->getCreatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $status->getUpdatedAt());
     }
 
     public function testSettersUpdateValues(): void
@@ -53,8 +53,8 @@ class StatusTest extends TestCase
         $this->getProperty($status, 'id', 1);
         $this->getProperty($status, 'description', 'Pending task');
         $this->getProperty($status, 'colorDescription', 'Light blue');
-        $this->getProperty($status, 'createdAt', new DateTime('2025-04-01'));
-        $this->getProperty($status, 'updatedAt', new DateTime('2025-04-01'));
+        $this->getProperty($status, 'createdAt', new DateTimeImmutable('2025-04-01'));
+        $this->getProperty($status, 'updatedAt', new DateTimeImmutable('2025-04-01'));
 
         $array = $status->toArray();
 

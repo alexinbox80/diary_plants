@@ -2,19 +2,19 @@
 
 namespace App\Domain\Model\Usage;
 
-use DateTime;
+use DateTimeImmutable;
 
 class UsageModel
 {
     public function __construct(
         private readonly int $id,
-        private readonly DateTime $useDate,
+        private readonly DateTimeImmutable $useDate,
         private readonly int $plantId,
         private readonly ?string $comment = null,
         private readonly ?int $usableId = null,
         private readonly ?string $usableType = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -23,7 +23,7 @@ class UsageModel
         return $this->id;
     }
 
-    public function getUseDate(): DateTime
+    public function getUseDate(): DateTimeImmutable
     {
         return $this->useDate;
     }
@@ -48,12 +48,12 @@ class UsageModel
         return $this->usableType;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }

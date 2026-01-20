@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Pest;
 use App\Domain\Model\Pest\PestModel;
 use App\Domain\Repository\PestRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
 class PestRepositoryDecorator implements PestRepositoryInterface
 {
@@ -146,10 +146,10 @@ class PestRepositoryDecorator implements PestRepositoryInterface
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return PestModel[]
      */
-    public function findPestsByUseDate(DateTime $date): array
+    public function findPestsByUseDate(DateTimeImmutable $date): array
     {
         $pests = $this->pestRepository->findPestsByUseDate($date);
 

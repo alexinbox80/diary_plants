@@ -3,7 +3,6 @@
 namespace App\Tests\Controller\Cli;
 
 use App\Controller\Cli\ConvertCSVCommand;
-use App\Domain\Repository\PlantRepositoryInterface;
 use App\Domain\Service\CsvService;
 use App\Domain\Service\ModelFactory;
 use App\Domain\Service\PlantService;

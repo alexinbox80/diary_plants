@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 
 class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
 {
@@ -144,10 +144,10 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return FertilizerModel[]
      */
-    public function findFertilizersByUseDate(DateTime $date): array
+    public function findFertilizersByUseDate(DateTimeImmutable $date): array
     {
         $fertilizers = $this->fertilizerRepository->findFertilizersByUseDate($date);
 

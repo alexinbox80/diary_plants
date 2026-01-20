@@ -2,11 +2,11 @@
 
 namespace App\Domain\Entity\Interfaces;
 
-use DateTime;
+use DateTimeImmutable;
 
 interface SoftDeletableInterface
 {
-    public function getDeletedAt(): ?DateTime;
+    public function getDeletedAt(): ?DateTimeImmutable;
 
     public function setDeletedAt(): void;
 }

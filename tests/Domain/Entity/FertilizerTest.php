@@ -3,7 +3,7 @@
 namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Fertilizer;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class FertilizerTest extends TestCase
@@ -21,7 +21,7 @@ class FertilizerTest extends TestCase
 
     public function testConstructorInitializesAllProperties(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $fertilizer = new Fertilizer(
             'NPK',
@@ -31,21 +31,21 @@ class FertilizerTest extends TestCase
             'Balanced fertilizer'
         );
 
-        $this->getProperty($fertilizer, 'createdAt', new DateTime());
-        $this->getProperty($fertilizer, 'updatedAt', new DateTime());
+        $this->getProperty($fertilizer, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($fertilizer, 'updatedAt', new DateTimeImmutable());
 
         $this->assertSame('NPK', $fertilizer->getTitle());
         $this->assertSame('Complex', $fertilizer->getManufacturer());
         $this->assertSame('Balanced fertilizer', $fertilizer->getDescription());
         $this->assertSame(100, $fertilizer->getQuantity());
         $this->assertSame($date, $fertilizer->getUseDate());
-        $this->assertInstanceOf(DateTime::class, $fertilizer->getCreatedAt());
-        $this->assertInstanceOf(DateTime::class, $fertilizer->getUpdatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $fertilizer->getCreatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $fertilizer->getUpdatedAt());
     }
 
     public function testSettersUpdateValuesAndTouchUpdatedAt(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $fertilizer = new Fertilizer(
             title: 'NPK',
@@ -65,21 +65,21 @@ class FertilizerTest extends TestCase
             description: 'Balanced fertilizer change'
         );
 
-        $this->getProperty($fertilizer, 'createdAt', new DateTime());
-        $this->getProperty($fertilizer, 'updatedAt', new DateTime());
+        $this->getProperty($fertilizer, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($fertilizer, 'updatedAt', new DateTimeImmutable());
 
         $this->assertSame('KNK', $fertilizer->getTitle());
         $this->assertSame('Complex change', $fertilizer->getManufacturer());
         $this->assertSame('Balanced fertilizer change', $fertilizer->getDescription());
         $this->assertSame(50, $fertilizer->getQuantity());
         $this->assertSame($dateNew, $fertilizer->getUseDate());
-        $this->assertInstanceOf(DateTime::class, $fertilizer->getCreatedAt());
-        $this->assertInstanceOf(DateTime::class, $fertilizer->getUpdatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $fertilizer->getCreatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $fertilizer->getUpdatedAt());
     }
 
     public function testGettersReturnCorrectValues(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $fertilizer = new Fertilizer(
             title: 'KNK',
@@ -100,7 +100,7 @@ class FertilizerTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $fertilizer = new Fertilizer(
             title: 'KNK',
@@ -114,7 +114,7 @@ class FertilizerTest extends TestCase
 
     public function testTouchUpdatesUpdatedAt(): void
     {
-        $date = new DateTime('2024-01-01');
+        $date = new DateTimeImmutable('2024-01-01');
 
         $fertilizer = new Fertilizer(
             title: 'KNK',
@@ -123,7 +123,7 @@ class FertilizerTest extends TestCase
             useDate: $date,
             description: 'Balanced fertilizer change');
 
-        $this->getProperty($fertilizer, 'updatedAt', new DateTime());
+        $this->getProperty($fertilizer, 'updatedAt', new DateTimeImmutable());
 
         $this->assertNotEquals($date, $fertilizer->getUpdatedAt());
     }

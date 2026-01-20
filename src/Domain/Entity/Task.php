@@ -8,7 +8,7 @@ use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use DateTime;
+use DateTimeImmutable;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,8 +29,8 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private Status $status;
 
     //дата события
-    #[ORM\Column(name: 'date', type: 'datetimetz', nullable: false)]
-    private DateTime $date;
+    #[ORM\Column(name: 'date', type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $date;
 
     //описание
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
@@ -44,7 +44,7 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private function setCommonFields(
         Status $status,
         Plant $plant,
-        DateTime $date,
+        DateTimeImmutable $date,
         ?string $description = null,
     ): void {
         $this->setStatusValidate($status);
@@ -63,9 +63,9 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         $this->plant = $plant;
     }
 
-    private function setDateValidate(DateTime $date): void
+    private function setDateValidate(DateTimeImmutable $date): void
     {
-        WebmozartAssert::isInstanceOf($date, DateTime::class, 'Use date must be a DateTime instance');
+        WebmozartAssert::isInstanceOf($date, DateTimeImmutable::class, 'Use date must be a DateTime instance');
         $this->date = $date;
     }
 
@@ -77,7 +77,7 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function __construct(
         Status $status,
         Plant $plant,
-        DateTime $date,
+        DateTimeImmutable $date,
         ?string $description = null,
     )
     {
@@ -87,7 +87,7 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function changeFields(
         Status $status,
         Plant $plant,
-        DateTime $date,
+        DateTimeImmutable $date,
         ?string $description = null,
     ): void
     {
@@ -111,7 +111,7 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->plant;
     }
 
-    public function getDate(): DateTime
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }

@@ -12,7 +12,7 @@ use App\Domain\Model\Status\CreateStatusModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Task\CreateTaskModel;
 use App\Domain\Model\Usage\CreateUsageModel;
-use DateTime;
+use DateTimeImmutable;
 
 class CsvService
 {
@@ -64,9 +64,9 @@ class CsvService
                 $plantModel['room'],
                 $plantModel['is_shown'],
                 $plantModel['description'],
-                $plantModel['purchase_date'] !== '' ? new DateTime($plantModel['purchase_date']) : null,
-                $plantModel['vaccination_date'] !== '' ? new DateTime($plantModel['vaccination_date']) : null,
-                $plantModel['planting_date'] !== '' ? new DateTime($plantModel['planting_date']) : null,
+                $plantModel['purchase_date'] !== '' ? new DateTimeImmutable($plantModel['purchase_date']) : null,
+                $plantModel['vaccination_date'] !== '' ? new DateTimeImmutable($plantModel['vaccination_date']) : null,
+                $plantModel['planting_date'] !== '' ? new DateTimeImmutable($plantModel['planting_date']) : null,
                 $plantModel['seller'],
                 $plantModel['nursery'],
                 $plantModel['price'] !== '' ? Price::fromString($plantModel['price']) : null,
@@ -95,8 +95,8 @@ class CsvService
             ->makeModel(
                 CreateOffspringModel::class,
                 $offspringModel['plant_id'],
-                $offspringModel['fruiting_date'] !== '' ? new DateTime($offspringModel['fruiting_date']) : null,
-                $offspringModel['flowering_date'] !== '' ? new DateTime($offspringModel['flowering_date']) : null,
+                $offspringModel['fruiting_date'] !== '' ? new DateTimeImmutable($offspringModel['fruiting_date']) : null,
+                $offspringModel['flowering_date'] !== '' ? new DateTimeImmutable($offspringModel['flowering_date']) : null,
                 (int) $offspringModel['mass'],
                 $offspringModel['color'],
                 $offspringModel['flavor'],
@@ -112,7 +112,7 @@ class CsvService
                 CreateTaskModel::class,
                 (int) $taskModel['status_id'],
                 (int) $taskModel['plant_id'],
-                new DateTime($taskModel['date']),
+                new DateTimeImmutable($taskModel['date']),
                 $taskModel['description']
             );
     }
@@ -170,7 +170,7 @@ class CsvService
                 $attachmentModel['filename'],
                 $attachmentModel['path'],
                 $attachmentModel['title'],
-                new DateTime($attachmentModel['file_date']),
+                new DateTimeImmutable($attachmentModel['file_date']),
                 $attachmentModel['attachable_id'],
                 $attachmentModel['attachable_type'],
                 $attachmentModel['description'] !== '' ? $attachmentModel['description'] : null,
@@ -182,7 +182,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateUsageModel::class,
-                new DateTime($usageModel['use_date']),
+                new DateTimeImmutable($usageModel['use_date']),
                 $usageModel['plant_id'],
                 $usageModel['comment'] !== '' ? $usageModel['comment'] : null,
                 $usageModel['usable_id'] ,

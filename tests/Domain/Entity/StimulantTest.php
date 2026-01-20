@@ -3,7 +3,7 @@
 namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Stimulant;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class StimulantTest extends TestCase
@@ -21,7 +21,7 @@ class StimulantTest extends TestCase
 
     public function testConstructorInitializesAllProperties(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $stimulant = new Stimulant(
             'NPK',
@@ -31,21 +31,21 @@ class StimulantTest extends TestCase
             'Balanced fertilizer'
         );
 
-        $this->getProperty($stimulant, 'createdAt', new DateTime());
-        $this->getProperty($stimulant, 'updatedAt', new DateTime());
+        $this->getProperty($stimulant, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($stimulant, 'updatedAt', new DateTimeImmutable());
 
         $this->assertSame('NPK', $stimulant->getTitle());
         $this->assertSame('Complex', $stimulant->getManufacturer());
         $this->assertSame('Balanced fertilizer', $stimulant->getDescription());
         $this->assertSame(100, $stimulant->getQuantity());
         $this->assertSame($date, $stimulant->getUseDate());
-        $this->assertInstanceOf(DateTime::class, $stimulant->getCreatedAt());
-        $this->assertInstanceOf(DateTime::class, $stimulant->getUpdatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $stimulant->getCreatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $stimulant->getUpdatedAt());
     }
 
     public function testSettersUpdateValuesAndTouchUpdatedAt(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $stimulant = new Stimulant(
             title: 'NPK',
@@ -55,7 +55,7 @@ class StimulantTest extends TestCase
             description: 'Balanced fertilizer'
         );
 
-        $dateNew = new DateTime();
+        $dateNew = new DateTimeImmutable();
 
         $stimulant->changeFields(
             title: 'KNK',
@@ -65,21 +65,21 @@ class StimulantTest extends TestCase
             description: 'Balanced fertilizer change'
         );
 
-        $this->getProperty($stimulant, 'createdAt', new DateTime());
-        $this->getProperty($stimulant, 'updatedAt', new DateTime());
+        $this->getProperty($stimulant, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($stimulant, 'updatedAt', new DateTimeImmutable());
 
         $this->assertSame('KNK', $stimulant->getTitle());
         $this->assertSame('Complex change', $stimulant->getManufacturer());
         $this->assertSame('Balanced fertilizer change', $stimulant->getDescription());
         $this->assertSame(50, $stimulant->getQuantity());
         $this->assertSame($dateNew, $stimulant->getUseDate());
-        $this->assertInstanceOf(DateTime::class, $stimulant->getCreatedAt());
-        $this->assertInstanceOf(DateTime::class, $stimulant->getUpdatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $stimulant->getCreatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $stimulant->getUpdatedAt());
     }
 
     public function testGettersReturnCorrectValues(): void
     {
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $stimulant = new Stimulant(
             title: 'KNK',
@@ -100,7 +100,7 @@ class StimulantTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
 
         $stimulant = new Stimulant(
             title: 'KNK',
@@ -114,7 +114,7 @@ class StimulantTest extends TestCase
 
     public function testTouchUpdatesUpdatedAt(): void
     {
-        $date = new DateTime('2024-01-01');
+        $date = new DateTimeImmutable('2024-01-01');
 
         $stimulant = new Stimulant(
             title: 'KNK',
@@ -123,7 +123,7 @@ class StimulantTest extends TestCase
             useDate: $date,
             description: 'Balanced fertilizer change');
 
-        $this->getProperty($stimulant, 'updatedAt', new DateTime());
+        $this->getProperty($stimulant, 'updatedAt', new DateTimeImmutable());
 
         $this->assertNotEquals($date, $stimulant->getUpdatedAt());
     }

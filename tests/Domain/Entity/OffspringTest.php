@@ -4,7 +4,7 @@ namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Offspring;
 use App\Domain\Entity\Attachment;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class OffspringTest extends TestCase
@@ -29,8 +29,8 @@ class OffspringTest extends TestCase
             description: 'A beautiful photo',
         );
 
-        $fruitingDate = new DateTime();
-        $floweringDate = new DateTime();
+        $fruitingDate = new DateTimeImmutable();
+        $floweringDate = new DateTimeImmutable();
 
         $offspring = new Offspring(
             //attachment: null,
@@ -43,8 +43,8 @@ class OffspringTest extends TestCase
         );
 
         $this->getProperty($offspring, 'id', 2);
-        $this->getProperty($offspring, 'createdAt', new DateTime());
-        $this->getProperty($offspring, 'updatedAt', new DateTime());
+        $this->getProperty($offspring, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($offspring, 'updatedAt', new DateTimeImmutable());
 
         //$this->assertSame(Offspring::class, $attachment->getAttachableType());
         //$this->assertNull($attachment->getAttachableId(), 'ID should be set after save');
@@ -62,8 +62,8 @@ class OffspringTest extends TestCase
         $offspring = new Offspring();
 
         $this->getProperty($offspring, 'id', 1);
-        $this->getProperty($offspring, 'createdAt', new DateTime());
-        $this->getProperty($offspring, 'updatedAt', new DateTime());
+        $this->getProperty($offspring, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($offspring, 'updatedAt', new DateTimeImmutable());
 
         $newAttachment = new Attachment(
             photoLink: 'https://example.com/image.jpg',
@@ -74,8 +74,8 @@ class OffspringTest extends TestCase
 
         $this->getProperty($newAttachment, 'id', 1);
 
-        $newFruitingDate = new DateTime();
-        $newFloweringDate = new DateTime();
+        $newFruitingDate = new DateTimeImmutable();
+        $newFloweringDate = new DateTimeImmutable();
 
         $offspring->changeFields(
             //attachment: $newAttachment,
@@ -101,16 +101,16 @@ class OffspringTest extends TestCase
     public function testGettersReturnCorrectValues(): void
     {
         $offspring = new Offspring(
-            fruitingDate: new DateTime(),
-            floweringDate: new DateTime(),
+            fruitingDate: new DateTimeImmutable(),
+            floweringDate: new DateTimeImmutable(),
             mass: 150,
             color: 'yellow',
             flavor: 'tangy',
             quantity: 3
         );
 
-        $this->assertInstanceOf(DateTime::class, $offspring->getFruitingDate());
-        $this->assertInstanceOf(DateTime::class, $offspring->getFloweringDate());
+        $this->assertInstanceOf(DateTimeImmutable::class, $offspring->getFruitingDate());
+        $this->assertInstanceOf(DateTimeImmutable::class, $offspring->getFloweringDate());
         $this->assertSame(150, $offspring->getMass());
         $this->assertSame('yellow', $offspring->getColor());
         $this->assertSame('tangy', $offspring->getFlavor());
@@ -127,8 +127,8 @@ class OffspringTest extends TestCase
         );
 
         $this->getProperty($newAttachment, 'id', 1);
-        $this->getProperty($newAttachment, 'createdAt', new DateTime());
-        $this->getProperty($newAttachment, 'updatedAt', new DateTime());
+        $this->getProperty($newAttachment, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($newAttachment, 'updatedAt', new DateTimeImmutable());
 
         $offspring = new Offspring(
             fruitingDate: new DateTime('2024-01-01'),
@@ -140,8 +140,8 @@ class OffspringTest extends TestCase
         );
 
         $this->getProperty($offspring, 'id', 1);
-        $this->getProperty($offspring, 'createdAt', new DateTime());
-        $this->getProperty($offspring, 'updatedAt', new DateTime());
+        $this->getProperty($offspring, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($offspring, 'updatedAt', new DateTimeImmutable());
 
         $array = $offspring->toArray($newAttachment);
 

@@ -3,7 +3,7 @@
 namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Attachment;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class AttachmentTest extends TestCase
@@ -21,7 +21,7 @@ class AttachmentTest extends TestCase
 
     public function testConstructorInitializesAllProperties(): void
     {
-        $photoDate = new DateTime();
+        $photoDate = new DateTimeImmutable();
         $description = 'A beautiful photo';
         $attachableId = 123;
         $attachableType = \App\Domain\Entity\Plant::class;
@@ -45,7 +45,7 @@ class AttachmentTest extends TestCase
 
     public function testChangeFieldsUpdatesAllProperties(): void
     {
-        $photoDate = new DateTime();
+        $photoDate = new DateTimeImmutable();
         $newPhotoDate = (clone $photoDate)->modify('+1 day');
         $description = 'Another photo';
         $attachableId = 456;
@@ -82,7 +82,7 @@ class AttachmentTest extends TestCase
             photoDate: new DateTime()
         );
 
-        $this->assertInstanceOf(DateTime::class, $attachment->getPhotoDate());
+        $this->assertInstanceOf(DateTimeImmutable::class, $attachment->getPhotoDate());
         $this->assertSame('https://example.com/image.jpg', $attachment->getPhotoLink());
         $this->assertSame('Image', $attachment->getTitle());
         $this->assertNull($attachment->getDescription());
@@ -120,8 +120,8 @@ class AttachmentTest extends TestCase
         //$attachment->touch(); // чтобы установить updatedAt
 
         $this->getProperty($attachment, 'id', 1);
-        $this->getProperty($attachment, 'createdAt', new DateTime());
-        $this->getProperty($attachment, 'updatedAt', new DateTime());
+        $this->getProperty($attachment, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($attachment, 'updatedAt', new DateTimeImmutable());
 
         $array = $attachment->toArray();
 

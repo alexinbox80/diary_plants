@@ -4,7 +4,7 @@ namespace App\Domain\Model\Plant;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Domain\Model\Price;
-use DateTime;
+use DateTimeImmutable;
 
 class CreatePlantModel
 {
@@ -15,12 +15,12 @@ class CreatePlantModel
         public readonly string $room,
         public readonly bool $isShown,
         public readonly ?string $description = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public readonly ?DateTime $purchaseDate = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public readonly ?DateTime $vaccinationDate = null,
-        #[Assert\Type(type: ['null', DateTime::class])]
-        public readonly ?DateTime $plantingDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public readonly ?DateTimeImmutable $purchaseDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public readonly ?DateTimeImmutable $vaccinationDate = null,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public readonly ?DateTimeImmutable $plantingDate = null,
         public readonly ?string $seller = null,
         public readonly ?string $nursery = null,
         #[Assert\Type(type: ['null', Price::class])]

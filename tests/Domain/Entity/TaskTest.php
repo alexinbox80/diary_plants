@@ -4,7 +4,7 @@ namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Task;
 use App\Domain\Entity\Status;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class TaskTest extends TestCase
@@ -23,7 +23,7 @@ class TaskTest extends TestCase
     public function testConstructorInitializesAllProperties(): void
     {
         $status = new Status('L', '#aabbcc');
-        $date = new DateTime();
+        $date = new DateTimeImmutable();
         $description = 'Complete the task';
 
         $task = new Task($status, $date, $description);
@@ -35,7 +35,7 @@ class TaskTest extends TestCase
 
     public function testChangeFieldsUpdatesAllProperties(): void
     {
-        $task = new Task(new Status('L', '#aabbcc'), new DateTime());
+        $task = new Task(new Status('L', '#aabbcc'), new DateTimeImmutable());
 
         $newStatus = new Status('K', '#aabbdd');
         $newDate = (clone $task->getDate())->modify('+1 day');
@@ -50,10 +50,10 @@ class TaskTest extends TestCase
 
     public function testGettersReturnCorrectValues(): void
     {
-        $task = new Task(new Status('A', '#aabbdd'), new DateTime(), 'Do something');
+        $task = new Task(new Status('A', '#aabbdd'), new DateTimeImmutable(), 'Do something');
 
         $this->assertInstanceOf(Status::class, $task->getStatus());
-        $this->assertInstanceOf(DateTime::class, $task->getDate());
+        $this->assertInstanceOf(DateTimeImmutable::class, $task->getDate());
         $this->assertSame('Do something', $task->getDescription());
     }
 
@@ -62,18 +62,18 @@ class TaskTest extends TestCase
         $status =  new Status('K', '#aabbdd');
 
         $this->getProperty($status, 'id', 1);
-        $this->getProperty($status, 'createdAt', new DateTime('2025-04-01'));
-        $this->getProperty($status, 'updatedAt', new DateTime('2025-04-01'));
+        $this->getProperty($status, 'createdAt', new DateTimeImmutable('2025-04-01'));
+        $this->getProperty($status, 'updatedAt', new DateTimeImmutable('2025-04-01'));
 
         $task = new Task(
             status: $status,
-            date: new DateTime('2025-04-01'),
+            date: new DateTimeImmutable('2025-04-01'),
             description: 'Sample task'
         );
 
         $this->getProperty($task, 'id', 1);
-        $this->getProperty($task, 'createdAt', new DateTime());
-        $this->getProperty($task, 'updatedAt', new DateTime());
+        $this->getProperty($task, 'createdAt', new DateTimeImmutable());
+        $this->getProperty($task, 'updatedAt', new DateTimeImmutable());
 
         // Применяем трейты CreatedAtTrait и UpdatedAtTrait
         //$task->touch(); // чтобы установить updatedAt
@@ -104,7 +104,7 @@ class TaskTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $task = new Task(new Status('K', '#aabbdd'), new DateTime());
+        $task = new Task(new Status('K', '#aabbdd'), new DateTimeImmutable());
         $task->getId();
     }
 }

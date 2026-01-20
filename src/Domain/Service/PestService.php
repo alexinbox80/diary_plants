@@ -7,7 +7,7 @@ use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Pest\UpdatePestModel;
 use App\Domain\Model\Pest\PestModel;
 use App\Domain\Repository\PestRepositoryInterface;
-use DateTime;
+use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
 
 class PestService
@@ -54,10 +54,10 @@ class PestService
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeImmutable $date
      * @return PestModel[]
      */
-    public function findPestsByUseDate(DateTime $date): array
+    public function findPestsByUseDate(DateTimeImmutable $date): array
     {
         return $this->pestRepository->findPestsByUseDate($date);
     }

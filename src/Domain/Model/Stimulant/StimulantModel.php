@@ -2,7 +2,7 @@
 
 namespace App\Domain\Model\Stimulant;
 
-use DateTime;
+use DateTimeImmutable;
 
 class StimulantModel
 {
@@ -15,8 +15,8 @@ class StimulantModel
         private readonly ?string $manufacturer = null,
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
-        private readonly DateTime $createdAt,
-        private readonly DateTime $updatedAt
+        private readonly DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $updatedAt
     ) {
     }
 
@@ -60,12 +60,12 @@ class StimulantModel
         return $this->comment;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
     }
