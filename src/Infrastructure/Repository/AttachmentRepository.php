@@ -92,18 +92,21 @@ class AttachmentRepository extends AbstractRepository
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return Attachment[]
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
+        $queryBuilder->select('a')
             ->from(Attachment::class, 'a')
-            ->orderBy('a.id', 'DESC')
-            ->setFirstResult($perPage * $page)
-            ->setMaxResults($perPage);
+            ->orderBy('a.updatedAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery();
 
-        return $queryBuilder->getQuery()->getResult();
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**

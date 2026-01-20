@@ -90,9 +90,11 @@ class AttachmentService
     }
 
     /**
-     * @return AttachmentModel[]
+     * @param int $page
+     * @param int $perPage
+     * @return array
      * @throws InvalidArgumentException
-     */
+ */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
         return $this->attachmentRepository->getAttachmentsPaginated($page, $perPage);
@@ -108,6 +110,8 @@ class AttachmentService
         $attachment = new Attachment(
             $createAttachmentModel->filename,
             $createAttachmentModel->path,
+            $createAttachmentModel->mimeType,
+            $createAttachmentModel->alt,
             $createAttachmentModel->title,
             $createAttachmentModel->fileDate,
             $createAttachmentModel->description,
@@ -121,6 +125,8 @@ class AttachmentService
             $attachment->getId(),
             $attachment->getFilename(),
             $attachment->getPath(),
+            $attachment->getMimeType(),
+            $attachment->getAlt(),
             $attachment->getTitle(),
             $attachment->getFileDate(),
             $attachment->getDescription(),
@@ -142,6 +148,8 @@ class AttachmentService
         $attachment->changeFields(
             $updateAttachmentModel->filename,
             $updateAttachmentModel->path,
+            $updateAttachmentModel->mimeType,
+            $updateAttachmentModel->alt,
             $updateAttachmentModel->title,
             $updateAttachmentModel->fileDate,
             $updateAttachmentModel->description,
@@ -155,6 +163,8 @@ class AttachmentService
             $attachment->getId(),
             $attachment->getFilename(),
             $attachment->getPath(),
+            $attachment->getMimeType(),
+            $attachment->getAlt(),
             $attachment->getTitle(),
             $attachment->getFileDate(),
             $attachment->getDescription(),

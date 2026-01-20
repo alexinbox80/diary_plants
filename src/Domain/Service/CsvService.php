@@ -169,6 +169,8 @@ class CsvService
                 CreateAttachmentModel::class,
                 $attachmentModel['filename'],
                 $attachmentModel['path'],
+                $attachmentModel['mime_type'],
+                $attachmentModel['alt'],
                 $attachmentModel['title'],
                 new DateTimeImmutable($attachmentModel['file_date']),
                 $attachmentModel['attachable_id'],

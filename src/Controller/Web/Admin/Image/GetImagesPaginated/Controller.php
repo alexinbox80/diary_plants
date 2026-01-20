@@ -31,14 +31,14 @@ class Controller extends AbstractController
         $request->getSession()->set('_previous_route', $request->getRequestUri());
 
         $itemsPerPage = $this->getParameter('items_per_page');
-        $plantsModel = $this->manager->getPlantsPaginated($page ?? 1, $per_page ?? $itemsPerPage);
-        $plants = ['table_header' => $plantsModel['tableHeader'], 'table_body' => $plantsModel['tableBody']];
+        $attachmentsModel = $this->manager->getAttachmentsPaginated($page ?? 1, $per_page ?? $itemsPerPage);
+        $images = ['table_header' => $attachmentsModel['tableHeader'], 'table_body' => $attachmentsModel['tableBody']];
 
         return $this->render(
             'admin/image/index.html.twig',
             [
-                'images' => $plants,
-                'pagination' => $plantsModel['pagination']
+                'images' => $images,
+                'pagination' => $attachmentsModel['pagination']
             ]
         );
     }

@@ -26,6 +26,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -51,6 +53,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -75,17 +79,25 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     }
 
     /**
-     * @return AttachmentModel[]
+     * @param int $page
+     * @param int $perPage
+     * @return array{plantsModel: AttachmentModel[], pagination: array}
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
-        $attachments = $this->attachmentRepository->getAttachmentsPaginated($page, $perPage);
+        $attachmentsPaginated = $this->attachmentRepository->getAttachmentsPaginated($page, $perPage);
 
-        return array_map(
+        if (!is_array($attachmentsPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for attachments');
+        }
+
+        $attachmentsModel = array_map(
             static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -94,8 +106,13 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getCreatedAt(),
                 $attachment->getUpdatedAt()
             ),
-            $attachments
+            $attachmentsPaginated['items']
         );
+
+        return [
+            'attachmentsModel' => $attachmentsModel,
+            'pagination' => $attachmentsPaginated['pagination']
+        ];
     }
 
     /**
@@ -119,6 +136,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
             $attachment->getId(),
             $attachment->getFilename(),
             $attachment->getPath(),
+            $attachment->getMimeType(),
+            $attachment->getAlt(),
             $attachment->getTitle(),
             $attachment->getFileDate(),
             $attachment->getDescription(),
@@ -141,6 +160,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -166,6 +187,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -191,6 +214,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -216,6 +241,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),
@@ -241,6 +268,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
                 $attachment->getId(),
                 $attachment->getFilename(),
                 $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getAlt(),
                 $attachment->getTitle(),
                 $attachment->getFileDate(),
                 $attachment->getDescription(),

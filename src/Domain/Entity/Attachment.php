@@ -46,6 +46,12 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     #[ORM\Column(name: 'path', type: 'string', length: 255, nullable: false)]
     private string $path;
 
+    #[ORM\Column(name: 'mime_type', type: 'string', length: 50, nullable: false)]
+    private $mimeType;
+
+    #[ORM\Column(name: 'alt', type: 'string', length: 255, nullable: false)]
+    private string $alt;
+
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
@@ -64,6 +70,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     public function __construct(
         string $filename,
         string $path,
+        string $mimeType,
+        string $alt,
         string $title,
         DateTimeImmutable $fileDate,
         ?string $description = null,
@@ -71,12 +79,14 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         ?string $attachableType = null
     )
     {
-        $this->setCommonFields($filename, $path, $title, $fileDate, $description, $attachableId, $attachableType);
+        $this->setCommonFields($filename, $path, $mimeType, $alt, $title, $fileDate, $description, $attachableId, $attachableType);
     }
 
     private function setCommonFields(
         string $filename,
         string $path,
+        string $mimeType,
+        string $alt,
         string $title,
         DateTimeImmutable $fileDate,
         ?string $description = null,
@@ -88,6 +98,12 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
 
         WebmozartAssert::stringNotEmpty($path);
         $this->path = $path;
+
+        WebmozartAssert::stringNotEmpty($mimeType);
+        $this->mimeType = $mimeType;
+
+        WebmozartAssert::stringNotEmpty($alt);
+        $this->alt = $alt;
 
         WebmozartAssert::stringNotEmpty($title);
         $this->title = $title;
@@ -102,6 +118,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     public function changeFields(
         string $filename,
         string $path,
+        string $mimeType,
+        string $alt,
         string $title,
         DateTimeImmutable $fileDate,
         ?string $description = null,
@@ -109,7 +127,7 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         ?string $attachableType = null
     ): void
     {
-        $this->setCommonFields($filename, $path, $title, $fileDate, $description, $attachableId, $attachableType);
+        $this->setCommonFields($filename, $path, $mimeType, $alt, $title, $fileDate, $description, $attachableId, $attachableType);
     }
 
     public function getId(): int
@@ -127,6 +145,16 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getMimeType(): string
+    {
+        return $this->mimeType;
+    }
+
+    public function getAlt(): string
+    {
+        return $this->alt;
     }
 
     public function getTitle(): string
@@ -169,6 +197,8 @@ class Attachment implements EntityInterface, HasMetaTimestampsInterface, SoftDel
         return [
             'id' => $this->getId(),
             'filename' => $this->getFilename(),
+            'mimeType' => $this->getMimeType(),
+            'alt' => $this->getAlt(),
             'path' => $this->getPath(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),

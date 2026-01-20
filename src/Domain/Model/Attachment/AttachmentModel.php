@@ -3,6 +3,7 @@
 namespace App\Domain\Model\Attachment;
 
 use DateTimeImmutable;
+use DateTimeZone;
 
 class AttachmentModel
 {
@@ -10,6 +11,8 @@ class AttachmentModel
         private readonly int $id,
         private readonly string $filename,
         private readonly string $path,
+        private readonly string $mimeType,
+        private readonly string $alt,
         private readonly string $title,
         private readonly DateTimeImmutable $fileDate,
         private readonly ?string $description = null,
@@ -33,6 +36,16 @@ class AttachmentModel
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getMimeType(): string
+    {
+        return $this->mimeType;
+    }
+
+    public function getAlt(): string
+    {
+        return $this->alt;
     }
 
     public function getTitle(): string
@@ -68,5 +81,43 @@ class AttachmentModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public static function getTableHeaderRu(): array
+    {
+        return [
+            'id' => '#',
+            'filename' => 'Имя файла',
+            'path' => 'путь к файлу',
+            'mimeType' => 'Тип файла',
+            'alt' => 'Альтернативный текст',
+            'title' => 'Название',
+            'description' => 'Описание',
+            'file_date' => 'Дата файла',
+            'attachable_id' => 'ID сущности',
+            'attachable_type' => 'Тип сущности',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления'
+        ];
+    }
+
+    public function toArray(): array
+    {
+        $timezone = new DateTimeZone('Europe/Moscow');
+
+        return [
+            'id' => $this->getId(),
+            'filename' => $this->getFilename(),
+            'path' => $this->getPath(),
+            'mimeType' => $this->getMimeType(),
+            'alt' => $this->getAlt(),
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'file_date' => $this->getFileDate()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'attachable_id' => $this->getAttachableId(),
+            'attachable_type' => $this->getAttachableType(),
+            'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+        ];
     }
 }

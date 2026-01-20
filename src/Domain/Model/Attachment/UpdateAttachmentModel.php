@@ -16,6 +16,12 @@ class UpdateAttachmentModel
         public readonly string $path,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        public readonly string $mimeType,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        public readonly string $alt,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $title,
         #[Assert\NotBlank]
         public readonly DateTimeImmutable $fileDate,

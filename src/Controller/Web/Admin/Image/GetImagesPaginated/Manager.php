@@ -2,13 +2,13 @@
 
 namespace App\Controller\Web\Admin\Image\GetImagesPaginated;
 
-use App\Domain\Model\Plant\PlantModel;
-use App\Domain\Service\PlantService;
+use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Service\AttachmentService;
 
 class Manager
 {
     public function __construct(
-        private readonly PlantService $plantService
+        private readonly AttachmentService $attachmentService
     ) {
     }
 
@@ -18,19 +18,19 @@ class Manager
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function getPlantsPaginated(int $page, int $perPage): array
+    public function getAttachmentsPaginated(int $page, int $perPage): array
     {
-        $plantsModel = $this->plantService->getPlantsPaginated($page, $perPage);
-        $tableHeader = PlantModel::getTableHeaderRu();
+        $attachmentsModel = $this->attachmentService->getAttachmentsPaginated($page, $perPage);
+        $tableHeader = AttachmentModel::getTableHeaderRu();
         $tableBody = array_map(
-            static fn (PlantModel $model): array => $model->toArray(),
-            $plantsModel['plantsModel']
+            static fn (AttachmentModel $model): array => $model->toArray(),
+            $attachmentsModel['attachmentsModel']
         );
 
         return [
             'tableHeader' => $tableHeader,
             'tableBody' => $tableBody,
-            'pagination' => $plantsModel['pagination'],
+            'pagination' => $attachmentsModel['pagination'],
         ];
     }
 }
