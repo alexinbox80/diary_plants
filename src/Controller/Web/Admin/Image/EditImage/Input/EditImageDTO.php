@@ -31,14 +31,14 @@ class EditImageDTO
         #[Assert\NotBlank]
         #[Assert\Type(type: DateTimeImmutable::class)]
         public readonly DateTimeImmutable $fileDate,
+        public readonly ?string $description = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string')]
         public readonly string $attachableId,
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:50)]
-        public readonly string $attachableType,
-        public readonly ?string $description = null,
+        public readonly string $attachableType
     ) {
     }
 }

@@ -100,7 +100,7 @@ class PlantType extends AbstractType
             'isNew' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
-            'csrf_token_id'   => 'unique_form_identifier',
+            'csrf_token_id' => 'unique_form_identifier',
         ]);
     }
 }
