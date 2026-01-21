@@ -11,34 +11,34 @@ class CreateImageDTO
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:50)]
-        public readonly ?string $filename = null,
+        public ?string $filename = null,
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:255)]
-        public readonly ?string $path = null,
+        public ?string $path = null,
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:50)]
-        public readonly ?string $mimeType = null,
+        public ?string $mimeType = null,
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:255)]
-        public readonly ?string $alt = null,
+        public ?string $alt = null,
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:255)]
-        public readonly ?string $title = null,
+        public ?string $title = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: DateTimeImmutable::class)]
-        public readonly ?DateTimeImmutable $fileDate = null,
-        public readonly ?string $description = null,
+        public ?DateTimeImmutable $fileDate = null,
+        public ?string $description = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer')]
-        public readonly ?int $attachableId = null,
+        public ?int $attachableId = null,
         #[Assert\NotBlank]
         #[Assert\Length(min:5)]
         #[Assert\Length(max:50)]
-        public readonly ?string $attachableType = null,
+        public ?string $attachableType = null,
     ) {
     }
 }

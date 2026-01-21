@@ -6,6 +6,7 @@
 parameters:
     csvFilePrefix: 'var/data/entities/'
     csvSeparator: ';'
+    uploadDirectory: '%kernel.project_dir%/public/uploads'
 
 services:
     # default configuration for services in *this* file
@@ -30,3 +31,7 @@ services:
     App\Domain\Service\CsvService:
         arguments:
             $csvSeparator: '%csvSeparator%'
+
+    App\Controller\Web\Admin\Image\EditImage\Manager:
+        arguments:
+            $uploadDirectory: '%uploadDirectory%'

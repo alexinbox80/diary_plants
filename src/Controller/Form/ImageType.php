@@ -6,8 +6,9 @@ use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
 use App\Controller\Web\Admin\Image\CreateImage\Input\CreateImageDTO;
 use App\Domain\Model\Attachment\AttachmentModel;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,17 +20,22 @@ class ImageType extends AbstractType
     {
         $labels = AttachmentModel::getTableHeaderRu();
         $builder
+            ->add('imageFile', FileType::class, [
+                'label' => 'Изображение',
+                'mapped' => true,
+                'required' => true,
+            ])
             ->add('filename', TextType::class, [
                 'label' => $labels['filename'],
-                'required' => true
+                'disabled' => true,
             ])
             ->add('path', TextType::class, [
                 'label' => $labels['path'],
-                'required' => true
+                'disabled' => true
             ])
             ->add('mimeType', TextType::class, [
                 'label' => $labels['mime_type'],
-                'required' => true
+                'disabled' => true
             ])
             ->add('alt', TextType::class, [
                 'label' => $labels['alt'],
@@ -53,9 +59,14 @@ class ImageType extends AbstractType
                 'label' => $labels['attachable_id'],
                 'required' => true
             ])
-            ->add('attachableType', TextareaType::class, [
+            ->add('attachableType', ChoiceType::class, [
                 'label' => $labels['attachable_type'],
-                'required' => true
+                'required' => true,
+                'choices' => [
+                    'Растения' => 'plant::class',
+                    'Плоды' => 'offspring::class',
+                ],
+                'placeholder' => 'Выбери тип изображения',
             ])
             ->setMethod($options['isNew'] ? 'POST' : 'PATCH');
     }
