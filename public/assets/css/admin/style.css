@@ -8740,6 +8740,10 @@ nav .pagination .page-item .page-link {
   outline: 0;
 }
 
+.modal-width {
+    --bs-modal-width: 1024px!important;
+}
+
 .modal-dialog {
   position: relative;
   width: auto;
@@ -20145,6 +20149,7 @@ dl li {
 }
 .modal .modal-dialog .modal-content .modal-header {
   padding: 25px 26px;
+  width: 100%;
 }
 .modal .modal-dialog .modal-content .modal-header .close {
   background: transparent;
@@ -20161,6 +20166,7 @@ dl li {
 .modal .modal-dialog .modal-content .modal-footer {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
+  width: 100%;
 }
 .modal .modal-dialog .modal-content .modal-footer > button {
   margin: 0.125rem;
@@ -20935,7 +20941,7 @@ dl li {
   white-space: nowrap;
 }
 .table th img, .jsgrid .jsgrid-table th img,
-.table td img,
+/*.table td img,*/
 .jsgrid .jsgrid-table td img {
   width: 36px;
   height: 36px;
@@ -23095,7 +23101,9 @@ body.avgrund-active {
   max-width: 100%;
   width: 100%;
 }
-
+.table-image-thumb {
+    width: 100px;
+}
 /* Listify */
 .listify-list input {
   border: 1px solid #f2f7f8;

@@ -1,0 +1,21 @@
+{% macro modal_image(id, alt, src, single) %}
+    <div class="modal fade modal-width" id="myModal{{ id }}" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-dialog-centered">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">{{ alt }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {% if single == 'single' %}
+                    <div class="modal-body">
+                        <!-- Здесь ваш контент для картинки -->
+                        <img src="{{ asset(src) }}" alt="{{ alt }}" class="img-fluid">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}

@@ -51,20 +51,23 @@ class Manager
             if ($editImageDTO->imageFile instanceof UploadedFile) {
                 //$originalFilename = pathinfo($editImageDTO->imageFile->getClientOriginalName(), PATHINFO_FILENAME);
 
+                $entity = explode('::', $editImageDTO->attachableType)[0];
+
+                // Создаем директорию, если она не существует
+                $directory = $this->uploadDirectory . '/attachments/' . $entity . '/' . $editImageDTO->attachableId;
+                if (!is_dir($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
                 $fileName = sprintf('%s.%s', uniqid('image', true), $editImageDTO->imageFile->getClientOriginalExtension());
 
                 //$safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
                 //$fileName = $safeFilename . '-' . uniqid() . '.' . $editImageDTO->imageFile->guessExtension();
 
-                // Создаем директорию, если она не существует
-                $directory = $this->uploadDirectory . '/attachments/plant/' . $editImageDTO->attachableId;
-                if (!is_dir($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-
                 // Обновляем данные в DTO — теперь используем новое имя и путь
                 $editImageDTO->filename = $fileName;
-                $editImageDTO->path = 'attachments/plant/' . $editImageDTO->attachableId . '/';
+                $editImageDTO->path = 'attachments/' . $entity . '/' . $editImageDTO->attachableId . '/';
+                //$editImageDTO->path = $directory . '/';
                 $editImageDTO->mimeType = $editImageDTO->imageFile->getMimeType();
 
                 // Перемещаем файл в директорию
@@ -91,8 +94,7 @@ class Manager
         }
 
         return [
-            //'form' => $form,
-            'form' => $form->createView(),
+            'form' => $form,
             'image' => $attachment
         ];
     }

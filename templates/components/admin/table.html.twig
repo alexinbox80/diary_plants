@@ -1,4 +1,6 @@
 {% import 'macros/admin/table_column.html.twig' as table_column %}
+{% import 'macros/admin/image.html.twig' as image_tag %}
+
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -32,7 +34,11 @@
                                             {% if column_number > 0 %}
                                                 <td data-column="{{ key }}">
                                                     {% if item[key] is not null %}
-                                                        {{ item[key] }}
+                                                        {% if key == 'img_tag' %}
+                                                            {{ image_tag.image(row_number, 'table-image-thumb', item['alt'], item[key], 'single') }}
+                                                        {% else %}
+                                                            {{ item[key] }}
+                                                        {% endif %}
                                                     {% endif %}
                                                 </td>
                                             {% else %}

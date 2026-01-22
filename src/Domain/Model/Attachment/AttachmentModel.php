@@ -87,8 +87,9 @@ class AttachmentModel
     {
         return [
             'id' => '#',
+            'img_tag' => 'Изображение',
             'filename' => 'Имя файла',
-            'path' => 'путь к файлу',
+            'path' => 'Путь к файлу',
             'mime_type' => 'Тип файла',
             'alt' => 'Альтернативный текст',
             'title' => 'Название',
@@ -107,6 +108,7 @@ class AttachmentModel
 
         return [
             'id' => $this->getId(),
+            'img_tag' => $this->getPath() . $this->getFilename(),
             'filename' => $this->getFilename(),
             'path' => $this->getPath(),
             'mime_type' => $this->getMimeType(),
