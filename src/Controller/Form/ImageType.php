@@ -5,6 +5,7 @@ namespace App\Controller\Form;
 use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
 use App\Controller\Web\Admin\Image\CreateImage\Input\CreateImageDTO;
 use App\Domain\Model\Attachment\AttachmentModel;
+use DateTimeImmutable;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -75,7 +76,9 @@ class ImageType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditImageDTO::class,
-            'empty_data' => new CreateImageDTO(),
+            'empty_data' => fn() => new CreateImageDTO(
+                '', '', '', '', '', new DateTimeImmutable(), null, 0, '', null
+            ),
             'isNew' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

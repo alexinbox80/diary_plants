@@ -6,6 +6,7 @@ use App\Controller\Form\ImageType;
 use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
+use App\Domain\Service\FileService;
 use App\Domain\Service\ModelFactory;
 use App\Domain\Service\AttachmentService;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -14,15 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Manager
 {
-    private string $uploadDirectory;
-
     public function __construct(
         private readonly AttachmentService $attachmentService,
         private readonly FormFactoryInterface $formFactory,
         private readonly ModelFactory $modelFactory,
-        string $uploadDirectory
+        private readonly FileService $fileService,
     ) {
-        $this->uploadDirectory = $uploadDirectory;
     }
 
     public function editFormData(Request $request, Attachment $attachment): array
@@ -47,31 +45,15 @@ class Manager
             /** @var EditImageDTO $editImageDTO */
             $editImageDTO = $form->getData();
 
-            // Обработка загрузки нового изображения (берём из $request через UploadedFile)
             if ($editImageDTO->imageFile instanceof UploadedFile) {
-                //$originalFilename = pathinfo($editImageDTO->imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-
                 $entity = explode('::', $editImageDTO->attachableType)[0];
 
-                // Создаем директорию, если она не существует
-                $directory = $this->uploadDirectory . '/attachments/' . $entity . '/' . $editImageDTO->attachableId;
-                if (!is_dir($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-
-                $fileName = sprintf('%s.%s', uniqid('image', true), $editImageDTO->imageFile->getClientOriginalExtension());
-
-                //$safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-                //$fileName = $safeFilename . '-' . uniqid() . '.' . $editImageDTO->imageFile->guessExtension();
-
-                // Обновляем данные в DTO — теперь используем новое имя и путь
-                $editImageDTO->filename = $fileName;
-                $editImageDTO->path = 'attachments/' . $entity . '/' . $editImageDTO->attachableId . '/';
-                //$editImageDTO->path = $directory . '/';
+                $directory = $entity . '/' . $editImageDTO->attachableId;
+                $editImageDTO->path = 'attachments/' . $directory. '/';
                 $editImageDTO->mimeType = $editImageDTO->imageFile->getMimeType();
 
-                // Перемещаем файл в директорию
-                $editImageDTO->imageFile->move($directory, $fileName);
+                $uploadFile = $this->fileService->storeUploadedFile($editImageDTO->imageFile, $directory);
+                $editImageDTO->filename = $uploadFile->getFilename();
             }
 
             $updateAttachmentModel = $this->modelFactory->makeModel(

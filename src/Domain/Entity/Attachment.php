@@ -9,7 +9,7 @@
                     offspring/
                     pest/
                     ...
-                    └── uid/
+                    └── id/
                         ├── original/
                         │   └── abc123.jpg
                         └── thumbnails/

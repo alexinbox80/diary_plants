@@ -32,6 +32,6 @@ services:
         arguments:
             $csvSeparator: '%csvSeparator%'
 
-    App\Controller\Web\Admin\Image\EditImage\Manager:
+    App\Infrastructure\Storage\LocalFileStorage:
         arguments:
             $uploadDirectory: '%uploadDirectory%'
