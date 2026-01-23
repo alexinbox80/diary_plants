@@ -1,0 +1,46 @@
+{% macro delete(route_delete) %}
+    <!-- Модальное окно подтверждения удаления -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Подтвердите удаление</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Вы действительно хотите удалить "<span id="deleteItemTitle"></span>"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <form id="deleteForm" method="post" style="display:inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('confirmDeleteModal');
+            modal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+                const entity = button.getAttribute('data-entity');
+                const route = 'admin' + entity + 'delete';
+                const title = button.getAttribute('data-title');
+                const form = document.getElementById('deleteForm');
+                const titleSpan = document.getElementById('deleteItemTitle');
+                const tokenInput = form.querySelector('input[name="_token"]');
+                const token = button.getAttribute('data-token');
+
+                console.log(entity);
+                titleSpan.textContent = title;
+                form.action = `{{ path(route_delete, {'id': '__ID__'}) }}`.replace('__ID__', id);
+                tokenInput.value = token;
+            });
+        });
+    </script>
+{% endmacro %}

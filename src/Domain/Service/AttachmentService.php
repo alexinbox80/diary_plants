@@ -193,7 +193,7 @@ class AttachmentService
      * @return void
      * @throws InvalidArgumentException
      */
-    public function removePlant(Attachment $attachment): void
+    public function removeAttachment(Attachment $attachment): void
     {
         $this->attachmentRepository->remove($attachment);
     }

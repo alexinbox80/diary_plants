@@ -49,9 +49,18 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
 
     /**
      * @param int $offspringId
+     * @return Offspring|null
+     */
+    public function find(int $offspringId): ?Offspring
+    {
+        return $this->offspringRepository->find($offspringId);
+    }
+
+    /**
+     * @param int $offspringId
      * @return OffspringModel|null
      */
-    public function find(int $offspringId): ?OffspringModel
+    public function findModel(int $offspringId): ?OffspringModel
     {
         $offspring = $this->offspringRepository->find($offspringId);
 

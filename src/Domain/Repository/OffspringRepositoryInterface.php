@@ -8,7 +8,8 @@ use App\Domain\Model\Offspring\OffspringModel;
 interface OffspringRepositoryInterface
 {
     public function getOffspringsPaginated(int $page, int $perPage): array;
-    public function find(int $offspringId): ?OffspringModel;
+    public function find(int $offspringId): ?Offspring;
+    public function findModel(int $offspringId): ?OffspringModel;
     public function findAll(): array;
     public function findOffspringsByMass(string $mass): array;
     public function findOffspringsByFlavor(string $flavor): array;
