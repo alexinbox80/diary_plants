@@ -1,10 +1,10 @@
 {% macro modal_image(id, alt, src, single) %}
-    <div class="modal fade modal-width" id="myModal{{ id }}" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade modal-width" id="PreviewModal{{ id }}" tabindex="-1" aria-labelledby="PreviewImageModalLabel{{ id }}" aria-modal="true" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content modal-dialog-centered">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">{{ alt }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="PreviewImageModalLabel{{ id }}">{{ alt }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 {% if single == 'single' %}
                     <div class="modal-body">
