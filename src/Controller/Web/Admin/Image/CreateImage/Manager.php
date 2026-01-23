@@ -34,13 +34,10 @@ class Manager
             $createImageDTO = $form->getData();
 
             if ($createImageDTO->imageFile instanceof UploadedFile) {
-                $entity = explode('::', $createImageDTO->attachableType)[0];
-
-                $directory = $entity . '/' . $createImageDTO->attachableId;
-                $createImageDTO->path = 'attachments/' . $directory. '/';
+                $createImageDTO->path = $this->fileService->getAttachmentsPath($createImageDTO->attachableType, $createImageDTO->attachableId);
                 $createImageDTO->mimeType = $createImageDTO->imageFile->getMimeType();
 
-                $uploadFile = $this->fileService->storeUploadedFile($createImageDTO->imageFile, $directory);
+                $uploadFile = $this->fileService->storeUploadedFile($createImageDTO->imageFile, $createImageDTO->path);
                 $createImageDTO->filename = $uploadFile->getFilename();
             }
 

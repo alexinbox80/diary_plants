@@ -56,7 +56,7 @@ class ImageType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => true,
             ])
-            ->add('attachableId', TextareaType::class, [
+            ->add('attachableId', TextType::class, [
                 'label' => $labels['attachable_id'],
                 'required' => true
             ])

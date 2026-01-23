@@ -46,13 +46,15 @@ class Manager
             $editImageDTO = $form->getData();
 
             if ($editImageDTO->imageFile instanceof UploadedFile) {
-                $entity = explode('::', $editImageDTO->attachableType)[0];
+                // удалить старый файл
+                if (!is_null($editImageDTO->path) || !is_null($editImageDTO->filename))
+                    $this->fileService->removeUploadedFile($editImageDTO->path . $editImageDTO->filename);
 
-                $directory = $entity . '/' . $editImageDTO->attachableId;
-                $editImageDTO->path = 'attachments/' . $directory. '/';
+                // обновить данные
+                $editImageDTO->path = $this->fileService->getAttachmentsPath($editImageDTO->attachableType, $editImageDTO->attachableId);
                 $editImageDTO->mimeType = $editImageDTO->imageFile->getMimeType();
 
-                $uploadFile = $this->fileService->storeUploadedFile($editImageDTO->imageFile, $directory);
+                $uploadFile = $this->fileService->storeUploadedFile($editImageDTO->imageFile, $editImageDTO->path);
                 $editImageDTO->filename = $uploadFile->getFilename();
             }
 
