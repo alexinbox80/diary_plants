@@ -28,15 +28,12 @@
             modal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
                 const id = button.getAttribute('data-id');
-                const entity = button.getAttribute('data-entity');
-                const route = 'admin' + entity + 'delete';
                 const title = button.getAttribute('data-title');
                 const form = document.getElementById('deleteForm');
                 const titleSpan = document.getElementById('deleteItemTitle');
                 const tokenInput = form.querySelector('input[name="_token"]');
                 const token = button.getAttribute('data-token');
 
-                console.log(entity);
                 titleSpan.textContent = title;
                 form.action = `{{ path(route_delete, {'id': '__ID__'}) }}`.replace('__ID__', id);
                 tokenInput.value = token;
