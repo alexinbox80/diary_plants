@@ -2,15 +2,17 @@
 
 namespace App\Infrastructure\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Repository\AttachableResolverInterface;
 use App\Domain\Repository\AttachmentRepositoryInterface;
-use DateTimeImmutable;
 
 class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 {
     public function __construct(
         private readonly AttachmentRepository $attachmentRepository,
+        private readonly AttachableResolverInterface $attachableResolver
     ) {
     }
 
@@ -22,24 +24,10 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findByAttachable($attachableType, $attachableId);
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
-
 
     /**
      * @return AttachmentModel[]
@@ -49,24 +37,10 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findByAttachableWithDeleted($attachableType, $attachableId);
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
-
 
     public function findOneByAttachable(string $attachableType, int $attachableId, int $attachmentId): ?Attachment
     {
@@ -92,20 +66,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         }
 
         $attachmentsModel = array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachmentsPaginated['items']
         );
 
@@ -132,20 +93,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     {
         $attachment = $this->attachmentRepository->find($attachmentId);
 
-        return new AttachmentModel(
-            $attachment->getId(),
-            $attachment->getFilename(),
-            $attachment->getPath(),
-            $attachment->getMimeType(),
-            $attachment->getAlt(),
-            $attachment->getTitle(),
-            $attachment->getFileDate(),
-            $attachment->getDescription(),
-            $attachment->getAttachableId(),
-            $attachment->getAttachableType(),
-            $attachment->getCreatedAt(),
-            $attachment->getUpdatedAt()
-        );
+        return $this->toModel($attachment);
     }
 
     /**
@@ -156,20 +104,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAll();
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
@@ -183,20 +118,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByTitle($title);
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
@@ -210,20 +132,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByFilename($filename);
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
@@ -237,20 +146,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByFileDate($fileDate);
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
@@ -264,20 +160,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByPath($path);
 
         return array_map(
-            static fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
+            fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
     }
@@ -306,5 +189,24 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     public function remove(Attachment $attachment): void
     {
         $this->attachmentRepository->remove($attachment);
+    }
+
+    public function toModel(Attachment $attachment): AttachmentModel
+    {
+        return new AttachmentModel(
+            $attachment->getId(),
+            $attachment->getFilename(),
+            $attachment->getPath(),
+            $attachment->getMimeType(),
+            $attachment->getAlt(),
+            $attachment->getTitle(),
+            $attachment->getFileDate(),
+            $attachment->getDescription(),
+            $attachment->getAttachableId(),
+            $attachment->getAttachableType(),
+            $this->attachableResolver->resolve($attachment->getAttachableType(), $attachment->getAttachableId()),
+            $attachment->getCreatedAt(),
+            $attachment->getUpdatedAt()
+        );
     }
 }

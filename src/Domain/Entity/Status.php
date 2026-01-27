@@ -21,23 +21,29 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    //идентификатор
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //сокращение
     #[ORM\Column(type: 'string', length: 1, unique: true, nullable: false)]
     private string $letter;
 
+    //описание
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
+    //цвет
     #[ORM\Column(type: 'string', length: 7, nullable: false)]
     private string $color;
 
+    //описание цвета
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private ?string $colorDescription = null;
 
+    //связь с событиями
     #[ORM\OneToOne(targetEntity: Task::class, mappedBy: 'status')]
     private Task $task;
 

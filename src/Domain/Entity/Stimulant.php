@@ -19,11 +19,13 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    //идентификатор
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //связь с растениями
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'stimulants')]
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;

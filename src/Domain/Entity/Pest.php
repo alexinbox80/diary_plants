@@ -20,11 +20,13 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    //идентификатор
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //связь с растениями
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'pests')]
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;

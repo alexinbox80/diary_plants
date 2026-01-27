@@ -4,6 +4,7 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
@@ -18,10 +19,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'offspring__plant_id__ind', columns: ['plant_id'])]
-class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    //идентификатор
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -63,6 +65,7 @@ class Offspring implements EntityInterface, HasMetaTimestampsInterface, SoftDele
     /**
      * @var Collection<int, Attachment>
      */
+    //связь с файлом
     #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
     private Collection $attachments;

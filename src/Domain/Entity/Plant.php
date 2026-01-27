@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
@@ -21,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'plant__oid__ind', columns: ['oid'])]
 #[ORM\UniqueConstraint(name: 'plant__oid__uniq', fields: ['oid'], options: ['where' => '(deleted_at IS NULL)'])]
-class Plant implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 

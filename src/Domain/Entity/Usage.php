@@ -1,4 +1,4 @@
-<?php
+<?php //сущность использования для стимуляторов удобрений и вредителей
 
 namespace App\Domain\Entity;
 
@@ -20,6 +20,7 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
+    //идентификатор
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

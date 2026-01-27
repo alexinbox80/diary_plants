@@ -1,4 +1,4 @@
-<?php //препарат
+<?php //общий наследуемый класс для стимуляторов удобрений и вредителей
 
 namespace App\Domain\Entity;
 
@@ -8,21 +8,27 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\MappedSuperclass]
 abstract class Preparation
 {
+    //заголовок
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
+    //буква обозначения
     #[ORM\Column(name: 'letter', type: 'string', length: 2, nullable: false)]
     private string $letter;
 
+    //описание
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
+    //изготовитель
     #[ORM\Column(name: 'manufacturer', type: 'string', length: 255, nullable: true)]
     private ?string $manufacturer = null;
 
+    //количество
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
 
+    //комментарии
     #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
     private ?string $comment = null;
 

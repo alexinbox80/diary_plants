@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\Attachment;
 
+use App\Domain\Entity\Interfaces\AttachableInterface;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -18,6 +19,7 @@ class AttachmentModel
         private readonly ?string $description = null,
         private readonly ?int $attachableId = null,
         private readonly ?string $attachableType = null,
+        private readonly ?AttachableInterface $attachable = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -73,6 +75,11 @@ class AttachmentModel
         return $this->attachableType;
     }
 
+    public function getAttachable(): ?AttachableInterface
+    {
+        return $this->attachable;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -116,8 +123,10 @@ class AttachmentModel
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'file_date' => $this->getFileDate()->setTimezone($timezone)->format('d.m.Y H:i:s'),
-            'attachable_id' => $this->getAttachableId(),
+            //'attachable_id' => $this->getAttachableId(),
+            'attachable_id' => $this->getAttachable()->getId(),
             'attachable_type' => $this->getAttachableType(),
+            'attachable' => $this->getAttachable(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
         ];

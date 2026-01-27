@@ -2,38 +2,19 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use App\Domain\Repository\AttachmentRepositoryInterface;
-use DateTimeImmutable;
-use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AttachmentService
 {
     public function __construct(
         private readonly AttachmentRepositoryInterface $attachmentRepository
     ) {
-    }
-
-    public function createAttachment(
-        UploadedFile $file,
-        string $targetType,
-        int $targetId
-    ): ?Attachment
-    {
-        $filename = uniqid() . '-' . $file->getClientOriginalName();
-        $file->move('uploads/attachments', $filename);
-
-//        $attachment = new Attachment();
-//        $attachment->setFilename($filename);
-//        $attachment->setPath('uploads/attachments/' . $filename);
-//        $attachment->setTargetType($targetType);
-//        $attachment->setTargetId($targetId);
-
-        return null;
     }
 
     /**
@@ -121,20 +102,7 @@ class AttachmentService
 
         $this->attachmentRepository->create($attachment);
 
-        return new AttachmentModel(
-            $attachment->getId(),
-            $attachment->getFilename(),
-            $attachment->getPath(),
-            $attachment->getMimeType(),
-            $attachment->getAlt(),
-            $attachment->getTitle(),
-            $attachment->getFileDate(),
-            $attachment->getDescription(),
-            $attachment->getAttachableId(),
-            $attachment->getAttachableType(),
-            $attachment->getCreatedAt(),
-            $attachment->getUpdatedAt()
-        );
+        return $this->attachmentRepository->toModel($attachment);
     }
 
     /**
@@ -159,20 +127,7 @@ class AttachmentService
 
         $this->attachmentRepository->update();
 
-        return new AttachmentModel(
-            $attachment->getId(),
-            $attachment->getFilename(),
-            $attachment->getPath(),
-            $attachment->getMimeType(),
-            $attachment->getAlt(),
-            $attachment->getTitle(),
-            $attachment->getFileDate(),
-            $attachment->getDescription(),
-            $attachment->getAttachableId(),
-            $attachment->getAttachableType(),
-            $attachment->getCreatedAt(),
-            $attachment->getUpdatedAt()
-        );
+        return $this->attachmentRepository->toModel($attachment);
     }
 
     /**
