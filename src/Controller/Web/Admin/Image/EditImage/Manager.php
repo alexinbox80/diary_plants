@@ -2,24 +2,18 @@
 
 namespace App\Controller\Web\Admin\Image\EditImage;
 
-use App\Controller\Form\ImageType;
-use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
 use App\Domain\Entity\Attachment;
-use App\Domain\Model\Attachment\UpdateAttachmentModel;
-use App\Domain\Service\FileService;
-use App\Domain\Service\ModelFactory;
+use App\Controller\Form\ImageType;
 use App\Domain\Service\AttachmentService;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormFactoryInterface;
+use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
 
 class Manager
 {
     public function __construct(
         private readonly AttachmentService $attachmentService,
         private readonly FormFactoryInterface $formFactory,
-        private readonly ModelFactory $modelFactory,
-        private readonly FileService $fileService,
     ) {
     }
 
@@ -45,40 +39,14 @@ class Manager
             /** @var EditImageDTO $editImageDTO */
             $editImageDTO = $form->getData();
 
-            if ($editImageDTO->imageFile instanceof UploadedFile) {
-                // удалить старый файл
-                if (!is_null($editImageDTO->path) || !is_null($editImageDTO->filename))
-                    $this->fileService->removeUploadedFile($editImageDTO->path . $editImageDTO->filename);
-
-                // обновить данные
-                $editImageDTO->path = $this->fileService->getAttachmentsPath($editImageDTO->attachableType, $editImageDTO->attachableId);
-                $editImageDTO->mimeType = $editImageDTO->imageFile->getMimeType();
-
-                $uploadFile = $this->fileService->storeUploadedFile($editImageDTO->imageFile, $editImageDTO->path);
-                $editImageDTO->filename = $uploadFile->getFilename();
-            }
-
-            $updateAttachmentModel = $this->modelFactory->makeModel(
-                UpdateAttachmentModel::class,
-                $editImageDTO->filename,
-                $editImageDTO->path,
-                $editImageDTO->mimeType,
-                $editImageDTO->alt,
-                $editImageDTO->title,
-                $editImageDTO->fileDate,
-                $editImageDTO->attachableId,
-                $editImageDTO->attachableType,
-                $editImageDTO->description,
-            );
-
-            $this->attachmentService->update($attachment, $updateAttachmentModel);
+            $this->attachmentService->updateFromEditImageDTO($attachment, $editImageDTO);
 
             $request->getSession()->getFlashBag()->add('success', 'Изображение успешно обновлено.');
             return ['success' => true];
         }
 
         return [
-            'form' => $form,
+            'form' => $form->createView(),
             'image' => $attachment
         ];
     }

@@ -9,11 +9,16 @@ use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use App\Domain\Repository\AttachmentRepositoryInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
+use App\Controller\Web\Admin\Image\CreateImage\Input\CreateImageDTO;
 
 class AttachmentService
 {
     public function __construct(
-        private readonly AttachmentRepositoryInterface $attachmentRepository
+        private readonly AttachmentRepositoryInterface $attachmentRepository,
+        private readonly ModelFactory $modelFactory,
+        private readonly FileService $fileService,
     ) {
     }
 
@@ -106,6 +111,30 @@ class AttachmentService
     }
 
     /**
+     * @param CreateImageDTO $dto
+     * @return AttachmentModel
+     */
+    public function createFromCreateImageDTO(CreateImageDTO $dto): AttachmentModel
+    {
+        $this->processFileForDTO($dto);
+
+        $model = $this->modelFactory->makeModel(
+            CreateAttachmentModel::class,
+            $dto->filename,
+            $dto->path,
+            $dto->mimeType,
+            $dto->alt,
+            $dto->title,
+            $dto->fileDate,
+            $dto->attachableId,
+            $dto->attachableType,
+            $dto->description,
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Attachment $attachment
      * @param UpdateAttachmentModel $updateAttachmentModel
      * @return AttachmentModel
@@ -131,6 +160,37 @@ class AttachmentService
     }
 
     /**
+     * @param Attachment $attachment
+     * @param EditImageDTO $dto
+     * @return void
+     */
+    public function updateFromEditImageDTO(Attachment $attachment, EditImageDTO $dto): void
+    {
+        // Если загружен новый файл — обновляем путь и удаляем старый
+        if ($dto->imageFile instanceof UploadedFile) {
+            $this->removeOldFile($attachment);
+            $this->processFileForDTO($dto);
+        }
+
+        // Создаём модель обновления
+        $model = $this->modelFactory->makeModel(
+            UpdateAttachmentModel::class,
+            $dto->filename,
+            $dto->path,
+            $dto->mimeType,
+            $dto->alt,
+            $dto->title,
+            $dto->fileDate,
+            $dto->attachableId,
+            $dto->attachableType,
+            $dto->description,
+        );
+
+        // Выполняем обновление
+        $this->update($attachment, $model);
+    }
+
+    /**
      * @param int $attachmentId
      * @return void
      * @throws InvalidArgumentException
@@ -139,7 +199,7 @@ class AttachmentService
     {
         $attachment = $this->attachmentRepository->find($attachmentId);
         if ($attachment !== null) {
-            $this->attachmentRepository->remove($attachment);
+            $this->removeAttachment($attachment);
         }
     }
 
@@ -151,5 +211,55 @@ class AttachmentService
     public function removeAttachment(Attachment $attachment): void
     {
         $this->attachmentRepository->remove($attachment);
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function deleteWithFile(int $id): void
+    {
+        $attachment = $this->find($id);
+
+        if (!$attachment) {
+            throw new \InvalidArgumentException("Вложение с ID {$id} не найдено");
+        }
+
+        // Удаляем файл
+        $this->removeOldFile($attachment);
+
+        // Удаляем сущность
+        $this->removeAttachment($attachment);
+    }
+
+    /**
+     * Вспомогательные методы
+     */
+    /**
+     * @param CreateImageDTO|EditImageDTO $dto
+     * @return void
+     */
+    private function processFileForDTO(CreateImageDTO|EditImageDTO $dto): void
+    {
+        if ($dto->imageFile instanceof UploadedFile) {
+            $path = $this->fileService->getAttachmentsPath($dto->attachableType, $dto->attachableId);
+            $dto->mimeType = $dto->imageFile->getMimeType();
+
+            $uploadedFile = $this->fileService->storeUploadedFile($dto->imageFile, $path);
+
+            $dto->filename = $uploadedFile->getFilename();
+            $dto->path = $path;
+        }
+    }
+
+    /**
+     * @param Attachment $attachment
+     * @return void
+     */
+    private function removeOldFile(Attachment $attachment): void
+    {
+        if ($attachment->getPath() && $attachment->getFilename()) {
+            $this->fileService->removeUploadedFile($attachment->getPath() . $attachment->getFilename());
+        }
     }
 }
