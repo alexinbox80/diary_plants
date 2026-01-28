@@ -10,8 +10,8 @@ use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use App\Domain\Repository\AttachmentRepositoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
-use App\Controller\Web\Admin\Image\CreateImage\Input\CreateImageDTO;
+use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
+use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 
 class AttachmentService
 {

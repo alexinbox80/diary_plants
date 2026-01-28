@@ -2,8 +2,8 @@
 
 namespace App\Controller\Form;
 
-use App\Controller\Web\Admin\Offspring\EditOffspring\Input\EditOffspringDTO;
-use App\Controller\Web\Admin\Offspring\CreateOffspring\Input\CreateOffspringDTO;
+use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
+use App\Controller\Web\Dashboard\Offspring\CreateOffspring\Input\CreateOffspringDTO;
 use App\Domain\Model\Offspring\OffspringModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;

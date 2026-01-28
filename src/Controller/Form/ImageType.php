@@ -2,8 +2,8 @@
 
 namespace App\Controller\Form;
 
-use App\Controller\Web\Admin\Image\EditImage\Input\EditImageDTO;
-use App\Controller\Web\Admin\Image\CreateImage\Input\CreateImageDTO;
+use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
+use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 use App\Domain\Model\Attachment\AttachmentModel;
 use DateTimeImmutable;
 use Symfony\Component\Form\AbstractType;

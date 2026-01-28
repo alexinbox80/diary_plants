@@ -2,8 +2,8 @@
 
 namespace App\Controller\Form;
 
-use App\Controller\Web\Admin\Plant\EditPlant\Input\EditPlantDTO;
-use App\Controller\Web\Admin\Plant\CreatePlant\Input\CreatePlantDTO;
+use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
+use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 use App\Domain\Model\Plant\PlantModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

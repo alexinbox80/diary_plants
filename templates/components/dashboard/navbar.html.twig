@@ -1,0 +1,34 @@
+<!-- partial:partials/_navbar.html -->
+<nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo" href="{{ path('dashboard.index') }}">
+{#            <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" class="logo-dark" />#}
+{#            <img src="{{ asset('assets/images/logo-light.svg') }}" alt="logo-light" class="logo-light">#}
+            <h5 class="mb-0 font-weight-medium d-none d-lg-flex text-white">Дневник растений</h5>
+        </a>
+        <a class="navbar-brand brand-logo-mini" href="{{ path('dashboard.index') }}">
+            <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
+        </a>
+        <button id="main-sidebar-menu" class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="icon-menu"></span>
+        </button>
+    </div>
+    <div class="navbar-menu-wrapper d-flex align-items-center">
+        <h5 class="mb-0 font-weight-medium d-none d-lg-flex">Панель администрирования {% if title is defined %} - {{ title }} {% endif %}</h5>
+        <ul class="navbar-nav navbar-nav-right">
+            <form class="search-form d-none d-md-block" action="#">
+                <i class="icon-magnifier"></i>
+                <input type="search" class="form-control" placeholder="Поиск" title="Поиск">
+            </form>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="icon-basket-loaded"></i></a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="icon-chart"></i></a></li>
+            {% include 'components/dashboard/messages.html.twig' %}
+            {% include 'components/dashboard/languages.html.twig' %}
+            {% include 'components/dashboard/user-menu.html.twig' %}
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+            <span class="icon-menu"></span>
+        </button>
+    </div>
+</nav>
+<!-- partial -->

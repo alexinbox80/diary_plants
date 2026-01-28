@@ -1,0 +1,9 @@
+{% import 'macros/dashboard/pagination_header.html.twig' as pagination_header %}
+{% import 'macros/dashboard/table_perpage.html.twig' as per_page %}
+{% import 'macros/dashboard/pagination.html.twig' as pagination_nav %}
+
+<div class="d-flex mt-4 flex-wrap align-items-center">
+    {{ pagination_header.header(pagination.first, pagination.last, pagination.total) }}
+    {{ per_page.table_rows(path(page_url), pagination.count)}}
+    {{ pagination_nav.navigation(pagination.pages, pagination.current, pagination.count, path(page_url)) }}
+</div>

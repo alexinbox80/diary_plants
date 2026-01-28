@@ -1,0 +1,51 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Страница администрирования сайта
+{% endblock %}
+
+{% block stylesheets %}
+    <!-- plugins:css -->
+    {# navbar и кнопки пагинации #}
+    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/flag-icon-css/css/flag-icons.min.css') }}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    {# шрифт иконок в меню #}
+    <link rel="stylesheet" href="{{ asset('assets/vendors/font-awesome/css/font-awesome.min.css') }}" />
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{{ asset('assets/css/admin/style.css') }}">
+    <!-- End layout styles -->
+{% endblock %}
+
+{% block favicon %}
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {#  меню с языками и пользователем  #}
+    <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+    <!-- inject:js -->
+    {# сворачивание меню и добавление класса active при переходе #}
+    <script src="{{ asset('assets/js/misc.js') }}"></script>
+    <!-- endinject -->
+    {# chartist.js #}
+    <script src="{{ asset('assets/js/chartist.js') }}"></script>
+    <!-- Custom js for this page -->
+    <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+    <!-- End custom js for this page -->
+    <!-- Sidebar menu full / short-->
+    <script type="module" defer src="{{ asset('assets/js/dashboard/menu/main.js') }}" data-entity="plant"></script>
+    <!-- End sidebar js for this page -->
+{% endblock %}
+
+{% block content %}
+    {% include 'components/dashboard/alert.html.twig' with {'flashes': app.flashes} %}
+    <div class="container-scroller">
+        {% block header %}{% endblock %}
+        {% block body %}{% endblock %}
+    </div>
+{% endblock %}
