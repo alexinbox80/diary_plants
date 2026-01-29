@@ -53,17 +53,14 @@ class EditImageDTO
     }
 
     public function __construct(
-        #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:50)]
-        public string $filename,
+        #[Assert\Type('boolean')]
+        public ?bool $isShown = false,
 
-        #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:255)]
-        public string $path,
+        public ?string $filename = null,
 
-        #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:50)]
-        public string $mimeType,
+        public ?string $path = null,
+
+        public ?string $mimeType = null,
 
         #[Assert\NotBlank]
         #[Assert\Length(min:5, max:255)]
@@ -86,7 +83,7 @@ class EditImageDTO
         #[Assert\Length(min:5, max:50)]
         public string $attachableType,
 
-        #[Assert\NotNull(message: 'Пожалуйста, выберите изображение')]
+        //#[Assert\NotNull(message: 'Пожалуйста, выберите изображение')]
         public ?UploadedFile $imageFile = null,
     ) {
     }

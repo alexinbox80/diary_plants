@@ -9,14 +9,21 @@ class UpdateAttachmentModel
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public readonly int $groupId,
+
+        #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
+        public readonly bool $isShown,
+
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $filename,
-        #[Assert\NotBlank]
+
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $path,
-        #[Assert\NotBlank]
+
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $mimeType,
+
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $alt,

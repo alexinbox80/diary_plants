@@ -6,7 +6,9 @@ use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
 use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 use App\Domain\Model\Attachment\AttachmentModel;
 use DateTimeImmutable;
+use DateTimeZone;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -21,10 +23,15 @@ class ImageType extends AbstractType
     {
         $labels = AttachmentModel::getTableHeaderRu();
         $builder
+            ->add('isShown', CheckboxType::class, [
+                'label' => $labels['is_shown'],
+                'required' => false,
+                'attr' => ['title' => 'Отображать изображение на сайте'],
+            ])
             ->add('imageFile', FileType::class, [
                 'label' => 'Изображение',
                 'mapped' => true,
-                'required' => true,
+                'required' => false,
             ])
             ->add('filename', TextType::class, [
                 'label' => $labels['filename'],
@@ -51,6 +58,7 @@ class ImageType extends AbstractType
                 'required' => true
             ])
             ->add('fileDate', DateTimeType::class, [
+                'data' => new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')),
                 'label' => $labels['file_date'],
                 'required' => false,
                 'widget' => 'single_text',
@@ -77,7 +85,7 @@ class ImageType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EditImageDTO::class,
             'empty_data' => fn() => new CreateImageDTO(
-                '', '', '', '', '', new DateTimeImmutable(), null, 0, '', null
+                false, '', '', '', '', '', new DateTimeImmutable(), null, 0, '', null
             ),
             'isNew' => false,
             'csrf_protection' => true,

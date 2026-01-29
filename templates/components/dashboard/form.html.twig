@@ -18,8 +18,8 @@
                 <div class="form-check form-check-flat form-check-success">
                     <label class="form-check-label">
                         {{ form_widget(form.isShown, {'attr': {'class': 'form-check-input'}}) }}
-                        Показывать растение
                     </label>
+                    {{ form_label(form.isShown, '', {'label_attr': {'class': 'form-check-text-label'}}) }}
                     <div class="form-error">
                         {{ form_errors(form.isShown) }}
                     </div>

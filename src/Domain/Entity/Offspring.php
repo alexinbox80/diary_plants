@@ -234,22 +234,6 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         return $this->comment;
     }
 
-    public function addAttachment(Attachment $attachment): self
-    {
-        if (!$this->attachments->contains($attachment)) {
-            $this->attachments[] = $attachment;
-            $attachment->setAttachableType(self::class); // Set the type
-            $attachment->setAttachableId($this->getId()); // Set the ID
-        }
-        return $this;
-    }
-
-    public function removeAttachment(Attachment $attachment): self
-    {
-        $this->attachments->removeElement($attachment);
-        return $this;
-    }
-
     public function getPlant(): Plant
     {
         return $this->plant;

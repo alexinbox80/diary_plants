@@ -2,9 +2,10 @@
 
 namespace App\Domain\Entity\Traits;
 
-use DateTimeImmutable;
 use DateTimeZone;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Entity\Attachment;
 
 trait DeletedAtTrait
 {
@@ -18,6 +19,11 @@ trait DeletedAtTrait
 
     public function setDeletedAt(): void
     {
+        if ($this instanceof Attachment) {
+            $this->mimeType = null;
+            $this->path = null;
+            $this->filename = null;
+        }
         if ($this->deletedAt === null) {
             $this->deletedAt = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         }

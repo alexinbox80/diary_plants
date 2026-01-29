@@ -9,14 +9,16 @@ class CreateAttachmentModel
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public readonly int $groupId,
+        #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
+        public readonly bool $isShown,
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $filename,
-        #[Assert\NotBlank]
+        public readonly ?string $filename = null,
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $path,
-        #[Assert\NotBlank]
+        public readonly ?string $path = null,
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $mimeType,
+        public readonly ?string $mimeType = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $alt,

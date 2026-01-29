@@ -42,17 +42,25 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
+    //идентификатор связанной сущности
+    #[ORM\Column(name: 'group_id', type: 'integer', nullable: false)]
+    private int $groupId;
+
+    //показывать приложение или нет
+    #[ORM\Column(name: 'is_shown', type: 'boolean', nullable: false, options: ['default' => false])]
+    private bool $isShown = false;
+
     //имя файла
-    #[ORM\Column(name: 'filename', type: 'string', length: 255, nullable: false)]
-    private string $filename;
+    #[ORM\Column(name: 'filename', type: 'string', length: 255, nullable: true)]
+    private ?string $filename = null;
 
     //путь к файлу
-    #[ORM\Column(name: 'path', type: 'string', length: 255, nullable: false)]
-    private string $path;
+    #[ORM\Column(name: 'path', type: 'string', length: 255, nullable: true)]
+    private ?string $path = null;
 
-    //тип майм
-    #[ORM\Column(name: 'mime_type', type: 'string', length: 50, nullable: false)]
-    private string $mimeType;
+    //тип майм файла
+    #[ORM\Column(name: 'mime_type', type: 'string', length: 50, nullable: true)]
+    private ?string $mimeType = null;
 
     //альтернативный заголовок
     #[ORM\Column(name: 'alt', type: 'string', length: 255, nullable: false)]
@@ -79,45 +87,50 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     private ?string $attachableType = null;// Тип сущности (Plant, User и т.п.)
 
     public function __construct(
-        string $filename,
-        string $path,
-        string $mimeType,
+        int $groupId,
+        bool $isShown,
         string $alt,
         string $title,
         DateTimeImmutable $fileDate,
+        ?string $filename = null,
+        ?string $path = null,
+        ?string $mimeType = null,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
     )
     {
-        $this->setCommonFields($filename, $path, $mimeType, $alt, $title, $fileDate, $description, $attachableId, $attachableType);
+        $this->setCommonFields($groupId, $isShown, $alt, $title, $fileDate, $filename, $path, $mimeType, $description, $attachableId, $attachableType);
     }
 
     private function setCommonFields(
-        string $filename,
-        string $path,
-        string $mimeType,
+        int $groupId,
+        bool $isShown,
         string $alt,
         string $title,
         DateTimeImmutable $fileDate,
+        ?string $filename = null,
+        ?string $path = null,
+        ?string $mimeType = null,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
     ): void {
-        WebmozartAssert::stringNotEmpty($filename);
-        $this->filename = $filename;
+        WebmozartAssert::integer($groupId);
+        $this->groupId = $groupId;
 
-        WebmozartAssert::stringNotEmpty($path);
-        $this->path = $path;
-
-        WebmozartAssert::stringNotEmpty($mimeType);
-        $this->mimeType = $mimeType;
+        WebmozartAssert::boolean($isShown);
+        $this->isShown = $isShown;
 
         WebmozartAssert::stringNotEmpty($alt);
         $this->alt = $alt;
 
         WebmozartAssert::stringNotEmpty($title);
         $this->title = $title;
+
+        $this->filename = $filename;
+        $this->path = $path;
+        $this->mimeType = $mimeType;
 
         $this->description = $description;
         $this->fileDate = $fileDate;
@@ -127,18 +140,20 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     }
 
     public function changeFields(
-        string $filename,
-        string $path,
-        string $mimeType,
+        int $groupId,
+        bool $isShown,
         string $alt,
         string $title,
         DateTimeImmutable $fileDate,
+        ?string $filename = null,
+        ?string $path = null,
+        ?string $mimeType = null,
         ?string $description = null,
         ?int $attachableId = null,
         ?string $attachableType = null
     ): void
     {
-        $this->setCommonFields($filename, $path, $mimeType, $alt, $title, $fileDate, $description, $attachableId, $attachableType);
+        $this->setCommonFields($groupId, $isShown, $alt, $title, $fileDate, $filename, $path, $mimeType, $description, $attachableId, $attachableType);
     }
 
     public function getId(): int
@@ -148,19 +163,16 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         return $this->id;
     }
 
-    public function getFilename(): string
+    public function geGroupId(): int
     {
-        return $this->filename;
+        WebmozartAssert::notNull($this->groupId, sprintf('Id of Entity %s is null.', get_class($this)));
+
+        return $this->groupId;
     }
 
-    public function getPath(): string
+    public function isShown(): bool
     {
-        return $this->path;
-    }
-
-    public function getMimeType(): string
-    {
-        return $this->mimeType;
+        return $this->isShown;
     }
 
     public function getAlt(): string
@@ -171,6 +183,21 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mimeType;
     }
 
     public function getDescription(): ?string
@@ -193,27 +220,19 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         return $this->attachableType;
     }
 
-    public function setAttachableType(?string $attachableType = null): void
-    {
-        $this->attachableType = $attachableType;
-    }
-
-    public function setAttachableId(?int $attachableId = null): void
-    {
-        $this->attachableId = $attachableId;
-    }
-
     public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'filename' => $this->getFilename(),
-            'mimeType' => $this->getMimeType(),
+            'group_id' => $this->groupId,
+            'is_shown' => $this->isShown,
             'alt' => $this->getAlt(),
-            'path' => $this->getPath(),
             'title' => $this->getTitle(),
-            'description' => $this->getDescription(),
             'file_date' => $this->getFileDate()->format('Y-m-d'),
+            'filename' => $this->getFilename(),
+            'path' => $this->getPath(),
+            'mime_type' => $this->getMimeType(),
+            'description' => $this->getDescription(),
             'attachable_id' => $this->getAttachableId(),
             'attachable_type' => $this->getAttachableType(),
             'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),

@@ -10,12 +10,14 @@ class AttachmentModel
 {
     public function __construct(
         private readonly int $id,
-        private readonly string $filename,
-        private readonly string $path,
-        private readonly string $mimeType,
+        private readonly int $groupId,
+        private readonly bool $isShown,
         private readonly string $alt,
         private readonly string $title,
         private readonly DateTimeImmutable $fileDate,
+        private readonly ?string $filename = null,
+        private readonly ?string $path = null,
+        private readonly ?string $mimeType = null,
         private readonly ?string $description = null,
         private readonly ?int $attachableId = null,
         private readonly ?string $attachableType = null,
@@ -30,19 +32,14 @@ class AttachmentModel
         return $this->id;
     }
 
-    public function getFilename(): string
+    public function getGroupId(): int
     {
-        return $this->filename;
+        return $this->groupId;
     }
 
-    public function getPath(): string
+    public function isShown(): bool
     {
-        return $this->path;
-    }
-
-    public function getMimeType(): string
-    {
-        return $this->mimeType;
+        return $this->isShown;
     }
 
     public function getAlt(): string
@@ -58,6 +55,21 @@ class AttachmentModel
     public function getFileDate(): DateTimeImmutable
     {
         return $this->fileDate;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mimeType;
     }
 
     public function getDescription(): ?string
@@ -94,7 +106,9 @@ class AttachmentModel
     {
         return [
             'id' => '#',
+            'group_id' => 'Идентификатор группы',
             'img_tag' => 'Изображение',
+            'is_shown' => 'Опубликовать',
             'filename' => 'Имя файла',
             'path' => 'Путь к файлу',
             'mime_type' => 'Тип файла',
@@ -115,7 +129,9 @@ class AttachmentModel
 
         return [
             'id' => $this->getId(),
-            'img_tag' => $this->getPath() . $this->getFilename(),
+            'group_id' => $this->getGroupId(),
+            'img_tag' => (!empty($this->getPath()) && !empty($this->getFilename())) ? $this->getPath() . $this->getFilename() : null,
+            'is_shown' => $this->isShown() ? 'Да' : 'Нет',
             'filename' => $this->getFilename(),
             'path' => $this->getPath(),
             'mime_type' => $this->getMimeType(),

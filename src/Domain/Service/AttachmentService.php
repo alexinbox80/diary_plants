@@ -94,12 +94,14 @@ class AttachmentService
     public function create(CreateAttachmentModel $createAttachmentModel): AttachmentModel
     {
         $attachment = new Attachment(
-            $createAttachmentModel->filename,
-            $createAttachmentModel->path,
-            $createAttachmentModel->mimeType,
+            $createAttachmentModel->groupId,
+            $createAttachmentModel->isShown,
             $createAttachmentModel->alt,
             $createAttachmentModel->title,
             $createAttachmentModel->fileDate,
+            $createAttachmentModel->filename,
+            $createAttachmentModel->path,
+            $createAttachmentModel->mimeType,
             $createAttachmentModel->description,
             $createAttachmentModel->attachableId,
             $createAttachmentModel->attachableType
@@ -120,6 +122,8 @@ class AttachmentService
 
         $model = $this->modelFactory->makeModel(
             CreateAttachmentModel::class,
+            2,
+            $dto->isShown,
             $dto->filename,
             $dto->path,
             $dto->mimeType,
@@ -143,15 +147,17 @@ class AttachmentService
     public function update(Attachment $attachment, UpdateAttachmentModel $updateAttachmentModel): AttachmentModel
     {
         $attachment->changeFields(
-            $updateAttachmentModel->filename,
-            $updateAttachmentModel->path,
-            $updateAttachmentModel->mimeType,
+            $updateAttachmentModel->groupId,
+            $updateAttachmentModel->isShown,
             $updateAttachmentModel->alt,
             $updateAttachmentModel->title,
             $updateAttachmentModel->fileDate,
+            $updateAttachmentModel->filename,
+            $updateAttachmentModel->path,
+            $updateAttachmentModel->mimeType,
             $updateAttachmentModel->description,
             $updateAttachmentModel->attachableId,
-            $updateAttachmentModel->attachableType,
+            $updateAttachmentModel->attachableType
         );
 
         $this->attachmentRepository->update();
@@ -175,6 +181,8 @@ class AttachmentService
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdateAttachmentModel::class,
+            2,
+            $dto->isShown,
             $dto->filename,
             $dto->path,
             $dto->mimeType,
@@ -234,8 +242,7 @@ class AttachmentService
 
     /**
      * Вспомогательные методы
-     */
-    /**
+     *
      * @param CreateImageDTO|EditImageDTO $dto
      * @return void
      */

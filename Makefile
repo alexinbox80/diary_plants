@@ -10,7 +10,13 @@ convert:
 php-shell:
 	docker exec -it -u www-data dplants_php-fpm bash
 
-storage:
+mount_storage:
 	docker exec -it -u www-data dplants_php-fpm mkdir -p /app/storage/attachments
 	docker exec -it -u www-data dplants_php-fpm ln -s /app/storage/attachments /app/public/uploads/attachments
 	docker exec -it -u www-data dplants_php-fpm cp -r /app/public/uploads/.gitignore /app/storage/
+
+umount_storage:
+	docker exec -it -u www-data dplants_php-fpm rm -rf /app/public/uploads/attachments
+
+clear_storage:
+	docker exec -it -u www-data dplants_php-fpm rm -rf /app/storage/attachments/*

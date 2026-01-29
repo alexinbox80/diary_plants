@@ -195,12 +195,14 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     {
         return new AttachmentModel(
             $attachment->getId(),
-            $attachment->getFilename(),
-            $attachment->getPath(),
-            $attachment->getMimeType(),
+            $attachment->geGroupId(),
+            $attachment->isShown(),
             $attachment->getAlt(),
             $attachment->getTitle(),
             $attachment->getFileDate(),
+            $attachment->getFilename(),
+            $attachment->getPath(),
+            $attachment->getMimeType(),
             $attachment->getDescription(),
             $attachment->getAttachableId(),
             $attachment->getAttachableType(),

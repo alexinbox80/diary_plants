@@ -167,9 +167,11 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateAttachmentModel::class,
-                $attachmentModel['filename'],
-                $attachmentModel['path'],
-                $attachmentModel['mime_type'],
+                (int) $attachmentModel['group_id'],
+                (bool) $attachmentModel['is_shown'],
+                empty($attachmentModel['filename']) ? null : $attachmentModel['filename'],
+                empty($attachmentModel['file']) ? null : $attachmentModel['file'],
+                empty($attachmentModel['mime_type']) ? null : $attachmentModel['mime_type'],
                 $attachmentModel['alt'],
                 $attachmentModel['title'],
                 new DateTimeImmutable($attachmentModel['file_date']),

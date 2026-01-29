@@ -99,7 +99,7 @@ class AttachmentTest extends TestCase
         );
 
        // $attachment->setAttachableId(789);
-        $attachment->setAttachableType(\App\Domain\Entity\Plant::class);
+      //  $attachment->setAttachableType(\App\Domain\Entity\Plant::class);
 
         //$this->assertSame(789, $attachment->getAttachableId());
         $this->assertSame(\App\Domain\Entity\Plant::class, $attachment->getAttachableType());

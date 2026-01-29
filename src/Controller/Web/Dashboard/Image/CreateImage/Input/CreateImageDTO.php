@@ -54,16 +54,13 @@ class CreateImageDTO
     }
 
     public function __construct(
-        #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:50)]
+        #[Assert\Type('boolean')]
+        public bool $isShown,
+
         public string $filename,
 
-        #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:255)]
         public string $path,
 
-        #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:50)]
         public string $mimeType,
 
         #[Assert\NotBlank]
