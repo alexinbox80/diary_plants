@@ -27,6 +27,7 @@ final class Version20250923211327 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS plant__oid__uniq ON plant (oid) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS status__letter__uniq ON status (letter) WHERE (deleted_at IS NULL)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__email__uniq ON "user" (email) WHERE (deleted_at IS NULL)');
 
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__plant_id__ind ON fertilizer (plant_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS offspring__plant_id__ind ON offspring (plant_id)');
@@ -43,6 +44,7 @@ final class Version20250923211327 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS plant__oid__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS status__letter__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__email__uniq');
 
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__plant_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS offspring__plant_id__ind');
