@@ -40,6 +40,9 @@ class Manager
             /** @var EditImageDTO $editImageDTO */
             $editImageDTO = $form->getData();
 
+            $data = $request->request->all()['image'] ?? [];
+            $editImageDTO->isShown = (bool) ($data['isShown'] ?? false);
+
             $this->attachmentService->updateFromEditImageDTO($attachment, $editImageDTO);
 
             $request->getSession()->getFlashBag()->add('success', 'Изображение успешно обновлено.');
