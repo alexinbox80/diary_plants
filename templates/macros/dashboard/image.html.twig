@@ -1,13 +1,13 @@
-{% macro image(id, class, alt, src, single) %}
+{% macro image(id, class, title, alt, src, single) %}
     {% import 'macros/dashboard/modal_image.html.twig' as modal_img %}
 
     {% set src = 'uploads/' ~ src %}
     {% if src is not null %}
         <a href="#" data-bs-toggle="modal" data-bs-target="#PreviewModal{{ id }}">
-            <img src="{{ asset(src) }}" alt="{{ alt }}" class="img-fluid {{ class }}" style="cursor: pointer;">
+            <img src="{{ asset(src) }}" title="{{ title }}" alt="{{ alt }}"  class="img-fluid {{ class }}" style="cursor: pointer;">
         </a>
     {% else %}
         {{ '' }}
     {% endif %}
-    {{ modal_img.modal_image(id, alt, src, single) }}
+    {{ modal_img.modal_image(id, title, alt, src, single) }}
 {% endmacro %}
