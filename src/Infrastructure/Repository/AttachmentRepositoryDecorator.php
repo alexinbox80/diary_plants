@@ -55,7 +55,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     /**
      * @param int $page
      * @param int $perPage
-     * @return array{plantsModel: AttachmentModel[], pagination: array}
+     * @return array{attachmentsModel: AttachmentModel[], pagination: array}
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
@@ -195,7 +195,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     {
         return new AttachmentModel(
             $attachment->getId(),
-            $attachment->geGroupId(),
+            $attachment->getGroup()->getId(),
             $attachment->isShown(),
             $attachment->getAlt(),
             $attachment->getTitle(),

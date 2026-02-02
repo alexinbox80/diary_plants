@@ -42,10 +42,6 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    //идентификатор связанной сущности
-    #[ORM\Column(name: 'group_id', type: 'integer', nullable: false)]
-    private int $groupId;
-
     //показывать приложение или нет
     #[ORM\Column(name: 'is_shown', type: 'boolean', nullable: false, options: ['default' => false])]
     private bool $isShown = false;
@@ -86,8 +82,13 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     #[ORM\Column(name: 'attachable_type', type: 'string', nullable: true)]
     private ?string $attachableType = null;// Тип сущности (Plant, User и т.п.)
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'attachments')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    private Group $group;
+
     public function __construct(
-        int $groupId,
+        Group $group,
         bool $isShown,
         string $alt,
         string $title,
@@ -100,11 +101,11 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         ?string $attachableType = null
     )
     {
-        $this->setCommonFields($groupId, $isShown, $alt, $title, $fileDate, $filename, $path, $mimeType, $description, $attachableId, $attachableType);
+        $this->setCommonFields($group, $isShown, $alt, $title, $fileDate, $filename, $path, $mimeType, $description, $attachableId, $attachableType);
     }
 
     private function setCommonFields(
-        int $groupId,
+        Group $group,
         bool $isShown,
         string $alt,
         string $title,
@@ -116,8 +117,7 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         ?int $attachableId = null,
         ?string $attachableType = null
     ): void {
-        WebmozartAssert::integer($groupId);
-        $this->groupId = $groupId;
+        $this->group = $group;
 
         WebmozartAssert::boolean($isShown);
         $this->isShown = $isShown;
@@ -140,7 +140,7 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     }
 
     public function changeFields(
-        int $groupId,
+        Group $group,
         bool $isShown,
         string $alt,
         string $title,
@@ -153,7 +153,7 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         ?string $attachableType = null
     ): void
     {
-        $this->setCommonFields($groupId, $isShown, $alt, $title, $fileDate, $filename, $path, $mimeType, $description, $attachableId, $attachableType);
+        $this->setCommonFields($group, $isShown, $alt, $title, $fileDate, $filename, $path, $mimeType, $description, $attachableId, $attachableType);
     }
 
     public function getId(): int
@@ -163,11 +163,9 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         return $this->id;
     }
 
-    public function geGroupId(): int
+    public function getGroup(): Group
     {
-        WebmozartAssert::notNull($this->groupId, sprintf('Id of Entity %s is null.', get_class($this)));
-
-        return $this->groupId;
+        return $this->group;
     }
 
     public function isShown(): bool
@@ -224,7 +222,7 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     {
         return [
             'id' => $this->getId(),
-            'group_id' => $this->groupId,
+            'group_id' => $this->getGroup()->getId(),
             'is_shown' => $this->isShown,
             'alt' => $this->getAlt(),
             'title' => $this->getTitle(),

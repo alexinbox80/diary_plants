@@ -3,6 +3,8 @@
 namespace App\Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
@@ -10,7 +12,7 @@ use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
-#[ORM\Table(name: 'group')]
+#[ORM\Table(name: '`group`')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
@@ -35,6 +37,10 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\Column(name: 'isActive', type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
+    //связь с вложениями
+    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $attachments;
+
     public function __construct(
         bool $isActive,
         string $title,
@@ -42,6 +48,8 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     )
     {
         $this->setCommonFields($isActive, $title, $description);
+
+        $this->attachments = new ArrayCollection();
     }
 
     private function setCommonFields(
@@ -52,6 +60,14 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->isActive = $isActive;
         $this->title = $title;
         $this->description = $description;
+    }
+
+    public function changeFields(
+        bool $isActive,
+        string $title,
+        ?string $description = null
+    ): void {
+        $this->setCommonFields($isActive, $title, $description);
     }
 
     public function getId(): int

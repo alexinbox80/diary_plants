@@ -61,7 +61,7 @@ abstract class AbstractRepository
     protected function store(EntityInterface $entity): int
     {
         $this->entityManager->persist($entity);
-        self::flush();
+        $this->flush();
 
         return $entity->getId();
     }

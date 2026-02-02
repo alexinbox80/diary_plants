@@ -140,7 +140,7 @@ class AttachmentModel
             'description' => $this->getDescription(),
             'file_date' => $this->getFileDate()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             //'attachable_id' => $this->getAttachableId(),
-            'attachable_id' => $this->getAttachable()->getId(),
+            'attachable_id' => $this->getAttachable()?->getId(),
             'attachable_type' => $this->getAttachableType(),
             'attachable' => $this->getAttachable(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),

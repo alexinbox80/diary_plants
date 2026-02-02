@@ -19,6 +19,7 @@ class AttachmentService
         private readonly AttachmentRepositoryInterface $attachmentRepository,
         private readonly ModelFactory $modelFactory,
         private readonly FileService $fileService,
+        private readonly GroupService $groupService,
     ) {
     }
 
@@ -93,8 +94,10 @@ class AttachmentService
      */
     public function create(CreateAttachmentModel $createAttachmentModel): AttachmentModel
     {
+        $group = $this->groupService->find($createAttachmentModel->groupId);
+
         $attachment = new Attachment(
-            $createAttachmentModel->groupId,
+            $group,
             $createAttachmentModel->isShown,
             $createAttachmentModel->alt,
             $createAttachmentModel->title,
@@ -146,8 +149,10 @@ class AttachmentService
      */
     public function update(Attachment $attachment, UpdateAttachmentModel $updateAttachmentModel): AttachmentModel
     {
+        $group = $this->groupService->find($updateAttachmentModel->groupId);
+
         $attachment->changeFields(
-            $updateAttachmentModel->groupId,
+            $group,
             $updateAttachmentModel->isShown,
             $updateAttachmentModel->alt,
             $updateAttachmentModel->title,

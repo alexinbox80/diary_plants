@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Infrastructure\Repository;
+
+use App\Domain\Entity\Group;
+use DateTimeImmutable;
+
+/**
+ * @method Group|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Group[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class GroupRepository extends AbstractRepository
+{
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return Group[]
+     */
+    public function getGroupsPaginated(int $page, int $perPage): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->select('g')
+            ->from(Group::class, 'g')
+            ->orderBy('g.updatedAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery();
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $groupId
+     * @return Group|null
+     */
+    public function find(int $groupId): ?Group
+    {
+        $repository = $this->entityManager->getRepository(Group::class);
+        /** @var Group|null $group */
+        $group = $repository->find($groupId);
+
+        return $group;
+    }
+
+    /**
+     * @return Group[]
+     */
+    public function findAll(): array
+    {
+        return $this->entityManager->getRepository(Group::class)->findAll();
+    }
+
+    /**
+     * @param string $title
+     * @return Group[]
+     */
+    public function findAttachmentsByTitle(string $title): array
+    {
+        return $this->entityManager->getRepository(Group::class)->findBy(['title' => $title]);
+    }
+
+    /**
+     * @param Group $group
+     * @return int
+     */
+    public function create(Group $group): int
+    {
+        return $this->store($group);
+    }
+
+    /**
+     * @return void
+     */
+    public function update(): void
+    {
+        $this->flush();
+    }
+
+    /**
+     * @param Group $group
+     * @return void
+     */
+    public function remove(Group $group): void
+    {
+        $group->setDeletedAt();
+        $this->flush();
+    }
+}
