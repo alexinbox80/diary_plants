@@ -27,10 +27,6 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    //идентификатор связанной сущности
-    #[ORM\Column(name: 'group_id', type: 'integer', nullable: false)]
-    private int $groupId;
-
     //электронная почта - логин в систему
     #[ORM\Column(name: 'email', type: 'string', length: 64, unique: true, nullable: false)]
     private string $email;
@@ -48,7 +44,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private ?string $refreshToken = null;
 
     //флаг блокировки пользователя
-    #[ORM\Column(name: 'isActive', type: 'boolean', options: ['default' => true])]
+    #[ORM\Column(name: 'is_active', type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
     //фамилия
@@ -73,7 +69,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
     //код подтверждения электронной почты
     #[ORM\Column(name: 'email_code', type: 'string', length: 6, unique: false, nullable: true, options: ['default' => null])]
-    private string $emailCode;
+    private ?string $emailCode = null;
 
     //электронная почта подтверждена
     #[ORM\Column(name: 'email_confirmed', type: 'boolean', options: ['default' => false])]
@@ -81,7 +77,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
     //код подтверждения телефона
     #[ORM\Column(name: 'phone_code', type: 'string', length: 6, unique: false, nullable: true, options: ['default' => null])]
-    private string $phoneCode;
+    private ?string $phoneCode = null;
 
     //телефон подтвержден
     #[ORM\Column(name: 'phone_confirmed', type: 'boolean', options: ['default' => false])]
@@ -91,16 +87,21 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\Column(name: 'time_zone', type: 'string', length: 20, unique: false, nullable: false, options: ['default' => 'Europe/Moscow'])]
     private string $timeZone = 'Europe/Moscow';
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'users')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    private Group $group;
+
     public function __construct(
-        int $groupId,
+        Group $group,
         string $email,
         string $password,
+        string $lastName,
+        string $firstName,
+        ?string $middleName = null,
         array $roles = [],
         bool $isActive = true,
         ?string $refreshToken = null,
-        ?string $lastName = null,
-        ?string $firstName = null,
-        ?string $middleName = null,
         ?string $phone = null,
         ?string $avatarLink = null,
         ?string $emailCode = null,
@@ -111,15 +112,53 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     )
     {
         $this->setCommonFields(
-            $groupId,
+            $group,
             $email,
             $password,
-            $roles,
-            $isActive,
-            $refreshToken,
             $lastName,
             $firstName,
             $middleName,
+            $roles,
+            $isActive,
+            $refreshToken,
+            $phone,
+            $avatarLink,
+            $emailCode,
+            $emailConfirmed,
+            $phoneCode,
+            $phoneConfirmed,
+            $timeZone
+        );
+    }
+
+    public function changeFields(
+        $group,
+        $email,
+        $password,
+        $lastName,
+        $firstName,
+        $middleName,
+        $roles,
+        $isActive,
+        $refreshToken,
+        $phone,
+        $avatarLink,
+        $emailCode,
+        $emailConfirmed,
+        $phoneCode,
+        $phoneConfirmed,
+        $timeZone
+    ): void {
+        $this->setCommonFields(
+            $group,
+            $email,
+            $password,
+            $lastName,
+            $firstName,
+            $middleName,
+            $roles,
+            $isActive,
+            $refreshToken,
             $phone,
             $avatarLink,
             $emailCode,
@@ -131,15 +170,15 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     }
 
     private function setCommonFields(
-        int $groupId,
+        Group $group,
         string $email,
         string $password,
+        string $lastName,
+        string $firstName,
+        ?string $middleName = null,
         array $roles = [],
         bool $isActive = true,
         ?string $refreshToken = null,
-        ?string $lastName = null,
-        ?string $firstName = null,
-        ?string $middleName = null,
         ?string $phone = null,
         ?string $avatarLink = null,
         ?string $emailCode = null,
@@ -148,14 +187,11 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         ?bool $phoneConfirmed = false,
         ?string $timeZone = 'Europe/Moscow'
     ): void {
-        $this->groupId = $groupId;
+        $this->group = $group;
 
         $this->emailValidate($email);
         $this->email = $email;
         $this->password = $password;
-        $this->roles = $roles;
-        $this->isActive = $isActive;
-        $this->refreshToken = $refreshToken;
 
         $this->lastNameValidate($lastName);
         $this->lastName = $lastName;
@@ -165,6 +201,10 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
         $this->middleNameValidate($middleName);
         $this->middleName = $middleName;
+
+        $this->roles = $roles;
+        $this->isActive = $isActive;
+        $this->refreshToken = $refreshToken;
 
         $this->phoneValidate($phone);
         $this->phone = $phone;
@@ -180,14 +220,16 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private function lastNameValidate(string $lastName): void
     {
         WebmozartAssert::stringNotEmpty($lastName, 'Last name should not be empty. Got: %s');
-        WebmozartAssert::alpha($lastName, 'Last name should be in alphabet. Got: %s');
+        //WebmozartAssert::alpha($lastName, 'Last name should be in alphabet. Got: %s');
+        WebmozartAssert::regex($lastName, '/^[a-zA-Zа-яА-ЯёЁ]+$/u', 'Last name should contain only letters (Latin or Cyrillic). Got: %s');
         WebmozartAssert::lengthBetween($lastName, 2, 64, 'The last name must be a string valid length of 2-64 letters. Got: %s');
     }
 
     private function firstNameValidate(string $firstName): void
     {
         WebmozartAssert::stringNotEmpty($firstName, 'First name should not be empty. Got: %s');
-        WebmozartAssert::alpha($firstName, 'First name should be in alphabet. Got: %s');
+        //WebmozartAssert::alpha($firstName, 'First name should be in alphabet. Got: %s');
+        WebmozartAssert::regex($firstName, '/^[a-zA-Zа-яА-ЯёЁ]+$/u', 'Last name should contain only letters (Latin or Cyrillic). Got: %s');
         WebmozartAssert::lengthBetween($firstName, 2, 64, 'The first name must be a string valid length of 2-64 letters. Got: %s');
     }
 
@@ -196,7 +238,8 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         WebmozartAssert::nullOrString($middleName, 'The middle name must be a string valid length of 2-64 letters or null. Got: %s');
         if (!is_null($middleName))
         {
-            WebmozartAssert::alpha($middleName, 'Middle name should be in alphabet. Got: %s');
+            //WebmozartAssert::alpha($middleName, 'Middle name should be in alphabet. Got: %s');
+            WebmozartAssert::regex($middleName, '/^[a-zA-Zа-яА-ЯёЁ]+$/u', 'Last name should contain only letters (Latin or Cyrillic). Got: %s');
             WebmozartAssert::lengthBetween($middleName, 2, 64, 'The middle name must be a string valid length of 2-64 letters. Got: %s');
         }
     }
@@ -223,6 +266,11 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->id;
     }
 
+    public function getGroup(): Group
+    {
+        return $this->group;
+    }
+
     public function getEmail(): string
     {
         return $this->email;
@@ -238,6 +286,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         //$roles[] = RoleEnum::ROLE_USER->value;
+        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }

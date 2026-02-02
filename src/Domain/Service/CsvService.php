@@ -4,6 +4,7 @@ namespace App\Domain\Service;
 
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
+use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Plant\CreatePlantModel;
@@ -12,6 +13,7 @@ use App\Domain\Model\Status\CreateStatusModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Task\CreateTaskModel;
 use App\Domain\Model\Usage\CreateUsageModel;
+use App\Domain\Model\User\CreateUserModel;
 use DateTimeImmutable;
 
 class CsvService
@@ -19,6 +21,8 @@ class CsvService
     public function __construct(
         private readonly string $csvSeparator,
         private readonly ModelFactory $modelFactory,
+        private readonly GroupService $groupService,
+        private readonly UserService $userService,
         private readonly PlantService $plantService,
         private readonly StatusService $statusService,
         private readonly OffspringService $offspringService,
@@ -53,6 +57,44 @@ class CsvService
 
         // закрываем
         fclose($handle);
+    }
+
+    private function createGroupModel(array $groupModel): CreateGroupModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateGroupModel::class,
+                $groupModel['is_active'],
+                $groupModel['title'],
+                $groupModel['description'] !== '' ? $groupModel['description'] : null
+            );
+    }
+
+    private function createUserModel(array $userModel): CreateUserModel
+    {
+        $rolesString = $userModel['roles'] ?? '';
+        $roles = $rolesString !== '' ? explode(',', $rolesString) : [];
+
+        return $this->modelFactory
+            ->makeModel(
+                CreateUserModel::class,
+                (int) $userModel['group_id'],
+                $userModel['email'],
+                $userModel['password'],
+                $userModel['last_name'],
+                $userModel['first_name'],
+                $roles,
+                $userModel['middle_name'] !== '' ? $userModel['middle_name'] : null,
+                (bool) ($userModel['is_active'] ?? true),
+                $userModel['refresh_token'] !== '' ? $userModel['refresh_token'] : null,
+                (bool) ($userModel['email_confirmed'] ?? false),
+                (bool) ($userModel['phone_confirmed'] ?? false),
+                $userModel['time_zone'] ?? 'Europe/Moscow',
+                $userModel['phone'] !== '' ? $userModel['phone'] : null,
+                $userModel['avatar_link'] !== '' ? $userModel['avatar_link'] : null,
+                $userModel['email_code'] !== '' ? $userModel['email_code'] : null,
+                $userModel['phone_code'] !== '' ? $userModel['phone_code'] : null
+            );
     }
 
     private function createPlantModel(array $plantModel): CreatePlantModel
@@ -197,6 +239,14 @@ class CsvService
     private function createEntity(array $array, string $fileName): void
     {
         switch ($fileName) {
+            case 'group':
+                $groupModel = $this->createGroupModel($array);
+                $this->groupService->create($groupModel);
+                break;
+            case 'user':
+                $userModel = $this->createUserModel($array);
+                $this->userService->create($userModel);
+                break;
             case 'plant':
                 $plantModel = $this->createPlantModel($array);
                 $this->plantService->create($plantModel);

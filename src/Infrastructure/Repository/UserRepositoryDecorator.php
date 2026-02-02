@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Infrastructure\Repository;
+
+use App\Domain\Entity\User;
+use App\Domain\Model\User\UserModel;
+use App\Domain\Repository\UserRepositoryInterface;
+
+
+class UserRepositoryDecorator implements UserRepositoryInterface
+{
+    public function __construct(
+        private readonly UserRepository $userRepository
+    ) {
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return array{usersModel: UserModel[], pagination: array}
+     */
+    public function getUsersPaginated(int $page, int $perPage): array
+    {
+        $usersPaginated = $this->userRepository->getUsersPaginated($page, $perPage);
+
+        $usersModel = array_map(
+            fn (User $user) => $this->toModel($user),
+            $usersPaginated['items']
+        );
+
+        return [
+            'usersModel' => $usersModel,
+            'pagination' => $usersPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $userId
+     * @return User|null
+     */
+    public function find(int $userId): ?User
+    {
+        return $this->userRepository->find($userId);
+    }
+
+    /**
+     * @param int $userId
+     * @return UserModel|null
+     */
+    public function findModel(int $userId): ?UserModel
+    {
+        $user = $this->userRepository->find($userId);
+
+        return $this->toModel($user);
+    }
+
+    /**
+     * @return userModel[]
+     */
+    public function findAll(): array
+    {
+        $users = $this->userRepository->findAll();
+
+        return array_map(
+            fn (User $user) => $this->toModel($user),
+            $users
+        );
+    }
+
+    /**
+     * @param string $email
+     * @return UserModel[]
+     */
+    public function findUsersByEmail(string $email): array
+    {
+        $users = $this->userRepository->findUsersByEmail($email);
+
+        return array_map(
+            fn (User $user) => $this->toModel($user),
+            $users
+        );
+    }
+
+    /**
+     * @param User $user
+     * @return int
+     */
+    public function create(User $user): int
+    {
+        return $this->userRepository->create($user);
+    }
+
+    /**
+     * @return void
+     */
+    public function update(): void
+    {
+        $this->userRepository->update();
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function remove(User $user): void
+    {
+        $this->userRepository->remove($user);
+    }
+
+    public function toModel(User $user): UserModel
+    {
+        return new userModel(
+            $user->getId(),
+            $user->getGroup()->getId(),
+            $user->getEmail(),
+            $user->getPassword(),
+            $user->getRoles(),
+            $user->isActive(),
+            $user->isEmailConfirmed(),
+            $user->isPhoneConfirmed(),
+            $user->getTimeZone(),
+            $user->getLastName(),
+            $user->getFirstName(),
+            $user->getMiddleName(),
+            $user->getRefreshToken(),
+            $user->getPhone(),
+            $user->getAvatarLink(),
+            $user->getEmailCode(),
+            $user->getPhoneCode(),
+            $user->getCreatedAt(),
+            $user->getUpdatedAt()
+        );
+    }
+}

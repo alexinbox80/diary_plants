@@ -73,7 +73,7 @@ class GroupRepositoryDecorator implements GroupRepositoryInterface
      */
     public function findGroupsByTitle(string $title): array
     {
-        $groups = $this->groupRepository->findAttachmentsByTitle($title);
+        $groups = $this->groupRepository->findGroupsByTitle($title);
 
         return array_map(
             fn (Group $group) => $this->toModel($group),

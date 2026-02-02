@@ -34,12 +34,16 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     private ?string $description = null;
 
     //флаг блокировки группы
-    #[ORM\Column(name: 'isActive', type: 'boolean', options: ['default' => true])]
+    #[ORM\Column(name: 'is_active', type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
     //связь с вложениями
     #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'group', cascade: ['remove'])]
     private Collection $attachments;
+
+    //связь с пользователями
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $users;
 
     public function __construct(
         bool $isActive,
@@ -50,6 +54,7 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->setCommonFields($isActive, $title, $description);
 
         $this->attachments = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     private function setCommonFields(

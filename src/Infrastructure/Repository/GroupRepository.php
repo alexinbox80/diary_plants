@@ -3,12 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Group;
-use DateTimeImmutable;
 
-/**
- * @method Group|null findOneBy(array $criteria, array $orderBy = null)
- * @method Group[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class GroupRepository extends AbstractRepository
 {
     /**
@@ -54,7 +49,7 @@ class GroupRepository extends AbstractRepository
      * @param string $title
      * @return Group[]
      */
-    public function findAttachmentsByTitle(string $title): array
+    public function findGroupsByTitle(string $title): array
     {
         return $this->entityManager->getRepository(Group::class)->findBy(['title' => $title]);
     }
