@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Model;
+namespace App\Domain\ValueObject;
 
 use Symfony\Component\Uid\UuidV4;
 use Webmozart\Assert\Assert;

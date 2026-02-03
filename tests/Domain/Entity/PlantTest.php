@@ -4,9 +4,9 @@ namespace App\Tests\Domain\Entity;
 
 use App\Domain\Entity\Attachment;
 use App\Domain\Entity\Plant;
-use App\Domain\Model\OId;
-use App\Domain\Model\Price;
-use App\Domain\Model\Currency;
+use App\Domain\ValueObject\Enum\Currency;
+use App\Domain\ValueObject\OId;
+use App\Domain\ValueObject\Price;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 

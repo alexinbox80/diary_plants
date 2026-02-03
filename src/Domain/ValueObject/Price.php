@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Domain\Model;
+namespace App\Domain\ValueObject;
 
+use App\Domain\ValueObject\Enum\Currency;
 use Webmozart\Assert\Assert;
 
 /**

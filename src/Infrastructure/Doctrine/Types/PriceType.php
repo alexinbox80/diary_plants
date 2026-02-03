@@ -2,11 +2,11 @@
 
 namespace App\Infrastructure\Doctrine\Types;
 
+use App\Domain\ValueObject\Price;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\StringType;
 use InvalidArgumentException;
-use App\Domain\Model\Price;
 use Webmozart\Assert\Assert;
 
 final class PriceType extends StringType

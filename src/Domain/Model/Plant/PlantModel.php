@@ -2,8 +2,8 @@
 
 namespace App\Domain\Model\Plant;
 
-use App\Domain\Model\OId;
-use App\Domain\Model\Price;
+use App\Domain\ValueObject\OId;
+use App\Domain\ValueObject\Price;
 use DateTimeImmutable;
 use DateTimeZone;
 

@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Model\Price;
+use App\Domain\ValueObject\Price;
 
 class PlantRepository extends AbstractRepository
 {

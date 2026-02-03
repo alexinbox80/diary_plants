@@ -2,13 +2,13 @@
 
 namespace App\Infrastructure\Doctrine\Types;
 
+use App\Domain\ValueObject\OId;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySQL80Platform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 use InvalidArgumentException;
-use App\Domain\Model\OId;
 use Webmozart\Assert\Assert;
 
 final class OIdType extends Type

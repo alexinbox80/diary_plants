@@ -4,10 +4,10 @@ namespace App\Domain\Service;
 
 use App\Domain\Entity\Plant;
 use App\Domain\Model\Plant\CreatePlantModel;
-use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\Model\Plant\PlantModel;
-use App\Domain\Model\Price;
+use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\ValueObject\Price;
 use Psr\Cache\InvalidArgumentException;
 
 class PlantService

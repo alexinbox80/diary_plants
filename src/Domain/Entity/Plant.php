@@ -2,20 +2,20 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use App\Domain\Model\OId;
-use App\Domain\Model\Price;
+use App\Domain\ValueObject\OId;
+use App\Domain\ValueObject\Price;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
+use Webmozart\Assert\Assert as WebmozartAssert;
 
 #[ORM\Table(name: 'plant')]
 #[ORM\Entity]

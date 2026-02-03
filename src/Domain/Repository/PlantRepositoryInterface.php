@@ -4,7 +4,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Entity\Plant;
 use App\Domain\Model\Plant\PlantModel;
-use App\Domain\Model\Price;
+use App\Domain\ValueObject\Price;
 
 interface PlantRepositoryInterface
 {

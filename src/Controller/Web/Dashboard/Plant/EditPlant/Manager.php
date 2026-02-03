@@ -2,13 +2,13 @@
 
 namespace App\Controller\Web\Dashboard\Plant\EditPlant;
 
+use App\Controller\Form\PlantType;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Domain\Entity\Plant;
 use App\Domain\Model\Plant\UpdatePlantModel;
-use App\Domain\Model\Price;
 use App\Domain\Service\ModelFactory;
 use App\Domain\Service\PlantService;
-use App\Controller\Form\PlantType;
+use App\Domain\ValueObject\Price;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 

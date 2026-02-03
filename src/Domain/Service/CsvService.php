@@ -8,12 +8,12 @@ use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Plant\CreatePlantModel;
-use App\Domain\Model\Price;
 use App\Domain\Model\Status\CreateStatusModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Task\CreateTaskModel;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\User\CreateUserModel;
+use App\Domain\ValueObject\Price;
 use DateTimeImmutable;
 
 class CsvService

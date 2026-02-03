@@ -3,9 +3,9 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Model\Price;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\ValueObject\Price;
 
 class PlantRepositoryDecorator implements PlantRepositoryInterface
 {

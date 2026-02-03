@@ -2,8 +2,8 @@
 
 namespace App\Tests\Domain\Model;
 
-use App\Domain\Model\Price;
-use App\Domain\Model\Currency;
+use App\Domain\ValueObject\Enum\Currency;
+use App\Domain\ValueObject\Price;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

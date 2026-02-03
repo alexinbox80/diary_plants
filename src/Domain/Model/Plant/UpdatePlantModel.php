@@ -2,9 +2,9 @@
 
 namespace App\Domain\Model\Plant;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Domain\Model\Price;
+use App\Domain\ValueObject\Price;
 use DateTimeImmutable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdatePlantModel
 {
