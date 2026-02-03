@@ -64,18 +64,14 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateGroupModel::class,
-                $groupModel['is_active'],
                 $groupModel['title'],
+                $this->str2bool($groupModel['is_active']),
                 $groupModel['description'] !== '' ? $groupModel['description'] : null
             );
     }
 
     private function createUserModel(array $userModel): CreateUserModel
     {
-        $isActive = filter_var($userModel['is_active'], FILTER_VALIDATE_BOOLEAN);
-        $emailConfirmed = filter_var($userModel['email_confirmed'], FILTER_VALIDATE_BOOLEAN);
-        $phoneConfirmed = filter_var($userModel['phone_confirmed'], FILTER_VALIDATE_BOOLEAN);
-
         $rolesString = $userModel['roles'] ?? '';
         $roles = $rolesString !== '' ? explode(',', $rolesString) : [];
 
@@ -86,9 +82,9 @@ class CsvService
                 $userModel['email'],
                 $userModel['password'],
                 $roles,
-                $isActive,
-                $emailConfirmed,
-                $phoneConfirmed,
+                $this->str2bool($userModel['is_active']),
+                $this->str2bool($userModel['email_confirmed']),
+                $this->str2bool($userModel['phone_confirmed']),
                 $userModel['time_zone'] ?? 'Europe/Moscow',
                 $userModel['last_name'],
                 $userModel['first_name'],
@@ -318,5 +314,10 @@ class CsvService
         }
 
         return $rowNum - 1;
+    }
+
+    private function str2bool(string $str): bool
+    {
+        return filter_var($str, FILTER_VALIDATE_BOOLEAN);
     }
 }

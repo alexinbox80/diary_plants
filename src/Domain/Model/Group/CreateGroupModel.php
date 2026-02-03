@@ -11,7 +11,7 @@ class CreateGroupModel
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $title,
 
-        #[Assert\NotBlank]
+        #[Assert\NotNull]
         #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
         public readonly bool $isActive,
 

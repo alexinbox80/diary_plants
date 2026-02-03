@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\Attachment;
 
+use App\Domain\Entity\Group;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -11,6 +12,7 @@ class AttachmentModel
     public function __construct(
         private readonly int $id,
         private readonly int $groupId,
+        private readonly ?Group $group = null, // Добавлено: связь с Group
         private readonly bool $isShown,
         private readonly string $alt,
         private readonly string $title,
@@ -35,6 +37,11 @@ class AttachmentModel
     public function getGroupId(): int
     {
         return $this->groupId;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
     }
 
     public function isShown(): bool
@@ -107,6 +114,7 @@ class AttachmentModel
         return [
             'id' => '#',
             'group_id' => 'Идентификатор группы',
+            'group_title' => 'Название группы',
             'img_tag' => 'Изображение',
             'is_shown' => 'Опубликовать',
             'filename' => 'Имя файла',
@@ -130,6 +138,7 @@ class AttachmentModel
         return [
             'id' => $this->getId(),
             'group_id' => $this->getGroupId(),
+            'group_title' => $this->getGroup()->getTitle(),
             'img_tag' => (!empty($this->getPath()) && !empty($this->getFilename())) ? $this->getPath() . $this->getFilename() : null,
             'is_shown' => $this->isShown() ? 'Да' : 'Нет',
             'filename' => $this->getFilename(),

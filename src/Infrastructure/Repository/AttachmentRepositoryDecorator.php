@@ -12,6 +12,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 {
     public function __construct(
         private readonly AttachmentRepository $attachmentRepository,
+        private readonly GroupRepository $groupRepository,
         private readonly AttachableResolverInterface $attachableResolver
     ) {
     }
@@ -193,9 +194,13 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 
     public function toModel(Attachment $attachment): AttachmentModel
     {
+        $group = $this->groupRepository->find($attachment->getGroup()->getId());
+
         return new AttachmentModel(
             $attachment->getId(),
             $attachment->getGroup()->getId(),
+            //$attachment->getGroup(),
+            $group,
             $attachment->isShown(),
             $attachment->getAlt(),
             $attachment->getTitle(),
