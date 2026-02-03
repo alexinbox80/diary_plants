@@ -72,6 +72,10 @@ class CsvService
 
     private function createUserModel(array $userModel): CreateUserModel
     {
+        $isActive = filter_var($userModel['is_active'], FILTER_VALIDATE_BOOLEAN);
+        $emailConfirmed = filter_var($userModel['email_confirmed'], FILTER_VALIDATE_BOOLEAN);
+        $phoneConfirmed = filter_var($userModel['phone_confirmed'], FILTER_VALIDATE_BOOLEAN);
+
         $rolesString = $userModel['roles'] ?? '';
         $roles = $rolesString !== '' ? explode(',', $rolesString) : [];
 
@@ -81,15 +85,15 @@ class CsvService
                 (int) $userModel['group_id'],
                 $userModel['email'],
                 $userModel['password'],
+                $roles,
+                $isActive,
+                $emailConfirmed,
+                $phoneConfirmed,
+                $userModel['time_zone'] ?? 'Europe/Moscow',
                 $userModel['last_name'],
                 $userModel['first_name'],
-                $roles,
                 $userModel['middle_name'] !== '' ? $userModel['middle_name'] : null,
-                (bool) ($userModel['is_active'] ?? true),
                 $userModel['refresh_token'] !== '' ? $userModel['refresh_token'] : null,
-                (bool) ($userModel['email_confirmed'] ?? false),
-                (bool) ($userModel['phone_confirmed'] ?? false),
-                $userModel['time_zone'] ?? 'Europe/Moscow',
                 $userModel['phone'] !== '' ? $userModel['phone'] : null,
                 $userModel['avatar_link'] !== '' ? $userModel['avatar_link'] : null,
                 $userModel['email_code'] !== '' ? $userModel['email_code'] : null,

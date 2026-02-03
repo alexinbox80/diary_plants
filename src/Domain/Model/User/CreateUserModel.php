@@ -18,17 +18,6 @@ class CreateUserModel
         #[Assert\NotBlank]
         public readonly string $password,
 
-        #[Assert\NotBlank]
-        #[Assert\Regex(
-            pattern: '/^[a-zA-Zа-яА-ЯёЁ]+$/u',
-            message: 'Last name should contain only letters (Latin or Cyrillic).'
-        )]
-        public readonly string $lastName,
-
-        #[Assert\NotBlank]
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $firstName,
-
         #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
         #[Assert\All([
             new Assert\NotBlank(message: 'Role value cannot be empty.'),
@@ -40,26 +29,37 @@ class CreateUserModel
         ])]
         public readonly array $roles,
 
-        #[Assert\NotBlank]
+        #[Assert\NotNull]
         #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
         public readonly bool $isActive,
 
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly ?string $middleName = null,
-
-        public readonly ?string $refreshToken,
-
-        #[Assert\NotBlank]
+        #[Assert\NotNull]
         #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
         public readonly bool $emailConfirmed = false,
 
-        #[Assert\NotBlank]
+        #[Assert\NotNull]
         #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
         public readonly bool $phoneConfirmed = false,
 
         #[Assert\NotBlank]
         #[Assert\Timezone(message: 'This value is not a valid timezone.')]
         public readonly string $timeZone = 'Europe/Moscow',
+
+        #[Assert\NotBlank]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Zа-яА-ЯёЁ]+$/u',
+            message: 'Last name should contain only letters (Latin or Cyrillic).'
+        )]
+        public readonly string $lastName,
+
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        public readonly string $firstName,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        public readonly ?string $middleName = null,
+
+        public readonly ?string $refreshToken,
 
         #[Assert\Regex(
             pattern: '/^\+\d{11}$/',

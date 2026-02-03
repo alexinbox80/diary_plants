@@ -255,8 +255,10 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private function phoneValidate(?string $phone = null): void
     {
         if (!is_null($phone)) {
-            WebmozartAssert::maxLength($phone, 16, 'The email must be a 16 chars length. Got: %s');
-            WebmozartAssert::digits($phone, 'The phone must be a numeric. Got: %s');
+            WebmozartAssert::maxLength($phone, 16, 'The phone must be a 16 chars length. Got: %s');
+            $digitsOnly = preg_replace('/[^0-9]/', '', $phone);
+            WebmozartAssert::notEmpty($digitsOnly, 'The phone must contain digits. Got: %s');
+            WebmozartAssert::regex($digitsOnly, '/^[0-9]{10,11}$/', 'The phone must contain 10-11 digits. Got: %s');
         }
     }
 
@@ -326,7 +328,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->avatarLink;
     }
 
-    public function getEmailCode(): string
+    public function getEmailCode(): ?string
     {
         return $this->emailCode;
     }
@@ -336,7 +338,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->emailConfirmed;
     }
 
-    public function getPhoneCode(): string
+    public function getPhoneCode(): ?string
     {
         return $this->phoneCode;
     }
