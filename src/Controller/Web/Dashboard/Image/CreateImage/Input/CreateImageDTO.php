@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Dashboard\Image\CreateImage\Input;
 
 use DateTimeImmutable;
+use App\Domain\ValueObject\Enum\AttachableType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -38,17 +39,8 @@ class CreateImageDTO
                     ->addViolation();
             }
 
-            // Валидация attachableType
-            $allowedTypes = [
-                'plant::class',
-                'offspring::class',
-            ];
-
-            if (!in_array($this->attachableType, $allowedTypes)) {
-                $context->buildViolation('Недопустимый тип сущности: {{ type }}. Допустимые значения: plant::class, offspring::class')
-                    ->atPath('attachableType')
-                    ->setParameter('{{ type }}', $this->attachableType)
-                    ->addViolation();
+            if (!in_array($this->attachableType, array_column(AttachableType::cases(), 'value'))) {
+                $context->buildViolation('Invalid attachable type')->atPath('attachableType')->addViolation();
             }
         }
     }

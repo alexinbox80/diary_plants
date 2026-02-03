@@ -5,6 +5,7 @@ namespace App\Controller\Form;
 use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
 use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\ValueObject\Enum\AttachableType;
 use DateTimeImmutable;
 use DateTimeZone;
 use Symfony\Component\Form\AbstractType;
@@ -71,10 +72,7 @@ class ImageType extends AbstractType
             ->add('attachableType', ChoiceType::class, [
                 'label' => $labels['attachable_type'],
                 'required' => true,
-                'choices' => [
-                    'Растения' => 'plant::class',
-                    'Плоды' => 'offspring::class',
-                ],
+                'choices' => AttachableType::getChoices(),
                 'placeholder' => 'Выбери тип изображения',
             ])
             ->setMethod($options['isNew'] ? 'POST' : 'PATCH');

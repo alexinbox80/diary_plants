@@ -4,6 +4,7 @@ namespace App\Domain\Model\Attachment;
 
 use App\Domain\Entity\Group;
 use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\ValueObject\Enum\AttachableType;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -12,7 +13,7 @@ class AttachmentModel
     public function __construct(
         private readonly int $id,
         private readonly int $groupId,
-        private readonly ?Group $group = null, // Добавлено: связь с Group
+        private readonly ?Group $group = null,
         private readonly bool $isShown,
         private readonly string $alt,
         private readonly string $title,
@@ -150,7 +151,7 @@ class AttachmentModel
             'file_date' => $this->getFileDate()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             //'attachable_id' => $this->getAttachableId(),
             'attachable_id' => $this->getAttachable()?->getId(),
-            'attachable_type' => $this->getAttachableType(),
+            'attachable_type' => AttachableType::getLabel($this->getAttachableType()),
             'attachable' => $this->getAttachable(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
