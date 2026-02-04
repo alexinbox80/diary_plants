@@ -3,17 +3,20 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Model\Plant\CreatePlantModel;
+use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
+use Psr\Cache\InvalidArgumentException;
+use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\Repository\PlantRepositoryInterface;
-use App\Domain\ValueObject\Price;
-use Psr\Cache\InvalidArgumentException;
+use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
+use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
 class PlantService
 {
     public function __construct(
-        private readonly PlantRepositoryInterface $plantRepository
+        private readonly PlantRepositoryInterface $plantRepository,
+        private readonly ModelFactory $modelFactory
     ) {
     }
 
@@ -24,6 +27,15 @@ class PlantService
     public function find(int $plantId): ?Plant
     {
         return $this->plantRepository->find($plantId);
+    }
+
+    /**
+     * @param int $plantId
+     * @return ?PlantModel
+     */
+    public function findModel(int $plantId): ?PlantModel
+    {
+        return $this->plantRepository->findModel($plantId);
     }
 
     /**
@@ -98,6 +110,33 @@ class PlantService
     }
 
     /**
+     * @param CreatePlantDTO $dto
+     * @return PlantModel
+     */
+    public function createFromCreatePlantDTO(CreatePlantDTO $dto): PlantModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreatePlantModel::class,
+            $dto->title,
+            $dto->room,
+            $dto->isShown,
+            $dto->description,
+            $dto->plantingDate,
+            $dto->vaccinationDate,
+            $dto->plantingDate,
+            $dto->seller,
+            $dto->nursery,
+            $dto->price !== null ? Price::fromString($dto->price) : null,
+            $dto->shippingCost !== null ? Price::fromString($dto->shippingCost) : null,
+            $dto->packagingCost !== null ? Price::fromString($dto->packagingCost) : null,
+            $dto->soil,
+            $dto->comment
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Plant $plant
      * @param UpdatePlantModel $updatePlantModel
      * @return PlantModel
@@ -125,6 +164,36 @@ class PlantService
         $this->plantRepository->update();
 
         return $this->plantRepository->toModel($plant);
+    }
+
+    /**
+     * @param Plant $plant
+     * @param EditPlantDTO $dto
+     * @return void
+     */
+    public function updateFromEditPlantDTO(Plant $plant, EditPlantDTO $dto): void
+    {
+        // Создаём модель обновления
+        $model = $this->modelFactory->makeModel(
+            UpdatePlantModel::class,
+            $dto->title,
+            $dto->room,
+            $dto->isShown,
+            $dto->description,
+            $dto->plantingDate,
+            $dto->vaccinationDate,
+            $dto->plantingDate,
+            $dto->seller,
+            $dto->nursery,
+            $dto->price !== null ? Price::fromString($dto->price) : null,
+            $dto->shippingCost !== null ? Price::fromString($dto->shippingCost) : null,
+            $dto->packagingCost !== null ? Price::fromString($dto->packagingCost) : null,
+            $dto->soil,
+            $dto->comment
+        );
+
+        // Выполняем обновление
+        $this->update($plant, $model);
     }
 
     /**

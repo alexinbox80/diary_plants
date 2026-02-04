@@ -8,12 +8,15 @@ use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Offspring\UpdateOffspringModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
+use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
+use App\Controller\Web\Dashboard\Offspring\CreateOffspring\Input\CreateOffspringDTO;
 
 class OffspringService
 {
     public function __construct(
         private readonly PlantService $plantService,
-        private readonly OffspringRepositoryInterface $offspringRepository
+        private readonly OffspringRepositoryInterface $offspringRepository,
+        private readonly ModelFactory $modelFactory
     ) {
     }
 
@@ -30,13 +33,13 @@ class OffspringService
      * @param int $offspringId
      * @return ?OffspringModel
      */
-    public function findModel(int $offspringId): ?Offspring
+    public function findModel(int $offspringId): ?OffspringModel
     {
         return $this->offspringRepository->findModel($offspringId);
     }
 
     /**
-     * @return Offspring[]
+     * @return OffspringModel[]
      */
     public function findAll(): array
     {
@@ -105,6 +108,27 @@ class OffspringService
     }
 
     /**
+     * @param CreateOffspringDTO $dto
+     * @return OffspringModel
+     */
+    public function createFromCreateOffspringDTO(CreateOffspringDTO $dto): OffspringModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateOffspringModel::class,
+            $dto->plantId,
+            $dto->fruitingDate,
+            $dto->floweringDate,
+            (int) $dto->mass,
+            $dto->color,
+            $dto->flavor,
+            (int) $dto->quantity,
+            $dto->comment,
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Offspring $offspring
      * @param UpdateOffspringModel $updateOffspringModel
      * @return OffspringModel
@@ -128,6 +152,30 @@ class OffspringService
         $this->offspringRepository->update();
 
         return $this->offspringRepository->toModel($offspring);
+    }
+
+    /**
+     * @param Offspring $offspring
+     * @param EditOffspringDTO $dto
+     * @return void
+     */
+    public function updateFromEditOffspringDTO(Offspring $offspring, EditOffspringDTO $dto): void
+    {
+        // Создаём модель обновления
+        $model = $this->modelFactory->makeModel(
+            UpdateOffspringModel::class,
+            $dto->plantId,
+            $dto->fruitingDate,
+            $dto->floweringDate,
+            $dto->mass,
+            $dto->color,
+            $dto->flavor,
+            $dto->quantity,
+            $dto->comment
+        );
+
+        // Выполняем обновление
+        $this->update($offspring, $model);
     }
 
     /**

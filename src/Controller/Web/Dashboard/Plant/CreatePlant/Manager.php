@@ -3,20 +3,16 @@
 namespace App\Controller\Web\Dashboard\Plant\CreatePlant;
 
 use App\Controller\Form\PlantType;
-use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
-use App\Domain\Model\Plant\CreatePlantModel;
-use App\Domain\Service\ModelFactory;
 use App\Domain\Service\PlantService;
-use App\Domain\ValueObject\Price;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormFactoryInterface;
+use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
 class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,
-        private readonly FormFactoryInterface $formFactory,
-        private readonly ModelFactory $modelFactory
+        private readonly FormFactoryInterface $formFactory
     ) {
     }
 
@@ -31,25 +27,7 @@ class Manager
             /** @var CreatePlantDTO $createPlantDTO */
             $createPlantDTO = $form->getData();
 
-            $createPlantModel = $this->modelFactory->makeModel(
-                CreatePlantModel::class,
-                $createPlantDTO->title,
-                $createPlantDTO->room,
-                $createPlantDTO->isShown,
-                $createPlantDTO->description,
-                $createPlantDTO->plantingDate,
-                $createPlantDTO->vaccinationDate,
-                $createPlantDTO->plantingDate,
-                $createPlantDTO->seller,
-                $createPlantDTO->nursery,
-                $createPlantDTO->price !== null ? Price::fromString($createPlantDTO->price) : null,
-                $createPlantDTO->shippingCost !== null ? Price::fromString($createPlantDTO->shippingCost) : null,
-                $createPlantDTO->packagingCost !== null ? Price::fromString($createPlantDTO->packagingCost) : null,
-                $createPlantDTO->soil,
-                $createPlantDTO->comment
-            );
-
-            $plantModel = $this->plantService->create($createPlantModel);
+            $plantModel = $this->plantService->createFromCreatePlantDTO($createPlantDTO);
 
             $request->getSession()->getFlashBag()->add('success', 'Растение успешно создано.');
             return ['success' => true];

@@ -2,22 +2,18 @@
 
 namespace App\Controller\Web\Dashboard\Plant\EditPlant;
 
-use App\Controller\Form\PlantType;
-use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Domain\Entity\Plant;
-use App\Domain\Model\Plant\UpdatePlantModel;
-use App\Domain\Service\ModelFactory;
 use App\Domain\Service\PlantService;
-use App\Domain\ValueObject\Price;
+use App\Controller\Form\PlantType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 
 class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,
-        private readonly FormFactoryInterface $formFactory,
-        private readonly ModelFactory $modelFactory
+        private readonly FormFactoryInterface $formFactory
     ) {
     }
 
@@ -48,25 +44,7 @@ class Manager
             /** @var EditPlantDTO $editPlantDTO */
             $editPlantDTO = $form->getData();
 
-            $updatePlantModel = $this->modelFactory->makeModel(
-                UpdatePlantModel::class,
-                $editPlantDTO->title,
-                $editPlantDTO->room,
-                $editPlantDTO->isShown,
-                $editPlantDTO->description,
-                $editPlantDTO->plantingDate,
-                $editPlantDTO->vaccinationDate,
-                $editPlantDTO->plantingDate,
-                $editPlantDTO->seller,
-                $editPlantDTO->nursery,
-                $editPlantDTO->price !== null ? Price::fromString($editPlantDTO->price) : null,
-                $editPlantDTO->shippingCost !== null ? Price::fromString($editPlantDTO->shippingCost) : null,
-                $editPlantDTO->packagingCost !== null ? Price::fromString($editPlantDTO->packagingCost) : null,
-                $editPlantDTO->soil,
-                $editPlantDTO->comment
-            );
-
-            $this->plantService->update($plant, $updatePlantModel);
+            $this->plantService->updateFromEditPlantDTO($plant, $editPlantDTO);
 
             $request->getSession()->getFlashBag()->add('success', 'Растение успешно обновлено.');
             return ['success' => true];

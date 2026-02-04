@@ -2,21 +2,18 @@
 
 namespace App\Controller\Web\Dashboard\Offspring\EditOffspring;
 
-use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
 use App\Domain\Entity\Offspring;
-use App\Domain\Model\Offspring\UpdateOffspringModel;
-use App\Domain\Service\ModelFactory;
-use App\Domain\Service\OffspringService;
 use App\Controller\Form\OffspringType;
-use Symfony\Component\Form\FormFactoryInterface;
+use App\Domain\Service\OffspringService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormFactoryInterface;
+use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
 
 class Manager
 {
     public function __construct(
         private readonly OffspringService $offspringService,
-        private readonly FormFactoryInterface $formFactory,
-        private readonly ModelFactory $modelFactory
+        private readonly FormFactoryInterface $formFactory
     ) {
     }
 
@@ -41,19 +38,7 @@ class Manager
             /** @var EditOffspringDTO $editOffspringDTO */
             $editOffspringDTO = $form->getData();
 
-            $updateOffspringModel = $this->modelFactory->makeModel(
-                UpdateOffspringModel::class,
-                $editOffspringDTO->plantId,
-                $editOffspringDTO->fruitingDate,
-                $editOffspringDTO->floweringDate,
-                $editOffspringDTO->mass,
-                $editOffspringDTO->color,
-                $editOffspringDTO->flavor,
-                $editOffspringDTO->quantity,
-                $editOffspringDTO->comment
-            );
-
-            $this->offspringService->update($offspring, $updateOffspringModel);
+            $this->offspringService->updateFromEditOffspringDTO($offspring, $editOffspringDTO);
 
             $request->getSession()->getFlashBag()->add('success', 'Плод успешно обновлен.');
             return ['success' => true];
