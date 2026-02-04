@@ -25,19 +25,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         }
 
         $offspringsModel = array_map(
-            static fn (Offspring $offspring): OffspringModel => new OffspringModel(
-                $offspring->getId(),
-                $offspring->getPlant()->getId(),
-                $offspring->getFruitingDate(),
-                $offspring->getFloweringDate(),
-                $offspring->getMass(),
-                $offspring->getColor(),
-                $offspring->getFlavor(),
-                $offspring->getQuantity(),
-                $offspring->getComment(),
-                $offspring->getCreatedAt(),
-                $offspring->getUpdatedAt()
-            ),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
             $offspringsPaginated['items']
         );
 
@@ -64,19 +52,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     {
         $offspring = $this->offspringRepository->find($offspringId);
 
-        return new OffspringModel(
-            $offspring->getId(),
-            $offspring->getPlant()->getId(),
-            $offspring->getFruitingDate(),
-            $offspring->getFloweringDate(),
-            $offspring->getMass(),
-            $offspring->getColor(),
-            $offspring->getFlavor(),
-            $offspring->getQuantity(),
-            $offspring->getComment(),
-            $offspring->getCreatedAt(),
-            $offspring->getUpdatedAt()
-        );
+        return $this->toModel($offspring);
     }
 
     /**
@@ -87,19 +63,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         $offsprings = $this->offspringRepository->findAll();
 
         return array_map(
-            static fn (Offspring $offspring): OffspringModel => new OffspringModel(
-                $offspring->getId(),
-                $offspring->getPlant()->getId(),
-                $offspring->getFruitingDate(),
-                $offspring->getFloweringDate(),
-                $offspring->getMass(),
-                $offspring->getColor(),
-                $offspring->getFlavor(),
-                $offspring->getQuantity(),
-                $offspring->getComment(),
-                $offspring->getCreatedAt(),
-                $offspring->getUpdatedAt()
-            ),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
             $offsprings
         );
     }
@@ -113,19 +77,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         $offsprings = $this->offspringRepository->findOffspringsByMass($mass);
 
         return array_map(
-            static fn (Offspring $offspring): OffspringModel => new OffspringModel(
-                $offspring->getId(),
-                $offspring->getPlant()->getId(),
-                $offspring->getFruitingDate(),
-                $offspring->getFloweringDate(),
-                $offspring->getMass(),
-                $offspring->getColor(),
-                $offspring->getFlavor(),
-                $offspring->getQuantity(),
-                $offspring->getComment(),
-                $offspring->getCreatedAt(),
-                $offspring->getUpdatedAt()
-            ),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
             $offsprings
         );
     }
@@ -139,19 +91,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         $offsprings = $this->offspringRepository->findOffspringsByFlavor($flavor);
 
         return array_map(
-            static fn (Offspring $offspring): OffspringModel => new OffspringModel(
-                $offspring->getId(),
-                $offspring->getPlant()->getId(),
-                $offspring->getFruitingDate(),
-                $offspring->getFloweringDate(),
-                $offspring->getMass(),
-                $offspring->getColor(),
-                $offspring->getFlavor(),
-                $offspring->getQuantity(),
-                $offspring->getComment(),
-                $offspring->getCreatedAt(),
-                $offspring->getUpdatedAt()
-            ),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
             $offsprings
         );
     }
@@ -165,19 +105,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         $offsprings = $this->offspringRepository->findOffspringsByColor($color);
 
         return array_map(
-            static fn (Offspring $offspring): OffspringModel => new OffspringModel(
-                $offspring->getId(),
-                $offspring->getPlant()->getId(),
-                $offspring->getFruitingDate(),
-                $offspring->getFloweringDate(),
-                $offspring->getMass(),
-                $offspring->getColor(),
-                $offspring->getFlavor(),
-                $offspring->getQuantity(),
-                $offspring->getComment(),
-                $offspring->getCreatedAt(),
-                $offspring->getUpdatedAt()
-            ),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
             $offsprings
         );
     }

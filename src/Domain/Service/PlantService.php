@@ -94,27 +94,7 @@ class PlantService
 
         $this->plantRepository->create($plant);
 
-        return new PlantModel(
-            $plant->getId(),
-            $plant->getOid(),
-            $plant->getTitle(),
-            $plant->getRoom(),
-            $plant->isShown(),
-            $plant->getDescription(),
-            $plant->getQrCodeBase64(),
-            $plant->getPurchaseDate(),
-            $plant->getVaccinationDate(),
-            $plant->getPlantingDate(),
-            $plant->getSeller(),
-            $plant->getNursery(),
-            $plant->getPrice(),
-            $plant->getShippingCost(),
-            $plant->getPackagingCost(),
-            $plant->getSoil(),
-            $plant->getComment(),
-            $plant->getCreatedAt(),
-            $plant->getUpdatedAt()
-        );
+        return $this->plantRepository->toModel($plant);
     }
 
     /**
@@ -144,27 +124,7 @@ class PlantService
 
         $this->plantRepository->update();
 
-        return new PlantModel(
-            $plant->getId(),
-            $plant->getOid(),
-            $plant->getTitle(),
-            $plant->getRoom(),
-            $plant->isShown(),
-            $plant->getDescription(),
-            $plant->getQrCodeBase64(),
-            $plant->getPurchaseDate(),
-            $plant->getVaccinationDate(),
-            $plant->getPlantingDate(),
-            $plant->getSeller(),
-            $plant->getNursery(),
-            $plant->getPrice(),
-            $plant->getShippingCost(),
-            $plant->getPackagingCost(),
-            $plant->getSoil(),
-            $plant->getComment(),
-            $plant->getCreatedAt(),
-            $plant->getUpdatedAt()
-        );
+        return $this->plantRepository->toModel($plant);
     }
 
     /**

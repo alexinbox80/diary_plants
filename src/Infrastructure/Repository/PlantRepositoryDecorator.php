@@ -3,9 +3,9 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
+use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Repository\PlantRepositoryInterface;
-use App\Domain\ValueObject\Price;
 
 class PlantRepositoryDecorator implements PlantRepositoryInterface
 {
@@ -29,27 +29,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         }
 
         $plantsModel = array_map(
-            static fn (Plant $plant): PlantModel => new PlantModel(
-                $plant->getId(),
-                $plant->getOid(),
-                $plant->getTitle(),
-                $plant->getRoom(),
-                $plant->isShown(),
-                $plant->getDescription(),
-                $plant->getQrCodeBase64(),
-                $plant->getPurchaseDate(),
-                $plant->getVaccinationDate(),
-                $plant->getPlantingDate(),
-                $plant->getSeller(),
-                $plant->getNursery(),
-                $plant->getPrice(),
-                $plant->getShippingCost(),
-                $plant->getPackagingCost(),
-                $plant->getSoil(),
-                $plant->getComment(),
-                $plant->getCreatedAt(),
-                $plant->getUpdatedAt()
-            ),
+            fn (Plant $plant): PlantModel => $this->toModel($plant),
             $plantsPaginated['items']
         );
 
@@ -84,27 +64,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     {
         $plant = $this->plantRepository->find($plantId);
 
-        return new PlantModel(
-            $plant->getId(),
-            $plant->getOid(),
-            $plant->getTitle(),
-            $plant->getRoom(),
-            $plant->isShown(),
-            $plant->getDescription(),
-            $plant->getQrCodeBase64(),
-            $plant->getPurchaseDate(),
-            $plant->getVaccinationDate(),
-            $plant->getPlantingDate(),
-            $plant->getSeller(),
-            $plant->getNursery(),
-            $plant->getPrice(),
-            $plant->getShippingCost(),
-            $plant->getPackagingCost(),
-            $plant->getSoil(),
-            $plant->getComment(),
-            $plant->getCreatedAt(),
-            $plant->getUpdatedAt()
-        );
+        return $this->toModel($plant);
     }
 
     /**
@@ -115,27 +75,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         $plants = $this->plantRepository->findAll();
 
         return array_map(
-            static fn (Plant $plant): PlantModel => new PlantModel(
-                $plant->getId(),
-                $plant->getOid(),
-                $plant->getTitle(),
-                $plant->getRoom(),
-                $plant->isShown(),
-                $plant->getDescription(),
-                $plant->getQrCodeBase64(),
-                $plant->getPurchaseDate(),
-                $plant->getVaccinationDate(),
-                $plant->getPlantingDate(),
-                $plant->getSeller(),
-                $plant->getNursery(),
-                $plant->getPrice(),
-                $plant->getShippingCost(),
-                $plant->getPackagingCost(),
-                $plant->getSoil(),
-                $plant->getComment(),
-                $plant->getCreatedAt(),
-                $plant->getUpdatedAt()
-            ),
+            fn (Plant $plant): PlantModel => $this->toModel($plant),
             $plants
         );
     }
@@ -149,27 +89,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         $plants = $this->plantRepository->findPlantsByTitle($title);
 
         return array_map(
-            static fn (Plant $plant): PlantModel => new PlantModel(
-                $plant->getId(),
-                $plant->getOid(),
-                $plant->getTitle(),
-                $plant->getRoom(),
-                $plant->isShown(),
-                $plant->getDescription(),
-                $plant->getQrCodeBase64(),
-                $plant->getPurchaseDate(),
-                $plant->getVaccinationDate(),
-                $plant->getPlantingDate(),
-                $plant->getSeller(),
-                $plant->getNursery(),
-                $plant->getPrice(),
-                $plant->getShippingCost(),
-                $plant->getPackagingCost(),
-                $plant->getSoil(),
-                $plant->getComment(),
-                $plant->getCreatedAt(),
-                $plant->getUpdatedAt()
-            ),
+            fn (Plant $plant): PlantModel => $this->toModel($plant),
             $plants
         );
     }
@@ -183,27 +103,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         $plants = $this->plantRepository->findPlantsByPrice($price);
 
         return array_map(
-            static fn (Plant $plant): PlantModel => new PlantModel(
-                $plant->getId(),
-                $plant->getOid(),
-                $plant->getTitle(),
-                $plant->getRoom(),
-                $plant->isShown(),
-                $plant->getDescription(),
-                $plant->getQrCodeBase64(),
-                $plant->getPurchaseDate(),
-                $plant->getVaccinationDate(),
-                $plant->getPlantingDate(),
-                $plant->getSeller(),
-                $plant->getNursery(),
-                $plant->getPrice(),
-                $plant->getShippingCost(),
-                $plant->getPackagingCost(),
-                $plant->getSoil(),
-                $plant->getComment(),
-                $plant->getCreatedAt(),
-                $plant->getUpdatedAt()
-            ),
+            fn (Plant $plant): PlantModel => $this->toModel($plant),
             $plants
         );
     }

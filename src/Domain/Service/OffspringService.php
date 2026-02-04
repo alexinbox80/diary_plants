@@ -3,11 +3,11 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Offspring;
+use Psr\Cache\InvalidArgumentException;
+use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Offspring\UpdateOffspringModel;
-use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
-use Psr\Cache\InvalidArgumentException;
 
 class OffspringService
 {
@@ -24,6 +24,15 @@ class OffspringService
     public function find(int $offspringId): ?Offspring
     {
         return $this->offspringRepository->find($offspringId);
+    }
+
+    /**
+     * @param int $offspringId
+     * @return ?OffspringModel
+     */
+    public function findModel(int $offspringId): ?Offspring
+    {
+        return $this->offspringRepository->findModel($offspringId);
     }
 
     /**
@@ -92,19 +101,7 @@ class OffspringService
 
         $this->offspringRepository->create($offspring);
 
-        return new OffspringModel(
-            $offspring->getId(),
-            $offspring->getPlant()->getId(),
-            $offspring->getFruitingDate(),
-            $offspring->getFloweringDate(),
-            $offspring->getMass(),
-            $offspring->getColor(),
-            $offspring->getFlavor(),
-            $offspring->getQuantity(),
-            $offspring->getComment(),
-            $offspring->getCreatedAt(),
-            $offspring->getUpdatedAt()
-        );
+        return $this->offspringRepository->toModel($offspring);
     }
 
     /**
@@ -130,19 +127,7 @@ class OffspringService
 
         $this->offspringRepository->update();
 
-        return new OffspringModel(
-            $offspring->getId(),
-            $offspring->getPlant()->getId(),
-            $offspring->getFruitingDate(),
-            $offspring->getFloweringDate(),
-            $offspring->getMass(),
-            $offspring->getColor(),
-            $offspring->getFlavor(),
-            $offspring->getQuantity(),
-            $offspring->getComment(),
-            $offspring->getCreatedAt(),
-            $offspring->getUpdatedAt()
-        );
+        return $this->offspringRepository->toModel($offspring);
     }
 
     /**

@@ -71,7 +71,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         }
 
         $attachmentsModel = array_map(
-            fn (Attachment $attachment) => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
             $attachmentsPaginated['items']
         );
 
@@ -109,7 +109,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAll();
 
         return array_map(
-            fn (Attachment $attachment) => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
             $attachments
         );
     }
@@ -123,7 +123,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByTitle($title);
 
         return array_map(
-            fn (Attachment $attachment) => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
             $attachments
         );
     }
@@ -137,7 +137,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByFilename($filename);
 
         return array_map(
-            fn (Attachment $attachment) => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
             $attachments
         );
     }
@@ -151,7 +151,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByFileDate($fileDate);
 
         return array_map(
-            fn (Attachment $attachment) => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
             $attachments
         );
     }
@@ -165,7 +165,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAttachmentsByPath($path);
 
         return array_map(
-            fn (Attachment $attachment) => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
             $attachments
         );
     }
