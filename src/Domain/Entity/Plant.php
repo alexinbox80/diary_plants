@@ -108,13 +108,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
-    /**
-     * @var Collection<int, Attachment>
-     */
-    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
-    private Collection $attachments;
-
     private function setCommonFields(
         string $title,
         string $room,
@@ -260,7 +253,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->oid = OId::next();
         $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
 
-        $this->attachments = new ArrayCollection();
         $this->tasks = new ArrayCollection();
         $this->offsprings = new ArrayCollection();
         $this->usages = new ArrayCollection();
@@ -393,39 +385,5 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     public function getComment(): ?string
     {
         return $this->comment;
-    }
-
-    public function getAttachments(): Collection
-    {
-        return $this->attachments;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'oid' => $this->getOid(),
-            'title' => $this->getTitle(),
-            'is_shown' => $this->isShown(),
-            'description' => $this->getDescription(),
-            'qr_code_base64' => $this->getQrCodeBase64(),
-            'room' => $this->getRoom(),
-            'purchase_date' => $this->getPurchaseDate(),
-            'vaccination_date' => $this->getVaccinationDate(),
-            'planting_date' => $this->getPlantingDate(),
-            'seller' => $this->getSeller(),
-            'nursery' => $this->getNursery(),
-            'price' => $this->getPrice(),
-            'shipping_cost' => $this->getShippingCost(),
-            'packaging_cost' => $this->getPackagingCost(),
-            'soil' => $this->getSoil(),
-            'attachment' => array_map(
-                static fn (Attachment $attachment) => $attachment->toArray(),
-                $this->getAttachments()->toArray()
-            ),
-            'comment' => $this->getComment(),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-        ];
     }
 }

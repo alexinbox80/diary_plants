@@ -6,6 +6,7 @@ use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
+use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class PlantModel implements AttachableModelInterface
@@ -28,6 +29,7 @@ class PlantModel implements AttachableModelInterface
         private readonly ?Price $packagingCost = null,
         private readonly ?string $soil = null,
         private readonly ?string $comment = null,
+        private readonly ?array $attachment = [],
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -118,6 +120,14 @@ class PlantModel implements AttachableModelInterface
         return $this->comment;
     }
 
+    /**
+     * @return AttachmentModel[]
+     */
+    public function getAttachment(): ?array
+    {
+        return $this->attachment;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -159,7 +169,7 @@ class PlantModel implements AttachableModelInterface
 
         return [
             'id' => $this->getId(),
-            'oid' => $this->oid->toString(),
+            'oid' => $this->getOid()->toString(),
             'title' => $this->getTitle(),
             'room' => $this->getRoom(),
             'is_shown' => $this->isShown() ? 'Да' : 'Нет',
@@ -175,6 +185,7 @@ class PlantModel implements AttachableModelInterface
             'packaging_cost' => $this->getPackagingCost()?->toString(),
             'soil' => $this->getSoil(),
             'comment' => $this->getComment(),
+            'attachment' => $this->getAttachment(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
         ];

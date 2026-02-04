@@ -20,8 +20,10 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findByAttachable(string $attachableType, int $attachableId): array
     {
-        return $this->entityManager->createQueryBuilder('a')
-            ->andWhere('a.attachableType = :type')
+        return $this->entityManager->createQueryBuilder()
+            ->select('a')
+            ->from(Attachment::class, 'a')
+            ->where('a.attachableType = :type')
             ->andWhere('a.attachableId = :id')
             ->setParameter('type', $attachableType)
             ->setParameter('id', $attachableId)
@@ -38,14 +40,6 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findByAttachableWithDeleted(string $attachableType, int $attachableId): array
     {
-//        return $this->entityManager->createQueryBuilder('a')
-//            ->andWhere('a.attachableType = :type')
-//            ->andWhere('a.attachableId = :id')
-//            ->setParameter('type', $attachableType)
-//            ->setParameter('id', $attachableId)
-//            ->getQuery()
-//            ->getResult();
-
         return $this->entityManager->createQueryBuilder()
             ->select('a')
             ->from(Attachment::class, 'a')
@@ -63,8 +57,10 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findOneByAttachable(string $attachableType, int $attachableId, int $attachmentId): ?Attachment
     {
-        return $this->entityManager->createQueryBuilder('a')
-            ->andWhere('a.attachableType = :type')
+        return $this->entityManager->createQueryBuilder()
+            ->select('a')
+            ->from(Attachment::class, 'a')
+            ->where('a.attachableType = :type')
             ->andWhere('a.attachableId = :id')
             ->andWhere('a.id = :attachmentId')
             ->setParameter('type', $attachableType)

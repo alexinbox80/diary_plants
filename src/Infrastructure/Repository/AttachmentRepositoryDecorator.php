@@ -232,8 +232,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         if (!$entity) return null;
 
         return match (get_class($entity)) {
-            \App\Domain\Entity\Plant::class => $this->plantRepository->toModel($entity),
-            \App\Domain\Entity\Offspring::class => $this->offspringRepository->toModel($entity),
+            \App\Domain\Entity\Plant::class => $this->plantRepository->findModel($entity->getId()),
+            \App\Domain\Entity\Offspring::class => $this->offspringRepository->findModel($entity->getId()),
             default => null,
         };
     }

@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\Attachment;
 use App\Domain\Entity\Plant;
+use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Repository\PlantRepositoryInterface;
@@ -11,6 +13,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
 {
     public function __construct(
         private readonly PlantRepository $plantRepository,
+        private readonly AttachmentRepository $attachmentRepository,
     ) {
     }
 
@@ -140,6 +143,30 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
      */
     public function toModel(Plant $plant): PlantModel
     {
+        $attachments = $this->attachmentRepository->findByAttachable('plant::class', $plant->getId());
+
+        $attachmentModels = array_map(
+            fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
+                $attachment->getId(),
+                $attachment->getGroup()->getId(),
+                null,
+                $attachment->isShown(),
+                $attachment->getAlt(),
+                $attachment->getTitle(),
+                $attachment->getFileDate(),
+                $attachment->getFilename(),
+                $attachment->getPath(),
+                $attachment->getMimeType(),
+                $attachment->getDescription(),
+                $attachment->getAttachableId(),
+                $attachment->getAttachableType(),
+                null,
+                $attachment->getCreatedAt(),
+                $attachment->getUpdatedAt()
+            ),
+            $attachments
+        );
+
         return new PlantModel(
             $plant->getId(),
             $plant->getOid(),
@@ -158,6 +185,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $plant->getPackagingCost(),
             $plant->getSoil(),
             $plant->getComment(),
+            $attachmentModels,
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );
