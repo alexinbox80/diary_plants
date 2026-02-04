@@ -5,15 +5,19 @@ namespace App\Infrastructure\Repository;
 use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Repository\AttachableResolverInterface;
 use App\Domain\Repository\AttachmentRepositoryInterface;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 {
     public function __construct(
         private readonly AttachmentRepository $attachmentRepository,
-        private readonly GroupRepository $groupRepository,
-        private readonly AttachableResolverInterface $attachableResolver
+        private readonly GroupRepositoryDecorator $groupRepository,
+        private readonly AttachableResolverInterface $attachableResolver,
+        private readonly PlantRepositoryDecorator $plantRepository,
+        private readonly OffspringRepositoryDecorator $offspringRepository
     ) {
     }
 
@@ -194,13 +198,19 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 
     public function toModel(Attachment $attachment): AttachmentModel
     {
-        $group = $this->groupRepository->find($attachment->getGroup()->getId());
+        $groupModel = $this->groupRepository->findModel($attachment->getGroup()->getId());
+
+        $attachableEntity = $this->attachableResolver->resolve(
+            $attachment->getAttachableType(),
+            $attachment->getAttachableId()
+        );
+
+        $attachableModel = $this->toAttachableModel($attachableEntity);
 
         return new AttachmentModel(
             $attachment->getId(),
             $attachment->getGroup()->getId(),
-            //$attachment->getGroup(),
-            $group,
+            $groupModel,
             $attachment->isShown(),
             $attachment->getAlt(),
             $attachment->getTitle(),
@@ -211,9 +221,20 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
             $attachment->getDescription(),
             $attachment->getAttachableId(),
             $attachment->getAttachableType(),
-            $this->attachableResolver->resolve($attachment->getAttachableType(), $attachment->getAttachableId()),
+            $attachableModel,
             $attachment->getCreatedAt(),
             $attachment->getUpdatedAt()
         );
+    }
+
+    private function toAttachableModel(?AttachableInterface $entity): ?AttachableModelInterface
+    {
+        if (!$entity) return null;
+
+        return match (get_class($entity)) {
+            \App\Domain\Entity\Plant::class => $this->plantRepository->toModel($entity),
+            \App\Domain\Entity\Offspring::class => $this->offspringRepository->toModel($entity),
+            default => null,
+        };
     }
 }

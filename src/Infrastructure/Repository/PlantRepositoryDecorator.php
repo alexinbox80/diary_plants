@@ -233,4 +233,33 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     {
         $this->plantRepository->remove($plant);
     }
+
+    /**
+     * @param Plant $plant
+     * @return PlantModel
+     */
+    public function toModel(Plant $plant): PlantModel
+    {
+        return new PlantModel(
+            $plant->getId(),
+            $plant->getOid(),
+            $plant->getTitle(),
+            $plant->getRoom(),
+            $plant->isShown(),
+            $plant->getDescription(),
+            $plant->getQrCodeBase64(),
+            $plant->getPurchaseDate(),
+            $plant->getVaccinationDate(),
+            $plant->getPlantingDate(),
+            $plant->getSeller(),
+            $plant->getNursery(),
+            $plant->getPrice(),
+            $plant->getShippingCost(),
+            $plant->getPackagingCost(),
+            $plant->getSoil(),
+            $plant->getComment(),
+            $plant->getCreatedAt(),
+            $plant->getUpdatedAt()
+        );
+    }
 }

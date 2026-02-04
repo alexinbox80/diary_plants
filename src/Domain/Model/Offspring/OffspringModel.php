@@ -2,10 +2,11 @@
 
 namespace App\Domain\Model\Offspring;
 
-use DateTimeImmutable;
 use DateTimeZone;
+use DateTimeImmutable;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
-class OffspringModel
+class OffspringModel implements AttachableModelInterface
 {
     public function __construct(
         private readonly int $id,

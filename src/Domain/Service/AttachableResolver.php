@@ -2,8 +2,8 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\ValueObject\Enum\AttachableType;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Domain\ValueObject\Enum\AttachableType;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Repository\AttachableResolverInterface;
 

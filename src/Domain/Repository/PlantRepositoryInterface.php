@@ -18,4 +18,5 @@ interface PlantRepositoryInterface
     public function create(Plant $plant): int;
     public function update(): void;
     public function remove(Plant $plant): void;
+    public function toModel(Plant $plant): PlantModel;
 }

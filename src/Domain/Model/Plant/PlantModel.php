@@ -2,12 +2,13 @@
 
 namespace App\Domain\Model\Plant;
 
+use DateTimeZone;
+use DateTimeImmutable;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
-use DateTimeImmutable;
-use DateTimeZone;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
-class PlantModel
+class PlantModel implements AttachableModelInterface
 {
     public function __construct(
         private readonly int $id,

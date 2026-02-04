@@ -2,18 +2,18 @@
 
 namespace App\Domain\Model\Attachment;
 
-use App\Domain\Entity\Group;
-use App\Domain\Entity\Interfaces\AttachableInterface;
-use App\Domain\ValueObject\Enum\AttachableType;
-use DateTimeImmutable;
 use DateTimeZone;
+use DateTimeImmutable;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\ValueObject\Enum\AttachableType;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class AttachmentModel
 {
     public function __construct(
         private readonly int $id,
         private readonly int $groupId,
-        private readonly ?Group $group = null,
+        private readonly ?GroupModel $group = null,
         private readonly bool $isShown,
         private readonly string $alt,
         private readonly string $title,
@@ -24,7 +24,7 @@ class AttachmentModel
         private readonly ?string $description = null,
         private readonly ?int $attachableId = null,
         private readonly ?string $attachableType = null,
-        private readonly ?AttachableInterface $attachable = null,
+        private readonly ?AttachableModelInterface $attachable = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -40,7 +40,7 @@ class AttachmentModel
         return $this->groupId;
     }
 
-    public function getGroup(): ?Group
+    public function getGroup(): ?GroupModel
     {
         return $this->group;
     }
@@ -95,7 +95,7 @@ class AttachmentModel
         return $this->attachableType;
     }
 
-    public function getAttachable(): ?AttachableInterface
+    public function getAttachable(): ?AttachableModelInterface
     {
         return $this->attachable;
     }

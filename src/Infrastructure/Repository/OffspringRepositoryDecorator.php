@@ -207,4 +207,25 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     {
         $this->offspringRepository->remove($offspring);
     }
+
+    /**
+     * @param Offspring $offspring
+     * @return OffspringModel
+     */
+    public function toModel(Offspring $offspring): OffspringModel
+    {
+        return new OffspringModel(
+            $offspring->getId(),
+            $offspring->getPlant()->getId(),
+            $offspring->getFruitingDate(),
+            $offspring->getFloweringDate(),
+            $offspring->getMass(),
+            $offspring->getColor(),
+            $offspring->getFlavor(),
+            $offspring->getQuantity(),
+            $offspring->getComment(),
+            $offspring->getCreatedAt(),
+            $offspring->getUpdatedAt()
+        );
+    }
 }

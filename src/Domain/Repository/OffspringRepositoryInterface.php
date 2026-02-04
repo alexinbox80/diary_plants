@@ -17,4 +17,5 @@ interface OffspringRepositoryInterface
     public function create(Offspring $offspring): int;
     public function update(): void;
     public function remove(Offspring $offspring): void;
+    public function toModel(Offspring $offspring): OffspringModel;
 }
