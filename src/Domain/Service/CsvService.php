@@ -102,6 +102,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreatePlantModel::class,
+                (int) $plantModel['group_id'],
                 $plantModel['title'],
                 $plantModel['room'],
                 $plantModel['is_shown'],
@@ -136,7 +137,8 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateOffspringModel::class,
-                $offspringModel['plant_id'],
+                (int) $offspringModel['group_id'],
+                (int) $offspringModel['plant_id'],
                 $offspringModel['fruiting_date'] !== '' ? new DateTimeImmutable($offspringModel['fruiting_date']) : null,
                 $offspringModel['flowering_date'] !== '' ? new DateTimeImmutable($offspringModel['flowering_date']) : null,
                 (int) $offspringModel['mass'],

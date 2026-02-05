@@ -167,6 +167,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     {
         return new PlantModel(
             $plant->getId(),
+            $plant->getGroup()->getId(),
             $plant->getOid(),
             $plant->getTitle(),
             $plant->getRoom(),

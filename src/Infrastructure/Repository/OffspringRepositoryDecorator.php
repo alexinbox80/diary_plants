@@ -186,6 +186,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     {
         return new OffspringModel(
             $offspring->getId(),
+            $offspring->getGroup()->getId(),
             $offspring->getPlant()->getId(),
             $attachmentModels,
             $offspring->getFruitingDate(),

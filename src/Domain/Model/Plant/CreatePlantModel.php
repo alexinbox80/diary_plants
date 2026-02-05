@@ -10,6 +10,9 @@ class CreatePlantModel
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public readonly int $groupId,
+        #[Assert\NotBlank]
         public readonly string $title,
         #[Assert\NotBlank]
         public readonly string $room,

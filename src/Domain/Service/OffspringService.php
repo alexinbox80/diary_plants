@@ -16,7 +16,8 @@ class OffspringService
     public function __construct(
         private readonly PlantService $plantService,
         private readonly OffspringRepositoryInterface $offspringRepository,
-        private readonly ModelFactory $modelFactory
+        private readonly ModelFactory $modelFactory,
+        private readonly GroupService $groupService,
     ) {
     }
 
@@ -89,9 +90,11 @@ class OffspringService
      */
     public function create(CreateOffspringModel $createOffspringModel): OffspringModel
     {
+        $group = $this->groupService->find($createOffspringModel->groupId);
         $plant = $this->plantService->find($createOffspringModel->plantId);
 
         $offspring = new Offspring(
+            $group,
             $plant,
             $createOffspringModel->fruitingDate,
             $createOffspringModel->floweringDate,
@@ -115,6 +118,7 @@ class OffspringService
     {
         $model = $this->modelFactory->makeModel(
             CreateOffspringModel::class,
+            2,
             $dto->plantId,
             $dto->fruitingDate,
             $dto->floweringDate,
@@ -136,9 +140,11 @@ class OffspringService
      */
     public function update(Offspring $offspring, UpdateOffspringModel $updateOffspringModel): OffspringModel
     {
+        $group = $this->groupService->find($updateOffspringModel->groupId);
         $plant = $this->plantService->find($updateOffspringModel->plantId);
 
         $offspring->changeFields(
+            $group,
             $plant,
             $updateOffspringModel->fruitingDate,
             $updateOffspringModel->floweringDate,
@@ -164,6 +170,7 @@ class OffspringService
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdateOffspringModel::class,
+            2,
             $dto->plantId,
             $dto->fruitingDate,
             $dto->floweringDate,

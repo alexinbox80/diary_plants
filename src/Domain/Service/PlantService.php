@@ -5,6 +5,7 @@ namespace App\Domain\Service;
 use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
+use App\Infrastructure\Repository\GroupRepositoryDecorator;
 use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
@@ -16,7 +17,8 @@ class PlantService
 {
     public function __construct(
         private readonly PlantRepositoryInterface $plantRepository,
-        private readonly ModelFactory $modelFactory
+        private readonly ModelFactory $modelFactory,
+        private readonly GroupService $groupService,
     ) {
     }
 
@@ -87,7 +89,10 @@ class PlantService
      */
     public function create(CreatePlantModel $createPlantModel): PlantModel
     {
+        $group = $this->groupService->find($createPlantModel->groupId);
+
         $plant = new Plant(
+            $group,
             $createPlantModel->title,
             $createPlantModel->room,
             $createPlantModel->isShown,
@@ -117,6 +122,7 @@ class PlantService
     {
         $model = $this->modelFactory->makeModel(
             CreatePlantModel::class,
+            2,
             $dto->title,
             $dto->room,
             $dto->isShown,
@@ -144,7 +150,10 @@ class PlantService
      */
     public function update(Plant $plant, UpdatePlantModel $updatePlantModel): PlantModel
     {
+        $group = $this->groupService->find($updatePlantModel->groupId);
+
         $plant->changeFields(
+            $group,
             $updatePlantModel->title,
             $updatePlantModel->room,
             $updatePlantModel->isShown,
@@ -176,6 +185,7 @@ class PlantService
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdatePlantModel::class,
+            2,
             $dto->title,
             $dto->room,
             $dto->isShown,

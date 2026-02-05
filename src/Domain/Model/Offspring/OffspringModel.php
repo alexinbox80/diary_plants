@@ -10,6 +10,7 @@ class OffspringModel implements AttachableModelInterface
 {
     public function __construct(
         private readonly int $id,
+        private readonly int $groupId,
         private readonly int $plantId,
         private readonly array $attachment = [],
         private readonly ?DateTimeImmutable $fruitingDate = null,
@@ -32,6 +33,11 @@ class OffspringModel implements AttachableModelInterface
     public function getPlantId(): int
     {
         return $this->plantId;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->groupId;
     }
 
     public function getAttachment(): array

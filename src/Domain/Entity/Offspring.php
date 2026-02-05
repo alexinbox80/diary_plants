@@ -70,7 +70,13 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
     private Collection $attachments;
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'offsprings')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    private Group $group;
+
     private function setCommonFields(
+        Group $group,
         Plant $plant,
         ?DateTimeImmutable $fruitingDate = null,
         ?DateTimeImmutable $floweringDate = null,
@@ -80,6 +86,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         ?int $quantity = null,
         ?string $comment = null,
     ): void {
+        $this->setGroupValidate($group);
         $this->setPlantValidate($plant);
         $this->setFruitingDateValidate($fruitingDate);
         $this->setFloweringDateValidate($floweringDate);
@@ -88,6 +95,11 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         $this->setFlavorValidate($flavor);
         $this->setQuantityValidate($quantity);
         $this->setCommentValidate($comment);
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     private function setPlantValidate(Plant $plant): void
@@ -137,6 +149,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     }
 
     public function __construct(
+        Group $group,
         Plant $plant,
         ?DateTimeImmutable $fruitingDate = null,
         ?DateTimeImmutable $floweringDate = null,
@@ -150,6 +163,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         $this->attachments = new ArrayCollection();
 
         $this->setCommonFields(
+            $group,
             $plant,
             $fruitingDate,
             $floweringDate,
@@ -162,6 +176,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     }
 
     public function changeFields(
+        Group $group,
         Plant $plant,
         ?DateTimeImmutable $fruitingDate = null,
         ?DateTimeImmutable $floweringDate = null,
@@ -173,6 +188,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     ): void
     {
         $this->setCommonFields(
+            $group,
             $plant,
             $fruitingDate,
             $floweringDate,
@@ -189,6 +205,11 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
+    }
+
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 
     /**
@@ -237,26 +258,5 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     public function getPlant(): Plant
     {
         return $this->plant;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'attachment' => array_map(
-                static fn (Attachment $attachment) => $attachment->toArray(),
-                $this->getAttachments()->toArray()
-            ),
-            'plant' => $this->getPlant()->toArray(),
-            'fruiting_date' => $this->getFruitingDate(),
-            'flowering_date' => $this->getFloweringDate(),
-            'mass' => $this->getMass(),
-            'color' => $this->getColor(),
-            'flavor' => $this->getFlavor(),
-            'quantity' => $this->getQuantity(),
-            'comment' => $this->getComment(),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-        ];
     }
 }

@@ -108,7 +108,13 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'plants')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    private Group $group;
+
     private function setCommonFields(
+        Group $group,
         string $title,
         string $room,
         bool $isShown = true,
@@ -124,6 +130,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         ?string $soil = null,
         ?string $comment = null,
     ): void {
+        $this->setGroupValidate($group);
         $this->setTitleValidate($title);
         $this->setRoomValidate($room);
         $this->setIsShownValidate($isShown);
@@ -138,6 +145,11 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->setPackagingCostValidate($packagingCost);
         $this->setSoilValidate($soil);
         $this->setCommentValidate($comment);
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     private function setTitleValidate(string $title): void
@@ -217,6 +229,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     }
 
     public function __construct(
+        Group $group,
         string $title,
         string $room,
         bool $isShown = true,
@@ -234,6 +247,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     )
     {
         $this->setCommonFields(
+            $group,
             $title,
             $room,
             $isShown,
@@ -259,6 +273,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     }
 
     public function changeFields(
+        Group $group,
         string $title,
         string $room,
         bool $isShown = true,
@@ -280,6 +295,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         }
 
         $this->setCommonFields(
+            $group,
             $title,
             $room,
             $isShown,
@@ -305,6 +321,11 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
+    }
+
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 
     public function getOid(): ?OId

@@ -13,6 +13,7 @@ class PlantModel implements AttachableModelInterface
 {
     public function __construct(
         private readonly int $id,
+        private readonly int $groupId,
         private readonly OId $oid,
         private readonly string $title,
         private readonly string $room,
@@ -38,6 +39,11 @@ class PlantModel implements AttachableModelInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->groupId;
     }
 
     public function getOid(): OId
