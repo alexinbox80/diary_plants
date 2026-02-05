@@ -2,11 +2,11 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Attachment;
 use App\Domain\Entity\Plant;
-use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Entity\Attachment;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\PlantRepositoryInterface;
 
 class PlantRepositoryDecorator implements PlantRepositoryInterface
@@ -32,7 +32,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         }
 
         $plantsModel = array_map(
-            fn (Plant $plant): PlantModel => $this->toModel($plant),
+            fn (Plant $plant): PlantModel => $this->toModel($plant, true),
             $plantsPaginated['items']
         );
 
@@ -78,7 +78,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         $plants = $this->plantRepository->findAll();
 
         return array_map(
-            fn (Plant $plant): PlantModel => $this->toModel($plant),
+            fn (Plant $plant): PlantModel => $this->toModel($plant, true),
             $plants
         );
     }
@@ -139,40 +139,39 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
 
     /**
      * @param Plant $plant
+     * @param bool $addRelations
      * @return PlantModel
      */
-    public function toModel(Plant $plant): PlantModel
+    public function toModel(Plant $plant, bool $addRelations = false): PlantModel
     {
-        $attachments = $this->attachmentRepository->findByAttachable('plant::class', $plant->getId());
+        $attachmentModels = [];
 
-        $attachmentModels = array_map(
-            fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                $attachment->getId(),
-                $attachment->getGroup()->getId(),
-                null,
-                $attachment->isShown(),
-                $attachment->getAlt(),
-                $attachment->getTitle(),
-                $attachment->getFileDate(),
-                $attachment->getFilename(),
-                $attachment->getPath(),
-                $attachment->getMimeType(),
-                $attachment->getDescription(),
-                $attachment->getAttachableId(),
-                $attachment->getAttachableType(),
-                null,
-                $attachment->getCreatedAt(),
-                $attachment->getUpdatedAt()
-            ),
-            $attachments
-        );
+        if ($addRelations) {
+            $attachments = $this->attachmentRepository->findByAttachable('plant::class', $plant->getId());
 
+            $attachmentModels = array_map(
+                fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
+                $attachments
+            );
+        }
+
+        return self::makePlantModel($plant, $attachmentModels);
+    }
+
+    /**
+     * @param Plant $plant
+     * @param array $attachmentModels
+     * @return PlantModel
+     */
+    static function makePlantModel(Plant $plant, array $attachmentModels = []): PlantModel
+    {
         return new PlantModel(
             $plant->getId(),
             $plant->getOid(),
             $plant->getTitle(),
             $plant->getRoom(),
             $plant->isShown(),
+            $attachmentModels,
             $plant->getDescription(),
             $plant->getQrCodeBase64(),
             $plant->getPurchaseDate(),
@@ -185,7 +184,6 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $plant->getPackagingCost(),
             $plant->getSoil(),
             $plant->getComment(),
-            $attachmentModels,
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );

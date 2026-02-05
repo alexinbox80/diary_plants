@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\Attachment;
 use App\Domain\Entity\Offspring;
+use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
 
@@ -10,6 +12,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
 {
     public function __construct(
         private readonly OffspringRepository $offspringRepository,
+        private readonly AttachmentRepository $attachmentRepository,
     ) {
     }
 
@@ -25,7 +28,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         }
 
         $offspringsModel = array_map(
-            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring, true),
             $offspringsPaginated['items']
         );
 
@@ -63,7 +66,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         $offsprings = $this->offspringRepository->findAll();
 
         return array_map(
-            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring),
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring, true),
             $offsprings
         );
     }
@@ -138,13 +141,53 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
 
     /**
      * @param Offspring $offspring
+     * @param bool $addRelations
      * @return OffspringModel
      */
-    public function toModel(Offspring $offspring): OffspringModel
+    public function toModel(Offspring $offspring, bool $addRelations = false): OffspringModel
+    {
+        $attachmentModels = [];
+
+        if ($addRelations) {
+            $attachments = $this->attachmentRepository->findByAttachable('offspring::class', $offspring->getId());
+
+            $attachmentModels = array_map(
+                fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
+                    $attachment->getId(),
+                    $attachment->getGroup()->getId(),
+                    $attachment->isShown(),
+                    $attachment->getAlt(),
+                    $attachment->getTitle(),
+                    $attachment->getFileDate(),
+                    null,
+                    $attachment->getFilename(),
+                    $attachment->getPath(),
+                    $attachment->getMimeType(),
+                    $attachment->getDescription(),
+                    $attachment->getAttachableId(),
+                    $attachment->getAttachableType(),
+                    null,
+                    $attachment->getCreatedAt(),
+                    $attachment->getUpdatedAt()
+                ),
+                $attachments
+            );
+        }
+
+        return self::makeOffspringModel($offspring, $attachmentModels);
+    }
+
+    /**
+     * @param Offspring $offspring
+     * @param array $attachmentModels
+     * @return OffspringModel
+     */
+    static function makeOffspringModel(Offspring $offspring, array $attachmentModels = []): OffspringModel
     {
         return new OffspringModel(
             $offspring->getId(),
             $offspring->getPlant()->getId(),
+            $attachmentModels,
             $offspring->getFruitingDate(),
             $offspring->getFloweringDate(),
             $offspring->getMass(),

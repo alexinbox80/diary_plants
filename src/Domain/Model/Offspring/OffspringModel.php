@@ -11,6 +11,7 @@ class OffspringModel implements AttachableModelInterface
     public function __construct(
         private readonly int $id,
         private readonly int $plantId,
+        private readonly array $attachment = [],
         private readonly ?DateTimeImmutable $fruitingDate = null,
         private readonly ?DateTimeImmutable $floweringDate = null,
         private readonly ?int $mass = null,
@@ -31,6 +32,11 @@ class OffspringModel implements AttachableModelInterface
     public function getPlantId(): int
     {
         return $this->plantId;
+    }
+
+    public function getAttachment(): array
+    {
+        return $this->attachment;
     }
 
     public function getFruitingDate(): ?DateTimeImmutable
@@ -101,8 +107,8 @@ class OffspringModel implements AttachableModelInterface
 
         return [
             'id' => $this->getId(),
-            'attachment' => null,
             'plant_id' => $this->getPlantId(),
+            'attachment' => $this->getAttachment(),
             'fruiting_date' => $this->getFruitingDate()?->format('d.m.Y'),
             'flowering_date' => $this->getFloweringDate()?->format('d.m.Y'),
             'mass' => $this->getMass(),

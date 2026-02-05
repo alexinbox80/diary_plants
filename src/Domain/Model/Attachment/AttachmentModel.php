@@ -13,11 +13,11 @@ class AttachmentModel
     public function __construct(
         private readonly int $id,
         private readonly int $groupId,
-        private readonly ?GroupModel $group = null,
         private readonly bool $isShown,
         private readonly string $alt,
         private readonly string $title,
         private readonly DateTimeImmutable $fileDate,
+        private readonly ?GroupModel $group = null,
         private readonly ?string $filename = null,
         private readonly ?string $path = null,
         private readonly ?string $mimeType = null,

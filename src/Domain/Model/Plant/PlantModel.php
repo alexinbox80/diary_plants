@@ -17,6 +17,7 @@ class PlantModel implements AttachableModelInterface
         private readonly string $title,
         private readonly string $room,
         private readonly bool $isShown = true,
+        private readonly array $attachment = [],
         private readonly ?string $description = null,
         private readonly ?string $qrCodeBase64 = null,
         private readonly ?DateTimeImmutable $purchaseDate = null,
@@ -29,7 +30,6 @@ class PlantModel implements AttachableModelInterface
         private readonly ?Price $packagingCost = null,
         private readonly ?string $soil = null,
         private readonly ?string $comment = null,
-        private readonly ?array $attachment = [],
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -123,7 +123,7 @@ class PlantModel implements AttachableModelInterface
     /**
      * @return AttachmentModel[]
      */
-    public function getAttachment(): ?array
+    public function getAttachment(): array
     {
         return $this->attachment;
     }

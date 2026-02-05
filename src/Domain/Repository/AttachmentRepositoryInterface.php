@@ -23,5 +23,5 @@ interface AttachmentRepositoryInterface
     public function create(Attachment $attachment): int;
     public function update(): void;
     public function remove(Attachment $attachment): void;
-    public function toModel(Attachment $attachment): AttachmentModel;
+    public function toModel(Attachment $attachment, bool $addRelations = false): AttachmentModel;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Model\Group\GroupModel;
 use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
@@ -71,7 +72,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         }
 
         $attachmentsModel = array_map(
-            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),
             $attachmentsPaginated['items']
         );
 
@@ -109,7 +110,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $attachments = $this->attachmentRepository->findAll();
 
         return array_map(
-            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment),
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),
             $attachments
         );
     }
@@ -196,25 +197,60 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         $this->attachmentRepository->remove($attachment);
     }
 
-    public function toModel(Attachment $attachment): AttachmentModel
+    /**
+     * @param Attachment $attachment
+     * @param bool $addRelations
+     * @return AttachmentModel
+     */
+    public function toModel(Attachment $attachment, bool $addRelations = false): AttachmentModel
     {
         $groupModel = $this->groupRepository->findModel($attachment->getGroup()->getId());
 
-        $attachableEntity = $this->attachableResolver->resolve(
-            $attachment->getAttachableType(),
-            $attachment->getAttachableId()
-        );
+        $attachableModel = null;
 
-        $attachableModel = $this->toAttachableModel($attachableEntity);
+        if ($addRelations) {
+            $attachableEntity = $this->attachableResolver->resolve(
+                $attachment->getAttachableType(),
+                $attachment->getAttachableId()
+            );
 
+            $attachableModel = $this->toAttachableModel($attachableEntity);
+        }
+
+        return self::makeAttachmentModel($attachment, $groupModel, $attachableModel);
+    }
+
+    /**
+     * @param AttachableInterface|null $entity
+     * @return AttachableModelInterface|null
+     */
+    private function toAttachableModel(?AttachableInterface $entity): ?AttachableModelInterface
+    {
+        if (!$entity) return null;
+
+        return match (get_class($entity)) {
+            \App\Domain\Entity\Plant::class => $this->plantRepository->findModel($entity->getId()),
+            \App\Domain\Entity\Offspring::class => $this->offspringRepository->findModel($entity->getId()),
+            default => null,
+        };
+    }
+
+    /**
+     * @param Attachment $attachment
+     * @param GroupModel|null $groupModel
+     * @param AttachableModelInterface|null $attachableModel
+     * @return AttachmentModel
+     */
+    static function makeAttachmentModel(Attachment $attachment, ?GroupModel $groupModel = null, ?AttachableModelInterface $attachableModel = null): AttachmentModel
+    {
         return new AttachmentModel(
             $attachment->getId(),
             $attachment->getGroup()->getId(),
-            $groupModel,
             $attachment->isShown(),
             $attachment->getAlt(),
             $attachment->getTitle(),
             $attachment->getFileDate(),
+            $groupModel,
             $attachment->getFilename(),
             $attachment->getPath(),
             $attachment->getMimeType(),
@@ -225,16 +261,5 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
             $attachment->getCreatedAt(),
             $attachment->getUpdatedAt()
         );
-    }
-
-    private function toAttachableModel(?AttachableInterface $entity): ?AttachableModelInterface
-    {
-        if (!$entity) return null;
-
-        return match (get_class($entity)) {
-            \App\Domain\Entity\Plant::class => $this->plantRepository->findModel($entity->getId()),
-            \App\Domain\Entity\Offspring::class => $this->offspringRepository->findModel($entity->getId()),
-            default => null,
-        };
     }
 }
