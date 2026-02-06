@@ -16,7 +16,7 @@ class Manager
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function getPlants(): array
+    public function getAttachments(): array
     {
         $attachmentsModel = $this->attachmentService->findAll();
         $tableHeader = AttachmentModel::getTableHeaderRu();

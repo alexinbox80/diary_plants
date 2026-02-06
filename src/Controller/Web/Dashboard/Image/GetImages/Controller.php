@@ -20,7 +20,7 @@ class Controller extends AbstractController
         //перед вызовом контроллера редактирования установить переменную сессии
         $request->getSession()->set('_previous_route', $request->getRequestUri());
 
-        $attachmentsModel = $this->manager->getPlants();
+        $attachmentsModel = $this->manager->getAttachments();
         $images = ['table_header' => $attachmentsModel['tableHeader'], 'table_body' => $attachmentsModel['tableBody']];
 
         return $this->render(
