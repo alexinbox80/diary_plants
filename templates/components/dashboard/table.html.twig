@@ -1,5 +1,6 @@
 {% import 'macros/dashboard/table_column.html.twig' as table_column %}
 {% import 'macros/dashboard/image.html.twig' as image_tag %}
+{% import 'macros/dashboard/images.html.twig' as gallery %}
 {% import 'macros/dashboard/modal_delete.html.twig' as modal_del %}
 
 <div class="row">
@@ -37,6 +38,8 @@
                                                     {% if item[key] is not null %}
                                                         {% if key == 'img_tag' %}
                                                             {{ image_tag.image(row_number, 'table-image-thumb', item['title'], item['alt'], item[key], 'single') }}
+                                                        {% elseif key == 'img_gallery' %}
+                                                            {{ gallery.images(item.img_gallery, item.id) }}
                                                         {% else %}
                                                             {{ item[key] }}
                                                         {% endif %}

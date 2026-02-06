@@ -139,7 +139,7 @@ class AttachmentModel
         return [
             'id' => $this->getId(),
             'group_id' => $this->getGroupId(),
-            'group_title' => $this->getGroup()->getTitle(),
+            'group_title' => $this->getGroup()?->getTitle(),
             'img_tag' => (!empty($this->getPath()) && !empty($this->getFilename())) ? $this->getPath() . $this->getFilename() : null,
             'is_shown' => $this->isShown() ? 'Да' : 'Нет',
             'filename' => $this->getFilename(),

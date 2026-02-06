@@ -1,0 +1,110 @@
+{% macro images(images, galleryId) %}
+    {% set validImages = [] %}
+    {% for image in images %}
+        {% if image.mime_type is not null and image.path is defined and image.filename is defined %}
+            {% set validImages = validImages|merge([image]) %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="position-relative" style="max-width: 100px; margin: 0 auto;">
+        {% if validImages is not empty %}
+            <button
+                class="btn btn-outline-secondary rounded-circle position-absolute top-50 start-0 translate-middle-y d-flex justify-content-center align-items-center"
+                id="galleryPrev_{{ galleryId }}"
+                style="width: 40px; height: 40px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="position-relative overflow-hidden border rounded" style="height: 200px;">
+                <img
+                    src="{{ asset('uploads/' ~ validImages[0].path ~ validImages[0].filename) }}"
+                    alt="{{ validImages[0].alt }}"
+                    class="img-fluid"
+                    id="galleryImage_{{ galleryId }}"
+                    data-current-index="0"
+                    style="object-fit: cover; cursor: pointer;"
+                >
+
+                <div class="position-absolute top-0 start-0 m-2">
+                    <span class="d-block rounded-circle"
+                        id="statusIndicator_{{ galleryId }}"
+                        style="width: 12px; height: 12px; background-color: {{ validImages[0].is_shown ? '#28a745' : '#dc3545' }};"
+                        title="{{ validImages[0].is_shown is same as 'Да' ? 'Опубликовано' : 'Черновик' }}">
+                    </span>
+                </div>
+            </div>
+
+            <button
+                class="btn btn-outline-secondary rounded-circle position-absolute top-50 end-0 translate-middle-y d-flex justify-content-center align-items-center"
+                id="galleryNext_{{ galleryId }}"
+                style="width: 40px; height: 40px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <a
+                href="#"
+                class="position-absolute bottom-0 start-0 m-2"
+                id="editLink_{{ galleryId }}"
+                title="Редактировать"
+                style="z-index: 10;">
+                <i class="fas fa-edit text-white bg-dark bg-opacity-50 rounded p-1"></i>
+            </a>
+
+            <div class="text-muted small position-absolute bottom-0 end-0 m-2">
+                <span id="galleryCounter_{{ galleryId }}">1 / {{ validImages|length }}</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageList = {{ validImages|json_encode|raw }};
+            let currentIndex = 0;
+            const galleryId = '{{ galleryId }}';
+            const $image = document.getElementById('galleryImage_' + galleryId);
+            const $counter = document.getElementById('galleryCounter_' + galleryId);
+            const $prev = document.getElementById('galleryPrev_' + galleryId);
+            const $next = document.getElementById('galleryNext_' + galleryId);
+            const $editLink = document.getElementById('editLink_' + galleryId);
+            const $statusIndicator = document.getElementById('statusIndicator_' + galleryId);
+
+            if (!$image || !$counter || !$prev || !$next) {
+                //console.warn('Gallery elements not found for galleryId:', galleryId);
+                return;
+            }
+
+            function updateImage(index) {
+                const img = imageList[index];
+
+                if (!img || !img.path || !img.filename) {
+                    console.error('Invalid image data:', img);
+                    return;
+                }
+
+                $image.src = '{{ asset('uploads/') }}' + img.path + img.filename;
+                $image.alt = img.alt || 'Изображение';
+                $image.dataset.currentIndex = index;
+
+                $counter.textContent = (index + 1) + ' / ' + imageList.length;
+
+                $editLink.href = '{{ path('dashboard.images.edit', {'id': '__ID__'}) }}'.replace('__ID__', img.id);
+
+                $statusIndicator.style.backgroundColor = img.is_shown === 'Да' ? '#28a745' : '#dc3545';
+                $statusIndicator.title = img.is_shown === 'Да' ? 'Опубликовано' : 'Черновик';
+            }
+
+            $prev.addEventListener('click', function () {
+                currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
+                updateImage(currentIndex);
+            });
+
+            $next.addEventListener('click', function () {
+                currentIndex = (currentIndex + 1) % imageList.length;
+                updateImage(currentIndex);
+            });
+
+            // Инициализация
+            updateImage(0);
+        });
+    </script>
+{% endmacro %}

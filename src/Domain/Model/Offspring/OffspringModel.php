@@ -95,6 +95,7 @@ class OffspringModel implements AttachableModelInterface
         return [
             'id' => '#',
             'plant_id' => 'Идентификатор растения',
+            'img_gallery' => 'Изображение',
             'fruiting_date' => 'Дата сбора',
             'flowering_date' => 'Дата цветения',
             'mass' => 'Масса гр.',
@@ -114,7 +115,7 @@ class OffspringModel implements AttachableModelInterface
         return [
             'id' => $this->getId(),
             'plant_id' => $this->getPlantId(),
-            'attachment' => $this->getAttachment(),
+            'img_gallery' => array_map(fn ($attachment) => $attachment->toArray(), $this->getAttachment()),
             'fruiting_date' => $this->getFruitingDate()?->format('d.m.Y'),
             'flowering_date' => $this->getFloweringDate()?->format('d.m.Y'),
             'mass' => $this->getMass(),
