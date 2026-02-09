@@ -112,10 +112,13 @@ class OffspringModel implements AttachableModelInterface
     {
         $timezone = new DateTimeZone('Europe/Moscow');
 
+        $filtered = array_filter($this->getAttachment(), fn ($attachment) => $attachment->getMimeType() !== null);
+        $imgGallery = array_map(fn ($attachment) => $attachment->toArray(), $filtered);
+
         return [
             'id' => $this->getId(),
             'plant_id' => $this->getPlantId(),
-            'img_gallery' => array_map(fn ($attachment) => $attachment->toArray(), $this->getAttachment()),
+            'img_gallery' => $imgGallery,
             'fruiting_date' => $this->getFruitingDate()?->format('d.m.Y'),
             'flowering_date' => $this->getFloweringDate()?->format('d.m.Y'),
             'mass' => $this->getMass(),

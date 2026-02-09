@@ -1,4 +1,6 @@
 {% macro images(images, galleryId) %}
+    {% import 'macros/dashboard/modal_image.html.twig' as modal_img %}
+
     {% set validImages = [] %}
     {% for image in images %}
         {% if image.mime_type is not null and image.path is defined and image.filename is defined %}
@@ -6,22 +8,24 @@
         {% endif %}
     {% endfor %}
 
-    <div class="position-relative" style="max-width: 100px; margin: 0 auto;">
+    <div class="position-relative" style="max-width: 200px;">
         {% if validImages is not empty %}
             <button
                 class="btn btn-outline-secondary rounded-circle position-absolute top-50 start-0 translate-middle-y d-flex justify-content-center align-items-center"
                 id="galleryPrev_{{ galleryId }}"
-                style="width: 40px; height: 40px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
+                style="width: 24px; height: 24px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
                 <i class="fas fa-chevron-left"></i>
             </button>
 
-            <div class="position-relative overflow-hidden border rounded" style="height: 200px;">
+            <div class="position-relative overflow-hidden border rounded" style="height: 250px;">
                 <img
                     src="{{ asset('uploads/' ~ validImages[0].path ~ validImages[0].filename) }}"
                     alt="{{ validImages[0].alt }}"
                     class="img-fluid"
                     id="galleryImage_{{ galleryId }}"
                     data-current-index="0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#PreviewModal{{ galleryId }}"
                     style="object-fit: cover; cursor: pointer;"
                 >
 
@@ -29,7 +33,7 @@
                     <span class="d-block rounded-circle"
                         id="statusIndicator_{{ galleryId }}"
                         style="width: 12px; height: 12px; background-color: {{ validImages[0].is_shown ? '#28a745' : '#dc3545' }};"
-                        title="{{ validImages[0].is_shown is same as 'Да' ? 'Опубликовано' : 'Черновик' }}">
+                        title="{{ validImages[0].is_shown ? 'Опубликовано' : 'Черновик' }}">
                     </span>
                 </div>
             </div>
@@ -37,7 +41,7 @@
             <button
                 class="btn btn-outline-secondary rounded-circle position-absolute top-50 end-0 translate-middle-y d-flex justify-content-center align-items-center"
                 id="galleryNext_{{ galleryId }}"
-                style="width: 40px; height: 40px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
+                style="width: 24px; height: 24px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
                 <i class="fas fa-chevron-right"></i>
             </button>
 
@@ -47,7 +51,7 @@
                 id="editLink_{{ galleryId }}"
                 title="Редактировать"
                 style="z-index: 10;">
-                <i class="fas fa-edit text-white bg-dark bg-opacity-50 rounded p-1"></i>
+                <i class="fas fa-edit text-white bg-dark bg-opacity-50 rounded p-1" style="width: 100%"></i>
             </a>
 
             <div class="text-muted small position-absolute bottom-0 end-0 m-2">
@@ -55,6 +59,11 @@
             </div>
         {% endif %}
     </div>
+
+    {% if validImages is not empty %}
+        {% set src = asset('uploads/' ~ validImages[0].path ~ validImages[0].filename) %}
+        {{ modal_img.modal_image(galleryId, validImages[0].title, validImages[0].alt, src, 'single') }}
+    {% endif %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -89,8 +98,8 @@
 
                 $editLink.href = '{{ path('dashboard.images.edit', {'id': '__ID__'}) }}'.replace('__ID__', img.id);
 
-                $statusIndicator.style.backgroundColor = img.is_shown === 'Да' ? '#28a745' : '#dc3545';
-                $statusIndicator.title = img.is_shown === 'Да' ? 'Опубликовано' : 'Черновик';
+                $statusIndicator.style.backgroundColor = img.is_shown ? '#28a745' : '#dc3545';
+                $statusIndicator.title = img.is_shown ? 'Опубликовано' : 'Черновик';
             }
 
             $prev.addEventListener('click', function () {

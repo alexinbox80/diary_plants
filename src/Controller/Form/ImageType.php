@@ -25,7 +25,7 @@ class ImageType extends AbstractType
         $labels = AttachmentModel::getTableHeaderRu();
         $builder
             ->add('isShown', CheckboxType::class, [
-                'label' => $labels['is_shown'],
+                'label' => $labels['is_shown_label'],
                 'required' => false,
                 'attr' => ['title' => 'Отображать изображение на сайте'],
             ])
