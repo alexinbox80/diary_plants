@@ -1,5 +1,5 @@
 {% macro images(images, galleryId) %}
-    {% import 'macros/dashboard/modal_image.html.twig' as modal_img %}
+    {% import 'macros/dashboard/modal_carousel.html.twig' as modal_carousel %}
 
     {% set validImages = [] %}
     {% for image in images %}
@@ -13,7 +13,7 @@
             <button
                 class="btn btn-outline-secondary rounded-circle position-absolute top-50 start-0 translate-middle-y d-flex justify-content-center align-items-center"
                 id="galleryPrev_{{ galleryId }}"
-                style="width: 24px; height: 24px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
+                style="margin-left: 8px; width: 24px; height: 24px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
                 <i class="fas fa-chevron-left"></i>
             </button>
 
@@ -41,7 +41,7 @@
             <button
                 class="btn btn-outline-secondary rounded-circle position-absolute top-50 end-0 translate-middle-y d-flex justify-content-center align-items-center"
                 id="galleryNext_{{ galleryId }}"
-                style="width: 24px; height: 24px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
+                style="margin-right: 8px; width: 24px; height: 24px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,.2); --bs-btn-padding-x: 0; --bs-btn-padding-y: 0;">
                 <i class="fas fa-chevron-right"></i>
             </button>
 
@@ -61,8 +61,7 @@
     </div>
 
     {% if validImages is not empty %}
-        {% set src = asset('uploads/' ~ validImages[0].path ~ validImages[0].filename) %}
-        {{ modal_img.modal_image(galleryId, validImages[0].title, validImages[0].alt, src, 'single') }}
+        {{ modal_carousel.modal_carousel(galleryId, validImages) }}
     {% endif %}
 
     <script>
