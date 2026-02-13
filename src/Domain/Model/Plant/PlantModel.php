@@ -149,6 +149,7 @@ class PlantModel implements AttachableModelInterface
         return [
             'id' => '#',
             'oid' => 'Универсальный идентификатор',
+            'img_gallery' => 'Изображение',
             'title' => 'Название',
             'room' => 'Помещение',
             'is_shown' => 'Показать',
@@ -173,9 +174,13 @@ class PlantModel implements AttachableModelInterface
     {
         $timezone = new DateTimeZone('Europe/Moscow');
 
+        $filtered = array_filter($this->getAttachment(), fn ($attachment) => $attachment->getMimeType() !== null);
+        $imgGallery = array_map(fn ($attachment) => $attachment->toArray(), $filtered);
+
         return [
             'id' => $this->getId(),
             'oid' => $this->getOid()->toString(),
+            'img_gallery' => $imgGallery,
             'title' => $this->getTitle(),
             'room' => $this->getRoom(),
             'is_shown' => $this->isShown() ? 'Да' : 'Нет',

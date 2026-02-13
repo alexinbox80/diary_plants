@@ -11,6 +11,9 @@ export default class ModalCarousel extends BaseGallery {
         this.editLink = document.getElementById(`carouselEditLink_${modalId}`);
         this.statusIndicator = document.getElementById(`carouselStatusIndicator_${modalId}`);
 
+        this.title = document.getElementById(`carouselTitle_${modalId}`);
+        this.description = document.getElementById(`carouselDescription_${modalId}`);
+
         this.init();
     }
 }

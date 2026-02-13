@@ -16,6 +16,9 @@ export default class BaseGallery {
         this.nextButton = null;
         this.editLink = null;
         this.statusIndicator = null;
+
+        this.title = null;
+        this.description = null;
     }
 
     /**
@@ -75,6 +78,14 @@ export default class BaseGallery {
         if (this.statusIndicator) {
             this.statusIndicator.style.backgroundColor = img.is_shown ? '#28a745' : '#dc3545';
             this.statusIndicator.title = img.is_shown ? 'Опубликовано' : 'Черновик';
+        }
+
+        if (this.title) {
+            this.title.textContent = img.title;
+        }
+
+        if (this.description) {
+            this.description.textContent = img.description;
         }
     }
 }

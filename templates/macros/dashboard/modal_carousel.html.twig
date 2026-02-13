@@ -34,6 +34,12 @@
                                     data-current-index="{{ id }}"
                                     style="object-fit: contain;"
                                 >
+                                <div class="position-absolute top-0 start-0 w-100 p-3" style="pointer-events: none;">
+                                    <div class="text-white bg-dark bg-opacity-50 rounded p-2">
+                                        <h5 id="carouselTitle_{{ id }}" class="mb-1">{{ images[0].title }}</h5>
+                                        <p id="carouselDescription_{{ id }}" class="mb-0 small">{{ images[0].description }}</p>
+                                    </div>
+                                </div>
                                 <div class="position-absolute top-0 start-0 m-2">
                                     <span class="d-block rounded-circle"
                                           id="carouselStatusIndicator_{{ id }}"
