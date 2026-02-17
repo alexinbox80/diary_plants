@@ -2,36 +2,39 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\Model\Attachment\CreateAttachmentModel;
-use App\Domain\Model\Fertilizer\CreateFertilizerModel;
-use App\Domain\Model\Group\CreateGroupModel;
-use App\Domain\Model\Offspring\CreateOffspringModel;
+use App\Domain\Service\FileService;
+use DateTimeImmutable;
+use App\Domain\ValueObject\Price;
 use App\Domain\Model\Pest\CreatePestModel;
+use App\Domain\Model\User\CreateUserModel;
+use App\Domain\Model\Task\CreateTaskModel;
 use App\Domain\Model\Plant\CreatePlantModel;
+use App\Domain\Model\Usage\CreateUsageModel;
+use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Status\CreateStatusModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
-use App\Domain\Model\Task\CreateTaskModel;
-use App\Domain\Model\Usage\CreateUsageModel;
-use App\Domain\Model\User\CreateUserModel;
-use App\Domain\ValueObject\Price;
-use DateTimeImmutable;
+use App\Domain\Model\Offspring\CreateOffspringModel;
+use App\Domain\Model\Attachment\CreateAttachmentModel;
+use App\Domain\Model\Fertilizer\CreateFertilizerModel;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CsvService
 {
     public function __construct(
         private readonly string $csvSeparator,
+        private readonly string $csvImageFilePrefix,
         private readonly ModelFactory $modelFactory,
-        private readonly GroupService $groupService,
-        private readonly UserService $userService,
-        private readonly PlantService $plantService,
-        private readonly StatusService $statusService,
-        private readonly OffspringService $offspringService,
-        private readonly TaskService $taskService,
-        private readonly PestService $pestService,
+        private readonly GroupService      $groupService,
+        private readonly UserService       $userService,
+        private readonly PlantService      $plantService,
+        private readonly StatusService     $statusService,
+        private readonly OffspringService  $offspringService,
+        private readonly TaskService       $taskService,
+        private readonly PestService       $pestService,
         private readonly FertilizerService $fertilizerService,
-        private readonly StimulantService $stimulantService,
+        private readonly StimulantService  $stimulantService,
         private readonly AttachmentService $attachmentService,
-        private readonly UsageService $usageService
+        private readonly UsageService      $usageService, private readonly FileService $fileService
     ) {
     }
 
@@ -278,8 +281,53 @@ class CsvService
                 $this->stimulantService->create($stimulantModel);
                 break;
             case 'attachment':
-                $attachmentModel = $this->createAttachmentModel($array);
-                $this->attachmentService->create($attachmentModel);
+                //Сохранить файлы из var/data в uploads
+                $entityId = $array['attachable_id'];
+                [$entity, $class] = explode('::', $array['attachable_type']);
+
+                $tempFilePath = $this->csvImageFilePrefix . $entity . '/' . $entityId;
+                if (!$tempFilePath || !file_exists($tempFilePath)) {
+                    throw new \InvalidArgumentException("Файл не найден: {$tempFilePath}");
+                }
+
+                $imageFiles = $this->fileService->getFilesInDirectory($tempFilePath);
+
+                if (!empty($imageFiles)) {
+                    foreach ($imageFiles as $image) {
+                        // Создаём объект UploadedFile
+                        $fileName = explode('/', $image);
+                        $mimeType = mime_content_type($image);
+
+                        $uploadedFile = new UploadedFile(
+                            $image,
+                            end($fileName),
+                            $mimeType,
+                            null,
+                            true // помечаем как "тестовый", чтобы не проверять UPLOAD_ERR_OK
+                        );
+
+                        $path = $this->fileService->getAttachmentsPath($array['attachable_type'], $array['attachable_id']);
+                        $storeUploadedFile = $this->fileService->storeUploadedFile($uploadedFile, $path, false);
+
+                        if (!empty($storeUploadedFile)) {
+                            $array['filename'] = $storeUploadedFile->getFileName();
+                        }
+
+                        if (!empty($path)) {
+                            $array['file'] = $path;
+                        }
+
+                        if (!empty($mimeType)) {
+                            $array['mime_type'] = $mimeType;
+                        }
+
+                        $attachmentModel = $this->createAttachmentModel($array);
+                        $this->attachmentService->create($attachmentModel);
+                    }
+                } else {
+                    $attachmentModel = $this->createAttachmentModel($array);
+                    $this->attachmentService->create($attachmentModel);
+                }
                 break;
             case 'usage':
                 $usageModel = $this->createUsageModel($array);

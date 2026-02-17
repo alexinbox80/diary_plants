@@ -6,6 +6,7 @@
 parameters:
     csvFilePrefix: 'var/data/entities/'
     csvSeparator: ';'
+    csvImageFilePrefix: 'var/data/images/'
     uploadDirectory: '%kernel.project_dir%/public/uploads'
 
 services:
@@ -31,6 +32,7 @@ services:
     App\Domain\Service\CsvService:
         arguments:
             $csvSeparator: '%csvSeparator%'
+            $csvImageFilePrefix: '%csvImageFilePrefix%'
 
     App\Infrastructure\Storage\LocalFileStorage:
         arguments:

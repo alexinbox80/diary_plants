@@ -16,11 +16,41 @@ class LocalFileStorage
     }
 
     /**
+     * @param string $directory
+     * @return array
+     */
+    public function getFilesInDirectory(string $directory): array
+    {
+        if (!is_dir($directory)) {
+            throw new \InvalidArgumentException("Directory does not exist: {$directory}");
+        }
+
+        $files = [];
+        $items = scandir($directory);
+
+        foreach ($items as $item) {
+            $path = $directory . '/' . $item;
+
+            // Exclude '.' и '..'
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            if (is_file($path)) {
+                $files[] = $path;
+            }
+        }
+
+        return $files;
+    }
+
+    /**
      * @param UploadedFile $uploadedFile
      * @param string $directory
+     * @param bool $moveFlag
      * @return File
      */
-    public function storeUploadedFile(UploadedFile $uploadedFile, string $directory): File
+    public function storeUploadedFile(UploadedFile $uploadedFile, string $directory, bool $moveFlag = true): File
     {
         $directory = $this->uploadDirectory . '/' . $directory;
 
@@ -35,7 +65,14 @@ class LocalFileStorage
 
         $fileName = sprintf('%s.%s', uniqid('image', true), $uploadedFile->getClientOriginalExtension());
 
-        return $uploadedFile->move($directory, $fileName);
+        if ($moveFlag) {
+            return $uploadedFile->move($directory, $fileName);
+        } else {
+            copy($uploadedFile->getRealPath(), $directory . '/' . $fileName);
+
+            return new File($directory . '/' . $fileName);
+        }
+
     }
 
     public function removeUploadedFile(string $file): bool

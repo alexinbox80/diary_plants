@@ -14,6 +14,15 @@ class FileService
     }
 
     /**
+     * @param string $directory
+     * @return array
+     */
+    public function getFilesInDirectory(string $directory): array
+    {
+        return $this->localFileStorage->getFilesInDirectory($directory);
+    }
+
+    /**
      * @param string $attachableType
      * @param int $attachableId
      * @return string
@@ -29,11 +38,12 @@ class FileService
     /**
      * @param UploadedFile $uploadedFile
      * @param string $directory
+     * @param bool $moveFlag
      * @return File
      */
-    public function storeUploadedFile(UploadedFile $uploadedFile, string $directory): File
+    public function storeUploadedFile(UploadedFile $uploadedFile, string $directory, bool $moveFlag = true): File
     {
-        return $this->localFileStorage->storeUploadedFile($uploadedFile, $directory);
+        return $this->localFileStorage->storeUploadedFile($uploadedFile, $directory, $moveFlag);
     }
 
     /**
