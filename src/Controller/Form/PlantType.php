@@ -85,6 +85,23 @@ class PlantType extends AbstractType
                 'label' => $labels['soil'],
                 'required' => false,
             ])
+            ->add('isSold', CheckboxType::class, [
+                'label' => $labels['is_sold'],
+                'required' => false,
+                'attr' => ['title' => 'Растение продано'],
+            ])
+            ->add('sellingDate', DateType::class, [
+                'label' => $labels['selling_date'],
+                'required' => false,
+                'widget' => 'single_text',
+                'html5' => true,
+                'format' => 'yyyy-MM-dd',
+            ])
+            ->add('sellingPrice', TextType::class, [
+                'label' => $labels['selling_price'],
+                'required' => false,
+                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+            ])
             ->add('comment', TextareaType::class, [
                 'label' => $labels['comment'],
                 'required' => false,

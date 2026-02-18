@@ -35,6 +35,11 @@ class EditPlantDTO
         #[Assert\Length(min:2)]
         #[Assert\Length(max:255)]
         public ?string $soil = null,
+        #[Assert\Type('boolean')]
+        public bool $isSold = false,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public ?DateTimeImmutable $sellingDate = null,
+        public ?string $sellingPrice = null,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:1024)]
         public ?string $comment = null

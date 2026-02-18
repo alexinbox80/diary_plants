@@ -27,6 +27,9 @@ class UpdatePlantModel
         public readonly ?Price $shippingCost = null,
         public readonly ?Price $packagingCost = null,
         public readonly ?string $soil = null,
+        public readonly bool $isSold = false,
+        public readonly ?DateTimeImmutable $sellingDate = null,
+        public readonly ?Price $sellingPrice = null,
         public readonly ?string $comment = null
     ) {
     }

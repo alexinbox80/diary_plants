@@ -119,6 +119,9 @@ class CsvService
                 $plantModel['shipping_cost'] !== '' ? Price::fromString($plantModel['shipping_cost']) : null,
                 $plantModel['packaging_cost'] !== '' ? Price::fromString($plantModel['packaging_cost']) : null,
                 $plantModel['soil'],
+                $this->str2bool($plantModel['is_sold']),
+                $plantModel['selling_date'] !== '' ? new DateTimeImmutable($plantModel['selling_date']) : null,
+                $plantModel['selling_price'] !== '' ? Price::fromString($plantModel['selling_price']) : null,
                 $plantModel['comment']
             );
     }

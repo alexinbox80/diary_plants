@@ -34,6 +34,9 @@ class Manager
             $plant->getShippingCost(),
             $plant->getPackagingCost(),
             $plant->getSoil(),
+            $plant->isSold(),
+            $plant->getSellingDate(),
+            $plant->getSellingPrice(),
             $plant->getComment()
         );
 
@@ -43,6 +46,10 @@ class Manager
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var EditPlantDTO $editPlantDTO */
             $editPlantDTO = $form->getData();
+
+            $data = $request->request->all()['plant'] ?? [];
+            $editPlantDTO->isShown = (bool) ($data['isShown'] ?? false);
+            $editPlantDTO->isSold = (bool) ($data['isSold'] ?? false);
 
             $this->plantService->updateFromEditPlantDTO($plant, $editPlantDTO);
 

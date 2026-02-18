@@ -33,6 +33,11 @@ class CreatePlantModel
         #[Assert\Type(type: ['null', Price::class])]
         public readonly ?Price $packagingCost = null,
         public readonly ?string $soil = null,
+        public readonly bool $isSold = false,
+        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
+        public readonly ?DateTimeImmutable $sellingDate = null,
+        #[Assert\Type(type: ['null', Price::class])]
+        public readonly ?Price $sellingPrice = null,
         public readonly ?string $comment = null
     ) {
     }

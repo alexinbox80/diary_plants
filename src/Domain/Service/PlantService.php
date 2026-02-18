@@ -106,6 +106,9 @@ class PlantService
             $createPlantModel->shippingCost,
             $createPlantModel->packagingCost,
             $createPlantModel->soil,
+            $createPlantModel->isSold,
+            $createPlantModel->sellingDate,
+            $createPlantModel->sellingPrice,
             $createPlantModel->comment
         );
 
@@ -136,6 +139,9 @@ class PlantService
             $dto->shippingCost !== null ? Price::fromString($dto->shippingCost) : null,
             $dto->packagingCost !== null ? Price::fromString($dto->packagingCost) : null,
             $dto->soil,
+            $dto->isSold,
+            $dto->sellingDate,
+            $dto->sellingPrice !== null ? Price::fromString($dto->sellingPrice) : null,
             $dto->comment
         );
 
@@ -167,6 +173,9 @@ class PlantService
             $updatePlantModel->shippingCost,
             $updatePlantModel->packagingCost,
             $updatePlantModel->soil,
+            $updatePlantModel->isSold,
+            $updatePlantModel->sellingDate,
+            $updatePlantModel->sellingPrice,
             $updatePlantModel->comment
         );
 
@@ -199,6 +208,9 @@ class PlantService
             $dto->shippingCost !== null ? Price::fromString($dto->shippingCost) : null,
             $dto->packagingCost !== null ? Price::fromString($dto->packagingCost) : null,
             $dto->soil,
+            $dto->isSold,
+            $dto->sellingDate,
+            $dto->sellingPrice !== null ? Price::fromString($dto->sellingPrice) : null,
             $dto->comment
         );
 

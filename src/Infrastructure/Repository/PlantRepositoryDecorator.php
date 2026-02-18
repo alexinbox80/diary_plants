@@ -184,6 +184,9 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $plant->getShippingCost(),
             $plant->getPackagingCost(),
             $plant->getSoil(),
+            $plant->isSold(),
+            $plant->getSellingDate(),
+            $plant->getSellingPrice(),
             $plant->getComment(),
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()

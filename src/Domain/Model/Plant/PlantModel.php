@@ -30,6 +30,9 @@ class PlantModel implements AttachableModelInterface
         private readonly ?Price $shippingCost = null,
         private readonly ?Price $packagingCost = null,
         private readonly ?string $soil = null,
+        private readonly bool $isSold = false,
+        private readonly ?DateTimeImmutable $sellingDate = null,
+        private readonly ?Price $sellingPrice = null,
         private readonly ?string $comment = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
@@ -121,6 +124,21 @@ class PlantModel implements AttachableModelInterface
         return $this->soil;
     }
 
+    public function isSold(): bool
+    {
+        return $this->isSold;
+    }
+
+    public function getSellingDate(): ?DateTimeImmutable
+    {
+        return $this->sellingDate;
+    }
+
+    public function getSellingPrice(): ?Price
+    {
+        return $this->sellingPrice;
+    }
+
     public function getComment(): ?string
     {
         return $this->comment;
@@ -164,6 +182,9 @@ class PlantModel implements AttachableModelInterface
             'shipping_cost' => 'Стоимость доставки',
             'packaging_cost' => 'Стоимость упаковки',
             'soil' => 'Грунт',
+            'is_sold' => 'Продано',
+            'selling_date' => 'Дата продажи',
+            'selling_price' => 'Стоимость при продаже',
             'comment' => 'Комментарий',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления'
@@ -195,6 +216,9 @@ class PlantModel implements AttachableModelInterface
             'shipping_cost' => $this->getShippingCost()?->toString(),
             'packaging_cost' => $this->getPackagingCost()?->toString(),
             'soil' => $this->getSoil(),
+            'is_sold' => $this->isSold() ? 'Да' : 'Нет',
+            'selling_date' => $this->getSellingDate()?->format('d.m.Y'),
+            'selling_price' => $this->getSellingPrice()?->toString(),
             'comment' => $this->getComment(),
             'attachment' => $this->getAttachment(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),

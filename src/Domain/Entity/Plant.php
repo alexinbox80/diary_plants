@@ -96,6 +96,18 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
     private ?string $comment = null;
 
+    //Продано
+    #[ORM\Column(name: 'is_sold', type: 'boolean', options: ['default' => false])]
+    private bool $isSold = false;
+
+    //Дата продажи
+    #[ORM\Column(name: 'selling_date', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $sellingDate = null;
+
+    //Стоимость продажи
+    #[ORM\Column(type: 'price', length:10, nullable: true)]
+    private ?Price $sellingPrice = null;
+
     //связь с задачами
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'plant')]
     private Collection $tasks;
@@ -128,6 +140,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         ?Price $shippingCost = null,
         ?Price $packagingCost = null,
         ?string $soil = null,
+        bool $isSold = false,
+        ?DateTimeImmutable $sellingDate = null,
+        ?Price $sellingPrice = null,
         ?string $comment = null,
     ): void {
         $this->setGroupValidate($group);
@@ -144,6 +159,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->setShippingCostValidate($shippingCost);
         $this->setPackagingCostValidate($packagingCost);
         $this->setSoilValidate($soil);
+        $this->setIsSoldValidate($isSold);
+        $this->setSellingDateValidate($sellingDate);
+        $this->setSellingPriceValidate($sellingPrice);
         $this->setCommentValidate($comment);
     }
 
@@ -223,6 +241,21 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->soil = $soil;
     }
 
+    private function setIsSoldValidate(bool $isSold = false): void
+    {
+        $this->isSold = $isSold;
+    }
+
+    private function setSellingDateValidate(?DateTimeImmutable $sellingDate = null): void
+    {
+        $this->sellingDate = $sellingDate;
+    }
+
+    private function setSellingPriceValidate(?Price $sellingPrice = null): void
+    {
+        $this->sellingPrice = $sellingPrice;
+    }
+
     private function setCommentValidate(?string $comment = null): void
     {
         $this->comment = $comment;
@@ -243,6 +276,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         ?Price $shippingCost = null,
         ?Price $packagingCost = null,
         ?string $soil = null,
+        bool $isSold = false,
+        ?DateTimeImmutable $sellingDate = null,
+        ?Price $sellingPrice = null,
         ?string $comment = null,
     )
     {
@@ -261,6 +297,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
             $shippingCost,
             $packagingCost,
             $soil,
+            $isSold,
+            $sellingDate,
+            $sellingPrice,
             $comment,
         );
 
@@ -287,6 +326,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         ?Price $shippingCost = null,
         ?Price $packagingCost = null,
         ?string $soil = null,
+        bool $isSold = false,
+        ?DateTimeImmutable $sellingDate = null,
+        ?Price $sellingPrice = null,
         ?string $comment = null
     ): void
     {
@@ -309,6 +351,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
             $shippingCost,
             $packagingCost,
             $soil,
+            $isSold,
+            $sellingDate,
+            $sellingPrice,
             $comment,
         );
 
@@ -401,6 +446,21 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     public function getSoil(): ?string
     {
         return $this->soil;
+    }
+
+    public function isSold(): bool
+    {
+        return $this->isSold;
+    }
+
+    public function getSellingDate(): ?DateTimeImmutable
+    {
+        return $this->sellingDate;
+    }
+
+    public function getSellingPrice(): ?Price
+    {
+        return $this->sellingPrice;
     }
 
     public function getComment(): ?string

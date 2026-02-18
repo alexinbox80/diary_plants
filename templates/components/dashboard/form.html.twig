@@ -4,7 +4,7 @@
             {{ form_start(form) }}
             {{ form_errors(form) }}
             {% for child in form %}
-                {% if child.vars.name not in ['isShown', 'submit', '_token'] %}
+                {% if child.vars.name not in ['isShown', 'isSold', 'submit', '_token'] %}
                     <div class="form-group mb-3">
                         {{ form_label(child) }}
                         {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
@@ -14,6 +14,17 @@
                     </div>
                 {% endif %}
             {% endfor %}
+            {% if form.isSold is defined %}
+                <div class="form-check form-check-flat form-check-success">
+                    <label class="form-check-label">
+                        {{ form_widget(form.isSold, {'attr': {'class': 'form-check-input'}}) }}
+                    </label>
+                    {{ form_label(form.isSold, '', {'label_attr': {'class': 'form-check-text-label'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.isSold) }}
+                    </div>
+                </div>
+            {% endif %}
             {% if form.isShown is defined %}
                 <div class="form-check form-check-flat form-check-success">
                     <label class="form-check-label">
