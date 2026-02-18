@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\Service\FileService;
 use DateTimeImmutable;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Pest\CreatePestModel;
@@ -23,7 +22,7 @@ class CsvService
     public function __construct(
         private readonly string $csvSeparator,
         private readonly string $csvImageFilePrefix,
-        private readonly ModelFactory $modelFactory,
+        private readonly ModelFactory      $modelFactory,
         private readonly GroupService      $groupService,
         private readonly UserService       $userService,
         private readonly PlantService      $plantService,
@@ -34,7 +33,8 @@ class CsvService
         private readonly FertilizerService $fertilizerService,
         private readonly StimulantService  $stimulantService,
         private readonly AttachmentService $attachmentService,
-        private readonly UsageService      $usageService, private readonly FileService $fileService
+        private readonly UsageService      $usageService,
+        private readonly FileService       $fileService
     ) {
     }
 
@@ -285,46 +285,42 @@ class CsvService
                 $entityId = $array['attachable_id'];
                 [$entity, $class] = explode('::', $array['attachable_type']);
 
-                $tempFilePath = $this->csvImageFilePrefix . $entity . '/' . $entityId;
-                if (!$tempFilePath || !file_exists($tempFilePath)) {
-                    throw new \InvalidArgumentException("Файл не найден: {$tempFilePath}");
+                $sourceDir = $this->csvImageFilePrefix . $entity . '/' . $entityId;
+                if (!is_dir($sourceDir)) {
+                    // Директория не существует — создаём модель без файла
+                    $attachmentModel = $this->createAttachmentModel($array);
+                    $this->attachmentService->create($attachmentModel);
+                    break;
                 }
 
-                $imageFiles = $this->fileService->getFilesInDirectory($tempFilePath);
+                $imageFiles = $this->fileService->getFilesInDirectory($sourceDir);
+                if (empty($imageFiles)) {
+                    // Нет файлов — создаём модель без файла
+                    $attachmentModel = $this->createAttachmentModel($array);
+                    $this->attachmentService->create($attachmentModel);
+                    break;
+                }
 
-                if (!empty($imageFiles)) {
-                    foreach ($imageFiles as $image) {
-                        // Создаём объект UploadedFile
-                        $fileName = explode('/', $image);
-                        $mimeType = mime_content_type($image);
+                foreach ($imageFiles as $imagePath) {
+                    // Создаём объект UploadedFile
+                    $fileName = explode('/', $imagePath);
+                    $mimeType = mime_content_type($imagePath);
 
-                        $uploadedFile = new UploadedFile(
-                            $image,
-                            end($fileName),
-                            $mimeType,
-                            null,
-                            true // помечаем как "тестовый", чтобы не проверять UPLOAD_ERR_OK
-                        );
+                    $uploadedFile = new UploadedFile(
+                        $imagePath,
+                        end($fileName),
+                        $mimeType,
+                        null,
+                        true // помечаем как "тестовый", чтобы не проверять UPLOAD_ERR_OK
+                    );
 
-                        $path = $this->fileService->getAttachmentsPath($array['attachable_type'], $array['attachable_id']);
-                        $storeUploadedFile = $this->fileService->storeUploadedFile($uploadedFile, $path, false);
+                    $targetPath = $this->fileService->getAttachmentsPath($array['attachable_type'], $array['attachable_id']);
+                    $storedFile = $this->fileService->storeUploadedFile($uploadedFile, $targetPath, false);
 
-                        if (!empty($storeUploadedFile)) {
-                            $array['filename'] = $storeUploadedFile->getFileName();
-                        }
+                    $array['filename'] = $storedFile->getFilename();
+                    $array['file'] = $targetPath;
+                    $array['mime_type'] = $mimeType;
 
-                        if (!empty($path)) {
-                            $array['file'] = $path;
-                        }
-
-                        if (!empty($mimeType)) {
-                            $array['mime_type'] = $mimeType;
-                        }
-
-                        $attachmentModel = $this->createAttachmentModel($array);
-                        $this->attachmentService->create($attachmentModel);
-                    }
-                } else {
                     $attachmentModel = $this->createAttachmentModel($array);
                     $this->attachmentService->create($attachmentModel);
                 }
