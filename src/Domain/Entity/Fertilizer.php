@@ -29,7 +29,13 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'fertilizers')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    private Group $group;
+
     public function __construct(
+        Group $group,
         Plant $plant,
         string $title,
         int $quantity,
@@ -41,6 +47,7 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
     {
         parent::__construct($title, $quantity, $letter, $manufacturer, $description, $comment);
 
+        $this->group = $group;
         $this->plant = $plant;
     }
 
@@ -51,36 +58,30 @@ class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestam
         return $this->id;
     }
 
+    public function getGroup(): Group
+    {
+        return $this->group;
+    }
+
     public function getPlant(): Plant
     {
         return $this->plant;
     }
 
     public function changeFieldsWithPlant(
+        Group    $group,
+        Plant    $plant,
         string   $title,
         int      $quantity,
         string   $letter,
         string   $manufacturer,
-        Plant    $plant,
         ?string  $description = null,
         ?string  $comment = null,
     ): void
     {
         parent::changeFields($title, $quantity, $letter, $manufacturer, $description, $comment);
-        $this->plant = $plant;
-    }
 
-    public function toArray(): array
-    {
-        return
-            array_merge(
-                parent::toArray(),
-                [
-                    'id' => $this->getId(),
-                    'plant' => $this->getPlant()->toArray(),
-                    'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-                ]
-            );
+        $this->group = $group;
+        $this->plant = $plant;
     }
 }

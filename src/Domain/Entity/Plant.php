@@ -120,6 +120,10 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
+    //связь с удобрениями
+    #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'plant')]
+    private Collection $fertilizers;
+
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'plants')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
@@ -308,6 +312,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
 
         $this->tasks = new ArrayCollection();
         $this->offsprings = new ArrayCollection();
+        $this->fertilizers = new ArrayCollection();
         $this->usages = new ArrayCollection();
     }
 

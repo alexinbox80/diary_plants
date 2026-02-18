@@ -187,6 +187,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateFertilizerModel::class,
+                (int) $fertilizerModel['group_id'],
                 (int) $fertilizerModel['plant_id'],
                 $fertilizerModel['title'],
                 (int) $fertilizerModel['quantity'],

@@ -18,4 +18,5 @@ interface FertilizerRepositoryInterface
     public function create(Fertilizer $fertilizer): int;
     public function update(): void;
     public function remove(Fertilizer $fertilizer): void;
+    public function toModel(Fertilizer $fertilizer, bool $addRelations = false): FertilizerModel;
 }

@@ -2,17 +2,18 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
+use Psr\Cache\InvalidArgumentException;
+use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Fertilizer\UpdateFertilizerModel;
-use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
-use DateTimeImmutable;
-use Psr\Cache\InvalidArgumentException;
 
 class FertilizerService
 {
     public function __construct(
+        private readonly GroupService $groupService,
         private readonly PlantService $plantService,
         private readonly FertilizerRepositoryInterface $fertilizerRepository
     ) {
@@ -78,9 +79,11 @@ class FertilizerService
      */
     public function create(CreateFertilizerModel $createFertilizerModel): FertilizerModel
     {
+        $group = $this->groupService->find($createFertilizerModel->groupId);
         $plant = $this->plantService->find($createFertilizerModel->plantId);
 
         $fertilizer= new Fertilizer(
+            $group,
             $plant,
             $createFertilizerModel->title,
             $createFertilizerModel->quantity,
@@ -92,18 +95,7 @@ class FertilizerService
 
         $this->fertilizerRepository->create($fertilizer);
 
-        return new FertilizerModel(
-            $fertilizer->getId(),
-            $fertilizer->getPlant()->getId(),
-            $fertilizer->getTitle(),
-            $fertilizer->getQuantity(),
-            $fertilizer->getLetter(),
-            $fertilizer->getManufacturer(),
-            $fertilizer->getDescription(),
-            $fertilizer->getComment(),
-            $fertilizer->getCreatedAt(),
-            $fertilizer->getUpdatedAt()
-        );
+        return $this->fertilizerRepository->toModel($fertilizer);
     }
 
     /**
@@ -114,32 +106,23 @@ class FertilizerService
      */
     public function update(Fertilizer $fertilizer, UpdateFertilizerModel $updateFertilizerModel): FertilizerModel
     {
+        $group = $this->groupService->find($updateFertilizerModel->groupId);
         $plant = $this->plantService->find($updateFertilizerModel->plantId);
 
         $fertilizer->changeFieldsWithPlant(
+            $group,
+            $plant,
             $updateFertilizerModel->title,
             $updateFertilizerModel->quantity,
             $updateFertilizerModel->letter,
             $updateFertilizerModel->manufacturer,
-            $plant,
             $updateFertilizerModel->description,
             $updateFertilizerModel->comment
         );
 
         $this->fertilizerRepository->update();
 
-        return  new FertilizerModel(
-            $fertilizer->getId(),
-            $fertilizer->getPlant()->getId(),
-            $fertilizer->getTitle(),
-            $fertilizer->getQuantity(),
-            $fertilizer->getLetter(),
-            $fertilizer->getManufacturer(),
-            $fertilizer->getDescription(),
-            $fertilizer->getComment(),
-            $fertilizer->getCreatedAt(),
-            $fertilizer->getUpdatedAt()
-    );
+        return $this->fertilizerRepository->toModel($fertilizer);
     }
 
     /**

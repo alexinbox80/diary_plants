@@ -2,15 +2,19 @@
 
 namespace App\Infrastructure\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
-use DateTimeImmutable;
 
 class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
 {
     public function __construct(
-        private readonly FertilizerRepository $fertilizerRepository,
+        private readonly GroupRepositoryDecorator $groupRepository,
+        private readonly PlantRepositoryDecorator $plantRepository,
+        private readonly FertilizerRepository     $fertilizerRepository
     ) {
     }
 
@@ -19,23 +23,21 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
      */
     public function getFertilizersPaginated(int $page, int $perPage): array
     {
-        $fertilizers = $this->fertilizerRepository->getFertilizersPaginated($page, $perPage);
+        $fertilizersPaginated = $this->fertilizerRepository->getFertilizersPaginated($page, $perPage);
 
-        return array_map(
-            static fn (Fertilizer $fertilizer): FertilizerModel => new FertilizerModel(
-                $fertilizer->getId(),
-                $fertilizer->getPlant()->getId(),
-                $fertilizer->getTitle(),
-                $fertilizer->getQuantity(),
-                $fertilizer->getLetter(),
-                $fertilizer->getManufacturer(),
-                $fertilizer->getDescription(),
-                $fertilizer->getComment(),
-                $fertilizer->getCreatedAt(),
-                $fertilizer->getUpdatedAt()
-            ),
-            $fertilizers
+        if (!is_array($fertilizersPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for attachments');
+        }
+
+        $fertilizersModel = array_map(
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer, true),
+            $fertilizersPaginated['items']
         );
+
+        return [
+            'fertilizersModel' => $fertilizersModel,
+            'pagination' => $fertilizersPaginated['pagination']
+        ];
     }
 
     /**
@@ -55,18 +57,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     {
         $fertilizer = $this->fertilizerRepository->find($fertilizerId);
 
-        return new FertilizerModel(
-            $fertilizer->getId(),
-            $fertilizer->getPlant()->getId(),
-            $fertilizer->getTitle(),
-            $fertilizer->getQuantity(),
-            $fertilizer->getLetter(),
-            $fertilizer->getManufacturer(),
-            $fertilizer->getDescription(),
-            $fertilizer->getComment(),
-            $fertilizer->getCreatedAt(),
-            $fertilizer->getUpdatedAt()
-        );
+        return $this->toModel($fertilizer);
     }
 
     /**
@@ -74,22 +65,11 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
      */
     public function findAll(): array
     {
-        $fertilizer = $this->fertilizerRepository->findAll();
+        $fertilizers = $this->fertilizerRepository->findAll();
 
         return array_map(
-            static fn (Fertilizer $fertilizer): FertilizerModel => new FertilizerModel(
-                $fertilizer->getId(),
-                $fertilizer->getPlant()->getId(),
-                $fertilizer->getTitle(),
-                $fertilizer->getQuantity(),
-                $fertilizer->getLetter(),
-                $fertilizer->getManufacturer(),
-                $fertilizer->getDescription(),
-                $fertilizer->getComment(),
-                $fertilizer->getCreatedAt(),
-                $fertilizer->getUpdatedAt()
-            ),
-            $fertilizer
+            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment, true),
+            $fertilizers
         );
     }
 
@@ -102,18 +82,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findFertilizersByTitle($title);
 
         return array_map(
-            static fn (Fertilizer $fertilizer): FertilizerModel => new FertilizerModel(
-                $fertilizer->getId(),
-                $fertilizer->getPlant()->getId(),
-                $fertilizer->getTitle(),
-                $fertilizer->getQuantity(),
-                $fertilizer->getLetter(),
-                $fertilizer->getManufacturer(),
-                $fertilizer->getDescription(),
-                $fertilizer->getComment(),
-                $fertilizer->getCreatedAt(),
-                $fertilizer->getUpdatedAt()
-            ),
+            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment),
             $fertilizers
         );
     }
@@ -127,18 +96,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findFertilizersByTitle($manufacturer);
 
         return array_map(
-            static fn (Fertilizer $fertilizer): FertilizerModel => new FertilizerModel(
-                $fertilizer->getId(),
-                $fertilizer->getPlant()->getId(),
-                $fertilizer->getTitle(),
-                $fertilizer->getQuantity(),
-                $fertilizer->getLetter(),
-                $fertilizer->getManufacturer(),
-                $fertilizer->getDescription(),
-                $fertilizer->getComment(),
-                $fertilizer->getCreatedAt(),
-                $fertilizer->getUpdatedAt()
-            ),
+            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment),
             $fertilizers
         );
     }
@@ -152,18 +110,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findFertilizersByUseDate($date);
 
         return array_map(
-            static fn (Fertilizer $fertilizer): FertilizerModel => new FertilizerModel(
-                $fertilizer->getId(),
-                $fertilizer->getPlant()->getId(),
-                $fertilizer->getTitle(),
-                $fertilizer->getQuantity(),
-                $fertilizer->getLetter(),
-                $fertilizer->getManufacturer(),
-                $fertilizer->getDescription(),
-                $fertilizer->getComment(),
-                $fertilizer->getCreatedAt(),
-                $fertilizer->getUpdatedAt()
-            ),
+            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment),
             $fertilizers
         );
     }
@@ -192,5 +139,46 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     public function remove(Fertilizer $fertilizer): void
     {
         $this->fertilizerRepository->remove($fertilizer);
+    }
+
+    /**
+     * @param Fertilizer $fertilizer
+     * @param bool $addRelations
+     * @return FertilizerModel
+     */
+    public function toModel(Fertilizer $fertilizer, bool $addRelations = false): FertilizerModel
+    {
+        $groupModel = null;
+        $plantModel = null;
+
+        if ($addRelations) {
+            $groupModel = $this->groupRepository->findModel($fertilizer->getGroup()->getId());
+            $plantModel = $this->plantRepository->findModel($fertilizer->getPlant()->getId());
+        }
+
+        return self::makeAttachmentModel($fertilizer, $groupModel, $plantModel);
+    }
+
+    /**
+     * @param Fertilizer $fertilizer
+     * @param GroupModel|null $groupModel
+     * @param PlantModel|null $plantModel
+     * @return FertilizerModel
+     */
+    static function makeAttachmentModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null, ): FertilizerModel
+    {
+        return new FertilizerModel(
+            $fertilizer->getId(),
+            $fertilizer->getGroup()->getId(),
+            $fertilizer->getPlant()->getId(),
+            $fertilizer->getTitle(),
+            $fertilizer->getQuantity(),
+            $fertilizer->getLetter(),
+            $fertilizer->getManufacturer(),
+            $fertilizer->getDescription(),
+            $fertilizer->getComment(),
+            $fertilizer->getCreatedAt(),
+            $fertilizer->getUpdatedAt()
+        );
     }
 }

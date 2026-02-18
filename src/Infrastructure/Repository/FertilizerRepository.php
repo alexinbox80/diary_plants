@@ -13,13 +13,14 @@ class FertilizerRepository extends AbstractRepository
     public function getFertilizersPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
+        $queryBuilder->select('f')
             ->from(Fertilizer::class, 'f')
-            ->orderBy('f.id', 'DESC')
-            ->setFirstResult($perPage * $page)
-            ->setMaxResults($perPage);
+            ->orderBy('f.updatedAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery();
 
-        return $queryBuilder->getQuery()->getResult();
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**
