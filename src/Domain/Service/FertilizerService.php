@@ -9,12 +9,15 @@ use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Fertilizer\UpdateFertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
+use App\Controller\Web\Dashboard\Fertilizer\EditFertilizer\Input\EditFertilizerDTO;
+use App\Controller\Web\Dashboard\Fertilizer\CreateFertilizer\Input\CreateFertilizerDTO;
 
 class FertilizerService
 {
     public function __construct(
         private readonly GroupService $groupService,
         private readonly PlantService $plantService,
+        private readonly ModelFactory $modelFactory,
         private readonly FertilizerRepositoryInterface $fertilizerRepository
     ) {
     }
@@ -67,7 +70,7 @@ class FertilizerService
      * @return FertilizerModel[]
      * @throws InvalidArgumentException
      */
-    public function getPestsPaginated(int $page, int $perPage): array
+    public function getFertilizersPaginated(int $page, int $perPage): array
     {
         return $this->fertilizerRepository->getFertilizersPaginated($page, $perPage);
     }
@@ -99,6 +102,28 @@ class FertilizerService
     }
 
     /**
+     * @param CreateFertilizerDTO $dto
+     * @return FertilizerModel
+     */
+    public function createFromCreateFertilizerDTO(CreateFertilizerDTO $dto): FertilizerModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateFertilizerModel::class,
+            2,
+            $dto->plantId,
+            $dto->title,
+            $dto->quantity,
+            $dto->letter,
+            $dto->description,
+            $dto->manufacturer,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Fertilizer $fertilizer
      * @param UpdateFertilizerModel $updateFertilizerModel
      * @return FertilizerModel
@@ -123,6 +148,29 @@ class FertilizerService
         $this->fertilizerRepository->update();
 
         return $this->fertilizerRepository->toModel($fertilizer);
+    }
+
+    /**
+     * @param Fertilizer $fertilizer
+     * @param EditFertilizerDTO $dto
+     * @return FertilizerModel
+     */
+    public function updateFromEditFertilizerDTO(Fertilizer $fertilizer, EditFertilizerDTO $dto): FertilizerModel
+    {
+        $model = $this->modelFactory->makeModel(
+            UpdateFertilizerModel::class,
+            2,
+            $dto->plantId,
+            $dto->title,
+            $dto->quantity,
+            $dto->letter,
+            $dto->description,
+            $dto->manufacturer,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->update($fertilizer, $model);
     }
 
     /**
