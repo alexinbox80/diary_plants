@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\Offspring;
 
+use App\Domain\Model\Plant\PlantModel;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -20,6 +21,7 @@ class OffspringModel implements AttachableModelInterface
         private readonly ?string $flavor = null,
         private readonly ?int $quantity = null,
         private readonly ?string $comment = null,
+        private readonly ?PLantModel $plant = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -80,6 +82,11 @@ class OffspringModel implements AttachableModelInterface
         return $this->comment;
     }
 
+    public function getPlant(): ?PLantModel
+    {
+        return $this->plant;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -95,6 +102,7 @@ class OffspringModel implements AttachableModelInterface
         return [
             'id' => '#',
             'plant_id' => 'Идентификатор растения',
+            'plant_title' => 'Растение',
             'img_gallery' => 'Изображение',
             'fruiting_date' => 'Дата сбора',
             'flowering_date' => 'Дата цветения',
@@ -118,6 +126,7 @@ class OffspringModel implements AttachableModelInterface
         return [
             'id' => $this->getId(),
             'plant_id' => $this->getPlantId(),
+            'plant_title' => $this->getPlant()?->getTitle(),
             'img_gallery' => $imgGallery,
             'fruiting_date' => $this->getFruitingDate()?->format('d.m.Y'),
             'flowering_date' => $this->getFloweringDate()?->format('d.m.Y'),

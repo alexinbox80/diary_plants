@@ -6,13 +6,15 @@ use App\Domain\Entity\Attachment;
 use App\Domain\Entity\Offspring;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Offspring\OffspringModel;
+use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
+use App\Domain\Repository\PlantRepositoryInterface;
 
 class OffspringRepositoryDecorator implements OffspringRepositoryInterface
 {
     public function __construct(
-        private readonly OffspringRepository $offspringRepository,
-        private readonly AttachmentRepository $attachmentRepository,
+        private readonly OffspringRepository  $offspringRepository,
+        private readonly AttachmentRepository $attachmentRepository, private readonly PlantRepositoryInterface $plantRepository,
     ) {
     }
 
@@ -147,6 +149,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     public function toModel(Offspring $offspring, bool $addRelations = false): OffspringModel
     {
         $attachmentModels = [];
+        $plantModel = null;
 
         if ($addRelations) {
             $attachments = $this->attachmentRepository->findByAttachable('offspring::class', $offspring->getId());
@@ -172,9 +175,11 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
                 ),
                 $attachments
             );
+
+            $plantModel = $this->plantRepository->findModel($offspring->getPlant()->getId());
         }
 
-        return self::makeOffspringModel($offspring, $attachmentModels);
+        return self::makeOffspringModel($offspring, $attachmentModels, $plantModel);
     }
 
     /**
@@ -182,7 +187,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
      * @param array $attachmentModels
      * @return OffspringModel
      */
-    static function makeOffspringModel(Offspring $offspring, array $attachmentModels = []): OffspringModel
+    static function makeOffspringModel(Offspring $offspring, array $attachmentModels = [], ?PlantModel $plantModel = null): OffspringModel
     {
         return new OffspringModel(
             $offspring->getId(),
@@ -196,6 +201,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
             $offspring->getFlavor(),
             $offspring->getQuantity(),
             $offspring->getComment(),
+            $plantModel,
             $offspring->getCreatedAt(),
             $offspring->getUpdatedAt()
         );

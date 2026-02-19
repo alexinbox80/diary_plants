@@ -31,7 +31,7 @@ class Manager
             $offspring->getComment()
         );
 
-        $form = $this->formFactory->create(OffspringType::class, $formData);
+        $form = $this->formFactory->create(OffspringType::class, $formData, ['group_id' => 2]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
