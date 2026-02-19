@@ -23,6 +23,22 @@ class PlantService
     }
 
     /**
+     * @param int|null $groupId
+     * @return array
+     */
+    public function getChoicesForChoiceType(?int $groupId = null): array
+    {
+        // Получаем список выбора: [title => id]
+        $choices = [];
+        $plantModels = $this->plantRepository->getPlantsForForm($groupId);
+        foreach ($plantModels as $plant) {
+            $choices[$plant->getTitle()] = $plant->getId();
+        }
+
+        return $choices;
+    }
+
+    /**
      * @param int $plantId
      * @return ?Plant
      */

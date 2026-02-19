@@ -2,10 +2,10 @@
 
 namespace App\Controller\Form;
 
+use App\Domain\Service\PlantService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\Model\Fertilizer\FertilizerModel;
-use App\Domain\Repository\PlantRepositoryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -15,25 +15,11 @@ use App\Controller\Web\Dashboard\Fertilizer\CreateFertilizer\Input\CreateFertili
 
 class FertilizerType extends AbstractType
 {
-    private PlantRepositoryInterface $plantRepository;
-
     public function __construct(
-        PlantRepositoryInterface $plantRepository,
+        private readonly PlantService $plantService,
     ) {
-        $this->plantRepository = $plantRepository;
     }
 
-    private function getChoicesForChoiceType(?int $groupId = null): array
-    {
-        // Получаем список выбора: [title => id]
-        $choices = [];
-        $plantModels = $this->plantRepository->getPlantsForForm($groupId);
-        foreach ($plantModels as $plant) {
-            $choices[$plant->getTitle()] = $plant->getId();
-        }
-
-        return $choices;
-    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $groupId = $options['group_id'] ?? null;
@@ -43,7 +29,7 @@ class FertilizerType extends AbstractType
             ->add('plantId', ChoiceType::class, [
                 'label' => $labels['plant_id'],
                 'required' => true,
-                'choices' => $this->getChoicesForChoiceType($groupId),
+                'choices' => $this->plantService->getChoicesForChoiceType($groupId),
                 'placeholder' => 'Выберите растение',
             ])
             ->add('title', TextType::class, [
