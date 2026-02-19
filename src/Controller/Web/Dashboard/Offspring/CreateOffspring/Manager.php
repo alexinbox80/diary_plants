@@ -20,7 +20,7 @@ class Manager
     {
         $isNew = true;
 
-        $form = $this->formFactory->create(OffspringType::class, null, ['isNew' => $isNew]);
+        $form = $this->formFactory->create(OffspringType::class, null, ['is_new' => $isNew]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -35,7 +35,7 @@ class Manager
 
         return [
             'form' => $form,
-            'isNew' => $isNew,
+            'is_new' => $isNew,
         ];
     }
 }

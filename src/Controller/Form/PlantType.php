@@ -106,7 +106,7 @@ class PlantType extends AbstractType
                 'label' => $labels['comment'],
                 'required' => false,
             ])
-            ->setMethod($options['isNew'] ? 'POST' : 'PATCH');
+            ->setMethod($options['is_new'] ? 'POST' : 'PATCH');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -114,7 +114,7 @@ class PlantType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EditPlantDTO::class,
             'empty_data' => new CreatePlantDTO(),
-            'isNew' => false,
+            'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'unique_form_identifier',

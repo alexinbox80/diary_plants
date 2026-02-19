@@ -35,7 +35,7 @@ class Manager
 
         return [
             'form' => $form,
-            'isNew' => $isNew,
+            'is_new' => $isNew,
         ];
     }
 }

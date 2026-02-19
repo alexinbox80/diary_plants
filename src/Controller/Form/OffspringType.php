@@ -57,7 +57,7 @@ class OffspringType extends AbstractType
                 'label' => $labels['comment'],
                 'required' => false,
             ])
-            ->setMethod($options['isNew'] ? 'POST' : 'PATCH');
+            ->setMethod($options['is_new'] ? 'POST' : 'PATCH');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -65,7 +65,7 @@ class OffspringType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EditOffspringDTO::class,
             'empty_data' => new CreateOffspringDTO(),
-            'isNew' => false,
+            'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'unique_form_identifier',

@@ -75,7 +75,7 @@ class ImageType extends AbstractType
                 'choices' => AttachableType::getChoices(),
                 'placeholder' => 'Выбери тип изображения',
             ])
-            ->setMethod($options['isNew'] ? 'POST' : 'PATCH');
+            ->setMethod($options['is_new'] ? 'POST' : 'PATCH');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -85,7 +85,7 @@ class ImageType extends AbstractType
             'empty_data' => fn() => new CreateImageDTO(
                 false, '', '', '', '', '', new DateTimeImmutable(), null, 0, '', null
             ),
-            'isNew' => false,
+            'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'unique_form_identifier',
