@@ -8,8 +8,8 @@ use App\Domain\Model\User\UserModel;
 use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
 use App\Domain\Repository\UserRepositoryInterface;
-//use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
-//use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
+use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
+use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
 
 class UserService
 {
@@ -18,6 +18,22 @@ class UserService
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
     ) {
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return UserModel[]
+     */
+    public function getChoicesForChoiceType(?int $groupId = null): array
+    {
+        // Получаем список выбора: [title => id]
+        $choices = [];
+        $plantModels = $this->userRepository->findAllByGroupId($groupId);
+        foreach ($plantModels as $plant) {
+            $choices[$plant->getTitle()] = $plant->getId();
+        }
+
+        return $choices;
     }
 
     /**
@@ -90,21 +106,34 @@ class UserService
         return $this->userRepository->toModel($user);
     }
 
-//    /**
-//     * @param CreateUserDTO $dto
-//     * @return UserModel
-//     */
-//    public function createFromCreateUserDTO(CreateUserDTO $dto): UserModel
-//    {
-//        $model = $this->modelFactory->makeModel(
-//            CreateUserModel::class,
-//            $dto->isActive,
-//            $dto->title,
-//            $dto->description,
-//        );
-//
-//        return $this->create($model);
-//    }
+    /**
+     * @param CreateUserDTO $dto
+     * @return UserModel
+     */
+    public function createFromCreateUserDTO(CreateUserDTO $dto): UserModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateUserModel::class,
+                $dto->groupId,
+                $dto->email,
+                $dto->password,
+                $dto->roles,
+                $dto->isActive,
+                $dto->emailConfirmed,
+                $dto->phoneConfirmed,
+                $dto->timeZone,
+                $dto->lastName,
+                $dto->firstName,
+                $dto->middleName,
+                $dto->refreshToken,
+                $dto->phone,
+                $dto->avatarLink,
+                $dto->emailCode,
+                $dto->phoneCode
+            );
+
+        return $this->create($model);
+    }
 
     /**
      * @param User $user
@@ -138,24 +167,37 @@ class UserService
         return $this->userRepository->toModel($user);
     }
 
-//    /**
-//     * @param User $user
-//     * @param EditUserDTO $dto
-//     * @return void
-//     */
-//    public function updateFromUserImageDTO(User $user, EditUserDTO $dto): void
-//    {
-//        // Создаём модель обновления
-//        $model = $this->modelFactory->makeModel(
-//            UpdateUserModel::class,
-//            $dto->isActive,
-//            $dto->title,
-//            $dto->description,
-//        );
-//
-//        // Выполняем обновление
-//        $this->update($user, $model);
-//    }
+    /**
+     * @param User $user
+     * @param EditUserDTO $dto
+     * @return void
+     */
+    public function updateFromUserImageDTO(User $user, EditUserDTO $dto): void
+    {
+        // Создаём модель обновления
+        $model = $this->modelFactory->makeModel(
+            UpdateUserModel::class,
+                $dto->groupId,
+                $dto->email,
+                $dto->password,
+                $dto->roles,
+                $dto->isActive,
+                $dto->emailConfirmed,
+                $dto->phoneConfirmed,
+                $dto->timeZone,
+                $dto->lastName,
+                $dto->firstName,
+                $dto->middleName,
+                $dto->refreshToken,
+                $dto->phone,
+                $dto->avatarLink,
+                $dto->emailCode,
+                $dto->phoneCode
+            );
+
+        // Выполняем обновление
+        $this->update($user, $model);
+    }
 
     /**
      * @param int $userId

@@ -24,7 +24,7 @@ class Manager
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var CreateGroupDTO $createFertilizerDTO */
+            /** @var CreateGroupDTO $createGroupDTO */
             $createGroupDTO = $form->getData();
 
             $this->groupService->createFromCreateGroupDTO($createGroupDTO);

@@ -2,7 +2,9 @@
 
 namespace App\Domain\Model\User;
 
+use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Model\Group\GroupModel;
 
 class UserModel
 {
@@ -24,6 +26,7 @@ class UserModel
         private readonly ?string $avatarLink = null,
         private readonly ?string $emailCode = null,
         private readonly ?string $phoneCode = null,
+        private readonly ?GroupModel $group = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {}
@@ -113,6 +116,11 @@ class UserModel
         return $this->phoneCode;
     }
 
+    public function getGroup(): ?GroupModel
+    {
+        return $this->group;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -121,5 +129,57 @@ class UserModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public static function getTableHeaderRu(): array
+    {
+        return [
+            'id' => '#',
+            'group_id' => 'Идентификатор группы',
+            'group_title' => 'Название группы',
+            'email' => 'Электронная почта',
+            'roles' => 'Роли пользователя',
+            'is_active' => 'Пользователь активен',
+            'email_confirmed' => 'Почта подтверждена',
+            'phone_confirmed' => 'Телефон подтвержден',
+            'time_zone' => 'Часовой пояс',
+            'last_name' => 'Фамилия',
+            'first_name' => 'Имя',
+            'middle_name' => 'Отчество',
+            'refresh_token' => 'Токен',
+            'phone' => 'Телефон',
+            'avatar_link' => 'Ссылка на аватар',
+            'email_code' => 'Код подтверждения почты',
+            'phone_code' => 'Код телефона почты',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления'
+        ];
+    }
+
+    public function toArray(): array
+    {
+        $timezone = new DateTimeZone('Europe/Moscow');
+
+        return [
+            'id' => $this->getId(),
+            'group_id' => $this->getGroupId(),
+            'group_title' => $this->getGroup()?->getTitle(),
+            'email' => $this->getEmail(),
+            'roles' => $this->getRoles(),
+            'is_active' => $this->isActive() ? 'Да' : 'Нет',
+            'email_confirmed' => $this->isEmailConfirmed() ? 'Да' : 'Нет',
+            'phone_confirmed' => $this->isPhoneConfirmed() ? 'Да' : 'Нет',
+            'time_zone' => $this->getTimeZone(),
+            'last_name' => $this->getLastName(),
+            'first_name' => $this->getFirstName(),
+            'middle_name' => $this->getMiddleName(),
+            'refresh_token' => $this->getRefreshToken(),
+            'phone' => $this->getPhone(),
+            'avatar_link' => $this->getAvatarLink(),
+            'email_code' => $this->getEmailCode(),
+            'phone_code' => $this->getPhoneCode(),
+            'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s')
+        ];
     }
 }

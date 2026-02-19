@@ -46,6 +46,25 @@ class UserRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
+     * @return User[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('u')
+            ->from(User::class, 'u')
+            ->orderBy('u.email', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('u.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param string $email
      * @return User[]
      */

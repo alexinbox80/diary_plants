@@ -11,6 +11,7 @@ interface UserRepositoryInterface
     public function find(int $userId): ?User;
     public function findModel(int $userId): ?UserModel;
     public function findAll(): array;
+    public function findAllByGroupId(?int $groupId = null): array;
     public function findUsersByEmail(string $email): array;
     public function create(User $user): int;
     public function update(): void;

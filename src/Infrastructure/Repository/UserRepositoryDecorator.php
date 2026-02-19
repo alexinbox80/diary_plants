@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\User;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\User\UserModel;
 use App\Domain\Repository\UserRepositoryInterface;
 
@@ -10,7 +11,8 @@ use App\Domain\Repository\UserRepositoryInterface;
 class UserRepositoryDecorator implements UserRepositoryInterface
 {
     public function __construct(
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly GroupRepositoryDecorator $groupRepository
     ) {
     }
 
@@ -68,6 +70,21 @@ class UserRepositoryDecorator implements UserRepositoryInterface
     }
 
     /**
+     * @param int|null $groupId
+     * @return userModel[]
+     */
+
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $users =  $this->userRepository->findAllByGroupId($groupId);
+
+        return array_map(
+            fn (User $user) => $this->toModel($user),
+            $users
+        );
+    }
+
+    /**
      * @param string $email
      * @return UserModel[]
      */
@@ -107,7 +124,22 @@ class UserRepositoryDecorator implements UserRepositoryInterface
         $this->userRepository->remove($user);
     }
 
-    public function toModel(User $user): UserModel
+    /**
+     * @param User $user
+     * @param bool $addRelations
+     * @return UserModel
+     */
+    public function toModel(User $user, bool $addRelations = false): UserModel
+    {
+        $userModel = null;
+        if ($addRelations) {
+            $userModel = $this->groupRepository->findModel($user->getGroup()->getId());
+        }
+
+        return self::makeUserModel($user, $userModel);
+    }
+
+    static function makeUserModel(User $user, ?GroupModel $groupModel = null): UserModel
     {
         return new userModel(
             $user->getId(),
@@ -127,6 +159,7 @@ class UserRepositoryDecorator implements UserRepositoryInterface
             $user->getAvatarLink(),
             $user->getEmailCode(),
             $user->getPhoneCode(),
+            $groupModel,
             $user->getCreatedAt(),
             $user->getUpdatedAt()
         );
