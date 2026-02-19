@@ -165,7 +165,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
      * @param PlantModel|null $plantModel
      * @return FertilizerModel
      */
-    static function makeAttachmentModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null, ): FertilizerModel
+    static function makeAttachmentModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): FertilizerModel
     {
         return new FertilizerModel(
             $fertilizer->getId(),
@@ -177,6 +177,8 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
             $fertilizer->getManufacturer(),
             $fertilizer->getDescription(),
             $fertilizer->getComment(),
+            $groupModel,
+            $plantModel,
             $fertilizer->getCreatedAt(),
             $fertilizer->getUpdatedAt()
         );

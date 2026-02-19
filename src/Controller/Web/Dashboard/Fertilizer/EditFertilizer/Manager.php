@@ -19,7 +19,6 @@ class Manager
 
     public function editFormData(Request $request, Fertilizer $fertilizer): array
     {
-
         $formData = new EditFertilizerDTO(
             $fertilizer->getGroup()->getId(),
             $fertilizer->getPlant()->getId(),
@@ -31,7 +30,7 @@ class Manager
             $fertilizer->getComment()
         );
 
-        $form = $this->formFactory->create(FertilizerType::class, $formData);
+        $form = $this->formFactory->create(FertilizerType::class, $formData, ['group_id' => 2]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

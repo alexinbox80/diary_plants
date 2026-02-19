@@ -10,19 +10,19 @@ class CreateFertilizerDTO
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public ?int $groupId = null,
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
-        public ?int $plantId = null,
+        public int $plantId,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:255)]
-        public ?string $title = null,
+        public string $title,
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         #[Assert\Positive]
-        public ?int $quantity = null,
+        public int $quantity,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:2)]
-        public ?string $letter = null,
+        public string $letter,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:255)]
-        public ?string $manufacturer = null,
+        public string $manufacturer,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:1024)]
         public ?string $description = null,

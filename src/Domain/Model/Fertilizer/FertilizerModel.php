@@ -4,6 +4,8 @@ namespace App\Domain\Model\Fertilizer;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Plant\PlantModel;
 
 class FertilizerModel
 {
@@ -17,6 +19,8 @@ class FertilizerModel
         private readonly string $manufacturer,
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
+        private readonly ?GroupModel $group = null,
+        private readonly ?PlantModel $plant = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -67,6 +71,16 @@ class FertilizerModel
         return $this->comment;
     }
 
+    public function getGroup(): ?GroupModel
+    {
+        return $this->group;
+    }
+
+    public function getPlant(): ?PlantModel
+    {
+        return $this->plant;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -82,8 +96,11 @@ class FertilizerModel
         return [
             'id' => '#',
             'group_id' => 'Идентификатор группы',
+            'group_title' => 'Группа',
             'plant_id' => 'Идентификатор растения',
+            'plant_title' => 'Растение',
             'title' => 'Заголовок',
+            'quantity' => 'Количество',
             'letter' => 'Буква обозначения',
             'manufacturer' => 'Изготовитель',
             'description' => 'Описание',
@@ -100,8 +117,11 @@ class FertilizerModel
         return [
             'id' => $this->getId(),
             'group_id' => $this->getGroupId(),
+            'group_title' => $this->getGroup()?->getTitle(),
             'plant_id' => $this->getPlantId(),
+            'plant_title' => $this->getPlant()?->getTitle(),
             'title' => $this->getTitle(),
+            'quantity' => $this->getQuantity(),
             'letter' => $this->getLetter(),
             'manufacturer' => $this->getManufacturer(),
             'description' => $this->getDescription(),

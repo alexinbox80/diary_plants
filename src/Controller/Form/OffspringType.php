@@ -2,15 +2,15 @@
 
 namespace App\Controller\Form;
 
-use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
-use App\Controller\Web\Dashboard\Offspring\CreateOffspring\Input\CreateOffspringDTO;
-use App\Domain\Model\Offspring\OffspringModel;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\Model\Offspring\OffspringModel;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
+use App\Controller\Web\Dashboard\Offspring\CreateOffspring\Input\CreateOffspringDTO;
 
 class OffspringType extends AbstractType
 {

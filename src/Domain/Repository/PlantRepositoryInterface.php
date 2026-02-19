@@ -3,13 +3,14 @@
 namespace App\Domain\Repository;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Model\Plant\PlantModel;
 use App\Domain\ValueObject\Price;
+use App\Domain\Model\Plant\PlantModel;
 
 interface PlantRepositoryInterface
 {
     public function getPlantsPaginated(int $page, int $perPage): array;
     public function getPlantsCount(): int;
+    public function getPlantsForForm(?int $groupId = null): array;
     public function find(int $plantId): ?Plant;
     public function findModel(int $plantId): ?PlantModel;
     public function findAll(): array;

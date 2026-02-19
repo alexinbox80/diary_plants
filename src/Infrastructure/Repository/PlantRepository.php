@@ -36,6 +36,25 @@ class PlantRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
+     * @return array
+     */
+    public function getPlantsForForm(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('p')
+            ->from(Plant::class, 'p')
+            ->orderBy('p.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('p.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param int $plantId
      * @return Plant|null
      */
@@ -53,7 +72,6 @@ class PlantRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        //return $this->entityManager->getRepository(Plant::class)->findAll();
         $queryBuilder = $this->entityManager->createQueryBuilder();
         return $queryBuilder
             ->select('p')
