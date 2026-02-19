@@ -1,0 +1,49 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Группы потльзвателей'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/dashboard/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список групп',
+                            'array': groups,
+                            'pagination': pagination,
+                            'route_index': 'dashboard.groups.index',
+                            'route_pagination': 'dashboard.groups_paginated.index',
+                            'route_edit': 'dashboard.groups.edit',
+                            'route_create': 'dashboard.groups.create',
+                            'route_delete': 'dashboard.groups.delete'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список групп',
+                            'array': groups,
+                            'route_index': 'dashboard.groups.index',
+                            'route_pagination': 'dashboard.groups_paginated.index',
+                            'route_edit': 'dashboard.groups.edit',
+                            'route_create': 'dashboard.groups.create',
+                            'route_delete': 'dashboard.groups.delete'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/table/main.js') }}" data-entity="group"></script>
+{% endblock %}

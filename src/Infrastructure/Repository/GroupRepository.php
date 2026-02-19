@@ -46,6 +46,25 @@ class GroupRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
+     * @return Group[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('g')
+            ->from(Group::class, 'g')
+            ->orderBy('g.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('g.id = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param string $title
      * @return Group[]
      */

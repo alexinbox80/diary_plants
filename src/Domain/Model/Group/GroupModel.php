@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\Group;
 
+use DateTimeZone;
 use DateTimeImmutable;
 
 class GroupModel
@@ -26,7 +27,7 @@ class GroupModel
         return $this->title;
     }
 
-    public function getIsActive(): bool
+    public function isActive(): bool
     {
         return $this->isActive;
     }
@@ -44,5 +45,31 @@ class GroupModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public static function getTableHeaderRu(): array
+    {
+        return [
+            'id' => '#',
+            'title' => 'Заголовок',
+            'is_active' => 'Пользователь активный',
+            'description' => 'Описание',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления'
+        ];
+    }
+
+    public function toArray(): array
+    {
+        $timezone = new DateTimeZone('Europe/Moscow');
+
+        return [
+            'id' => $this->getId(),
+            'is_active' => $this->isActive() ? 'Да' : 'Нет',
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s')
+        ];
     }
 }

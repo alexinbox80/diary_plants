@@ -2,14 +2,14 @@
 
 namespace App\Domain\Service;
 
-use InvalidArgumentException;
 use App\Domain\Entity\Group;
+use InvalidArgumentException;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Group\UpdateGroupModel;
 use App\Domain\Repository\GroupRepositoryInterface;
-//use App\Controller\Web\Dashboard\Group\EditGroup\Input\EditGroupDTO;
-//use App\Controller\Web\Dashboard\Group\CreateGroup\Input\CreateGroupDTO;
+use App\Controller\Web\Dashboard\Group\EditGroup\Input\EditGroupDTO;
+use App\Controller\Web\Dashboard\Group\CreateGroup\Input\CreateGroupDTO;
 
 class GroupService
 {
@@ -17,6 +17,31 @@ class GroupService
         private readonly GroupRepositoryInterface $groupRepository,
         private readonly ModelFactory $modelFactory,
     ) {
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return GroupModel[]
+     */
+    public function getChoicesForChoiceType(?int $groupId = null): array
+    {
+        return $this->findAllByGroupId($groupId);
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return GroupModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        // Получаем список выбора: [title => id]
+        $choices = [];
+        $plantModels = $this->groupRepository->findAllByGroupId($groupId);
+        foreach ($plantModels as $plant) {
+            $choices[$plant->getTitle()] = $plant->getId();
+        }
+
+        return $choices;
     }
 
     /**
@@ -74,21 +99,21 @@ class GroupService
         return $this->groupRepository->toModel($group);
     }
 
-//    /**
-//     * @param CreateGroupDTO $dto
-//     * @return GroupModel
-//     */
-//    public function createFromCreateImageDTO(CreateGroupDTO $dto): GroupModel
-//    {
-//        $model = $this->modelFactory->makeModel(
-//            CreateGroupModel::class,
-//            $dto->isActive,
-//            $dto->title,
-//            $dto->description,
-//        );
-//
-//        return $this->create($model);
-//    }
+    /**
+     * @param CreateGroupDTO $dto
+     * @return GroupModel
+     */
+    public function createFromCreateGroupDTO(CreateGroupDTO $dto): GroupModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateGroupModel::class,
+            $dto->isActive,
+            $dto->title,
+            $dto->description,
+        );
+
+        return $this->create($model);
+    }
 
     /**
      * @param Group $group
@@ -109,24 +134,24 @@ class GroupService
         return $this->groupRepository->toModel($group);
     }
 
-//    /**
-//     * @param Group $group
-//     * @param EditGroupDTO $dto
-//     * @return void
-//     */
-//    public function updateFromGroupImageDTO(Group $group, EditGroupDTO $dto): void
-//    {
-//        // Создаём модель обновления
-//        $model = $this->modelFactory->makeModel(
-//            UpdateGroupModel::class,
-//            $dto->isActive,
-//            $dto->title,
-//            $dto->description,
-//        );
-//
-//        // Выполняем обновление
-//        $this->update($group, $model);
-//    }
+    /**
+     * @param Group $group
+     * @param EditGroupDTO $dto
+     * @return void
+     */
+    public function updateFromEditGroupDTO(Group $group, EditGroupDTO $dto): void
+    {
+        // Создаём модель обновления
+        $model = $this->modelFactory->makeModel(
+            UpdateGroupModel::class,
+            $dto->isActive,
+            $dto->title,
+            $dto->description,
+        );
+
+        // Выполняем обновление
+        $this->update($group, $model);
+    }
 
     /**
      * @param int $groupId

@@ -68,6 +68,20 @@ class GroupRepositoryDecorator implements GroupRepositoryInterface
     }
 
     /**
+     * @param int|null $groupId
+     * @return groupModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $groups = $this->groupRepository->findAllByGroupId($groupId);
+
+        return array_map(
+            fn (Group $group) => $this->toModel($group),
+            $groups
+        );
+    }
+
+    /**
      * @param string $title
      * @return GroupModel[]
      */

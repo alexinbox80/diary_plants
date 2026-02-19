@@ -24,7 +24,7 @@ class PlantService
 
     /**
      * @param int|null $groupId
-     * @return array
+     * @return PlantModel[]
      */
     public function getChoicesForChoiceType(?int $groupId = null): array
     {

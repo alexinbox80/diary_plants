@@ -11,6 +11,7 @@ interface GroupRepositoryInterface
     public function find(int $groupId): ?Group;
     public function findModel(int $groupId): ?GroupModel;
     public function findAll(): array;
+    public function findAllByGroupId(?int $groupId = null): array;
     public function findGroupsByTitle(string $title): array;
     public function create(Group $group): int;
     public function update(): void;
