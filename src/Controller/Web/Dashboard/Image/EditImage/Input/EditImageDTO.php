@@ -76,7 +76,7 @@ class EditImageDTO
         public string $attachableType,
 
         //#[Assert\NotNull(message: 'Пожалуйста, выберите изображение')]
-        public ?UploadedFile $imageFile = null,
+        public ?UploadedFile $avatarFile = null,
     ) {
     }
 }

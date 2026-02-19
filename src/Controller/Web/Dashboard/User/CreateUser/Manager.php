@@ -20,7 +20,7 @@ class Manager
     {
         $isNew = true;
 
-        $form = $this->formFactory->create(UserType::class, null, ['is_new' => $isNew, 'group_id' => 2]);
+        $form = $this->formFactory->create(UserType::class, null, ['is_new' => $isNew, 'group_id' => null]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Dashboard\User\CreateUser\Input;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CreateUserDTO
 {
@@ -18,15 +19,15 @@ class CreateUserDTO
         #[Assert\NotBlank]
         public string $password,
 
-        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
-        #[Assert\All([
-            new Assert\NotBlank(message: 'Role value cannot be empty.'),
-            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
-            new Assert\Regex(
-                pattern: '/^ROLE_[A-Z_]+$/',
-                message: 'Each role must follow the format ROLE_XXX.'
-            )
-        ])]
+//        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
+//        #[Assert\All([
+//            new Assert\NotBlank(message: 'Role value cannot be empty.'),
+//            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
+//            new Assert\Regex(
+//                pattern: '/^ROLE_[A-Z_]+$/',
+//                message: 'Each role must follow the format ROLE_XXX.'
+//            )
+//        ])]
         public array $roles,
 
         #[Assert\NotNull]
@@ -53,10 +54,16 @@ class CreateUserDTO
         public string $lastName,
 
         #[Assert\NotBlank]
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Zа-яА-ЯёЁ]+$/u',
+            message: 'First name should contain only letters (Latin or Cyrillic).'
+        )]
         public string $firstName,
 
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
+        #[Assert\Regex(
+            pattern: '/^[a-zA-Zа-яА-ЯёЁ]+$/u',
+            message: 'Middle name should contain only letters (Latin or Cyrillic).'
+        )]
         public ?string $middleName = null,
 
         public ?string $refreshToken,
@@ -89,6 +96,8 @@ class CreateUserDTO
             exactMessage: 'This value should have exactly 5 digits.'
         )]
         public ?string $phoneCode = null,
+
+        public ?UploadedFile $avatarFile = null,
     ) {
     }
 }

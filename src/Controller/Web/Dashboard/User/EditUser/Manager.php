@@ -23,7 +23,7 @@ class Manager
             $user->getGroup()->getId(),
             $user->getEmail(),
             $user->getPassword(),
-            $user->getRoles(),
+            [],//$user->getRoles(),
             $user->isActive(),
             $user->isEmailConfirmed(),
             $user->isPhoneConfirmed(),
@@ -38,17 +38,17 @@ class Manager
             $user->getPhoneCode()
         );
 
-        $form = $this->formFactory->create(UserType::class, $formData, ['group_id' => 2]);
+        $form = $this->formFactory->create(UserType::class, $formData, ['group_id' => null]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var EditUserDTO $editUserDTO */
             $editUserDTO = $form->getData();
 
-            $data = $request->request->all()['group'] ?? [];
+            $data = $request->request->all()['user'] ?? [];
             $editUserDTO->isActive = (bool) ($data['isActive'] ?? false);
-            $editUserDTO->emailConfirmed = (bool) ($data['isEmailConfirmed'] ?? false);
-            $editUserDTO->phoneConfirmed = (bool) ($data['isPhoneConfirmed'] ?? false);
+            $editUserDTO->emailConfirmed = (bool) ($data['emailConfirmed'] ?? false);
+            $editUserDTO->phoneConfirmed = (bool) ($data['phoneConfirmed'] ?? false);
 
             $this->userService->updateFromEditUserDTO($user, $editUserDTO);
 

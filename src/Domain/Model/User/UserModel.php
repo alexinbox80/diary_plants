@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\User;
 
+use App\Domain\ValueObject\Enum\UserRole;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
@@ -165,7 +166,8 @@ class UserModel
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
             'email' => $this->getEmail(),
-            'roles' => $this->getRoles(),
+            'password' => $this->getPassword(),
+            'roles' => UserRole::toString($this->getRoles()) ?? '',
             'is_active' => $this->isActive() ? 'Да' : 'Нет',
             'email_confirmed' => $this->isEmailConfirmed() ? 'Да' : 'Нет',
             'phone_confirmed' => $this->isPhoneConfirmed() ? 'Да' : 'Нет',

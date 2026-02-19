@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Dashboard\User\EditUser\Input;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EditUserDTO
 {
@@ -18,15 +19,15 @@ class EditUserDTO
         #[Assert\NotBlank]
         public string $password,
 
-        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
-        #[Assert\All([
-            new Assert\NotBlank(message: 'Role value cannot be empty.'),
-            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
-            new Assert\Regex(
-                pattern: '/^ROLE_[A-Z_]+$/',
-                message: 'Each role must follow the format ROLE_XXX.'
-            )
-        ])]
+//        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
+//        #[Assert\All([
+//            new Assert\NotBlank(message: 'Role value cannot be empty.'),
+//            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
+//            new Assert\Regex(
+//                pattern: '/^ROLE_[A-Z_]+$/',
+//                message: 'Each role must follow the format ROLE_XXX.'
+//            )
+//        ])]
         public array $roles,
 
         #[Assert\NotNull]
@@ -89,6 +90,8 @@ class EditUserDTO
             exactMessage: 'This value should have exactly 5 digits.'
         )]
         public ?string $phoneCode = null,
+
+        public ?UploadedFile $avatarFile = null,
     ) {
     }
 }

@@ -18,15 +18,15 @@ class CreateUserModel
         #[Assert\NotBlank]
         public readonly string $password,
 
-        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
-        #[Assert\All([
-            new Assert\NotBlank(message: 'Role value cannot be empty.'),
-            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
-            new Assert\Regex(
-                pattern: '/^ROLE_[A-Z_]+$/',
-                message: 'Each role must follow the format ROLE_XXX.'
-            )
-        ])]
+//        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
+//        #[Assert\All([
+//            new Assert\NotBlank(message: 'Role value cannot be empty.'),
+//            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
+//            new Assert\Regex(
+//                pattern: '/^ROLE_[A-Z_]+$/',
+//                message: 'Each role must follow the format ROLE_XXX.'
+//            )
+//        ])]
         public readonly array $roles,
 
         #[Assert\NotNull]

@@ -40,8 +40,6 @@
                                                             {{ image_tag.image(row_number, 'table-image-thumb', item['title'], item['alt'], item[key], 'single') }}
                                                         {% elseif key == 'img_gallery' %}
                                                             {{ gallery.images(item.img_gallery, item.id) }}
-                                                        {% elseif key == 'roles' %}
-                                                            role
                                                         {% else %}
                                                             {{ item[key] }}
                                                         {% endif %}

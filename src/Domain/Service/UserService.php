@@ -117,7 +117,7 @@ class UserService
                 $dto->groupId,
                 $dto->email,
                 $dto->password,
-                $dto->roles,
+                $dto->roles ?? [],
                 $dto->isActive,
                 $dto->emailConfirmed,
                 $dto->phoneConfirmed,
@@ -143,8 +143,10 @@ class UserService
      */
     public function update(User $user, UpdateUserModel $updateUserModel): UserModel
     {
+        $group = $this->groupService->find($updateUserModel->groupId);
+
         $user->changeFields(
-            $updateUserModel->groupId,
+            $group,
             $updateUserModel->email,
             $updateUserModel->password,
             $updateUserModel->lastName,
@@ -172,7 +174,7 @@ class UserService
      * @param EditUserDTO $dto
      * @return void
      */
-    public function updateFromUserImageDTO(User $user, EditUserDTO $dto): void
+    public function updateFromEditUserDTO(User $user, EditUserDTO $dto): void
     {
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(

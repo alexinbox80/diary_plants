@@ -2,14 +2,17 @@
 
 namespace App\Controller\Form;
 
-use App\Domain\Service\GroupService;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\Model\User\UserModel;
+use App\Domain\Service\GroupService;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
 
@@ -26,40 +29,78 @@ class UserType extends AbstractType
         $labels = UserModel::getTableHeaderRu();
 
         $builder
-//            ->add('plantId', ChoiceType::class, [
-//                'label' => $labels['plant_id'],
-//                'required' => true,
-//                'choices' => $this->plantService->getChoicesForChoiceType($groupId),
-//                'placeholder' => 'Выберите растение',
-//            ])
-            ->add('groupId', TextType::class, [
-                'label' => $labels['group_id'],
+            ->add('avatarFile', FileType::class, [
+                'label' => 'Аватар',
+                'mapped' => true,
                 'required' => false,
             ])
-//            ->add('title', TextType::class, [
-//                'label' => $labels['title'],
-//                'required' => false,
+            ->add('avatarLink', TextType::class, [
+                'label' => $labels['avatar_link'],
+                'disabled' => true,
+            ])
+            ->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForChoiceType($groupId),
+                'placeholder' => 'Выберите группу',
+            ])
+            ->add('email', TextType::class, [
+                'label' => $labels['email'],
+                'required' => false,
+            ])
+            ->add('password', PasswordType::class, [
+                'label' => $labels['password'] ?? 'Пароль',
+                'required' => false,
+            ])
+//            ->add('roles', TextType::class, [
+//                'label' => $labels['roles'],
+//                //'choices' => UserRole::getChoices(),
+//                'data' => 'ROLE_MANAGER',
+//                //'multiple' => false,
 //            ])
-//            ->add('quantity', TextType::class, [
-//                'label' => $labels['quantity'],
-//                'required' => false,
-//            ])
-//            ->add('letter', TextType::class, [
-//                'label' => $labels['letter'],
-//                'required' => false,
-//            ])
-//            ->add('manufacturer', TextType::class, [
-//                'label' => $labels['manufacturer'],
-//                'required' => false,
-//            ])
-//            ->add('description', TextareaType::class, [
-//                'label' => $labels['description'],
-//                'required' => false,
-//            ])
-//            ->add('comment', TextareaType::class, [
-//                'label' => $labels['comment'],
-//                'required' => false,
-//            ])
+            ->add('isActive', CheckboxType::class, [
+                'label' => $labels['is_active'],
+                'required' => false,
+                'attr' => ['title' => 'Пользователь активен'],
+            ])
+            ->add('emailConfirmed', CheckboxType::class, [
+                'label' => $labels['email_confirmed'],
+                'required' => false,
+                'attr' => ['title' => 'Электронная почта подтверждена'],
+            ])
+            ->add('phoneConfirmed', CheckboxType::class, [
+                'label' => $labels['phone_confirmed'],
+                'required' => false,
+                'attr' => ['title' => 'Телефон подтвержден'],
+            ])
+            ->add('timeZone', TextType::class, [
+                'label' => $labels['time_zone'],
+                'required' => false,
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => $labels['last_name'],
+                'required' => false,
+            ])
+            ->add('firstName', TextType::class, [
+                'label' => $labels['first_name'],
+                'required' => false,
+            ])
+            ->add('middleName', TextType::class, [
+                'label' => $labels['middle_name'],
+                'required' => false,
+            ])
+            ->add('phone', TextType::class, [
+                'label' => $labels['phone'],
+                'required' => false,
+            ])
+            ->add('phoneCode', TextType::class, [
+                'label' => $labels['phone_code'],
+                'required' => false,
+            ])
+            ->add('emailCode', TextType::class, [
+                'label' => $labels['email_code'],
+                'required' => false,
+            ])
             ->setMethod($options['is_new'] ? 'POST' : 'PATCH');
     }
 

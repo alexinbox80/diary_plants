@@ -3,8 +3,8 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\User;
-use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\User\UserModel;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Repository\UserRepositoryInterface;
 
 
@@ -26,7 +26,7 @@ class UserRepositoryDecorator implements UserRepositoryInterface
         $usersPaginated = $this->userRepository->getUsersPaginated($page, $perPage);
 
         $usersModel = array_map(
-            fn (User $user) => $this->toModel($user),
+            fn (User $user) => $this->toModel($user, true),
             $usersPaginated['items']
         );
 
@@ -64,7 +64,7 @@ class UserRepositoryDecorator implements UserRepositoryInterface
         $users = $this->userRepository->findAll();
 
         return array_map(
-            fn (User $user) => $this->toModel($user),
+            fn (User $user) => $this->toModel($user, true),
             $users
         );
     }

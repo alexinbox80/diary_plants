@@ -67,8 +67,8 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateGroupModel::class,
-                $groupModel['title'],
                 $this->str2bool($groupModel['is_active']),
+                $groupModel['title'],
                 $groupModel['description'] !== '' ? $groupModel['description'] : null
             );
     }

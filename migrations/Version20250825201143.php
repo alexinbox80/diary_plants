@@ -184,9 +184,9 @@ final class Version20250825201143 extends AbstractMigration
                     phone_code VARCHAR(6) DEFAULT NULL,
                     phone_confirmed BOOLEAN DEFAULT false NOT NULL,
                     time_zone VARCHAR(20) DEFAULT \'Europe/Moscow\' NOT NULL,
-                    created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
-                    updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
-                    deleted_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL,
+                    created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
+                    updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
+                    deleted_at TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
                     PRIMARY KEY (id))');
 
 

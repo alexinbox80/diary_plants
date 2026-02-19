@@ -4,7 +4,7 @@
             {{ form_start(form) }}
             {{ form_errors(form) }}
             {% for child in form %}
-                {% if child.vars.name not in ['isActive', 'isShown', 'isSold', 'submit', '_token'] %}
+                {% if child.vars.name not in ['emailConfirmed', 'phoneConfirmed', 'isActive', 'isShown', 'isSold', 'submit', '_token'] %}
                     <div class="form-group mb-3">
                         {{ form_label(child) }}
                         {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
@@ -44,6 +44,28 @@
                     {{ form_label(form.isActive, '', {'label_attr': {'class': 'form-check-text-label'}}) }}
                     <div class="form-error">
                         {{ form_errors(form.isActive) }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if form.emailConfirmed is defined %}
+                <div class="form-check form-check-flat form-check-success">
+                    <label class="form-check-label">
+                        {{ form_widget(form.emailConfirmed, {'attr': {'class': 'form-check-input'}}) }}
+                    </label>
+                    {{ form_label(form.emailConfirmed, '', {'label_attr': {'class': 'form-check-text-label'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.emailConfirmed) }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if form.phoneConfirmed is defined %}
+                <div class="form-check form-check-flat form-check-success">
+                    <label class="form-check-label">
+                        {{ form_widget(form.phoneConfirmed, {'attr': {'class': 'form-check-input'}}) }}
+                    </label>
+                    {{ form_label(form.phoneConfirmed, '', {'label_attr': {'class': 'form-check-text-label'}}) }}
+                    <div class="form-error">
+                        {{ form_errors(form.phoneConfirmed) }}
                     </div>
                 </div>
             {% endif %}
