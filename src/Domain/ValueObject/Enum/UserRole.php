@@ -35,6 +35,17 @@ enum UserRole: string
         };
     }
 
+    /**
+     * Преобразует массив с ролями (например, "ROLE_USER,ROLE_ADMIN") в строку ролей.
+     *
+     * @return string
+     */
+    public static function AllRolesToString(): string
+    {
+        $roles = array_column(self::cases(), 'value');
+        return implode(', ', $roles);
+    }
+
     public static function toString(array $roles): ?string
     {
         $strings = [];
@@ -58,7 +69,7 @@ enum UserRole: string
      * @param string|null $rolesString
      * @return array
      */
-    public static function fromString(?string $rolesString): array
+    public static function toArray(?string $rolesString): array
     {
         if (empty($rolesString)) {
             return [];

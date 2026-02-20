@@ -5,12 +5,13 @@ namespace App\Domain\Service;
 use App\Domain\Entity\User;
 use InvalidArgumentException;
 use App\Domain\Model\User\UserModel;
+use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
 use App\Domain\Repository\UserRepositoryInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService
@@ -148,7 +149,7 @@ class UserService
                 $dto->groupId,
                 $dto->email,
                 $dto->password,
-                $dto->roles ?? [],
+                UserRole::toArray($dto->roles),
                 $dto->isActive,
                 $dto->emailConfirmed,
                 $dto->phoneConfirmed,
@@ -219,7 +220,7 @@ class UserService
                 $dto->groupId,
                 $dto->email,
                 $dto->password,
-                $dto->roles,
+                UserRole::toArray($dto->roles),
                 $dto->isActive,
                 $dto->emailConfirmed,
                 $dto->phoneConfirmed,

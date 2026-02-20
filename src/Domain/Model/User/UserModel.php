@@ -2,10 +2,11 @@
 
 namespace App\Domain\Model\User;
 
-use App\Domain\ValueObject\Enum\UserRole;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\ValueObject\Enum\Timezone;
+use App\Domain\ValueObject\Enum\UserRole;
 
 class UserModel
 {
@@ -141,7 +142,7 @@ class UserModel
             'img_tag' => 'Аватар',
             'avatar_link' => 'Ссылка на аватар',
             'email' => 'Электронная почта',
-            'roles' => 'Роли пользователя',
+            'roles' => 'Роль пользователя',
             'is_active' => 'Пользователь активен',
             'email_confirmed' => 'Почта подтверждена',
             'phone_confirmed' => 'Телефон подтвержден',
@@ -173,7 +174,7 @@ class UserModel
             'is_active' => $this->isActive() ? 'Да' : 'Нет',
             'email_confirmed' => $this->isEmailConfirmed() ? 'Да' : 'Нет',
             'phone_confirmed' => $this->isPhoneConfirmed() ? 'Да' : 'Нет',
-            'time_zone' => $this->getTimeZone(),
+            'time_zone' => Timezone::from($this->getTimeZone())->label(),
             'last_name' => $this->getLastName(),
             'first_name' => $this->getFirstName(),
             'middle_name' => $this->getMiddleName(),

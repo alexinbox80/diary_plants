@@ -5,6 +5,7 @@ namespace App\Controller\Web\Dashboard\User\EditUser;
 use App\Domain\Entity\User;
 use App\Controller\Form\UserType;
 use App\Domain\Service\UserService;
+use App\Domain\ValueObject\Enum\UserRole;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
@@ -23,7 +24,7 @@ class Manager
             $user->getGroup()->getId(),
             $user->getEmail(),
             $user->getPassword(),
-            [],//$user->getRoles(),
+            UserRole::toString($user->getRoles()),
             $user->isActive(),
             $user->isEmailConfirmed(),
             $user->isPhoneConfirmed(),

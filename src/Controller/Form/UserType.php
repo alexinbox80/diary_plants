@@ -6,6 +6,7 @@ use App\Domain\Model\User\UserModel;
 use App\Domain\Service\GroupService;
 use Symfony\Component\Form\AbstractType;
 use App\Domain\ValueObject\Enum\UserRole;
+use App\Domain\ValueObject\Enum\Timezone;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -27,35 +28,6 @@ class UserType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = UserModel::getTableHeaderRu();
-
-        $timezones = [
-            'UTC' => 'UTC',
-            'Калининград' => 'Europe/Kaliningrad',
-            'Москва' => 'Europe/Moscow',
-            'Киев' => 'Europe/Kiev',
-            'Минск' => 'Europe/Minsk',
-            'Екатеринбург' => 'Asia/Yekaterinburg',
-            'Омск' => 'Asia/Omsk',
-            'Новосибирск' => 'Asia/Novosibirsk',
-            'Красноярск' => 'Asia/Krasnoyarsk',
-            'Иркутск' => 'Asia/Irkutsk',
-            'Якутск' => 'Asia/Yakutsk',
-            'Владивосток' => 'Asia/Vladivostok',
-            'Магадан' => 'Asia/Magadan',
-            'Камчатка' => 'Asia/Kamchatka',
-            'Нью-Йорк' => 'America/New_York' ,
-            'Чикаго' => 'America/Chicago',
-            'Денвер' => 'America/Denver',
-            'Лос-Анджелес' => 'America/Los_Angeles',
-            'Сан-Пауло' => 'America/Sao_Paulo' ,
-            'Сидней' => 'Australia/Sydney',
-            'Токио' => 'Asia/Tokyo',
-            'Шанхай' => 'Asia/Shanghai',
-            'Дубай' => 'Asia/Dubai',
-            'Лондон' => 'Europe/London',
-            'Париж' => 'Europe/Paris',
-            'Берлин' => 'Europe/Berlin',
-        ];
 
         $builder
             ->add('avatarFile', FileType::class, [
@@ -81,12 +53,11 @@ class UserType extends AbstractType
                 'label' => $labels['password'] ?? 'Пароль',
                 'required' => false,
             ])
-//            ->add('roles', TextType::class, [
-//                'label' => $labels['roles'],
-//                //'choices' => UserRole::getChoices(),
-//                'data' => 'ROLE_MANAGER',
-//                //'multiple' => false,
-//            ])
+            ->add('roles', ChoiceType::class, [
+                'label' => $labels['roles'],
+                'choices' => UserRole::getChoices(),
+                //'multiple' => false,
+            ])
             ->add('isActive', CheckboxType::class, [
                 'label' => $labels['is_active'],
                 'required' => false,
@@ -105,7 +76,7 @@ class UserType extends AbstractType
             ->add('timeZone', ChoiceType::class, [
                 'label' => $labels['time_zone'],
                 'required' => false,
-                'choices' => $timezones,
+                'choices' => Timezone::getChoices(),
                 'placeholder' => 'Выберите часовой пояс',
             ])
             ->add('lastName', TextType::class, [
@@ -145,7 +116,7 @@ class UserType extends AbstractType
                 2,
                 '',
                 '',
-                [],
+                '',
                 false,
                 false,
                 false,

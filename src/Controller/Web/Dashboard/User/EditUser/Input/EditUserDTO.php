@@ -2,6 +2,7 @@
 
 namespace App\Controller\Web\Dashboard\User\EditUser\Input;
 
+use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\ValueObject\Enum\ImageMimeType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -29,6 +30,13 @@ class EditUserDTO
                     ->setParameter('{{ size }}', $fileSize)
                     ->addViolation();
             }
+
+            // Валидация роли через enum UserRole
+            if (!UserRole::isValid($this->roles)) {
+                $context->buildViolation('Роль должна быть одной из: ' . UserRole::AllRolesToString())
+                    ->atPath('roles')
+                    ->addViolation();
+            }
         }
     }
 
@@ -44,16 +52,7 @@ class EditUserDTO
         #[Assert\NotBlank]
         public string $password,
 
-//        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
-//        #[Assert\All([
-//            new Assert\NotBlank(message: 'Role value cannot be empty.'),
-//            new Assert\Type(type: 'string', message: 'Each role must be a string.'),
-//            new Assert\Regex(
-//                pattern: '/^ROLE_[A-Z_]+$/',
-//                message: 'Each role must follow the format ROLE_XXX.'
-//            )
-//        ])]
-        public array $roles,
+        public string $roles,
 
         #[Assert\NotNull]
         #[Assert\Type(type: 'bool', message: 'The value {{ value }} is not a valid boolean.')]
