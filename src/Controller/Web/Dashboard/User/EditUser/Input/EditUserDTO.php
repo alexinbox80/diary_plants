@@ -2,11 +2,36 @@
 
 namespace App\Controller\Web\Dashboard\User\EditUser\Input;
 
+use App\Domain\ValueObject\Enum\ImageMimeType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class EditUserDTO
 {
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context): void
+    {
+        if ($this->avatarFile instanceof UploadedFile) {
+            $mimeType = $this->avatarFile->getMimeType();
+            $fileSize = $this->avatarFile->getSize();
+
+            if (!in_array($mimeType, ImageMimeType::getValues())) {
+                $context->buildViolation('Недопустимый MIME-тип изображения: {{ type }}')
+                    ->atPath('imageFile')
+                    ->setParameter('{{ type }}', $mimeType)
+                    ->addViolation();
+            }
+
+            if ($fileSize > 500_000) {
+                $context->buildViolation('Размер файла слишком большой — {{ size }} байт. Максимум: 0.5 МБ.')
+                    ->atPath('imageFile')
+                    ->setParameter('{{ size }}', $fileSize)
+                    ->addViolation();
+            }
+        }
+    }
+
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]

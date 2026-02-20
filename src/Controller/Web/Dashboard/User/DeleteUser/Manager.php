@@ -15,7 +15,7 @@ class Manager
 
     public function deleteData(int $id, Request $request): array
     {
-        $this->userService->removeById($id);
+        $this->userService->deleteWithFile($id);
 
         $request->getSession()->getFlashBag()->add('success', 'Пользователь успешно удален.');
         return ['success' => true];

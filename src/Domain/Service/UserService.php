@@ -2,14 +2,16 @@
 
 namespace App\Domain\Service;
 
-use InvalidArgumentException;
 use App\Domain\Entity\User;
+use InvalidArgumentException;
 use App\Domain\Model\User\UserModel;
 use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
 use App\Domain\Repository\UserRepositoryInterface;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService
 {
@@ -17,6 +19,8 @@ class UserService
         private readonly UserRepositoryInterface $userRepository,
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly FileService $fileService,
     ) {
     }
 
@@ -101,6 +105,25 @@ class UserService
             $createGroupModel->timeZone
         );
 
+        $user->changeFields(
+            $group,
+            $createGroupModel->email,
+            $this->userPasswordHasher->hashPassword($user, $createGroupModel->password),
+            $createGroupModel->lastName,
+            $createGroupModel->firstName,
+            $createGroupModel->middleName,
+            $createGroupModel->roles,
+            $createGroupModel->isActive,
+            $createGroupModel->refreshToken,
+            $createGroupModel->phone,
+            $createGroupModel->avatarLink,
+            $createGroupModel->emailCode,
+            $createGroupModel->emailConfirmed,
+            $createGroupModel->phoneCode,
+            $createGroupModel->phoneConfirmed,
+            $createGroupModel->timeZone
+        );
+
         $this->userRepository->create($user);
 
         return $this->userRepository->toModel($user);
@@ -112,6 +135,14 @@ class UserService
      */
     public function createFromCreateUserDTO(CreateUserDTO $dto): UserModel
     {
+        // Проверяем уникальность email
+        $existingUser = $this->userRepository->findUsersByEmail($dto->email);
+        if ($existingUser) {
+            throw new \InvalidArgumentException('Пользователь с таким email уже существует.');
+        }
+
+        $this->processFileForDTO($dto);
+
         $model = $this->modelFactory->makeModel(
             CreateUserModel::class,
                 $dto->groupId,
@@ -148,7 +179,7 @@ class UserService
         $user->changeFields(
             $group,
             $updateUserModel->email,
-            $updateUserModel->password,
+            $this->userPasswordHasher->hashPassword($user, $updateUserModel->password),
             $updateUserModel->lastName,
             $updateUserModel->firstName,
             $updateUserModel->middleName,
@@ -176,6 +207,12 @@ class UserService
      */
     public function updateFromEditUserDTO(User $user, EditUserDTO $dto): void
     {
+        // Если загружен новый файл — обновляем путь и удаляем старый
+        if ($dto->avatarFile instanceof UploadedFile) {
+            $this->removeOldFile($user);
+            $this->processFileForDTO($dto);
+        }
+
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdateUserModel::class,
@@ -220,5 +257,51 @@ class UserService
     public function removeUser(User $user): void
     {
         $this->userRepository->remove($user);
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function deleteWithFile(int $id): void
+    {
+        $user = $this->find($id);
+
+        if (!$user) {
+            throw new \InvalidArgumentException("Вложение с ID {$id} не найдено");
+        }
+
+        // Удаляем файл
+        $this->removeOldFile($user);
+
+        // Удаляем сущность
+        $this->removeUser($user);
+    }
+
+    /**
+     * Вспомогательные методы
+     *
+     * @param CreateUserDTO|EditUserDTO $dto
+     * @return void
+     */
+    private function processFileForDTO(CreateUserDTO|EditUserDTO $dto): void
+    {
+        if ($dto->avatarFile instanceof UploadedFile) {
+            $path = $this->fileService->getAttachmentsPath('user::class', $dto->groupId);
+            $uploadedFile = $this->fileService->storeUploadedFile($dto->avatarFile, $path);
+
+            $dto->avatarLink = $path . $uploadedFile->getFilename();
+        }
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    private function removeOldFile(User $user): void
+    {
+        if ($user->getAvatarLink()) {
+            $this->fileService->removeUploadedFile($user->getAvatarLink());
+        }
     }
 }

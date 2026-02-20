@@ -10,14 +10,16 @@ use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Table(name: '`user`')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Index(name: 'plant__email__ind', columns: ['email'])]
-#[ORM\Index(name: 'plant__refresh_token__ind', columns: ['refresh_token'])]
+#[ORM\Index(name: 'user__email__ind', columns: ['email'])]
+#[ORM\Index(name: 'user__refresh_token__ind', columns: ['refresh_token'])]
 #[ORM\UniqueConstraint(name: 'user__email__uniq', fields: ['email'], options: ['where' => '(deleted_at IS NULL)'])]
-class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -32,7 +34,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private string $email;
 
     //пароль пользователя
-    #[ORM\Column(name: 'password', type: 'string', length: 64, nullable: false)]
+    #[ORM\Column(name: 'password', type: 'string', length: 255, nullable: false)]
     private string $password;
 
     //роль пользователя
@@ -260,6 +262,15 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
             WebmozartAssert::notEmpty($digitsOnly, 'The phone must contain digits. Got: %s');
             WebmozartAssert::regex($digitsOnly, '/^[0-9]{10,11}$/', 'The phone must contain 10-11 digits. Got: %s');
         }
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 
     public function getId(): int

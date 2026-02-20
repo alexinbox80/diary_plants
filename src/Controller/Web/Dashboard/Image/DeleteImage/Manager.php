@@ -10,7 +10,6 @@ class Manager
     public function __construct(
         private readonly AttachmentService $attachmentService
     ) {
-
     }
 
     public function deleteData(int $id, Request $request): array

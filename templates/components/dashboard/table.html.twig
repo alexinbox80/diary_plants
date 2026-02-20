@@ -37,7 +37,7 @@
                                                 <td data-column="{{ key }}">
                                                     {% if item[key] is not null %}
                                                         {% if key == 'img_tag' %}
-                                                            {{ image_tag.image(row_number, 'table-image-thumb', item['title'], item['alt'], item[key], 'single') }}
+                                                            {{ image_tag.image(row_number, 'table-image-thumb', item['title'] ?? 'Аватар', item['alt'] ?? 'Аватар', item[key], 'single') }}
                                                         {% elseif key == 'img_gallery' %}
                                                             {{ gallery.images(item.img_gallery, item.id) }}
                                                         {% else %}

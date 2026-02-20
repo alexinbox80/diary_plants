@@ -51,4 +51,28 @@ enum UserRole: string
 
         return !empty($strings) ? implode(',', $strings) : null;
     }
+
+    /**
+     * Преобразует строку с ролями (например, "ROLE_USER,ROLE_ADMIN") в массив ролей.
+     *
+     * @param string|null $rolesString
+     * @return array
+     */
+    public static function fromString(?string $rolesString): array
+    {
+        if (empty($rolesString)) {
+            return [];
+        }
+
+        $roles = array_map('trim', explode(',', $rolesString));
+        $result = [];
+
+        foreach ($roles as $role) {
+            if (self::isValid($role)) {
+                $result[] = self::from($role);
+            }
+        }
+
+        return $result;
+    }
 }

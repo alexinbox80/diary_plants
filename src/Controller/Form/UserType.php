@@ -4,11 +4,11 @@ namespace App\Controller\Form;
 
 use App\Domain\Model\User\UserModel;
 use App\Domain\Service\GroupService;
-use App\Domain\ValueObject\Enum\UserRole;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use App\Domain\ValueObject\Enum\UserRole;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -27,6 +27,35 @@ class UserType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = UserModel::getTableHeaderRu();
+
+        $timezones = [
+            'UTC' => 'UTC',
+            'Калининград' => 'Europe/Kaliningrad',
+            'Москва' => 'Europe/Moscow',
+            'Киев' => 'Europe/Kiev',
+            'Минск' => 'Europe/Minsk',
+            'Екатеринбург' => 'Asia/Yekaterinburg',
+            'Омск' => 'Asia/Omsk',
+            'Новосибирск' => 'Asia/Novosibirsk',
+            'Красноярск' => 'Asia/Krasnoyarsk',
+            'Иркутск' => 'Asia/Irkutsk',
+            'Якутск' => 'Asia/Yakutsk',
+            'Владивосток' => 'Asia/Vladivostok',
+            'Магадан' => 'Asia/Magadan',
+            'Камчатка' => 'Asia/Kamchatka',
+            'Нью-Йорк' => 'America/New_York' ,
+            'Чикаго' => 'America/Chicago',
+            'Денвер' => 'America/Denver',
+            'Лос-Анджелес' => 'America/Los_Angeles',
+            'Сан-Пауло' => 'America/Sao_Paulo' ,
+            'Сидней' => 'Australia/Sydney',
+            'Токио' => 'Asia/Tokyo',
+            'Шанхай' => 'Asia/Shanghai',
+            'Дубай' => 'Asia/Dubai',
+            'Лондон' => 'Europe/London',
+            'Париж' => 'Europe/Paris',
+            'Берлин' => 'Europe/Berlin',
+        ];
 
         $builder
             ->add('avatarFile', FileType::class, [
@@ -73,9 +102,11 @@ class UserType extends AbstractType
                 'required' => false,
                 'attr' => ['title' => 'Телефон подтвержден'],
             ])
-            ->add('timeZone', TextType::class, [
+            ->add('timeZone', ChoiceType::class, [
                 'label' => $labels['time_zone'],
                 'required' => false,
+                'choices' => $timezones,
+                'placeholder' => 'Выберите часовой пояс',
             ])
             ->add('lastName', TextType::class, [
                 'label' => $labels['last_name'],
@@ -96,10 +127,12 @@ class UserType extends AbstractType
             ->add('phoneCode', TextType::class, [
                 'label' => $labels['phone_code'],
                 'required' => false,
+                'disabled' => true,
             ])
             ->add('emailCode', TextType::class, [
                 'label' => $labels['email_code'],
                 'required' => false,
+                'disabled' => true,
             ])
             ->setMethod($options['is_new'] ? 'POST' : 'PATCH');
     }

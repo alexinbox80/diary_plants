@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Dashboard\Image\EditImage\Input;
 
 use DateTimeImmutable;
+use App\Domain\ValueObject\Enum\ImageMimeType;
 use App\Domain\ValueObject\Enum\AttachableType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,14 +18,7 @@ class EditImageDTO
             $mimeType = $this->imageFile->getMimeType();
             $fileSize = $this->imageFile->getSize();
 
-            $allowedMimeTypes = [
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'image/webp'
-            ];
-
-            if (!in_array($mimeType, $allowedMimeTypes)) {
+            if (!in_array($mimeType, ImageMimeType::getValues())) {
                 $context->buildViolation('Недопустимый MIME-тип изображения: {{ type }}')
                     ->atPath('imageFile')
                     ->setParameter('{{ type }}', $mimeType)
@@ -76,7 +70,7 @@ class EditImageDTO
         public string $attachableType,
 
         //#[Assert\NotNull(message: 'Пожалуйста, выберите изображение')]
-        public ?UploadedFile $avatarFile = null,
+        public ?UploadedFile $imageFile = null,
     ) {
     }
 }
