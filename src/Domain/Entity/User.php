@@ -2,6 +2,9 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\ValueObject\Name;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Phone;
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
@@ -29,9 +32,9 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    //электронная почта - логин в систему
-    #[ORM\Column(name: 'email', type: 'string', length: 64, unique: true, nullable: false)]
-    private string $email;
+    //электронная почта
+    #[ORM\Column(type:'email', length: 255, unique: true, nullable: false)]
+    private Email $email;
 
     //пароль пользователя
     #[ORM\Column(name: 'password', type: 'string', length: 255, nullable: false)]
@@ -49,21 +52,13 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\Column(name: 'is_active', type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
-    //фамилия
-    #[ORM\Column(name: 'last_name', type: 'string', length: 64, nullable: false)]
-    private string $lastName;
-
-    //имя
-    #[ORM\Column(name: 'first_name', type: 'string', length: 64, nullable: false)]
-    private string $firstName;
-
-    //отчество
-    #[ORM\Column(name: 'middle_name', type: 'string', length: 64, nullable: true)]
-    private ?string $middleName = null;
+    //фамилия имя отчество
+    #[ORM\Embedded(class: Name::class, columnPrefix: false)]
+    private Name $name;
 
     //телефон пользователя
-    #[ORM\Column(name: 'phone', type: 'string', length: 16, nullable: true)]
-    private ?string $phone = null;
+    #[ORM\Column(type:'phone', length: 16, unique: true, nullable: true)]
+    private ?Phone $phone = null;
 
     //аватар пользователя
     #[ORM\Column(type: 'string', nullable: true)]
@@ -91,177 +86,105 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'users')]
-    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
     public function __construct(
         Group $group,
-        string $email,
+        Email $email,
         string $password,
-        string $lastName,
-        string $firstName,
-        ?string $middleName = null,
+        Name $name,
         array $roles = [],
-        bool $isActive = true,
-        ?string $refreshToken = null,
-        ?string $phone = null,
-        ?string $avatarLink = null,
-        ?string $emailCode = null,
-        ?bool $emailConfirmed = false,
-        ?string $phoneCode = null,
-        ?bool $phoneConfirmed = false,
-        ?string $timeZone = 'Europe/Moscow'
     )
     {
-        $this->setCommonFields(
-            $group,
-            $email,
-            $password,
-            $lastName,
-            $firstName,
-            $middleName,
-            $roles,
-            $isActive,
-            $refreshToken,
-            $phone,
-            $avatarLink,
-            $emailCode,
-            $emailConfirmed,
-            $phoneCode,
-            $phoneConfirmed,
-            $timeZone
-        );
-    }
-
-    public function changeFields(
-        $group,
-        $email,
-        $password,
-        $lastName,
-        $firstName,
-        $middleName,
-        $roles,
-        $isActive,
-        $refreshToken,
-        $phone,
-        $avatarLink,
-        $emailCode,
-        $emailConfirmed,
-        $phoneCode,
-        $phoneConfirmed,
-        $timeZone
-    ): void {
-        $this->setCommonFields(
-            $group,
-            $email,
-            $password,
-            $lastName,
-            $firstName,
-            $middleName,
-            $roles,
-            $isActive,
-            $refreshToken,
-            $phone,
-            $avatarLink,
-            $emailCode,
-            $emailConfirmed,
-            $phoneCode,
-            $phoneConfirmed,
-            $timeZone
-        );
-    }
-
-    private function setCommonFields(
-        Group $group,
-        string $email,
-        string $password,
-        string $lastName,
-        string $firstName,
-        ?string $middleName = null,
-        array $roles = [],
-        bool $isActive = true,
-        ?string $refreshToken = null,
-        ?string $phone = null,
-        ?string $avatarLink = null,
-        ?string $emailCode = null,
-        ?bool $emailConfirmed = false,
-        ?string $phoneCode = null,
-        ?bool $phoneConfirmed = false,
-        ?string $timeZone = 'Europe/Moscow'
-    ): void {
         $this->group = $group;
-
-        $this->emailValidate($email);
         $this->email = $email;
         $this->password = $password;
-
-        $this->lastNameValidate($lastName);
-        $this->lastName = $lastName;
-
-        $this->firstNameValidate($firstName);
-        $this->firstName = $firstName;
-
-        $this->middleNameValidate($middleName);
-        $this->middleName = $middleName;
-
+        $this->name = $name;
         $this->roles = $roles;
-        $this->isActive = $isActive;
-        $this->refreshToken = $refreshToken;
+    }
 
-        $this->phoneValidate($phone);
-        $this->phone = $phone;
+    public function changeName(Name $name): void
+    {
+        // Здесь можно добавить проверку, если новое имя совпадает со старым, ничего не делать
+        $this->name = $name;
+    }
 
+    public function upgradePassword(string $hashedPassword): void
+    {
+        if (empty($hashedPassword)) {
+            throw new \InvalidArgumentException('The password hash cannot be empty.');
+        }
+        $this->password = $hashedPassword;
+    }
+
+    public function moveToGroup(Group $group): void
+    {
+        $this->group = $group;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function activate(): void
+    {
+        $this->isActive = true;
+    }
+
+    public function suspend(): void
+    {
+        $this->isActive = false;
+    }
+
+    public function confirmEmail(): void
+    {
+        $this->emailConfirmed = true;
+        $this->emailCode = null;
+    }
+
+    public function confirmPhone(): void
+    {
+        $this->phoneConfirmed = true;
+        $this->phoneCode = null;
+    }
+
+    public function getAvatarLink(): ?string
+    {
+        return $this->avatarLink;
+    }
+
+    public function setAvatarLink(?string $avatarLink): void
+    {
         $this->avatarLink = $avatarLink;
-        $this->emailCode = $emailCode;
-        $this->emailConfirmed = $emailConfirmed;
-        $this->phoneCode = $phoneCode;
-        $this->phoneConfirmed = $phoneConfirmed;
+    }
+
+    public function getTimeZone(): string
+    {
+        return $this->timeZone ?? 'Europe/Moscow';
+    }
+
+    public function setTimeZone(string $timeZone): void
+    {
         $this->timeZone = $timeZone;
     }
 
-    private function lastNameValidate(string $lastName): void
+    public function updateRefreshToken(?string $token): void
     {
-        WebmozartAssert::stringNotEmpty($lastName, 'Last name should not be empty. Got: %s');
-        //WebmozartAssert::alpha($lastName, 'Last name should be in alphabet. Got: %s');
-        WebmozartAssert::regex($lastName, '/^[a-zA-Zа-яА-ЯёЁ]+$/u', 'Last name should contain only letters (Latin or Cyrillic). Got: %s');
-        WebmozartAssert::lengthBetween($lastName, 2, 64, 'The last name must be a string valid length of 2-64 letters. Got: %s');
+        $this->refreshToken = $token;
     }
 
-    private function firstNameValidate(string $firstName): void
+    public function generateEmailCode(string $code): void
     {
-        WebmozartAssert::stringNotEmpty($firstName, 'First name should not be empty. Got: %s');
-        //WebmozartAssert::alpha($firstName, 'First name should be in alphabet. Got: %s');
-        WebmozartAssert::regex($firstName, '/^[a-zA-Zа-яА-ЯёЁ]+$/u', 'Last name should contain only letters (Latin or Cyrillic). Got: %s');
-        WebmozartAssert::lengthBetween($firstName, 2, 64, 'The first name must be a string valid length of 2-64 letters. Got: %s');
+        $this->emailCode = $code;
+        $this->emailConfirmed = false;
     }
 
-    private function middleNameValidate(?string $middleName = null): void
+    public function generatePhoneCode(string $code): void
     {
-        WebmozartAssert::nullOrString($middleName, 'The middle name must be a string valid length of 2-64 letters or null. Got: %s');
-        if (!is_null($middleName))
-        {
-            //WebmozartAssert::alpha($middleName, 'Middle name should be in alphabet. Got: %s');
-            WebmozartAssert::regex($middleName, '/^[a-zA-Zа-яА-ЯёЁ]+$/u', 'Last name should contain only letters (Latin or Cyrillic). Got: %s');
-            WebmozartAssert::lengthBetween($middleName, 2, 64, 'The middle name must be a string valid length of 2-64 letters. Got: %s');
-        }
-    }
-
-    private function emailValidate(?string $email = null): void
-    {
-        if (!is_null($email)) {
-            WebmozartAssert::maxLength($email, 255, 'The email must be a 255 chars length. Got: %s');
-            WebmozartAssert::email($email, 'The email must be a valid email address. Got: %s');
-        }
-    }
-
-    private function phoneValidate(?string $phone = null): void
-    {
-        if (!is_null($phone)) {
-            WebmozartAssert::maxLength($phone, 16, 'The phone must be a 16 chars length. Got: %s');
-            $digitsOnly = preg_replace('/[^0-9]/', '', $phone);
-            WebmozartAssert::notEmpty($digitsOnly, 'The phone must contain digits. Got: %s');
-            WebmozartAssert::regex($digitsOnly, '/^[0-9]{10,11}$/', 'The phone must contain 10-11 digits. Got: %s');
-        }
+        $this->phoneCode = $code;
+        $this->phoneConfirmed = false;
     }
 
     public function eraseCredentials(): void
@@ -284,9 +207,14 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->group;
     }
 
-    public function getEmail(): string
+    public function getEmail(): Email
     {
         return $this->email;
+    }
+
+    public function getName(): Name
+    {
+        return $this->name;
     }
 
     public function getPassword(): string
@@ -304,39 +232,30 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return array_unique($roles);
     }
 
+    public function addRole(string $role): void
+    {
+        $role = strtoupper($role);
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+    }
+
+    public function removeRole(string $role): void
+    {
+        if (($key = array_search(strtoupper($role), $this->roles, true)) !== false) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles);
+        }
+    }
+
     public function getRefreshToken(): ?string
     {
         return $this->refreshToken;
     }
 
-    public function isActive(): bool
-    {
-        return $this->isActive;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function getMiddleName(): ?string
-    {
-        return $this->middleName;
-    }
-
-    public function getPhone(): ?string
+    public function getPhone(): ?Phone
     {
         return $this->phone;
-    }
-
-    public function getAvatarLink(): ?string
-    {
-        return $this->avatarLink;
     }
 
     public function getEmailCode(): ?string
@@ -357,10 +276,5 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function isPhoneConfirmed(): bool
     {
         return $this->phoneConfirmed;
-    }
-
-    public function getTimeZone(): string
-    {
-        return $this->timeZone;
     }
 }

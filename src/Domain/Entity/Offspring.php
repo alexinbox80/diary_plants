@@ -30,11 +30,11 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     private ?int $id = null;
 
     //дата сбора
-    #[ORM\Column(name: 'fruiting_date', type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(name: 'fruiting_date', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $fruitingDate = null;
 
     //дата цветения
-    #[ORM\Column(name: 'flowering_date', type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(name: 'flowering_date', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $floweringDate = null;
 
     //масса гр
@@ -72,7 +72,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
 
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'offsprings')]
-    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
     private function setCommonFields(

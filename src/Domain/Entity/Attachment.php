@@ -71,7 +71,7 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     private ?string $description = null;
 
     //дата загрузки файла
-    #[ORM\Column(name: 'file_date', type: 'datetime_immutable', nullable: false)]
+    #[ORM\Column(name: 'file_date', type: 'datetimetz_immutable', nullable: false)]
     private DateTimeImmutable $fileDate;
 
     //идентификатор связанной сущности
@@ -84,7 +84,7 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
 
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'attachments')]
-    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
     public function __construct(

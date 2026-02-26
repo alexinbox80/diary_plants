@@ -2,16 +2,16 @@
 
 namespace App\Infrastructure\Doctrine\Types;
 
+use InvalidArgumentException;
 use App\Domain\ValueObject\Price;
+use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\StringType;
-use InvalidArgumentException;
-use Webmozart\Assert\Assert;
+use Webmozart\Assert\Assert as WebmozartAssert;
 
 final class PriceType extends StringType
 {
-    public const NAME = 'Price';
+    public const NAME = 'price';
 
     public function getName(): string
     {
@@ -24,7 +24,7 @@ final class PriceType extends StringType
             return null;
         }
 
-        Assert::isInstanceOf($value, Price::class);
+        WebmozartAssert::isInstanceOf($value, Price::class);
 
         /** @var Price $value */
         return $value->toString();

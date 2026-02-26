@@ -53,15 +53,15 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     private string $room;
 
     //дата покупки
-    #[ORM\Column(name: 'purchase_date', type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(name: 'purchase_date', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $purchaseDate = null;
 
     //дата прививки
-    #[ORM\Column(name: 'vaccination_date', type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(name: 'vaccination_date', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $vaccinationDate = null;
 
     //дата посадки
-    #[ORM\Column(name: 'planting_date', type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(name: 'planting_date', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $plantingDate = null;
 
     //продавец
@@ -101,7 +101,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     private bool $isSold = false;
 
     //Дата продажи
-    #[ORM\Column(name: 'selling_date', type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(name: 'selling_date', type: 'datetimetz_immutable', nullable: true)]
     private ?DateTimeImmutable $sellingDate = null;
 
     //Стоимость продажи
@@ -126,7 +126,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
 
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'plants')]
-    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
     private function setCommonFields(

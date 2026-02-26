@@ -30,7 +30,7 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private Status $status;
 
     //дата события
-    #[ORM\Column(name: 'date', type: 'datetime_immutable', nullable: false)]
+    #[ORM\Column(name: 'date', type: 'datetimetz_immutable', nullable: false)]
     private DateTimeImmutable $date;
 
     //описание

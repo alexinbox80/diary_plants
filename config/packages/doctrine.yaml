@@ -11,6 +11,8 @@ doctrine:
         types:
             oid: App\Infrastructure\Doctrine\Types\OIdType
             price: App\Infrastructure\Doctrine\Types\PriceType
+            email: App\Infrastructure\Doctrine\Types\EmailType
+            phone: App\Infrastructure\Doctrine\Types\PhoneType
         options:
             1002: "SET timezone='UTC'"
 
@@ -27,8 +29,8 @@ doctrine:
             App:
                 type: attribute
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Domain/Entity'
-                prefix: 'App\Domain\Entity'
+                dir: '%kernel.project_dir%/src/Domain'
+                prefix: 'App\Domain'
                 alias: App
         controller_resolver:
             auto_mapping: false
