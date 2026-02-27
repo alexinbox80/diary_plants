@@ -104,23 +104,29 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         $this->roles = $roles;
     }
 
-    public function changeName(Name $name): void
+    public function changeName(Name $name): self
     {
         // Здесь можно добавить проверку, если новое имя совпадает со старым, ничего не делать
         $this->name = $name;
+
+        return $this;
     }
 
-    public function upgradePassword(string $hashedPassword): void
+    public function upgradePassword(string $hashedPassword): self
     {
         if (empty($hashedPassword)) {
             throw new \InvalidArgumentException('The password hash cannot be empty.');
         }
         $this->password = $hashedPassword;
+
+        return $this;
     }
 
-    public function moveToGroup(Group $group): void
+    public function moveToGroup(Group $group): self
     {
         $this->group = $group;
+
+        return $this;
     }
 
     public function isActive(): bool
@@ -155,9 +161,11 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->avatarLink;
     }
 
-    public function setAvatarLink(?string $avatarLink): void
+    public function setAvatarLink(?string $avatarLink): self
     {
         $this->avatarLink = $avatarLink;
+
+        return $this;
     }
 
     public function getTimeZone(): string
@@ -165,14 +173,18 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->timeZone ?? 'Europe/Moscow';
     }
 
-    public function setTimeZone(string $timeZone): void
+    public function setTimeZone(string $timeZone): self
     {
         $this->timeZone = $timeZone;
+
+        return $this;
     }
 
-    public function updateRefreshToken(?string $token): void
+    public function updateRefreshToken(?string $token): self
     {
         $this->refreshToken = $token;
+
+        return $this;
     }
 
     public function generateEmailCode(string $code): void
@@ -232,6 +244,16 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return array_unique($roles);
     }
 
+    public function changeRole(string $role): self
+    {
+        $role = strtoupper($role);
+
+        $this->roles = [];
+        $this->roles[] = $role;
+
+        return $this;
+    }
+
     public function addRole(string $role): void
     {
         $role = strtoupper($role);
@@ -256,6 +278,13 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function getPhone(): ?Phone
     {
         return $this->phone;
+    }
+
+    public function setPhone(Phone $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
     }
 
     public function getEmailCode(): ?string

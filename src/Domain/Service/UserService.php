@@ -4,6 +4,9 @@ namespace App\Domain\Service;
 
 use App\Domain\Entity\User;
 use InvalidArgumentException;
+use App\Domain\ValueObject\Name;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\Phone;
 use App\Domain\Model\User\UserModel;
 use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\Model\User\CreateUserModel;
@@ -13,6 +16,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 class UserService
 {
@@ -83,47 +87,39 @@ class UserService
      * @return UserModel
      * @throws InvalidArgumentException
      */
-    public function create(CreateUserModel $createGroupModel): UserModel
+    public function create(CreateUserModel $createUserModel): UserModel
     {
-        $group = $this->groupService->find($createGroupModel->groupId);
+        $group = $this->groupService->find($createUserModel->groupId);
+
+        // Создаем "пустышку" только для того, чтобы Hasher получил нужный тип данных
+        $tempUser = new class implements PasswordAuthenticatedUserInterface {
+            public function getPassword(): ?string { return null; }
+        };
+
+        $hashedPassword = $this->userPasswordHasher->hashPassword(
+            $tempUser, // Symfony позволяет передать пустой объект или временный
+            $createUserModel->password
+        );
 
         $user = new User(
             $group,
-            $createGroupModel->email,
-            $createGroupModel->password,
-            $createGroupModel->lastName,
-            $createGroupModel->firstName,
-            $createGroupModel->middleName,
-            $createGroupModel->roles,
-            $createGroupModel->isActive,
-            $createGroupModel->refreshToken,
-            $createGroupModel->phone,
-            $createGroupModel->avatarLink,
-            $createGroupModel->emailCode,
-            $createGroupModel->emailConfirmed,
-            $createGroupModel->phoneCode,
-            $createGroupModel->phoneConfirmed,
-            $createGroupModel->timeZone
+            new Email($createUserModel->email),
+            $hashedPassword,
+            new Name(
+                $createUserModel->lastName,
+                $createUserModel->firstName,
+                $createUserModel->middleName
+            ),
+            $createUserModel->roles,
         );
 
-        $user->changeFields(
-            $group,
-            $createGroupModel->email,
-            $this->userPasswordHasher->hashPassword($user, $createGroupModel->password),
-            $createGroupModel->lastName,
-            $createGroupModel->firstName,
-            $createGroupModel->middleName,
-            $createGroupModel->roles,
-            $createGroupModel->isActive,
-            $createGroupModel->refreshToken,
-            $createGroupModel->phone,
-            $createGroupModel->avatarLink,
-            $createGroupModel->emailCode,
-            $createGroupModel->emailConfirmed,
-            $createGroupModel->phoneCode,
-            $createGroupModel->phoneConfirmed,
-            $createGroupModel->timeZone
-        );
+        $user
+            ->setPhone(new Phone($createUserModel->phone))
+            ->setTimeZone($createUserModel->timeZone)
+            ->setAvatarLink($createUserModel->avatarLink)
+            ->updateRefreshToken($createUserModel->refreshToken);
+
+        if ($createUserModel->isActive) $user->activate();
 
         $this->userRepository->create($user);
 
@@ -177,24 +173,26 @@ class UserService
     {
         $group = $this->groupService->find($updateUserModel->groupId);
 
-        $user->changeFields(
-            $group,
-            $updateUserModel->email,
-            $this->userPasswordHasher->hashPassword($user, $updateUserModel->password),
-            $updateUserModel->lastName,
-            $updateUserModel->firstName,
-            $updateUserModel->middleName,
-            $updateUserModel->roles,
-            $updateUserModel->isActive,
-            $updateUserModel->refreshToken,
-            $updateUserModel->phone,
-            $updateUserModel->avatarLink,
-            $updateUserModel->emailCode,
-            $updateUserModel->emailConfirmed,
-            $updateUserModel->phoneCode,
-            $updateUserModel->phoneConfirmed,
-            $updateUserModel->timeZone
-        );
+        if ($updateUserModel->password) {
+            $user->upgradePassword($this->userPasswordHasher->hashPassword($user, $updateUserModel->password));
+        }
+
+        $user
+            ->moveToGroup($group)
+            ->changeName(New Name(
+                $updateUserModel->lastName,
+                $updateUserModel->firstName,
+                $updateUserModel->middleName))
+            ->changeRole($updateUserModel->roles[0]->value)
+            ->updateRefreshToken($updateUserModel->refreshToken)
+            ->setPhone(new Phone($updateUserModel->phone))
+            ->setAvatarLink($updateUserModel->avatarLink)
+            ->setTimeZone($updateUserModel->timeZone);
+
+        if ($updateUserModel->isActive)
+            $user->activate();
+        else
+            $user->suspend();
 
         $this->userRepository->update();
 

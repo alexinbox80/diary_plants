@@ -20,13 +20,13 @@ final readonly class Name
     #[ORM\Column(name: 'middle_name', type: 'string', length: 64, nullable: true, options: ['default' => null])]
     private ?string $middle;
 
-    public function __construct(string $first, string $last, ?string $middle = null)
+    public function __construct(string $last, string $first, ?string $middle = null)
     {
-        $this->firstNameValidate($first);
-        $this->first = $first;
-
         $this->lastNameValidate($last);
         $this->last = $last;
+
+        $this->firstNameValidate($first);
+        $this->first = $first;
 
         $this->middleNameValidate($middle);
         $this->middle = $middle;

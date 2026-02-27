@@ -49,8 +49,7 @@ class EditUserDTO
         #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
         public string $email,
 
-        #[Assert\NotBlank]
-        public string $password,
+        public ?string $password = null,
 
         public string $roles,
 

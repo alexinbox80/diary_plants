@@ -52,7 +52,7 @@ class GroupModel
         return [
             'id' => '#',
             'title' => 'Заголовок',
-            'is_active' => 'Пользователь активный',
+            'is_active' => 'Группа активна',
             'description' => 'Описание',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления'

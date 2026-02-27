@@ -15,8 +15,7 @@ class UpdateUserModel
         #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
         public readonly string $email,
 
-        #[Assert\NotBlank]
-        public readonly string $password,
+        public readonly ?string $password = null,
 
 //        #[Assert\Count(min: 1, minMessage: 'At least one role must be provided.')]
 //        #[Assert\All([
