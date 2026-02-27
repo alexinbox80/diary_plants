@@ -44,9 +44,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
-    //qr код
-    #[ORM\Column(name: 'qr_code_base64', type: 'string', length: 94, nullable: true)]
-    private ?string $qrCodeBase64 = null;
+    //ссылка на файл с qr кодом
+    #[ORM\Column(name: 'qr_code_link', type: 'string', length: 255, nullable: true)]
+    private ?string $qrCodeLink = null;
 
     //помещение
     #[ORM\Column(name: 'room', type: 'string', length: 64, nullable: false)]
@@ -153,7 +153,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->setTitleValidate($title);
         $this->setRoomValidate($room);
         $this->setIsShownValidate($isShown);
-        $this->setDesscriptionValidate($description);
+        $this->setDescriptionValidate($description);
         $this->setPurchaseDateValidate($purchaseDate);
         $this->setVaccinationDateValidate($vaccinationDate);
         $this->setPlantingDateValidate($plantingDate);
@@ -195,7 +195,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->isShown = $isShown;
     }
 
-    private function setDesscriptionValidate(?string $description = null): void
+    private function setDescriptionValidate(?string $description = null): void
     {
         $this->description = $description;
     }
@@ -308,7 +308,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         );
 
         $this->oid = OId::next();
-        $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
 
         $this->tasks = new ArrayCollection();
         $this->offsprings = new ArrayCollection();
@@ -363,7 +362,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         );
 
         $this->oid = OId::next();
-        $this->qrCodeBase64 = 'data:image/png;base64,' . base64_encode($this->oid);
     }
 
     public function getId(): int
@@ -393,9 +391,16 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         return $this->description;
     }
 
-    public function getQrCodeBase64(): ?string
+    public function getQrCodeLink(): ?string
     {
-        return $this->qrCodeBase64;
+        return $this->qrCodeLink;
+    }
+
+    public function setQrCodeLink(string $link): self
+    {
+        $this->qrCodeLink = $link;
+
+        return $this;
     }
 
     public function getRoom(): string

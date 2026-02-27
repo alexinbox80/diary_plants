@@ -20,7 +20,7 @@ class PlantModel implements AttachableModelInterface
         private readonly bool $isShown = true,
         private readonly array $attachment = [],
         private readonly ?string $description = null,
-        private readonly ?string $qrCodeBase64 = null,
+        private readonly ?string $qrCodeLink = null,
         private readonly ?DateTimeImmutable $purchaseDate = null,
         private readonly ?DateTimeImmutable $vaccinationDate = null,
         private readonly ?DateTimeImmutable $plantingDate = null,
@@ -74,9 +74,9 @@ class PlantModel implements AttachableModelInterface
         return $this->description;
     }
 
-    public function getQrCodeBase64(): ?string
+    public function getQrCodeLink(): ?string
     {
-        return $this->qrCodeBase64;
+        return $this->qrCodeLink;
     }
 
     public function getPurchaseDate(): ?DateTimeImmutable
@@ -172,7 +172,7 @@ class PlantModel implements AttachableModelInterface
             'room' => 'Помещение',
             'is_shown' => 'Показать',
             'description' => 'Описание',
-            'qr_code_base64' => 'QR код',
+            'img_qr_code_link' => 'QR код',
             'purchase_date' => 'Дата покупки',
             'vaccination_date' => 'Дата прививки',
             'planting_date' => 'Дата посадки',
@@ -206,7 +206,7 @@ class PlantModel implements AttachableModelInterface
             'room' => $this->getRoom(),
             'is_shown' => $this->isShown() ? 'Да' : 'Нет',
             'description' => $this->getDescription(),
-            'qr_code_base64' => $this->getQrCodeBase64(),
+            'img_qr_code_link' => (!empty($this->getQrCodeLink())) ? $this->getQrCodeLink() : null,
             'purchase_date' => $this->getPurchaseDate()?->format('d.m.Y'),
             'vaccination_date' => $this->getVaccinationDate()?->format('d.m.Y'),
             'planting_date' => $this->getPlantingDate()?->format('d.m.Y'),

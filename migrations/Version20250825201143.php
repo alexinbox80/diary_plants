@@ -88,7 +88,7 @@ final class Version20250825201143 extends AbstractMigration
                     oid UUID DEFAULT NULL,
                     title VARCHAR(255) NOT NULL,
                     description VARCHAR(1024) DEFAULT NULL,
-                    qr_code_base64 VARCHAR(94) DEFAULT NULL,
+                    qr_code_link VARCHAR(255) DEFAULT NULL,
                     room VARCHAR(64) NOT NULL,
                     purchase_date TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
                     vaccination_date TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,

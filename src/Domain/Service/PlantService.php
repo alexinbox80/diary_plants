@@ -5,11 +5,13 @@ namespace App\Domain\Service;
 use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
-use App\Infrastructure\Repository\GroupRepositoryDecorator;
 use Psr\Cache\InvalidArgumentException;
+use Endroid\QrCode\ErrorCorrectionLevel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
+use Endroid\QrCode\Builder\BuilderInterface;
 use App\Domain\Repository\PlantRepositoryInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
@@ -19,6 +21,8 @@ class PlantService
         private readonly PlantRepositoryInterface $plantRepository,
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
+        private readonly FileService $fileService,
+        private readonly BuilderInterface $customQrCodeBuilder
     ) {
     }
 
@@ -129,6 +133,8 @@ class PlantService
         );
 
         $this->plantRepository->create($plant);
+
+        $this->processFileForQrCode($plant);
 
         return $this->plantRepository->toModel($plant);
     }
@@ -255,5 +261,62 @@ class PlantService
     public function removePlant(Plant $plant): void
     {
         $this->plantRepository->remove($plant);
+    }
+
+    /**
+     * Вспомогательные методы
+     *
+     */
+    private function processFileForQrCode(Plant $plant): void
+    {
+        $path = $this->fileService->getAttachmentsPath('qr-code::class', $plant->getId());
+
+        $uuid = $plant->getOid();
+        $fileName = $uuid . '.png';
+        $fullPath = $path . $fileName;
+
+        // Используем билдер пакета
+        $result = $this->customQrCodeBuilder->build(
+            writer: new \Endroid\QrCode\Writer\PngWriter(),
+            data: $uuid,
+            encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
+            errorCorrectionLevel: ErrorCorrectionLevel::Low,
+            size: 300,
+            margin: 10,
+        );
+
+        // Создаём директорию, если не существует
+        if (!is_dir('storage/' . $path)) {
+            mkdir('storage/' . $path, 0755, true);
+        }
+
+        // Сохраняем файл
+        $result->saveToFile('storage/' . $fullPath);
+
+        // Создаём объект UploadedFile
+//        $mimeType = mime_content_type($fullPath);
+//
+//        $uploadedFile = new UploadedFile(
+//            $fullPath,
+//            $fileName,
+//            $mimeType,
+//            null,
+//            true // помечаем как "тестовый", чтобы не проверять UPLOAD_ERR_OK
+//        );
+//
+//        $uploadedFile = $this->fileService->storeUploadedFile($uploadedFile, $path);
+
+        $plant->setQrCodeLink($path . $fileName);
+    }
+
+    /**
+     * @param Plant $plant
+     * @return void
+     */
+    private function removeOldQrCodeFile(Plant $plant): void
+    {
+        if ($plant->getQrCodeLink()) {
+            $this->fileService->removeUploadedFile($plant->getQrCodeLink());
+        }
     }
 }

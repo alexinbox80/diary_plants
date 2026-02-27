@@ -188,7 +188,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $plant->isShown(),
             $attachmentModels,
             $plant->getDescription(),
-            $plant->getQrCodeBase64(),
+            $plant->getQrCodeLink(),
             $plant->getPurchaseDate(),
             $plant->getVaccinationDate(),
             $plant->getPlantingDate(),
