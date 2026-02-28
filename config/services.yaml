@@ -8,6 +8,7 @@ parameters:
     csvSeparator: ';'
     csvImageFilePrefix: 'var/data/images/'
     uploadDirectory: '%kernel.project_dir%/public/uploads'
+    webURL: '%env(string:WEB_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -33,6 +34,10 @@ services:
         arguments:
             $csvSeparator: '%csvSeparator%'
             $csvImageFilePrefix: '%csvImageFilePrefix%'
+
+    App\Domain\Service\PlantService:
+        arguments:
+            $webURL: '%webURL%'
 
     App\Infrastructure\Storage\LocalFileStorage:
         arguments:

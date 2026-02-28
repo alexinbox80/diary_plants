@@ -2,8 +2,8 @@
 
 namespace App\Domain\Service;
 
-use App\Infrastructure\Storage\LocalFileStorage;
 use Symfony\Component\HttpFoundation\File\File;
+use App\Infrastructure\Storage\LocalFileStorage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileService
@@ -44,6 +44,17 @@ class FileService
     public function storeUploadedFile(UploadedFile $uploadedFile, string $directory, bool $moveFlag = true): File
     {
         return $this->localFileStorage->storeUploadedFile($uploadedFile, $directory, $moveFlag);
+    }
+
+    /**
+     * @param string $directory
+     * @param string $uuid
+     * @param string $url
+     * @return string
+     */
+    public function getQrCodeLink(string $directory, string $uuid, string $url): string
+    {
+        return $this->localFileStorage->createQrCodeFile($directory, $uuid, $url);
     }
 
     /**

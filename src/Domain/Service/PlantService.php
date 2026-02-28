@@ -6,23 +6,20 @@ use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
 use Psr\Cache\InvalidArgumentException;
-use Endroid\QrCode\ErrorCorrectionLevel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
-use Endroid\QrCode\Builder\BuilderInterface;
 use App\Domain\Repository\PlantRepositoryInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
 class PlantService
 {
     public function __construct(
+        private readonly string $webURL,
         private readonly PlantRepositoryInterface $plantRepository,
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
-        private readonly FileService $fileService,
-        private readonly BuilderInterface $customQrCodeBuilder
+        private readonly FileService $fileService
     ) {
     }
 
@@ -256,11 +253,30 @@ class PlantService
     /**
      * @param Plant $plant
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removePlant(Plant $plant): void
     {
         $this->plantRepository->remove($plant);
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    public function deleteWithQrCode(int $id): void
+    {
+        $plant = $this->find($id);
+
+        if (!$plant) {
+            throw new \InvalidArgumentException("Plant with ID {$id} not found");
+        }
+
+        // Удаляем файл
+        $this->removeOldQrCodeFile($plant);
+
+        // Удаляем сущность
+        $this->removePlant($plant);
     }
 
     /**
@@ -269,44 +285,12 @@ class PlantService
      */
     private function processFileForQrCode(Plant $plant): void
     {
-        $path = $this->fileService->getAttachmentsPath('qr-code::class', $plant->getId());
+        $path = $this->fileService->getAttachmentsPath('qr-code::class', $plant->getGroup()->getId());
 
         $uuid = $plant->getOid();
-        $fileName = $uuid . '.png';
-        $fullPath = $path . $fileName;
+        $link = $this->fileService->getQrCodeLink($path . $plant->getId() . '/', $uuid, $this->webURL . 'dashboard/plant-info');
 
-        // Используем билдер пакета
-        $result = $this->customQrCodeBuilder->build(
-            writer: new \Endroid\QrCode\Writer\PngWriter(),
-            data: $uuid,
-            encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
-            errorCorrectionLevel: ErrorCorrectionLevel::Low,
-            size: 300,
-            margin: 10,
-        );
-
-        // Создаём директорию, если не существует
-        if (!is_dir('storage/' . $path)) {
-            mkdir('storage/' . $path, 0755, true);
-        }
-
-        // Сохраняем файл
-        $result->saveToFile('storage/' . $fullPath);
-
-        // Создаём объект UploadedFile
-//        $mimeType = mime_content_type($fullPath);
-//
-//        $uploadedFile = new UploadedFile(
-//            $fullPath,
-//            $fileName,
-//            $mimeType,
-//            null,
-//            true // помечаем как "тестовый", чтобы не проверять UPLOAD_ERR_OK
-//        );
-//
-//        $uploadedFile = $this->fileService->storeUploadedFile($uploadedFile, $path);
-
-        $plant->setQrCodeLink($path . $fileName);
+        $plant->setQrCodeLink($link);
     }
 
     /**

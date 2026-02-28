@@ -2,6 +2,7 @@
 parameters:
     # item count per page
     items_per_page: '%env(int:ITEMS_PER_PAGE)%'
+    web_url: '%env(int:WEB_URL)%'
 framework:
     secret: '%env(APP_SECRET)%'
 

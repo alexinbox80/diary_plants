@@ -4,8 +4,9 @@ namespace App\Domain\Entity\Traits;
 
 use DateTimeZone;
 use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\User;
+use App\Domain\Entity\Plant;
+use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Attachment;
 
 trait DeletedAtTrait
@@ -24,6 +25,9 @@ trait DeletedAtTrait
             $this->mimeType = null;
             $this->path = null;
             $this->filename = null;
+        }
+        if ($this instanceof Plant) {
+            $this->qrCodeLink = null;
         }
         if ($this instanceof User) {
             $this->avatarLink = null;

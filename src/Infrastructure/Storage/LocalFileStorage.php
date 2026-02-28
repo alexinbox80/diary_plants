@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Storage;
 
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Builder\BuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -10,7 +12,8 @@ class LocalFileStorage
     private string $uploadDirectory;
 
     public function __construct(
-        string $uploadDirectory
+        string $uploadDirectory,
+        private readonly BuilderInterface $customQrCodeBuilder
     ) {
         $this->uploadDirectory = $uploadDirectory;
     }
@@ -57,7 +60,7 @@ class LocalFileStorage
         if (!is_dir($directory)) {
             if (!@mkdir($directory, 0755, true) && !is_dir($directory)) {
                 throw new \RuntimeException(sprintf(
-                    'Не удалось создать директорию: %s. Проверьте права доступа и существование родительской директории.',
+                    'Failed to create directory: %s. Check permissions and the existence of the parent directory.',
                     $directory
                 ));
             }
@@ -75,26 +78,66 @@ class LocalFileStorage
 
     }
 
-    public function removeUploadedFile(string $file): bool
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public function removeUploadedFile(string $path): bool
     {
-        $file = $this->uploadDirectory . '/' . $file;
+        $file = $this->uploadDirectory . '/' . $path;
 
         if (file_exists($file)) {
             if (unlink($file)) {
                 return true;
             } else {
                 throw new \RuntimeException(sprintf(
-                    'Не удалось удалить файл: %s. Проверьте права доступа и существование файла.',
+                    'Failed to delete file: %s. Check permissions and file existence.',
                     $file
                 ));
             }
         } else {
             throw new \RuntimeException(sprintf(
-                'Не удалось удалить файл: %s.',
+                'Failed to delete file: %s.',
                 $file
             ));
         }
+    }
 
-        return false;
+    /**
+     * @param string $path
+     * @param string $uuid
+     * @param string $url
+     * @return string
+     */
+    public function createQrCodeFile(string $path, string $uuid, string $url): string
+    {
+        $directory = $this->uploadDirectory . '/' . $path;
+
+        if (!is_dir($directory)) {
+            if (!@mkdir($directory, 0755, true) && !is_dir($directory)) {
+                throw new \RuntimeException(sprintf(
+                    'Failed to create directory: %s. Check permissions and the existence of the parent directory.',
+                    $directory
+                ));
+            }
+        }
+
+        $fileName = $uuid . '.png';
+        $fullPath = $directory . $fileName;
+
+        // Используем билдер пакета
+        $result = $this->customQrCodeBuilder->build(
+            writer: new \Endroid\QrCode\Writer\PngWriter(),
+            data: $url . '/' . $uuid,
+            encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
+            errorCorrectionLevel: ErrorCorrectionLevel::Low,
+            size: 300,
+            margin: 10,
+        );
+
+        // Сохраняем файл
+        $result->saveToFile($fullPath);
+
+        return $path . $fileName;
     }
 }

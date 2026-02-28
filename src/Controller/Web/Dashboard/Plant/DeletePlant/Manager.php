@@ -15,7 +15,7 @@ class Manager
 
     public function deleteData(int $id, Request $request): array
     {
-        $this->plantService->removeById($id);
+        $this->plantService->deleteWithQrCode($id);
 
         $request->getSession()->getFlashBag()->add('success', 'Растение успешно удалено.');
         return ['success' => true];
