@@ -17,6 +17,9 @@ php bin/console doctrine:mapping:info
 #migrate migrations \
 php bin/console doctrine:migrations:migrate
 
+#show sql for update \
+php bin/console doctrine:schema:update --dump-sql
+
 #clear cache \
 php bin/console cache:clear
 

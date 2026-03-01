@@ -20,8 +20,11 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'user__email__ind', columns: ['email'])]
+#[ORM\Index(name: 'user__phone__ind', columns: ['phone'])]
 #[ORM\Index(name: 'user__refresh_token__ind', columns: ['refresh_token'])]
 #[ORM\UniqueConstraint(name: 'user__email__uniq', fields: ['email'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\UniqueConstraint(name: 'user__phone__uniq', fields: ['phone'], options: ['where' => '(deleted_at IS NULL)'])]
+//#[ORM\UniqueConstraint(name: 'user__refresh_token__uniq', fields: ['refresh_token'], options: ['where' => '(deleted_at IS NULL)'])]
 class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -33,7 +36,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private ?int $id = null;
 
     //электронная почта
-    #[ORM\Column(type:'email', length: 255, unique: true, nullable: false)]
+    #[ORM\Column(type:'email', length: 255, nullable: false)]
     private Email $email;
 
     //пароль пользователя
@@ -45,7 +48,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private array $roles = [];
 
     //рефреш токен
-    #[ORM\Column(type: 'string', length: 32, unique: true, nullable: true)]
+    #[ORM\Column(name: 'refresh_token', type: 'string', length: 32, nullable: true)]
     private ?string $refreshToken = null;
 
     //флаг блокировки пользователя
@@ -57,7 +60,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private Name $name;
 
     //телефон пользователя
-    #[ORM\Column(type:'phone', length: 16, unique: true, nullable: true)]
+    #[ORM\Column(type:'phone', length: 16, nullable: true)]
     private ?Phone $phone = null;
 
     //аватар пользователя

@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'fertilizer__plant_id__ind', columns: ['plant_id'])]
+#[ORM\Index(name: 'fertilizer__group_id__ind', columns: ['group_id'])]
 class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;

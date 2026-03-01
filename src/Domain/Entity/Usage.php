@@ -16,6 +16,7 @@ use Webmozart\Assert\Assert as WebmozartAssert;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'usage__usable__ind', columns: ['usable_type', 'usable_id'])]
+#[ORM\Index(name: 'usage__plant_id__ind', columns: ['plant_id'])]
 class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;

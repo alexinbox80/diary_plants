@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'offspring__plant_id__ind', columns: ['plant_id'])]
+#[ORM\Index(name: 'offspring__group_id__ind', columns: ['group_id'])]
 class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -66,9 +67,9 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
      * @var Collection<int, Attachment>
      */
     //связь с файлом
-    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
-    private Collection $attachments;
+//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
+//    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
+//    private Collection $attachments;
 
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'offsprings')]
@@ -160,7 +161,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         ?string $comment = null,
     ) {
 
-        $this->attachments = new ArrayCollection();
+        //$this->attachments = new ArrayCollection();
 
         $this->setCommonFields(
             $group,
@@ -215,10 +216,10 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     /**
      * @return Collection<int, Attachment>
      */
-    public function getAttachments(): Collection
-    {
-        return $this->attachments;
-    }
+//    public function getAttachments(): Collection
+//    {
+//        return $this->attachments;
+//    }
 
     public function getFruitingDate(): ?DateTimeImmutable
     {

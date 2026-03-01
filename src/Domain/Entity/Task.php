@@ -26,7 +26,8 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private ?int $id = null;
 
     //статус
-    #[ORM\OneToOne(targetEntity: Status::class, inversedBy: 'task', fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: Status::class, inversedBy: 'tasks')]
+    #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id')]
     private Status $status;
 
     //дата события

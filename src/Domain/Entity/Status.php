@@ -28,7 +28,7 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     private ?int $id = null;
 
     //сокращение
-    #[ORM\Column(type: 'string', length: 1, unique: true, nullable: false)]
+    #[ORM\Column(type: 'string', length: 1, nullable: false)]
     private string $letter;
 
     //описание

@@ -33,7 +33,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     private ?int $id = null;
 
     //UUIDv4
-    #[ORM\Column(type: 'oid', unique: true, nullable: true)]
+    #[ORM\Column(type: 'oid', nullable: true)]
     private ?OId $oid = null;
 
     //название растение
