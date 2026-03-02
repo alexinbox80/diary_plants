@@ -18,7 +18,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: 'letter', message: 'This letter is already in use.')]
-#[ORM\UniqueConstraint(name: 'status__letter__uniq', fields: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\UniqueConstraint(name: 'status__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
 class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;

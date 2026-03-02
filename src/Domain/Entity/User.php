@@ -22,9 +22,9 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\Index(name: 'user__email__ind', columns: ['email'])]
 #[ORM\Index(name: 'user__phone__ind', columns: ['phone'])]
 #[ORM\Index(name: 'user__refresh_token__ind', columns: ['refresh_token'])]
-#[ORM\UniqueConstraint(name: 'user__email__uniq', fields: ['email'], options: ['where' => '(deleted_at IS NULL)'])]
-#[ORM\UniqueConstraint(name: 'user__phone__uniq', fields: ['phone'], options: ['where' => '(deleted_at IS NULL)'])]
-//#[ORM\UniqueConstraint(name: 'user__refresh_token__uniq', fields: ['refresh_token'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\UniqueConstraint(name: 'user__email__uniq', columns: ['email'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\UniqueConstraint(name: 'user__phone__uniq', columns: ['phone'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\UniqueConstraint(name: 'user__refresh_token__uniq', columns: ['refresh_token'], options: ['where' => '(deleted_at IS NULL)'])]
 class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;

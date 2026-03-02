@@ -21,7 +21,7 @@ use Webmozart\Assert\Assert as WebmozartAssert;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'plant__oid__ind', columns: ['oid'])]
-#[ORM\UniqueConstraint(name: 'plant__oid__uniq', fields: ['oid'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\UniqueConstraint(name: 'plant__oid__uniq', columns: ['oid'], options: ['where' => '(deleted_at IS NULL)'])]
 class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
