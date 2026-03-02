@@ -6,8 +6,11 @@ use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
 use Psr\Cache\InvalidArgumentException;
+use App\Domain\ValueObject\Plant\LifeCycle;
+use App\Domain\ValueObject\Plant\SalesInfo;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
+use App\Domain\ValueObject\Plant\PurchaseInfo;
 use App\Domain\Repository\PlantRepositoryInterface;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
@@ -111,23 +114,28 @@ class PlantService
         $plant = new Plant(
             $group,
             $createPlantModel->title,
-            $createPlantModel->room,
-            $createPlantModel->isShown,
-            $createPlantModel->description,
-            $createPlantModel->purchaseDate,
-            $createPlantModel->vaccinationDate,
+            $createPlantModel->room
+        );
+
+        $plant->changeLifeCycle(new LifeCycle(
             $createPlantModel->plantingDate,
-            $createPlantModel->seller,
-            $createPlantModel->nursery,
+            $createPlantModel->vaccinationDate,
+            $createPlantModel->soil,
+        ))->changePurchaseInfo(new PurchaseInfo(
             $createPlantModel->price,
             $createPlantModel->shippingCost,
             $createPlantModel->packagingCost,
-            $createPlantModel->soil,
-            $createPlantModel->isSold,
+            $createPlantModel->seller,
+            $createPlantModel->nursery,
+            $createPlantModel->purchaseDate
+        ))->changeSalesInfo(new SalesInfo(
             $createPlantModel->sellingDate,
             $createPlantModel->sellingPrice,
-            $createPlantModel->comment
-        );
+            $createPlantModel->isSold
+        ))->setComment($createPlantModel->comment)
+            ->setDescription($createPlantModel->description);
+
+        $plant->show();
 
         $this->plantRepository->create($plant);
 
@@ -177,26 +185,31 @@ class PlantService
     {
         $group = $this->groupService->find($updatePlantModel->groupId);
 
-        $plant->changeFields(
-            $group,
-            $updatePlantModel->title,
-            $updatePlantModel->room,
-            $updatePlantModel->isShown,
-            $updatePlantModel->description,
-            $updatePlantModel->purchaseDate,
-            $updatePlantModel->vaccinationDate,
-            $updatePlantModel->plantingDate,
-            $updatePlantModel->seller,
-            $updatePlantModel->nursery,
-            $updatePlantModel->price,
-            $updatePlantModel->shippingCost,
-            $updatePlantModel->packagingCost,
-            $updatePlantModel->soil,
-            $updatePlantModel->isSold,
-            $updatePlantModel->sellingDate,
-            $updatePlantModel->sellingPrice,
-            $updatePlantModel->comment
-        );
+        $plant->moveToGroup($group)
+            ->setTitle($updatePlantModel->title)
+            ->setRoom($updatePlantModel->room)
+            ->changeLifeCycle(new LifeCycle(
+                $updatePlantModel->plantingDate,
+                $updatePlantModel->vaccinationDate,
+                $updatePlantModel->soil,
+            ))->changePurchaseInfo(new PurchaseInfo(
+                $updatePlantModel->price,
+                $updatePlantModel->shippingCost,
+                $updatePlantModel->packagingCost,
+                $updatePlantModel->seller,
+                $updatePlantModel->nursery,
+                $updatePlantModel->purchaseDate
+            ))->changeSalesInfo(new SalesInfo(
+                $updatePlantModel->sellingDate,
+                $updatePlantModel->sellingPrice,
+                $updatePlantModel->isSold
+            ))->setComment($updatePlantModel->comment)
+            ->setDescription($updatePlantModel->description);
+
+        if ($updatePlantModel->isShown)
+            $plant->show();
+        else
+            $plant->hide();
 
         $this->plantRepository->update();
 
@@ -287,10 +300,10 @@ class PlantService
     {
         $path = $this->fileService->getAttachmentsPath('qr-code::class', $plant->getGroup()->getId());
 
-        $uuid = $plant->getOid();
+        $uuid = $plant->getPlantIdentifier()->getOid()->toString();
         $link = $this->fileService->getQrCodeLink($path . $plant->getId() . '/', $uuid, $this->webURL . 'dashboard/plant-info');
 
-        $plant->setQrCodeLink($link);
+        $plant->getPlantIdentifier()->withQrCodeLink($link);
     }
 
     /**
@@ -299,8 +312,8 @@ class PlantService
      */
     private function removeOldQrCodeFile(Plant $plant): void
     {
-        if ($plant->getQrCodeLink()) {
-            $this->fileService->removeUploadedFile($plant->getQrCodeLink());
+        if ($plant->getPlantIdentifier()->getQrCodeLink()) {
+            $this->fileService->removeUploadedFile($plant->getPlantIdentifier()->getQrCodeLink());
         }
     }
 }

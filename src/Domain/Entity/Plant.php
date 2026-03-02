@@ -2,20 +2,22 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Entity\Interfaces\AttachableInterface;
-use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
-use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\ValueObject\OId;
+use Doctrine\ORM\Mapping as ORM;
+use App\Domain\ValueObject\Plant\LifeCycle;
+use App\Domain\ValueObject\Plant\SalesInfo;
+use Doctrine\Common\Collections\Collection;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use App\Domain\ValueObject\OId;
-use App\Domain\ValueObject\Price;
-use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use App\Domain\ValueObject\Plant\PurchaseInfo;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\ValueObject\Plant\PlantIdentifier;
+use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
 #[ORM\Table(name: 'plant')]
 #[ORM\Entity]
@@ -32,10 +34,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    //UUIDv4
-    #[ORM\Column(type: 'oid', nullable: true)]
-    private ?OId $oid = null;
-
     //название растение
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
@@ -44,69 +42,33 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
     private ?string $description = null;
 
-    //ссылка на файл с qr кодом
-    #[ORM\Column(name: 'qr_code_link', type: 'string', length: 255, nullable: true)]
-    private ?string $qrCodeLink = null;
-
     //помещение
     #[ORM\Column(name: 'room', type: 'string', length: 64, nullable: false)]
     private string $room;
-
-    //дата покупки
-    #[ORM\Column(name: 'purchase_date', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $purchaseDate = null;
-
-    //дата прививки
-    #[ORM\Column(name: 'vaccination_date', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $vaccinationDate = null;
-
-    //дата посадки
-    #[ORM\Column(name: 'planting_date', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $plantingDate = null;
-
-    //продавец
-    #[ORM\Column(name: 'seller', type: 'string', length: 255, nullable: true)]
-    private ?string $seller = null;
-
-    //питомник
-    #[ORM\Column(name: 'nursery', type: 'string', length: 255, nullable: true)]
-    private ?string $nursery = null;
-
-    //стоимость
-    #[ORM\Column(type: 'price', length:10, nullable: true)]
-    private ?Price $price = null;
-
-    //стоимость доставки
-    #[ORM\Column(type: 'price', length:10, nullable: true)]
-    private ?Price $shippingCost = null;
-
-    //стоимость упаковки
-    #[ORM\Column(type: 'price', length:10, nullable: true)]
-    private ?Price $packagingCost = null;
 
     //показывать растение
     #[ORM\Column(name: 'is_shown', type: 'boolean', options: ['default' => true])]
     private bool $isShown = true;
 
-    //описание грунта
-    #[ORM\Column(name: 'soil', type: 'string', length: 255, nullable: true)]
-    private ?string $soil = null;
-
     //комментарии к растению
     #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
     private ?string $comment = null;
 
-    //Продано
-    #[ORM\Column(name: 'is_sold', type: 'boolean', options: ['default' => false])]
-    private bool $isSold = false;
+    //UUIDv4 и ссылка на qr code
+    #[ORM\Embedded(class: PlantIdentifier::class, columnPrefix: false)]
+    private PlantIdentifier $plantIdentifier;
 
-    //Дата продажи
-    #[ORM\Column(name: 'selling_date', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $sellingDate = null;
+    //стоимость, стоимость доставки, стоимость упаковки, продавец, питомник, дата покупки
+    #[ORM\Embedded(class: PurchaseInfo::class, columnPrefix: false)]
+    private ?PurchaseInfo $purchaseInfo;
 
-    //Стоимость продажи
-    #[ORM\Column(type: 'price', length:10, nullable: true)]
-    private ?Price $sellingPrice = null;
+    //дата прививки, дата посадки, описание грунта
+    #[ORM\Embedded(class: LifeCycle::class, columnPrefix: false)]
+    private ?LifeCycle $lifeCycle;
+
+    //Дата продажи, Стоимость продажи, Продано
+    #[ORM\Embedded(class: SalesInfo::class, columnPrefix: false)]
+    private ?SalesInfo $salesInfo;
 
     //связь с задачами
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'plant')]
@@ -137,46 +99,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
-    private function setCommonFields(
-        Group $group,
-        string $title,
-        string $room,
-        bool $isShown = true,
-        ?string $description = null,
-        ?DateTimeImmutable $purchaseDate = null,
-        ?DateTimeImmutable $vaccinationDate = null,
-        ?DateTimeImmutable $plantingDate = null,
-        ?string $seller = null,
-        ?string $nursery = null,
-        ?Price $price = null,
-        ?Price $shippingCost = null,
-        ?Price $packagingCost = null,
-        ?string $soil = null,
-        bool $isSold = false,
-        ?DateTimeImmutable $sellingDate = null,
-        ?Price $sellingPrice = null,
-        ?string $comment = null,
-    ): void {
-        $this->setGroupValidate($group);
-        $this->setTitleValidate($title);
-        $this->setRoomValidate($room);
-        $this->setIsShownValidate($isShown);
-        $this->setDescriptionValidate($description);
-        $this->setPurchaseDateValidate($purchaseDate);
-        $this->setVaccinationDateValidate($vaccinationDate);
-        $this->setPlantingDateValidate($plantingDate);
-        $this->setSellerValidate($seller);
-        $this->setNurseryValidate($nursery);
-        $this->setPriceValidate($price);
-        $this->setShippingCostValidate($shippingCost);
-        $this->setPackagingCostValidate($packagingCost);
-        $this->setSoilValidate($soil);
-        $this->setIsSoldValidate($isSold);
-        $this->setSellingDateValidate($sellingDate);
-        $this->setSellingPriceValidate($sellingPrice);
-        $this->setCommentValidate($comment);
-    }
-
     private function setGroupValidate(Group $group): void
     {
         $this->group = $group;
@@ -198,124 +120,17 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->room = $room;
     }
 
-    private function setIsShownValidate(bool $isShown): void
-    {
-        $this->isShown = $isShown;
-    }
-
-    private function setDescriptionValidate(?string $description = null): void
-    {
-        $this->description = $description;
-    }
-
-    private function setPurchaseDateValidate(?DateTimeImmutable $purchaseDate = null): void
-    {
-        $this->purchaseDate = $purchaseDate;
-    }
-
-    private function setVaccinationDateValidate(?DateTimeImmutable $vaccinationDate = null): void
-    {
-        $this->vaccinationDate = $vaccinationDate;
-    }
-
-    private function setPlantingDateValidate(?DateTimeImmutable $plantingDate = null): void
-    {
-        $this->plantingDate = $plantingDate;
-    }
-
-    private function setSellerValidate(?string $seller = null): void
-    {
-        $this->seller = $seller;
-    }
-
-    private function setNurseryValidate(?string $nursery = null): void
-    {
-        $this->nursery = $nursery;
-    }
-
-    private function setPriceValidate(?Price $price = null): void
-    {
-        $this->price = $price;
-    }
-
-    private function setShippingCostValidate(?Price $shippingCost = null): void
-    {
-        $this->shippingCost = $shippingCost;
-    }
-
-    private function setPackagingCostValidate(?Price $packagingCost = null): void
-    {
-        $this->packagingCost = $packagingCost;
-    }
-
-    private function setSoilValidate(?string $soil = null): void
-    {
-        $this->soil = $soil;
-    }
-
-    private function setIsSoldValidate(bool $isSold = false): void
-    {
-        $this->isSold = $isSold;
-    }
-
-    private function setSellingDateValidate(?DateTimeImmutable $sellingDate = null): void
-    {
-        $this->sellingDate = $sellingDate;
-    }
-
-    private function setSellingPriceValidate(?Price $sellingPrice = null): void
-    {
-        $this->sellingPrice = $sellingPrice;
-    }
-
-    private function setCommentValidate(?string $comment = null): void
-    {
-        $this->comment = $comment;
-    }
-
     public function __construct(
         Group $group,
         string $title,
-        string $room,
-        bool $isShown = true,
-        ?string $description = null,
-        ?DateTimeImmutable $purchaseDate = null,
-        ?DateTimeImmutable $vaccinationDate = null,
-        ?DateTimeImmutable $plantingDate = null,
-        ?string $seller = null,
-        ?string $nursery = null,
-        ?Price $price = null,
-        ?Price $shippingCost = null,
-        ?Price $packagingCost = null,
-        ?string $soil = null,
-        bool $isSold = false,
-        ?DateTimeImmutable $sellingDate = null,
-        ?Price $sellingPrice = null,
-        ?string $comment = null,
+        string $room
     )
     {
-        $this->setCommonFields(
-            $group,
-            $title,
-            $room,
-            $isShown,
-            $description,
-            $purchaseDate,
-            $vaccinationDate,
-            $plantingDate,
-            $seller,
-            $nursery,
-            $price,
-            $shippingCost,
-            $packagingCost,
-            $soil,
-            $isSold,
-            $sellingDate,
-            $sellingPrice,
-            $comment,
-        );
+        $this->setGroupValidate($group);
+        $this->setTitleValidate($title);
+        $this->setRoomValidate($room);
 
-        $this->oid = OId::next();
+        $this->plantIdentifier = new PlantIdentifier(OId::next());
 
         $this->tasks = new ArrayCollection();
         $this->offsprings = new ArrayCollection();
@@ -325,53 +140,47 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->pests = new ArrayCollection();
     }
 
-    public function changeFields(
-        Group $group,
-        string $title,
-        string $room,
-        bool $isShown = true,
-        ?string $description = null,
-        ?DateTimeImmutable $purchaseDate = null,
-        ?DateTimeImmutable $vaccinationDate = null,
-        ?DateTimeImmutable $plantingDate = null,
-        ?string $seller = null,
-        ?string $nursery = null,
-        ?Price $price = null,
-        ?Price $shippingCost = null,
-        ?Price $packagingCost = null,
-        ?string $soil = null,
-        bool $isSold = false,
-        ?DateTimeImmutable $sellingDate = null,
-        ?Price $sellingPrice = null,
-        ?string $comment = null
-    ): void
+    public function moveToGroup(Group $group): self
     {
-        if ($this->getDeletedAt() !== null) {
-            throw new \LogicException('Cannot modify a deleted plant.');
-        }
+        $this->group = $group;
 
-        $this->setCommonFields(
-            $group,
-            $title,
-            $room,
-            $isShown,
-            $description,
-            $purchaseDate,
-            $vaccinationDate,
-            $plantingDate,
-            $seller,
-            $nursery,
-            $price,
-            $shippingCost,
-            $packagingCost,
-            $soil,
-            $isSold,
-            $sellingDate,
-            $sellingPrice,
-            $comment,
-        );
+        return $this;
+    }
 
-        $this->oid = OId::next();
+    public function isShown(): bool
+    {
+        return $this->isShown;
+    }
+
+    public function show(): void
+    {
+        $this->isShown = true;
+    }
+
+    public function hide(): void
+    {
+        $this->isShown = false;
+    }
+
+    public function changeLifeCycle(LifeCycle $lifeCycle): self
+    {
+        $this->lifeCycle = $lifeCycle;
+
+        return $this;
+    }
+
+    public function changePurchaseInfo(PurchaseInfo $purchaseInfo): self
+    {
+        $this->purchaseInfo = $purchaseInfo;
+
+        return $this;
+    }
+
+    public function changeSalesInfo(SalesInfo $salesInfo): self
+    {
+        $this->salesInfo = $salesInfo;
+
+        return $this;
     }
 
     public function getId(): int
@@ -386,30 +195,14 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         return $this->group;
     }
 
-    public function getOid(): ?OId
-    {
-        return $this->oid;
-    }
-
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getDescription(): ?string
+    public function setTitle(string $title): self
     {
-        return $this->description;
-    }
-
-    public function getQrCodeLink(): ?string
-    {
-        return $this->qrCodeLink;
-    }
-
-    public function setQrCodeLink(string $link): self
-    {
-        $this->qrCodeLink = $link;
-
+        $this->title = $title;
         return $this;
     }
 
@@ -418,73 +211,83 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         return $this->room;
     }
 
-    public function getPurchaseDate(): ?DateTimeImmutable
+    public function setRoom(string $room): self
     {
-        return $this->purchaseDate;
+        $this->room = $room;
+        return $this;
     }
 
-    public function getVaccinationDate(): ?DateTimeImmutable
+    public function getDescription(): ?string
     {
-        return $this->vaccinationDate;
+        return $this->description;
     }
 
-    public function getPlantingDate(): ?DateTimeImmutable
+    public function setDescription(string $description): self
     {
-        return $this->plantingDate;
-    }
+        $this->description = $description;
 
-    public function getSeller(): ?string
-    {
-        return $this->seller;
-    }
-
-    public function getNursery(): ?string
-    {
-        return $this->nursery;
-    }
-
-    public function getPrice(): ?Price
-    {
-        return $this->price;
-    }
-
-    public function getShippingCost(): ?Price
-    {
-        return $this->shippingCost;
-    }
-
-    public function getPackagingCost(): ?Price
-    {
-        return $this->packagingCost;
-    }
-
-    public function isShown(): bool
-    {
-        return $this->isShown;
-    }
-
-    public function getSoil(): ?string
-    {
-        return $this->soil;
-    }
-
-    public function isSold(): bool
-    {
-        return $this->isSold;
-    }
-
-    public function getSellingDate(): ?DateTimeImmutable
-    {
-        return $this->sellingDate;
-    }
-
-    public function getSellingPrice(): ?Price
-    {
-        return $this->sellingPrice;
+        return $this;
     }
 
     public function getComment(): ?string
     {
         return $this->comment;
+    }
+
+    public function setComment(string $comment): self
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getPlantIdentifier(): PlantIdentifier
+    {
+        return $this->plantIdentifier;
+    }
+
+    public function getLifeCycle(): LifeCycle
+    {
+        return $this->lifeCycle;
+    }
+
+    public function getPurchaseInfo(): PurchaseInfo
+    {
+        return $this->purchaseInfo;
+    }
+
+    public function getSalesInfo(): SalesInfo
+    {
+        return $this->salesInfo;
+    }
+
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function getOffsprings(): Collection
+    {
+        return $this->offsprings;
+    }
+
+    public function getFertilizers(): Collection
+    {
+        return $this->fertilizers;
+    }
+
+    public function getUsages(): Collection
+    {
+        return $this->usages;
+    }
+
+    public function getStimulants(): Collection
+    {
+        return $this->stimulants;
+    }
+
+    public function getPests(): Collection
+    {
+        return $this->pests;
     }
 }

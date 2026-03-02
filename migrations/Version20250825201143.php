@@ -100,7 +100,7 @@ final class Version20250825201143 extends AbstractMigration
                     shipping_cost VARCHAR(10) DEFAULT NULL,
                     packaging_cost VARCHAR(10) DEFAULT NULL,
                     is_shown BOOLEAN DEFAULT true NOT NULL,
-                    soil VARCHAR(255) DEFAULT NULL,
+                    soil VARCHAR(1024) DEFAULT NULL,
                     is_sold BOOLEAN DEFAULT false NOT NULL,
                     selling_price VARCHAR(10) DEFAULT NULL,
                     selling_date TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
