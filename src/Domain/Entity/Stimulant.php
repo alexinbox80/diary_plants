@@ -70,18 +70,4 @@ class Stimulant extends Preparation implements EntityInterface, HasMetaTimestamp
         parent::changeFields($title, $quantity, $letter, $manufacturer, $description, $comment);
         $this->plant = $plant;
     }
-
-    public function toArray(): array
-    {
-        return
-            array_merge(
-                parent::toArray(),
-                [
-                    'id' => $this->getId(),
-                    'plant' => $this->getPlant()->toArray(),
-                    'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-                ]
-            );
-    }
 }

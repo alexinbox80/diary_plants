@@ -25,11 +25,6 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    //статус
-    #[ORM\ManyToOne(targetEntity: Status::class, inversedBy: 'tasks')]
-    #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id')]
-    private Status $status;
-
     //дата события
     #[ORM\Column(name: 'date', type: 'datetimetz_immutable', nullable: false)]
     private DateTimeImmutable $date;
@@ -40,8 +35,13 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
     //растение
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'tasks')]
-    #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id', nullable: false)]
     private Plant $plant;
+
+    //статус
+    #[ORM\ManyToOne(targetEntity: Status::class, inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Status $status;
 
     private function setCommonFields(
         Status $status,
@@ -121,18 +121,5 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'status' => $this->getStatus()->toArray(),
-            'plant' => $this->getPlant()->toArray(),
-            'date' => $this->getDate()->format('Y-m-d'),
-            'description' => $this->getDescription(),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-        ];
     }
 }

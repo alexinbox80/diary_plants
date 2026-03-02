@@ -142,8 +142,8 @@ final class Version20250825201143 extends AbstractMigration
                     created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
                     updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
                     deleted_at TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
-                    status_id BIGINT DEFAULT NULL,
-                    plant_id BIGINT DEFAULT NULL,
+                    status_id BIGINT NOT NULL,
+                    plant_id BIGINT NOT NULL,
                     PRIMARY KEY (id))');
 
         $this->addSql('CREATE TABLE usage (

@@ -31,14 +31,6 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
-    /**
-     * @var Collection<int, Usage>
-     */
-    #[ORM\OneToMany(targetEntity: Usage::class, mappedBy: 'usage', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'usable_id', nullable: true)]
-    private Collection $usages;
-
-
     public function __construct(
         Plant    $plant,
         string   $title,
@@ -99,18 +91,5 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     {
         $this->usages->removeElement($usage);
         return $this;
-    }
-
-    public function toArray(): array
-    {
-        return array_merge(
-            parent::toArray(),
-            [
-                'id' => $this->getId(),
-                'plant' => $this->getPlant()->toArray(),
-                'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-                'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-            ]
-        );
     }
 }

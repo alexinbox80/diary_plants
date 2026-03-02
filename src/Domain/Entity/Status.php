@@ -2,15 +2,17 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
-use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Webmozart\Assert\Assert as WebmozartAssert;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Table(name: 'status')]
 #[ORM\Entity]
@@ -44,8 +46,8 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     private ?string $colorDescription = null;
 
     //связь с событиями
-    #[ORM\OneToOne(targetEntity: Task::class, mappedBy: 'status')]
-    private Task $task;
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'status')]
+    private Collection $tasks;
 
     private function setCommonFields(
         string $letter,
@@ -103,6 +105,8 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     )
     {
         $this->setCommonFields($letter, $color, $description, $colorDescription);
+
+        $this->tasks = new ArrayCollection();
     }
 
     public function changeFields(
@@ -140,18 +144,5 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     public function getColorDescription(): ?string
     {
         return $this->colorDescription;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'letter' => $this->getLetter(),
-            'color' => $this->getColor(),
-            'description' => $this->getDescription(),
-            'color_description' => $this->getColorDescription(),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s')
-        ];
     }
 }
