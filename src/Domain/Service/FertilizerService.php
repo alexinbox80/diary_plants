@@ -2,6 +2,8 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\ValueObject\Preparation\PreparationDetails;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
 use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
 use Psr\Cache\InvalidArgumentException;
@@ -89,11 +91,15 @@ class FertilizerService
             $group,
             $plant,
             $createFertilizerModel->title,
-            $createFertilizerModel->quantity,
-            $createFertilizerModel->letter,
-            $createFertilizerModel->manufacturer,
-            $createFertilizerModel->description,
-            $createFertilizerModel->comment
+            new PreparationVolume(
+                $createFertilizerModel->quantity,
+                $createFertilizerModel->letter
+            ),
+            new PreparationDetails(
+                $createFertilizerModel->manufacturer,
+                $createFertilizerModel->description,
+                $createFertilizerModel->comment
+            )
         );
 
         $this->fertilizerRepository->create($fertilizer);
@@ -138,11 +144,15 @@ class FertilizerService
             $group,
             $plant,
             $updateFertilizerModel->title,
-            $updateFertilizerModel->quantity,
-            $updateFertilizerModel->letter,
-            $updateFertilizerModel->manufacturer,
-            $updateFertilizerModel->description,
-            $updateFertilizerModel->comment
+            new PreparationVolume(
+                $updateFertilizerModel->quantity,
+                $updateFertilizerModel->letter
+            ),
+            new PreparationDetails(
+                $updateFertilizerModel->manufacturer,
+                $updateFertilizerModel->description,
+                $updateFertilizerModel->comment
+            )
         );
 
         $this->fertilizerRepository->update();

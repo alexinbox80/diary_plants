@@ -23,11 +23,11 @@ class Manager
             $fertilizer->getGroup()->getId(),
             $fertilizer->getPlant()->getId(),
             $fertilizer->getTitle(),
-            $fertilizer->getQuantity(),
-            $fertilizer->getLetter(),
-            $fertilizer->getManufacturer(),
-            $fertilizer->getDescription(),
-            $fertilizer->getComment()
+            $fertilizer->getVolume()->getQuantity(),
+            $fertilizer->getVolume()->getLetter(),
+            $fertilizer->getDetails()->getManufacturer(),
+            $fertilizer->getDetails()->getDescription(),
+            $fertilizer->getDetails()->getComment()
         );
 
         $form = $this->formFactory->create(FertilizerType::class, $formData, ['group_id' => 2]);

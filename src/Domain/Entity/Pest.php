@@ -2,20 +2,22 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
-use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use Doctrine\Common\Collections\Collection;
 use Webmozart\Assert\Assert as WebmozartAssert;
-use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
 #[ORM\Table(name: 'pest')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'pest__plant_id__ind', columns: ['plant_id'])]
+#[ORM\UniqueConstraint(name: 'pest__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
 class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -31,18 +33,22 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'pests')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
+    private Group $group;
+
     public function __construct(
-        Plant    $plant,
-        string   $title,
-        int      $quantity,
-        string   $letter,
-        ?string  $manufacturer = null,
-        ?string  $description = null,
-        ?string  $comment = null
+        Group $group,
+        Plant $plant,
+        string $title,
+        PreparationVolume $volume,
+        PreparationDetails $details = new PreparationDetails()
     )
     {
-        parent::__construct($title, $quantity, $letter, $manufacturer, $description, $comment);
+        parent::__construct($title, $volume, $details);
 
+        $this->group = $group;
         $this->plant = $plant;
     }
 
@@ -59,37 +65,16 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
     }
 
     public function changeFieldsWithPlant(
-        string   $title,
-        int      $quantity,
-        string   $letter,
-        Plant    $plant,
-        ?string  $manufacturer = null,
-        ?string  $description = null,
-        ?string  $comment = null,
+        Group $group,
+        Plant $plant,
+        string $title,
+        PreparationVolume $volume,
+        PreparationDetails $details
     ): void
     {
-        parent::changeFields($title, $quantity, $letter, $manufacturer, $description, $comment);
+        parent::changeFields($title, $volume, $details);
+
+        $this->group = $group;
         $this->plant = $plant;
-    }
-
-    public function getUsages(): Collection
-    {
-        return $this->usages;
-    }
-
-    public function addUsage(Usage $usage): self
-    {
-        if (!$this->usages->contains($usage)) {
-            $this->usages[] = $usage;
-            $usage->setUsableType(self::class); // Set the type
-            $usage->setUsableId($this->getId()); // Set the ID
-        }
-        return $this;
-    }
-
-    public function removeUsage(Usage $usage): self
-    {
-        $this->usages->removeElement($usage);
-        return $this;
     }
 }

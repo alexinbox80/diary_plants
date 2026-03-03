@@ -2,74 +2,47 @@
 
 namespace App\Domain\Entity;
 
-use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\ORM\Mapping as ORM;
+use Webmozart\Assert\Assert as WebmozartAssert;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
 
 #[ORM\MappedSuperclass]
 abstract class Preparation
 {
+    private const REGEX_ALPHA_NUM = '/^[ \p{Cyrillic}A-Za-z0-9\s\-_\(\)№]+$/u';
+
     //заголовок
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    //буква обозначения
-    #[ORM\Column(name: 'letter', type: 'string', length: 2, nullable: false)]
-    private string $letter;
+    //буква обозначения, количество
+    #[ORM\Embedded(class: PreparationVolume::class, columnPrefix: false)]
+    private PreparationVolume $volume;
 
-    //описание
-    #[ORM\Column(name: 'description', type: 'string', length: 1024, nullable: true)]
-    private ?string $description = null;
-
-    //изготовитель
-    #[ORM\Column(name: 'manufacturer', type: 'string', length: 255, nullable: true)]
-    private ?string $manufacturer = null;
-
-    //количество
-    #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
-    private int $quantity;
-
-    //комментарии
-    #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
-    private ?string $comment = null;
-
-    private function setCommonFields(
-        string $title,
-        int $quantity,
-        string $letter,
-        ?string $manufacturer = null,
-        ?string $description = null,
-        ?string $comment = null
-    ): void {
-        $this->setTitleValidate($title);
-        $this->setManufacturerValidate($manufacturer);
-        $this->setQuantityValidate($quantity);
-        $this->setLetterValidate($letter);
-
-        $this->description = $description;
-        $this->comment = $comment;
-    }
+    //описание, изготовитель, комментарии
+    #[ORM\Embedded(class: PreparationDetails::class, columnPrefix: false)]
+    private PreparationDetails $details;
 
     public function __construct(
         string $title,
-        int $quantity,
-        string $letter,
-        ?string $manufacturer = null,
-        ?string $description = null,
-        ?string $comment = null
+        PreparationVolume $volume,
+        PreparationDetails $details = new PreparationDetails()
     ) {
-        $this->setCommonFields($title, $quantity, $letter, $manufacturer, $description, $comment);
+        $this->setTitleValidate($title);
+        $this->volume = $volume;
+        $this->details = $details;
     }
 
     protected function changeFields(
         string $title,
-        int $quantity,
-        string $letter,
-        ?string $manufacturer = null,
-        ?string $description = null,
-        ?string $comment = null
+        PreparationVolume $volume,
+        PreparationDetails $details
     ): void
     {
-        $this->setCommonFields($title, $quantity, $letter, $manufacturer, $description, $comment);
+        $this->setTitleValidate($title);
+        $this->volume = $volume;
+        $this->details = $details;
     }
 
     private function setTitleValidate(string $title): void
@@ -79,44 +52,12 @@ abstract class Preparation
         // Проверяем, что строка состоит только из русских букв и цифр
         WebmozartAssert::regex(
             $title,
-            '/^[\p{Cyrillic}0-9\s\-_]+$/u',
-            'Title must contain only Cyrillic letters, digits, spaces, hyphens, or underscores. Got: %s'
+            self::REGEX_ALPHA_NUM,
+            'Title must contain only Cyrillic and Latin letters, digits, spaces, hyphens, or underscores. Got: %s'
         );
         WebmozartAssert::lengthBetween($title, 2, 255, 'Title must be a string valid length of 2-255 letters. Got: %s');
 
         $this->title = $title;
-    }
-
-    private function setManufacturerValidate(?string $manufacturer = null): void
-    {
-        //WebmozartAssert::stringNotEmpty($manufacturer, 'Manufacturer should not be empty. Got: %s');
-
-        // Проверяем, что строка состоит только из русских букв и цифр
-        if ($manufacturer !== null) {
-            WebmozartAssert::regex(
-                $manufacturer,
-                '/^[\p{Cyrillic}0-9\s\-_()]+$/u',
-                'Manufacturer must contain only Cyrillic letters, digits, spaces, hyphens, or underscores. Got: %s'
-            );
-            WebmozartAssert::lengthBetween($manufacturer, 2, 255, 'Manufacturer must be a string valid length of 2-255 letters. Got: %s');
-        }
-
-        $this->manufacturer = $manufacturer;
-    }
-
-    private function setQuantityValidate(string $quantity): void
-    {
-        WebmozartAssert::numeric($quantity);
-        WebmozartAssert::greaterThan($quantity, 0, 'Quantity must be positive');
-        $this->quantity = $quantity;
-    }
-
-    private function setLetterValidate(string $letter): void
-    {
-        WebmozartAssert::stringNotEmpty($letter, 'Room should not be empty. Got: %s');
-        WebmozartAssert::lengthBetween($letter, 2, 2, 'Room must be a string valid length of 2 letters. Got: %s');
-
-        $this->letter = $letter;
     }
 
     public function getTitle(): string
@@ -124,40 +65,13 @@ abstract class Preparation
         return $this->title;
     }
 
-    public function getDescription(): ?string
+    public function getVolume(): PreparationVolume
     {
-        return $this->description;
+        return $this->volume;
     }
 
-    public function getManufacturer(): ?string
+    public function getDetails(): PreparationDetails
     {
-        return $this->manufacturer;
-    }
-
-    public function getQuantity(): int
-    {
-        return $this->quantity;
-    }
-
-    public function getLetter(): string
-    {
-        return $this->letter;
-    }
-
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'title' => $this->getTitle(),
-            'description' => $this->getDescription(),
-            'manufacturer' => $this->getManufacturer(),
-            'quantity' => $this->getQuantity(),
-            'letter' => $this->getLetter(),
-            'comment' => $this->getComment(),
-        ];
+        return $this->details;
     }
 }

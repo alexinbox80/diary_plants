@@ -30,6 +30,9 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__email__uniq ON "user" (email) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__phone__uniq ON "user" (phone) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__refresh_token__uniq ON "user" (refresh_token) WHERE (deleted_at IS NULL)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__letter__uniq ON fertilizer (letter) WHERE (deleted_at IS NULL)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS pest__letter__uniq ON pest (letter) WHERE (deleted_at IS NULL)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS stimulant__letter__uniq ON stimulant (letter) WHERE (deleted_at IS NULL)');
 
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__plant_id__ind ON fertilizer (plant_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__group_id__ind ON fertilizer (group_id)');
@@ -55,6 +58,9 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__email__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__phone__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__refresh_token__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__letter__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS pest__letter__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS stimulant__letter__uniq');
 
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__plant_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__group_id__ind');
