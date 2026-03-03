@@ -165,6 +165,13 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->isShown = false;
     }
 
+    public function changePlantIdentifier(PlantIdentifier $plantIdentifier): self
+    {
+        $this->plantIdentifier = $plantIdentifier;
+
+        return $this;
+    }
+
     public function changeLifeCycle(LifeCycle $lifeCycle): self
     {
         $this->lifeCycle = $lifeCycle;

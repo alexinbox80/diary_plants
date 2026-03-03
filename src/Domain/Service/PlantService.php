@@ -294,7 +294,8 @@ class PlantService
 
     /**
      * Вспомогательные методы
-     *
+     * @param Plant $plant
+     * @return void
      */
     private function processFileForQrCode(Plant $plant): void
     {
@@ -303,7 +304,9 @@ class PlantService
         $uuid = $plant->getPlantIdentifier()->getOid()->toString();
         $link = $this->fileService->getQrCodeLink($path . $plant->getId() . '/', $uuid, $this->webURL . 'dashboard/plant-info');
 
-        $plant->getPlantIdentifier()->withQrCodeLink($link);
+        $plant->changePlantIdentifier(
+            $plant->getPlantIdentifier()->withQrCodeLink($link)
+        );
     }
 
     /**

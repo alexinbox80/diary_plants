@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Model\Group\GroupModel;
 use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Repository\AttachableResolverInterface;
@@ -210,8 +210,8 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 
         if ($addRelations) {
             $attachableEntity = $this->attachableResolver->resolve(
-                $attachment->getAttachableType(),
-                $attachment->getAttachableId()
+                $attachment->getTarget()->getAttachableType(),
+                $attachment->getTarget()->getAttachableId()
             );
 
             $attachableModel = $this->toAttachableModel($attachableEntity);
@@ -246,17 +246,17 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         return new AttachmentModel(
             $attachment->getId(),
             $attachment->getGroup()->getId(),
-            $attachment->isShown(),
-            $attachment->getAlt(),
-            $attachment->getTitle(),
-            $attachment->getFileDate(),
+            $attachment->getDisplaySettings()->isShown(),
+            $attachment->getDisplaySettings()->getAlt(),
+            $attachment->getDisplaySettings()->getTitle(),
+            $attachment->getFileInfo()->getFileDate(),
             $groupModel,
-            $attachment->getFilename(),
-            $attachment->getPath(),
-            $attachment->getMimeType(),
-            $attachment->getDescription(),
-            $attachment->getAttachableId(),
-            $attachment->getAttachableType(),
+            $attachment->getFileInfo()->getFilename(),
+            $attachment->getFileInfo()->getPath(),
+            $attachment->getFileInfo()->getMimeType(),
+            $attachment->getDisplaySettings()->getDescription(),
+            $attachment->getTarget()->getAttachableId(),
+            $attachment->getTarget()->getAttachableType(),
             $attachableModel,
             $attachment->getCreatedAt(),
             $attachment->getUpdatedAt()

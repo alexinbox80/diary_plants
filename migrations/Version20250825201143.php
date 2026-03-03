@@ -30,7 +30,7 @@ final class Version20250825201143 extends AbstractMigration
                     alt VARCHAR(255) NOT NULL,
                     title VARCHAR(255) NOT NULL,
                     description VARCHAR(1024) DEFAULT NULL,
-                    file_date TIMESTAMP(0) WITH TIME ZONE NOT NULL,
+                    file_date TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
                     attachable_id INT DEFAULT NULL,
                     attachable_type VARCHAR(255) DEFAULT NULL,
                     created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,

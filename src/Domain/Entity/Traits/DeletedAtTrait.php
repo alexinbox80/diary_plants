@@ -8,6 +8,8 @@ use App\Domain\Entity\User;
 use App\Domain\Entity\Plant;
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Attachment;
+use App\Domain\ValueObject\Attachment\FileInfo;
+use App\Domain\ValueObject\Plant\PlantIdentifier;
 
 trait DeletedAtTrait
 {
@@ -22,12 +24,14 @@ trait DeletedAtTrait
     public function setDeletedAt(): void
     {
         if ($this instanceof Attachment) {
-            $this->mimeType = null;
-            $this->path = null;
-            $this->filename = null;
+            $this->updateFileInfo(
+                new FileInfo()
+            );
         }
         if ($this instanceof Plant) {
-            $this->qrCodeLink = null;
+            $this->plantIdentifier = new PlantIdentifier(
+                $this->getPlantIdentifier()->getOid()
+            );
         }
         if ($this instanceof User) {
             $this->avatarLink = null;

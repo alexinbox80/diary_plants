@@ -156,24 +156,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
             $attachments = $this->attachmentRepository->findByAttachable('offspring::class', $offspring->getId());
 
             $attachmentModels = array_map(
-                fn (Attachment $attachment): AttachmentModel => new AttachmentModel(
-                    $attachment->getId(),
-                    $attachment->getGroup()->getId(),
-                    $attachment->isShown(),
-                    $attachment->getAlt(),
-                    $attachment->getTitle(),
-                    $attachment->getFileDate(),
-                    null,
-                    $attachment->getFilename(),
-                    $attachment->getPath(),
-                    $attachment->getMimeType(),
-                    $attachment->getDescription(),
-                    $attachment->getAttachableId(),
-                    $attachment->getAttachableType(),
-                    null,
-                    $attachment->getCreatedAt(),
-                    $attachment->getUpdatedAt()
-                ),
+                fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
                 $attachments
             );
 

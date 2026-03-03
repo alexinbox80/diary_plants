@@ -20,16 +20,16 @@ class Manager
     public function editFormData(Request $request, Attachment $attachment): array
     {
         $formData = new EditImageDTO(
-            $attachment->isShown(),
-            $attachment->getFilename(),
-            $attachment->getPath(),
-            $attachment->getMimeType(),
-            $attachment->getAlt(),
-            $attachment->getTitle(),
-            $attachment->getFileDate(),
-            $attachment->getDescription(),
-            (int) $attachment->getAttachableId(),
-            $attachment->getAttachableType(),
+            $attachment->getDisplaySettings()->isShown(),
+            $attachment->getFileInfo()->getFilename(),
+            $attachment->getFileInfo()->getPath(),
+            $attachment->getFileInfo()->getMimeType(),
+            $attachment->getDisplaySettings()->getAlt(),
+            $attachment->getDisplaySettings()->getTitle(),
+            $attachment->getFileInfo()->getFileDate(),
+            $attachment->getDisplaySettings()->getDescription(),
+            (int) $attachment->getTarget()->getAttachableId(),
+            $attachment->getTarget()->getAttachableType(),
             null
         );
 

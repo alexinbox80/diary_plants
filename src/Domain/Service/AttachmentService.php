@@ -2,6 +2,9 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\ValueObject\Attachment\AttachableReference;
+use App\Domain\ValueObject\Attachment\DisplaySettings;
+use App\Domain\ValueObject\Attachment\FileInfo;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use App\Domain\Entity\Attachment;
@@ -98,16 +101,25 @@ class AttachmentService
 
         $attachment = new Attachment(
             $group,
-            $createAttachmentModel->isShown,
-            $createAttachmentModel->alt,
-            $createAttachmentModel->title,
-            $createAttachmentModel->fileDate,
-            $createAttachmentModel->filename,
-            $createAttachmentModel->path,
-            $createAttachmentModel->mimeType,
-            $createAttachmentModel->description,
-            $createAttachmentModel->attachableId,
-            $createAttachmentModel->attachableType
+            new DisplaySettings(
+                $createAttachmentModel->title,
+                $createAttachmentModel->alt,
+                $createAttachmentModel->description,
+                $createAttachmentModel->isShown,
+            )
+        );
+
+        $attachment->updateFileInfo(
+            new FileInfo(
+                $createAttachmentModel->filename,
+                $createAttachmentModel->path,
+                $createAttachmentModel->mimeType,
+                $createAttachmentModel->fileDate
+            ))->updateTarget(
+                new AttachableReference(
+                    $createAttachmentModel->attachableId,
+                    $createAttachmentModel->attachableType
+                )
         );
 
         $this->attachmentRepository->create($attachment);
@@ -151,19 +163,33 @@ class AttachmentService
     {
         $group = $this->groupService->find($updateAttachmentModel->groupId);
 
-        $attachment->changeFields(
-            $group,
-            $updateAttachmentModel->isShown,
-            $updateAttachmentModel->alt,
-            $updateAttachmentModel->title,
-            $updateAttachmentModel->fileDate,
-            $updateAttachmentModel->filename,
-            $updateAttachmentModel->path,
-            $updateAttachmentModel->mimeType,
-            $updateAttachmentModel->description,
-            $updateAttachmentModel->attachableId,
-            $updateAttachmentModel->attachableType
-        );
+        $attachment
+            ->moveToGroup($group)
+            ->updateDisplaySettings(new DisplaySettings(
+                $updateAttachmentModel->title,
+                $updateAttachmentModel->alt,
+                $updateAttachmentModel->description,
+                $updateAttachmentModel->isShown,
+            ))
+            ->updateFileInfo(
+                new FileInfo(
+                    $updateAttachmentModel->filename,
+                    $updateAttachmentModel->path,
+                    $updateAttachmentModel->mimeType,
+                    $updateAttachmentModel->fileDate
+                )
+            )->updateTarget(
+                new AttachableReference(
+                    $updateAttachmentModel->attachableId,
+                    $updateAttachmentModel->attachableType
+                )
+            );
+
+        if ($updateAttachmentModel->isShown) {
+            $attachment->getDisplaySettings()->show();
+        } else {
+            $attachment->getDisplaySettings()->hide();
+        }
 
         $this->attachmentRepository->update();
 
@@ -270,8 +296,8 @@ class AttachmentService
      */
     private function removeOldFile(Attachment $attachment): void
     {
-        if ($attachment->getPath() && $attachment->getFilename()) {
-            $this->fileService->removeUploadedFile($attachment->getPath() . $attachment->getFilename());
+        if ($attachment->getFileInfo()->getPath() && $attachment->getFileInfo()->getFilename()) {
+            $this->fileService->removeUploadedFile($attachment->getFileInfo()->getPath() . $attachment->getFileInfo()->getFilename());
         }
     }
 }
