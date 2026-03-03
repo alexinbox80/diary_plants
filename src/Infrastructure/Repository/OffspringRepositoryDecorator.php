@@ -2,19 +2,20 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Attachment;
 use App\Domain\Entity\Offspring;
-use App\Domain\Model\Attachment\AttachmentModel;
-use App\Domain\Model\Offspring\OffspringModel;
+use App\Domain\Entity\Attachment;
 use App\Domain\Model\Plant\PlantModel;
-use App\Domain\Repository\OffspringRepositoryInterface;
+use App\Domain\Model\Offspring\OffspringModel;
+use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\Repository\OffspringRepositoryInterface;
 
 class OffspringRepositoryDecorator implements OffspringRepositoryInterface
 {
     public function __construct(
         private readonly OffspringRepository  $offspringRepository,
-        private readonly AttachmentRepository $attachmentRepository, private readonly PlantRepositoryInterface $plantRepository,
+        private readonly AttachmentRepository $attachmentRepository,
+        private readonly PlantRepositoryInterface $plantRepository,
     ) {
     }
 
@@ -194,12 +195,12 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
             $offspring->getGroup()->getId(),
             $offspring->getPlant()->getId(),
             $attachmentModels,
-            $offspring->getFruitingDate(),
-            $offspring->getFloweringDate(),
-            $offspring->getMass(),
-            $offspring->getColor(),
-            $offspring->getFlavor(),
-            $offspring->getQuantity(),
+            $offspring->getPhenology()->getFruitingDate(),
+            $offspring->getPhenology()->getFloweringDate(),
+            $offspring->getFruitMetrics()->getMass(),
+            $offspring->getFruitMetrics()->getColor(),
+            $offspring->getFruitMetrics()->getFlavor(),
+            $offspring->getFruitMetrics()->getQuantity(),
             $offspring->getComment(),
             $plantModel,
             $offspring->getCreatedAt(),

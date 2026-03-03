@@ -1,4 +1,4 @@
-<?php
+<?php //данные для идентификации растения через qr код
 
 namespace App\Domain\ValueObject\Plant;
 

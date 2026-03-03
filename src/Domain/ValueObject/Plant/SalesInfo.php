@@ -1,4 +1,4 @@
-<?php
+<?php //информация о продаже растения
 
 namespace App\Domain\ValueObject\Plant;
 

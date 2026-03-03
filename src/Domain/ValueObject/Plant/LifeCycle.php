@@ -1,4 +1,4 @@
-<?php
+<?php //жизненный цикл растения
 
 namespace App\Domain\ValueObject\Plant;
 

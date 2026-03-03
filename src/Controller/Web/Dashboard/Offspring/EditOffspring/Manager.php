@@ -22,12 +22,12 @@ class Manager
 
         $formData = new EditOffspringDTO(
             $offspring->getPlant()->getId(),
-            $offspring->getFruitingDate(),
-            $offspring->getFloweringDate(),
-            $offspring->getMass(),
-            $offspring->getColor(),
-            $offspring->getFlavor(),
-            $offspring->getQuantity(),
+            $offspring->getPhenology()->getFruitingDate(),
+            $offspring->getPhenology()->getFloweringDate(),
+            $offspring->getFruitMetrics()->getMass(),
+            $offspring->getFruitMetrics()->getColor(),
+            $offspring->getFruitMetrics()->getFlavor(),
+            $offspring->getFruitMetrics()->getQuantity(),
             $offspring->getComment()
         );
 

@@ -3,6 +3,8 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Offspring;
+use App\Domain\ValueObject\Offspring\FruitMetrics;
+use App\Domain\ValueObject\Offspring\Phenology;
 use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
@@ -75,8 +77,9 @@ class OffspringService
     }
 
     /**
-     * @return array
-     * @throws InvalidArgumentException
+     * @param int $page
+     * @param int $perPage
+     * @return OffspringModel[]
      */
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
@@ -96,13 +99,20 @@ class OffspringService
         $offspring = new Offspring(
             $group,
             $plant,
-            $createOffspringModel->fruitingDate,
-            $createOffspringModel->floweringDate,
-            $createOffspringModel->mass,
-            $createOffspringModel->color,
-            $createOffspringModel->flavor,
-            $createOffspringModel->quantity,
-            $createOffspringModel->comment,
+        );
+
+        $offspring->recordResult(
+            new Phenology(
+                $createOffspringModel->fruitingDate,
+                $createOffspringModel->floweringDate,
+            ),
+            new FruitMetrics(
+                $createOffspringModel->mass,
+                $createOffspringModel->quantity,
+                $createOffspringModel->color,
+                $createOffspringModel->flavor,
+            ),
+            $createOffspringModel->comment
         );
 
         $this->offspringRepository->create($offspring);
@@ -113,6 +123,7 @@ class OffspringService
     /**
      * @param CreateOffspringDTO $dto
      * @return OffspringModel
+     * @throws InvalidArgumentException
      */
     public function createFromCreateOffspringDTO(CreateOffspringDTO $dto): OffspringModel
     {
@@ -143,17 +154,22 @@ class OffspringService
         $group = $this->groupService->find($updateOffspringModel->groupId);
         $plant = $this->plantService->find($updateOffspringModel->plantId);
 
-        $offspring->changeFields(
-            $group,
-            $plant,
-            $updateOffspringModel->fruitingDate,
-            $updateOffspringModel->floweringDate,
-            $updateOffspringModel->mass,
-            $updateOffspringModel->color,
-            $updateOffspringModel->flavor,
-            $updateOffspringModel->quantity,
-            $updateOffspringModel->comment,
-        );
+        $offspring
+            ->moveToGroup($group)
+            ->moveToPlant($plant)
+            ->recordResult(
+                new Phenology(
+                    $updateOffspringModel->fruitingDate,
+                    $updateOffspringModel->floweringDate
+                ),
+                new FruitMetrics(
+                    $updateOffspringModel->mass,
+                    $updateOffspringModel->quantity,
+                    $updateOffspringModel->color,
+                    $updateOffspringModel->flavor
+                ),
+                $updateOffspringModel->comment
+            );
 
         $this->offspringRepository->update();
 

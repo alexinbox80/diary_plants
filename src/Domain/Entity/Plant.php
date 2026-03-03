@@ -131,6 +131,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->setRoomValidate($room);
 
         $this->plantIdentifier = new PlantIdentifier(OId::next());
+        $this->purchaseInfo = new PurchaseInfo();
+        $this->lifeCycle = new LifeCycle();
+        $this->salesInfo = new SalesInfo();
 
         $this->tasks = new ArrayCollection();
         $this->offsprings = new ArrayCollection();

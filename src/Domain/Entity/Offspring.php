@@ -2,18 +2,17 @@
 
 namespace App\Domain\Entity;
 
-use DateTimeImmutable;
-use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\AttachableInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
-use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Webmozart\Assert\Assert as WebmozartAssert;
-use Doctrine\ORM\Mapping as ORM;
+use App\Domain\ValueObject\Offspring\Phenology;
+use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\ValueObject\Offspring\FruitMetrics;
+use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
 #[ORM\Table(name: 'offspring')]
 #[ORM\Entity]
@@ -30,29 +29,13 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    //дата сбора
-    #[ORM\Column(name: 'fruiting_date', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $fruitingDate = null;
+    //дата сбора, дата цветения
+    #[ORM\Embedded(class: Phenology::class, columnPrefix: false)]
+    private Phenology $phenology;
 
-    //дата цветения
-    #[ORM\Column(name: 'flowering_date', type: 'datetimetz_immutable', nullable: true)]
-    private ?DateTimeImmutable $floweringDate = null;
-
-    //масса гр
-    #[ORM\Column(name: 'mass', type: 'integer', nullable: true)]
-    private ?int $mass = null;
-
-    //цвет
-    #[ORM\Column(name: 'color', type: 'string', length: 64, nullable: true)]
-    private ?string $color = null;
-
-    //вкус
-    #[ORM\Column(name: 'flavor', type: 'string', length: 64, nullable: true)]
-    private ?string $flavor = null;
-
-    //количество
-    #[ORM\Column(name: 'quantity', type: 'integer', nullable: true)]
-    private ?int $quantity = null;
+    //масса гр, цвет, вкус, количество
+    #[ORM\Embedded(class: FruitMetrics::class, columnPrefix: false)]
+    private FruitMetrics $metrics;
 
     //комментарии к плоду
     #[ORM\Column(name: 'comment', type: 'string', length: 1024, nullable: true)]
@@ -63,40 +46,10 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
-    /**
-     * @var Collection<int, Attachment>
-     */
-    //связь с файлом
-//    #[ORM\OneToMany(targetEntity: Attachment::class, mappedBy: 'attachable', cascade: ['persist', 'remove'])]
-//    #[ORM\JoinColumn(name: 'id', referencedColumnName: 'attachable_id', nullable: true)]
-//    private Collection $attachments;
-
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'offsprings')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
-
-    private function setCommonFields(
-        Group $group,
-        Plant $plant,
-        ?DateTimeImmutable $fruitingDate = null,
-        ?DateTimeImmutable $floweringDate = null,
-        ?int $mass = null,
-        ?string $color = null,
-        ?string $flavor = null,
-        ?int $quantity = null,
-        ?string $comment = null,
-    ): void {
-        $this->setGroupValidate($group);
-        $this->setPlantValidate($plant);
-        $this->setFruitingDateValidate($fruitingDate);
-        $this->setFloweringDateValidate($floweringDate);
-        $this->setMassValidate($mass);
-        $this->setColorValidate($color);
-        $this->setFlavorValidate($flavor);
-        $this->setQuantityValidate($quantity);
-        $this->setCommentValidate($comment);
-    }
 
     private function setGroupValidate(Group $group): void
     {
@@ -108,97 +61,43 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         $this->plant = $plant;
     }
 
-    private function setFruitingDateValidate(?DateTimeImmutable $fruitingDate = null): void
-    {
-        if ($fruitingDate !== null) {
-            WebmozartAssert::isInstanceOf($fruitingDate, DateTimeImmutable::class, 'Use date must be a DateTime instance');
-            $this->fruitingDate = $fruitingDate;
-        }
-    }
-
-    private function setFloweringDateValidate(?DateTimeImmutable $floweringDate = null): void
-    {
-        if ($floweringDate !== null) {
-            WebmozartAssert::isInstanceOf($floweringDate, DateTimeImmutable::class, 'Use date must be a DateTime instance');
-            $this->floweringDate = $floweringDate;
-        }
-    }
-
-    private function setMassValidate(?int $mass = null): void
-    {
-        $this->mass = $mass;
-    }
-
-    private function setColorValidate(?string $color = null): void
-    {
-        $this->color = $color;
-    }
-
-    private function setFlavorValidate(?string $flavor = null): void
-    {
-        $this->flavor = $flavor;
-    }
-
-    private function setQuantityValidate(?int $quantity = null): void
-    {
-        $this->quantity = $quantity;
-    }
-
-    private function setCommentValidate(?string $comment = null): void
+    private function setComment(?string $comment = null): self
     {
         $this->comment = $comment;
+
+        return $this;
     }
 
     public function __construct(
         Group $group,
-        Plant $plant,
-        ?DateTimeImmutable $fruitingDate = null,
-        ?DateTimeImmutable $floweringDate = null,
-        ?int $mass = null,
-        ?string $color = null,
-        ?string $flavor = null,
-        ?int $quantity = null,
-        ?string $comment = null,
+        Plant $plant
     ) {
+        $this->setGroupValidate($group);
+        $this->setPlantValidate($plant);
 
-        //$this->attachments = new ArrayCollection();
-
-        $this->setCommonFields(
-            $group,
-            $plant,
-            $fruitingDate,
-            $floweringDate,
-            $mass,
-            $color,
-            $flavor,
-            $quantity,
-            $comment
-        );
+        $this->phenology = new Phenology();
+        $this->metrics = new FruitMetrics();
     }
 
-    public function changeFields(
-        Group $group,
-        Plant $plant,
-        ?DateTimeImmutable $fruitingDate = null,
-        ?DateTimeImmutable $floweringDate = null,
-        ?int $mass = null,
-        ?string $color = null,
-        ?string $flavor = null,
-        ?int $quantity = null,
-        ?string $comment = null,
-    ): void
+    public function recordResult(Phenology $phenology, FruitMetrics $metrics, ?string $comment = null): void
     {
-        $this->setCommonFields(
-            $group,
-            $plant,
-            $fruitingDate,
-            $floweringDate,
-            $mass,
-            $color,
-            $flavor,
-            $quantity,
-            $comment
-        );
+        $this->phenology = $phenology;
+        $this->metrics = $metrics;
+        $this->comment = $comment;
+    }
+
+    public function moveToGroup(Group $group): self
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    public function moveToPlant(Plant $plant): self
+    {
+        $this->plant = $plant;
+
+        return $this;
     }
 
     public function getId(): int
@@ -213,51 +112,23 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
         return $this->group;
     }
 
-    /**
-     * @return Collection<int, Attachment>
-     */
-//    public function getAttachments(): Collection
-//    {
-//        return $this->attachments;
-//    }
-
-    public function getFruitingDate(): ?DateTimeImmutable
+    public function getPlant(): Plant
     {
-        return $this->fruitingDate;
+        return $this->plant;
     }
 
-    public function getFloweringDate(): ?DateTimeImmutable
+    public function getPhenology(): Phenology
     {
-        return $this->floweringDate;
+        return $this->phenology;
     }
 
-    public function getMass(): ?int
+    public function getFruitMetrics(): FruitMetrics
     {
-        return $this->mass;
-    }
-
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
-
-    public function getFlavor(): ?string
-    {
-        return $this->flavor;
-    }
-
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
+        return $this->metrics;
     }
 
     public function getComment(): ?string
     {
         return $this->comment;
-    }
-
-    public function getPlant(): Plant
-    {
-        return $this->plant;
     }
 }
