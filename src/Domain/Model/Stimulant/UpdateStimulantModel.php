@@ -9,6 +9,9 @@ class UpdateStimulantModel
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public readonly int $groupId,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public readonly int $plantId,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]

@@ -2,18 +2,22 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Stimulant;
+use Psr\Cache\InvalidArgumentException;
+use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Stimulant\UpdateStimulantModel;
-use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
-use DateTimeImmutable;
-use Psr\Cache\InvalidArgumentException;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
 
 class StimulantService
 {
     public function __construct(
+        private readonly GroupService $groupService,
         private readonly PlantService $plantService,
+        private readonly ModelFactory $modelFactory,
         private readonly StimulantRepositoryInterface $stimulantRepository
     ) {
     }
@@ -78,32 +82,27 @@ class StimulantService
      */
     public function create(CreateStimulantModel $createStimulantModel): StimulantModel
     {
+        $group = $this->groupService->find($createStimulantModel->groupId);
         $plant = $this->plantService->find($createStimulantModel->plantId);
 
         $stimulant = new Stimulant(
+            $group,
             $plant,
             $createStimulantModel->title,
-            $createStimulantModel->quantity,
-            $createStimulantModel->letter,
-            $createStimulantModel->manufacturer,
-            $createStimulantModel->description,
-            $createStimulantModel->comment
+            new PreparationVolume(
+                $createStimulantModel->quantity,
+                $createStimulantModel->letter
+            ),
+            new PreparationDetails(
+                $createStimulantModel->manufacturer,
+                $createStimulantModel->description,
+                $createStimulantModel->comment
+            )
         );
 
         $this->stimulantRepository->create($stimulant);
 
-        return new StimulantModel(
-            $stimulant->getId(),
-            $stimulant->getPlant()->getId(),
-            $stimulant->getTitle(),
-            $stimulant->getQuantity(),
-            $stimulant->getLetter(),
-            $stimulant->getManufacturer(),
-            $stimulant->getDescription(),
-            $stimulant->getComment(),
-            $stimulant->getCreatedAt(),
-            $stimulant->getUpdatedAt()
-        );
+        return $this->stimulantRepository->toModel($stimulant);
     }
 
     /**
@@ -114,32 +113,27 @@ class StimulantService
      */
     public function update(Stimulant $stimulant, UpdateStimulantModel $updateStimulantModel): StimulantModel
     {
+        $group = $this->groupService->find($updateStimulantModel->groupId);
         $plant = $this->plantService->find($updateStimulantModel->plantId);
 
         $stimulant->changeFieldsWithPlant(
-            $updateStimulantModel->title,
-            $updateStimulantModel->quantity,
-            $updateStimulantModel->letter,
+            $group,
             $plant,
-            $updateStimulantModel->manufacturer,
-            $updateStimulantModel->description,
-            $updateStimulantModel->comment
+            $updateStimulantModel->title,
+            new PreparationVolume(
+                $updateStimulantModel->quantity,
+                $updateStimulantModel->letter
+            ),
+            new PreparationDetails(
+                $updateStimulantModel->manufacturer,
+                $updateStimulantModel->description,
+                $updateStimulantModel->comment
+            )
         );
 
         $this->stimulantRepository->update();
 
-        return  new StimulantModel(
-            $stimulant->getId(),
-            $stimulant->getPlant()->getId(),
-            $stimulant->getTitle(),
-            $stimulant->getQuantity(),
-            $stimulant->getLetter(),
-            $stimulant->getManufacturer(),
-            $stimulant->getDescription(),
-            $stimulant->getComment(),
-            $stimulant->getCreatedAt(),
-            $stimulant->getUpdatedAt()
-    );
+        return $this->stimulantRepository->toModel($stimulant);
     }
 
     /**

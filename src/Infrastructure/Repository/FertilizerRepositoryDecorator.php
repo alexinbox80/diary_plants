@@ -26,7 +26,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizersPaginated = $this->fertilizerRepository->getFertilizersPaginated($page, $perPage);
 
         if (!is_array($fertilizersPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for attachments');
+            throw new \InvalidArgumentException('Expected array for fertilizers');
         }
 
         $fertilizersModel = array_map(
@@ -68,7 +68,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findAll();
 
         return array_map(
-            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment, true),
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer, true),
             $fertilizers
         );
     }
@@ -82,7 +82,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findFertilizersByTitle($title);
 
         return array_map(
-            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment),
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer),
             $fertilizers
         );
     }
@@ -96,7 +96,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findFertilizersByTitle($manufacturer);
 
         return array_map(
-            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment),
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer),
             $fertilizers
         );
     }
@@ -110,7 +110,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $fertilizers = $this->fertilizerRepository->findFertilizersByUseDate($date);
 
         return array_map(
-            fn (Fertilizer $attachment): FertilizerModel => $this->toModel($attachment),
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer),
             $fertilizers
         );
     }
@@ -156,7 +156,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
             $plantModel = $this->plantRepository->findModel($fertilizer->getPlant()->getId());
         }
 
-        return self::makeAttachmentModel($fertilizer, $groupModel, $plantModel);
+        return self::makeFertilizerModel($fertilizer, $groupModel, $plantModel);
     }
 
     /**
@@ -165,7 +165,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
      * @param PlantModel|null $plantModel
      * @return FertilizerModel
      */
-    static function makeAttachmentModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): FertilizerModel
+    static function makeFertilizerModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): FertilizerModel
     {
         return new FertilizerModel(
             $fertilizer->getId(),

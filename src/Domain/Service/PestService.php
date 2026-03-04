@@ -7,13 +7,17 @@ use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Pest\UpdatePestModel;
 use App\Domain\Model\Pest\PestModel;
 use App\Domain\Repository\PestRepositoryInterface;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
 use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
 
 class PestService
 {
     public function __construct(
+        private readonly GroupService $groupService,
         private readonly PlantService $plantService,
+        private readonly ModelFactory $modelFactory,
         private readonly PestRepositoryInterface $pestRepository
     ) {
     }
@@ -78,32 +82,27 @@ class PestService
      */
     public function create(CreatePestModel $createPestModel): PestModel
     {
+        $group = $this->groupService->find($createPestModel->groupId);
         $plant = $this->plantService->find($createPestModel->plantId);
 
         $pest = new Pest(
+            $group,
             $plant,
             $createPestModel->title,
-            $createPestModel->quantity,
-            $createPestModel->letter,
-            $createPestModel->manufacturer,
-            $createPestModel->description,
-            $createPestModel->comment
+            new PreparationVolume(
+                $createPestModel->quantity,
+                $createPestModel->letter
+            ),
+            new PreparationDetails(
+                $createPestModel->manufacturer,
+                $createPestModel->description,
+                $createPestModel->comment
+            )
         );
 
         $this->pestRepository->create($pest);
 
-        return new PestModel(
-            $pest->getId(),
-            $pest->getPlant()->getId(),
-            $pest->getTitle(),
-            $pest->getQuantity(),
-            $pest->getLetter(),
-            $pest->getManufacturer(),
-            $pest->getDescription(),
-            $pest->getComment(),
-            $pest->getCreatedAt(),
-            $pest->getUpdatedAt()
-        );
+        return $this->pestRepository->toModel($pest);
     }
 
     /**
@@ -114,32 +113,27 @@ class PestService
      */
     public function update(Pest $pest, UpdatePestModel $updatePestModel): PestModel
     {
+        $group = $this->groupService->find($updatePestModel->groupId);
         $plant = $this->plantService->find($updatePestModel->plantId);
 
         $pest->changeFieldsWithPlant(
-            $updatePestModel->title,
-            $updatePestModel->quantity,
-            $updatePestModel->letter,
+            $group,
             $plant,
-            $updatePestModel->manufacturer,
-            $updatePestModel->description,
-            $updatePestModel->comment
+            $updatePestModel->title,
+            new PreparationVolume(
+                $updatePestModel->quantity,
+                $updatePestModel->letter
+            ),
+            new PreparationDetails(
+                $updatePestModel->manufacturer,
+                $updatePestModel->description,
+                $updatePestModel->comment
+            )
         );
 
         $this->pestRepository->update();
 
-        return  new PestModel(
-            $pest->getId(),
-            $pest->getPlant()->getId(),
-            $pest->getTitle(),
-            $pest->getQuantity(),
-            $pest->getLetter(),
-            $pest->getManufacturer(),
-            $pest->getDescription(),
-            $pest->getComment(),
-            $pest->getCreatedAt(),
-            $pest->getUpdatedAt()
-    );
+        return $this->pestRepository->toModel($pest);
     }
 
     /**

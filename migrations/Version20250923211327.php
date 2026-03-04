@@ -39,11 +39,13 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS offspring__plant_id__ind ON offspring (plant_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS offspring__group_id__ind ON offspring (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS pest__plant_id__ind ON pest (plant_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS pest__group_id__ind ON pest (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS plant__oid__ind ON plant (oid)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user__email__ind ON "user" (email)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user__phone__ind ON "user" (phone)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user__refresh_token__ind ON "user" (refresh_token)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS stimulant__plant_id__ind ON stimulant (plant_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS stimulant__group_id__ind ON stimulant (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__plant_id__ind ON usage (plant_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__usable__ind ON usage (usable_type, usable_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS attachment__attachable__ind ON attachment (attachable_type, attachable_id)');
@@ -67,11 +69,13 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS offspring__plant_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS offspring__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS pest__plant_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS pest__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__email__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__phone__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__refresh_token__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS plant__oid__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS stimulant__plant_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS stimulant__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__plant_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__usable__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS attachment__attachable__ind');

@@ -2,8 +2,6 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\ValueObject\Preparation\PreparationDetails;
-use App\Domain\ValueObject\Preparation\PreparationVolume;
 use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
 use Psr\Cache\InvalidArgumentException;
@@ -11,6 +9,8 @@ use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Fertilizer\UpdateFertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
 use App\Controller\Web\Dashboard\Fertilizer\EditFertilizer\Input\EditFertilizerDTO;
 use App\Controller\Web\Dashboard\Fertilizer\CreateFertilizer\Input\CreateFertilizerDTO;
 

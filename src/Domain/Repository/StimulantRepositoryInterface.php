@@ -2,9 +2,9 @@
 
 namespace App\Domain\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Stimulant;
 use App\Domain\Model\Stimulant\StimulantModel;
-use DateTimeImmutable;
 
 interface StimulantRepositoryInterface
 {
@@ -18,4 +18,5 @@ interface StimulantRepositoryInterface
     public function create(Stimulant $stimulant): int;
     public function update(): void;
     public function remove(Stimulant $stimulant): void;
+    public function toModel(Stimulant $stimulant, bool $addRelations = false): StimulantModel;
 }

@@ -53,6 +53,14 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'group', cascade: ['remove'])]
     private Collection $fertilizers;
 
+    //связь со стимуляторами
+    #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $stimulants;
+
+    //связь с вредителями
+    #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $pests;
+
     //связь с пользователями
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'group', cascade: ['remove'])]
     private Collection $users;
@@ -69,6 +77,8 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->plants = new ArrayCollection();
         $this->offsprings = new ArrayCollection();
         $this->fertilizers = new ArrayCollection();
+        $this->stimulants = new ArrayCollection();
+        $this->pests = new ArrayCollection();
         $this->users = new ArrayCollection();
     }
 

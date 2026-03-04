@@ -172,6 +172,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreatePestModel::class,
+                (int) $pestModel['group_id'],
                 (int) $pestModel['plant_id'],
                 $pestModel['title'],
                 (int) $pestModel['quantity'],
@@ -203,6 +204,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateStimulantModel::class,
+                (int) $stimulantModel['group_id'],
                 (int) $stimulantModel['plant_id'],
                 $stimulantModel['title'],
                 (int) $stimulantModel['quantity'],

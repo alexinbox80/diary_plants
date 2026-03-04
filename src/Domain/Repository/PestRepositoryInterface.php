@@ -2,9 +2,9 @@
 
 namespace App\Domain\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Pest;
 use App\Domain\Model\Pest\PestModel;
-use DateTimeImmutable;
 
 interface PestRepositoryInterface
 {
@@ -18,4 +18,5 @@ interface PestRepositoryInterface
     public function create(Pest $pest): int;
     public function update(): void;
     public function remove(Pest $pest): void;
+    public function toModel(Pest $pest, bool $addRelations = false): PestModel;
 }

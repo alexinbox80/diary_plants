@@ -17,6 +17,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'pest__plant_id__ind', columns: ['plant_id'])]
+#[ORM\Index(name: 'pest__group_id__ind', columns: ['group_id'])]
 #[ORM\UniqueConstraint(name: 'pest__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
 class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
@@ -57,6 +58,11 @@ class Pest extends Preparation implements EntityInterface, HasMetaTimestampsInte
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
+    }
+
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 
     public function getPlant(): Plant

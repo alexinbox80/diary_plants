@@ -2,14 +2,18 @@
 
 namespace App\Infrastructure\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Stimulant;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
-use DateTimeImmutable;
 
 class StimulantRepositoryDecorator implements StimulantRepositoryInterface
 {
     public function __construct(
+        private readonly GroupRepositoryDecorator $groupRepository,
+        private readonly PlantRepositoryDecorator $plantRepository,
         private readonly StimulantRepository $stimulantRepository,
     ) {
     }
@@ -19,23 +23,21 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
      */
     public function getStimulantsPaginated(int $page, int $perPage): array
     {
-        $stimulants = $this->stimulantRepository->getStimulantsPaginated($page, $perPage);
+        $stimulantsPaginated = $this->stimulantRepository->getStimulantsPaginated($page, $perPage);
 
-        return array_map(
-            static fn (Stimulant $stimulant): StimulantModel => new StimulantModel(
-                $stimulant->getId(),
-                $stimulant->getPlant()->getId(),
-                $stimulant->getTitle(),
-                $stimulant->getQuantity(),
-                $stimulant->getLetter(),
-                $stimulant->getManufacturer(),
-                $stimulant->getDescription(),
-                $stimulant->getComment(),
-                $stimulant->getCreatedAt(),
-                $stimulant->getUpdatedAt()
-            ),
-            $stimulants
+        if (!is_array($stimulantsPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for stimulants');
+        }
+
+        $stimulantsModel = array_map(
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant, true),
+            $stimulantsPaginated['items']
         );
+
+        return [
+            'stimulantsModel' => $stimulantsModel,
+            'pagination' => $stimulantsPaginated['pagination']
+        ];
     }
 
     /**
@@ -55,18 +57,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     {
         $stimulant = $this->stimulantRepository->find($stimulantId);
 
-        return new StimulantModel(
-            $stimulant->getId(),
-            $stimulant->getPlant()->getId(),
-            $stimulant->getTitle(),
-            $stimulant->getQuantity(),
-            $stimulant->getLetter(),
-            $stimulant->getManufacturer(),
-            $stimulant->getDescription(),
-            $stimulant->getComment(),
-            $stimulant->getCreatedAt(),
-            $stimulant->getUpdatedAt()
-        );
+        return $this->toModel($stimulant);
     }
 
     /**
@@ -74,22 +65,11 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
      */
     public function findAll(): array
     {
-        $stimulant = $this->stimulantRepository->findAll();
+        $stimulants = $this->stimulantRepository->findAll();
 
         return array_map(
-            static fn (Stimulant $stimulant): StimulantModel => new StimulantModel(
-                $stimulant->getId(),
-                $stimulant->getPlant()->getId(),
-                $stimulant->getTitle(),
-                $stimulant->getQuantity(),
-                $stimulant->getLetter(),
-                $stimulant->getManufacturer(),
-                $stimulant->getDescription(),
-                $stimulant->getComment(),
-                $stimulant->getCreatedAt(),
-                $stimulant->getUpdatedAt()
-            ),
-            $stimulant
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant, true),
+            $stimulants
         );
     }
 
@@ -102,18 +82,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
         $stimulants = $this->stimulantRepository->findStimulantsByTitle($title);
 
         return array_map(
-            static fn (Stimulant $stimulant): StimulantModel => new StimulantModel(
-                $stimulant->getId(),
-                $stimulant->getPlant()->getId(),
-                $stimulant->getTitle(),
-                $stimulant->getQuantity(),
-                $stimulant->getLetter(),
-                $stimulant->getManufacturer(),
-                $stimulant->getDescription(),
-                $stimulant->getComment(),
-                $stimulant->getCreatedAt(),
-                $stimulant->getUpdatedAt()
-            ),
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant),
             $stimulants
         );
     }
@@ -127,18 +96,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
         $stimulants = $this->stimulantRepository->findStimulantsByTitle($manufacturer);
 
         return array_map(
-            static fn (Stimulant $stimulant): StimulantModel => new StimulantModel(
-                $stimulant->getId(),
-                $stimulant->getPlant()->getId(),
-                $stimulant->getTitle(),
-                $stimulant->getQuantity(),
-                $stimulant->getLetter(),
-                $stimulant->getManufacturer(),
-                $stimulant->getDescription(),
-                $stimulant->getComment(),
-                $stimulant->getCreatedAt(),
-                $stimulant->getUpdatedAt()
-            ),
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant),
             $stimulants
         );
     }
@@ -152,18 +110,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
         $stimulants = $this->stimulantRepository->findStimulantsByUseDate($date);
 
         return array_map(
-            static fn (Stimulant $stimulant): StimulantModel => new StimulantModel(
-                $stimulant->getId(),
-                $stimulant->getPlant()->getId(),
-                $stimulant->getTitle(),
-                $stimulant->getQuantity(),
-                $stimulant->getLetter(),
-                $stimulant->getManufacturer(),
-                $stimulant->getDescription(),
-                $stimulant->getComment(),
-                $stimulant->getCreatedAt(),
-                $stimulant->getUpdatedAt()
-            ),
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant),
             $stimulants
         );
     }
@@ -192,5 +139,48 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     public function remove(stimulant $stimulant): void
     {
         $this->stimulantRepository->remove($stimulant);
+    }
+
+    /**
+     * @param Stimulant $stimulant
+     * @param bool $addRelations
+     * @return StimulantModel
+     */
+    public function toModel(Stimulant $stimulant, bool $addRelations = false): StimulantModel
+    {
+        $groupModel = null;
+        $plantModel = null;
+
+        if ($addRelations) {
+            $groupModel = $this->groupRepository->findModel($stimulant->getGroup()->getId());
+            $plantModel = $this->plantRepository->findModel($stimulant->getPlant()->getId());
+        }
+
+        return self::makeStimulantModel($stimulant, $groupModel, $plantModel);
+    }
+
+    /**
+     * @param Stimulant $stimulant
+     * @param GroupModel|null $groupModel
+     * @param PlantModel|null $plantModel
+     * @return StimulantModel
+     */
+    static function makeStimulantModel(Stimulant $stimulant, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): StimulantModel
+    {
+        return new StimulantModel(
+            $stimulant->getId(),
+            $stimulant->getGroup()->getId(),
+            $stimulant->getPlant()->getId(),
+            $stimulant->getTitle(),
+            $stimulant->getVolume()->getQuantity(),
+            $stimulant->getVolume()->getLetter(),
+            $stimulant->getDetails()->getManufacturer(),
+            $stimulant->getDetails()->getDescription(),
+            $stimulant->getDetails()->getComment(),
+            $groupModel,
+            $plantModel,
+            $stimulant->getCreatedAt(),
+            $stimulant->getUpdatedAt()
+        );
     }
 }

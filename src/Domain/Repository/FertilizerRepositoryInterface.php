@@ -2,9 +2,9 @@
 
 namespace App\Domain\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Fertilizer\FertilizerModel;
-use DateTimeImmutable;
 
 interface FertilizerRepositoryInterface
 {
