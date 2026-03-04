@@ -2,17 +2,18 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Task;
+use App\Domain\Model\Task\TaskModel;
+use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Task\CreateTaskModel;
 use App\Domain\Model\Task\UpdateTaskModel;
-use App\Domain\Model\Task\TaskModel;
 use App\Domain\Repository\TaskRepositoryInterface;
-use DateTimeImmutable;
-use Psr\Cache\InvalidArgumentException;
 
 class TaskService
 {
     public function __construct(
+        private readonly GroupService $groupService,
         private readonly StatusService $statusService,
         private readonly PlantService $plantService,
         private readonly TaskRepositoryInterface $taskRepository
@@ -79,10 +80,12 @@ class TaskService
      */
     public function create(CreateTaskModel $createTaskModel): TaskModel
     {
+        $group = $this->groupService->find($createTaskModel->groupId);
         $status = $this->statusService->find($createTaskModel->statusId);
         $plant = $this->plantService->find($createTaskModel->plantId);
 
         $task = new Task(
+            $group,
             $status,
             $plant,
             $createTaskModel->date,
@@ -91,15 +94,7 @@ class TaskService
 
         $this->taskRepository->create($task);
 
-        return new TaskModel(
-            $task->getId(),
-            $task->getStatus()->getId(),
-            $task->getPlant()->getId(),
-            $task->getDate(),
-            $task->getDescription(),
-            $task->getCreatedAt(),
-            $task->getUpdatedAt()
-        );
+        return $this->taskRepository->toModel($task);
     }
 
     /**
@@ -110,10 +105,12 @@ class TaskService
      */
     public function update(Task $task, UpdateTaskModel $updateTaskModel): TaskModel
     {
+        $group = $this->groupService->find($updateTaskModel->groupId);
         $status = $this->statusService->find($updateTaskModel->statusId);
         $plant = $this->plantService->find($updateTaskModel->plantId);
 
         $task->changeFields(
+            $group,
             $status,
             $plant,
             $updateTaskModel->date,
@@ -122,15 +119,7 @@ class TaskService
 
         $this->taskRepository->update();
 
-        return new TaskModel(
-            $task->getId(),
-            $task->getStatus()->getId(),
-            $task->getPlant()->getId(),
-            $task->getDate(),
-            $task->getDescription(),
-            $task->getCreatedAt(),
-            $task->getUpdatedAt()
-        );
+        return $this->taskRepository->toModel($task);
     }
 
     /**

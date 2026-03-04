@@ -2,14 +2,20 @@
 
 namespace App\Infrastructure\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Task;
 use App\Domain\Model\Task\TaskModel;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Status\StatusModel;
 use App\Domain\Repository\TaskRepositoryInterface;
-use DateTimeImmutable;
 
 class TaskRepositoryDecorator implements TaskRepositoryInterface
 {
     public function __construct(
+        private readonly GroupRepositoryDecorator $groupRepository,
+        private readonly StatusRepositoryDecorator $statusRepository,
+        private readonly PlantRepositoryDecorator $plantRepository,
         private readonly TaskRepository $taskRepository,
     ) {
     }
@@ -19,20 +25,21 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
      */
     public function getTasksPaginated(int $page, int $perPage): array
     {
-        $tasks = $this->taskRepository->getTasksPaginated($page, $perPage);
+        $tasksPaginated = $this->taskRepository->getTasksPaginated($page, $perPage);
 
-        return array_map(
-            static fn (Task $task): TaskModel => new TaskModel(
-                $task->getId(),
-                $task->getStatus()->getId(),
-                $task->getPlant()->getId(),
-                $task->getDate(),
-                $task->getDescription(),
-                $task->getCreatedAt(),
-                $task->getUpdatedAt()
-            ),
-            $tasks
+        if (!is_array($tasksPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for tasks');
+        }
+
+        $tasksModel = array_map(
+            fn (Task $task): TaskModel => $this->toModel($task, true),
+            $tasksPaginated['items']
         );
+
+        return [
+            'tasksModel' => $tasksModel,
+            'pagination' => $tasksPaginated['pagination']
+        ];
     }
 
     /**
@@ -52,15 +59,7 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
     {
         $task = $this->taskRepository->find($taskId);
 
-        return new TaskModel(
-            $task->getId(),
-            $task->getStatus()->getId(),
-            $task->getPlant()->getId(),
-            $task->getDate(),
-            $task->getDescription(),
-            $task->getCreatedAt(),
-            $task->getUpdatedAt()
-        );
+        return $this->toModel($task);
     }
 
     /**
@@ -71,15 +70,7 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
         $tasks = $this->taskRepository->findAll();
 
         return array_map(
-            static fn (Task $task): TaskModel => new TaskModel(
-                $task->getId(),
-                $task->getStatus()->getId(),
-                $task->getPlant()->getId(),
-                $task->getDate(),
-                $task->getDescription(),
-                $task->getCreatedAt(),
-                $task->getUpdatedAt()
-            ),
+            fn (Task $task): TaskModel => $this->toModel($task, true),
             $tasks
         );
     }
@@ -93,15 +84,7 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
         $tasks = $this->taskRepository->findPlantsByStatusId($statusId);
 
         return array_map(
-            static fn (Task $task): TaskModel => new TaskModel(
-                $task->getId(),
-                $task->getStatus()->getId(),
-                $task->getPlant()->getId(),
-                $task->getDate(),
-                $task->getDescription(),
-                $task->getCreatedAt(),
-                $task->getUpdatedAt()
-            ),
+            fn (Task $task): TaskModel => $this->toModel($task),
             $tasks
         );
     }
@@ -115,15 +98,7 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
         $tasks = $this->taskRepository->findPlantsByPlantId($plantId);
 
         return array_map(
-            static fn (Task $task): TaskModel => new TaskModel(
-                $task->getId(),
-                $task->getStatus()->getId(),
-                $task->getPlant()->getId(),
-                $task->getDate(),
-                $task->getDescription(),
-                $task->getCreatedAt(),
-                $task->getUpdatedAt()
-            ),
+            fn (Task $task): TaskModel => $this->toModel($task),
             $tasks
         );
     }
@@ -137,15 +112,7 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
         $tasks = $this->taskRepository->findPlantsByDate($date);
 
         return array_map(
-            static fn (Task $task): TaskModel => new TaskModel(
-                $task->getId(),
-                $task->getStatus()->getId(),
-                $task->getPlant()->getId(),
-                $task->getDate(),
-                $task->getDescription(),
-                $task->getCreatedAt(),
-                $task->getUpdatedAt()
-            ),
+            fn (Task $task): TaskModel => $this->toModel($task),
             $tasks
         );
     }
@@ -174,5 +141,49 @@ class TaskRepositoryDecorator implements TaskRepositoryInterface
     public function remove(Task $task): void
     {
         $this->taskRepository->remove($task);
+    }
+
+    /**
+     * @param Task $task
+     * @param bool $addRelations
+     * @return TaskModel
+     */
+    public function toModel(Task $task, bool $addRelations = false): TaskModel
+    {
+        $groupModel = null;
+        $statusModel = null;
+        $plantModel = null;
+
+        if ($addRelations) {
+            $groupModel = $this->groupRepository->findModel($task->getGroup()->getId());
+            $statusModel = $this->statusRepository->findModel($task->getStatus()->getId());
+            $plantModel = $this->plantRepository->findModel($task->getPlant()->getId());
+        }
+
+        return self::makeTaskModel($task, $groupModel, $statusModel, $plantModel);
+    }
+
+    /**
+     * @param Task $task
+     * @param GroupModel|null $groupModel
+     * @param StatusModel|null $statusModel
+     * @param PlantModel|null $plantModel
+     * @return TaskModel
+     */
+    static function makeTaskModel(Task $task, ?GroupModel $groupModel = null, ?StatusModel $statusModel = null, ?PlantModel $plantModel = null): TaskModel
+    {
+        return new TaskModel(
+            $task->getId(),
+            $task->getGroup()->getId(),
+            $task->getStatus()->getId(),
+            $task->getPlant()->getId(),
+            $task->getDate(),
+            $task->getDescription(),
+            $groupModel,
+            $statusModel,
+            $plantModel,
+            $task->getCreatedAt(),
+            $task->getUpdatedAt()
+        );
     }
 }

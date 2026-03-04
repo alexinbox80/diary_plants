@@ -3,15 +3,16 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Status;
+use Psr\Cache\InvalidArgumentException;
+use App\Domain\Model\Status\StatusModel;
 use App\Domain\Model\Status\CreateStatusModel;
 use App\Domain\Model\Status\UpdateStatusModel;
-use App\Domain\Model\Status\StatusModel;
 use App\Domain\Repository\StatusRepositoryInterface;
-use Psr\Cache\InvalidArgumentException;
 
 class StatusService
 {
     public function __construct(
+        private readonly GroupService $groupService,
         private readonly StatusRepositoryInterface $statusRepository
     ) {
     }
@@ -68,7 +69,10 @@ class StatusService
      */
     public function create(CreateStatusModel $createStatusModel): StatusModel
     {
+        $group = $this->groupService->find($createStatusModel->groupId);
+
         $status = new Status(
+            $group,
             $createStatusModel->letter,
             $createStatusModel->color,
             $createStatusModel->description,
@@ -77,15 +81,7 @@ class StatusService
 
         $this->statusRepository->create($status);
 
-        return new StatusModel(
-            $status->getId(),
-            $status->getLetter(),
-            $status->getColor(),
-            $status->getDescription(),
-            $status->getColorDescription(),
-            $status->getCreatedAt(),
-            $status->getUpdatedAt()
-        );
+        return $this->statusRepository->toModel($status);
     }
 
     /**
@@ -96,7 +92,10 @@ class StatusService
      */
     public function update(Status $status, UpdateStatusModel $updateStatusModel): StatusModel
     {
+        $group = $this->groupService->find($updateStatusModel->groupId);
+
         $status->changeFields(
+            $group,
             $updateStatusModel->letter,
             $updateStatusModel->color,
             $updateStatusModel->description,
@@ -105,15 +104,7 @@ class StatusService
 
         $this->statusRepository->update();
 
-        return new StatusModel(
-            $status->getId(),
-            $status->getLetter(),
-            $status->getColor(),
-            $status->getDescription(),
-            $status->getColorDescription(),
-            $status->getCreatedAt(),
-            $status->getUpdatedAt()
-        );
+        return $this->statusRepository->toModel($status);
     }
 
     /**

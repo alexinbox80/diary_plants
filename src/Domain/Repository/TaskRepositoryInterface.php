@@ -2,9 +2,9 @@
 
 namespace App\Domain\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Task;
 use App\Domain\Model\Task\TaskModel;
-use DateTimeImmutable;
 
 interface TaskRepositoryInterface
 {
@@ -18,4 +18,5 @@ interface TaskRepositoryInterface
     public function create(Task $task): int;
     public function update(): void;
     public function remove(Task $task): void;
+    public function toModel(Task $task, bool $addRelations = false): TaskModel;
 }

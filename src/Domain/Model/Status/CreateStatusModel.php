@@ -8,6 +8,9 @@ class CreateStatusModel
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public readonly int $groupId,
+        #[Assert\NotBlank]
         #[Assert\Type('string')]
         #[Assert\Length(min: 1, max: 1, maxMessage: 'Letter must be exactly one character long.')]
         public readonly string $letter,

@@ -16,4 +16,5 @@ interface StatusRepositoryInterface
     public function create(Status $status): int;
     public function update(): void;
     public function remove(Status $status): void;
+    public function toModel(Status $status, bool $addRelations = false): StatusModel;
 }

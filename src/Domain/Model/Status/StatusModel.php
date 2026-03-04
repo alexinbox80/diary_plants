@@ -3,15 +3,18 @@
 namespace App\Domain\Model\Status;
 
 use DateTimeImmutable;
+use App\Domain\Model\Group\GroupModel;
 
 class StatusModel
 {
     public function __construct(
         private readonly int $id,
+        private readonly int $groupId,
         private readonly string $letter,
         private readonly string $color,
         private readonly ?string $description = null,
         private readonly ?string $colorDescription = null,
+        private readonly ?GroupModel $group = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -20,6 +23,11 @@ class StatusModel
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->groupId;
     }
 
     public function getLetter(): string
@@ -40,6 +48,11 @@ class StatusModel
     public function getColorDescription(): ?string
     {
         return $this->colorDescription;
+    }
+
+    public function getGroup(): ?GroupModel
+    {
+        return $this->group;
     }
 
     public function getCreatedAt(): DateTimeImmutable

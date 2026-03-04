@@ -17,8 +17,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Table(name: 'status')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: 'letter', message: 'This letter is already in use.')]
-#[ORM\UniqueConstraint(name: 'status__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
+#[ORM\Index(name: 'status__group_id__ind', columns: ['group_id'])]
+#[UniqueEntity(
+    fields: ['letter', 'group'],
+    message: 'This letter is already used in this group.'
+)]
+#[ORM\UniqueConstraint(
+    name: 'status__letter_group__uniq',
+    columns: ['letter', 'group_id'],
+    options: ['where' => '(deleted_at IS NULL)']
+)]
 class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -49,16 +57,28 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'status')]
     private Collection $tasks;
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'statuses')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
+    private Group $group;
+
     private function setCommonFields(
+        Group $group,
         string $letter,
         string $color,
         ?string $description = null,
         ?string $colorDescription = null
     ): void {
+        $this->setGroupValidate($group);
         $this->setLetterValidate($letter);
         $this->setColorValidate($color);
         $this->setDescriptionValidate($description);
         $this->setColorDescriptionValidate($colorDescription);
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     private function setLetterValidate(string $letter): void
@@ -98,25 +118,27 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     }
 
     public function __construct(
+        Group $group,
         string $letter,
         string $color,
         ?string $description = null,
         ?string $colorDescription = null
     )
     {
-        $this->setCommonFields($letter, $color, $description, $colorDescription);
+        $this->setCommonFields($group, $letter, $color, $description, $colorDescription);
 
         $this->tasks = new ArrayCollection();
     }
 
     public function changeFields(
+        Group $group,
         string $letter,
         string $color,
         ?string $description = null,
         ?string $colorDescription = null
     ): void
     {
-        $this->setCommonFields($letter, $color, $description, $colorDescription);
+        $this->setCommonFields($group, $letter, $color, $description, $colorDescription);
     }
 
     public function getId(): int
@@ -124,6 +146,11 @@ class Status implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
+    }
+
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 
     public function getLetter(): string

@@ -2,19 +2,20 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
-use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use DateTimeImmutable;
 use Webmozart\Assert\Assert as WebmozartAssert;
-use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
+use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 
 #[ORM\Table(name: 'task')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(name: 'task__group_id__ind', columns: ['group_id'])]
 class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -43,16 +44,28 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\JoinColumn(nullable: false)]
     private Status $status;
 
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'tasks')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
+    private Group $group;
+
     private function setCommonFields(
+        Group $group,
         Status $status,
         Plant $plant,
         DateTimeImmutable $date,
         ?string $description = null,
     ): void {
+        $this->setGroupValidate($group);
         $this->setStatusValidate($status);
         $this->setPlantValidate($plant);
         $this->setDateValidate($date);
         $this->setDescriptionValidate($description);
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     private function setStatusValidate(Status $status): void
@@ -77,23 +90,25 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     }
 
     public function __construct(
+        Group $group,
         Status $status,
         Plant $plant,
         DateTimeImmutable $date,
         ?string $description = null,
     )
     {
-        $this->setCommonFields($status, $plant, $date, $description);
+        $this->setCommonFields($group, $status, $plant, $date, $description);
     }
 
     public function changeFields(
+        Group $group,
         Status $status,
         Plant $plant,
         DateTimeImmutable $date,
         ?string $description = null,
     ): void
     {
-        $this->setCommonFields($status, $plant, $date, $description);
+        $this->setCommonFields($group, $status, $plant, $date, $description);
     }
 
     public function getId(): int
@@ -101,6 +116,11 @@ class Task implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
 
         return $this->id;
+    }
+
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 
     public function getStatus(): Status

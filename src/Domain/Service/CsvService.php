@@ -131,6 +131,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateStatusModel::class,
+                (int) $statusModel['group_id'],
                 $statusModel['letter'],
                 $statusModel['color'],
                 $statusModel['description'],
@@ -160,6 +161,7 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateTaskModel::class,
+                (int) $taskModel['group_id'],
                 (int) $taskModel['status_id'],
                 (int) $taskModel['plant_id'],
                 new DateTimeImmutable($taskModel['date']),

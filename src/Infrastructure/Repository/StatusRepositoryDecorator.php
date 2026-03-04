@@ -3,12 +3,14 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Status;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Status\StatusModel;
 use App\Domain\Repository\StatusRepositoryInterface;
 
 class StatusRepositoryDecorator implements StatusRepositoryInterface
 {
     public function __construct(
+        private readonly GroupRepositoryDecorator $groupRepository,
         private readonly StatusRepository $statusRepository,
     ) {
     }
@@ -18,20 +20,21 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
      */
     public function getStatusesPaginated(int $page, int $perPage): array
     {
-        $statuses = $this->statusRepository->getStatusesPaginated($page, $perPage);
+        $statusesPaginated = $this->statusRepository->getStatusesPaginated($page, $perPage);
 
-        return array_map(
-            static fn (Status $status): StatusModel => new StatusModel(
-                $status->getId(),
-                $status->getLetter(),
-                $status->getColor(),
-                $status->getDescription(),
-                $status->getColorDescription(),
-                $status->getCreatedAt(),
-                $status->getUpdatedAt()
-            ),
-            $statuses
+        if (!is_array($statusesPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for statuses');
+        }
+
+        $statusesModel = array_map(
+            fn (Status $status): StatusModel => $this->toModel($status, true),
+            $statusesPaginated['items']
         );
+
+        return [
+            'statusesModel' => $statusesModel,
+            'pagination' => $statusesPaginated['pagination']
+        ];
     }
 
     /**
@@ -51,15 +54,7 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
     {
         $status = $this->statusRepository->find($statusId);
 
-        return new StatusModel(
-            $status->getId(),
-            $status->getLetter(),
-            $status->getColor(),
-            $status->getDescription(),
-            $status->getColorDescription(),
-            $status->getCreatedAt(),
-            $status->getUpdatedAt()
-        );
+        return $this->toModel($status);
     }
 
     /**
@@ -70,15 +65,7 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
         $statuses = $this->statusRepository->findAll();
 
         return array_map(
-            static fn (Status $status): StatusModel => new StatusModel(
-                $status->getId(),
-                $status->getLetter(),
-                $status->getColor(),
-                $status->getDescription(),
-                $status->getColorDescription(),
-                $status->getCreatedAt(),
-                $status->getUpdatedAt()
-            ),
+            fn (Status $status): StatusModel => $this->toModel($status, true),
             $statuses
         );
     }
@@ -92,15 +79,7 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
         $statuses = $this->statusRepository->findStatusesByLetter($letter);
 
         return array_map(
-            static fn (Status $status): StatusModel => new StatusModel(
-                $status->getId(),
-                $status->getLetter(),
-                $status->getColor(),
-                $status->getDescription(),
-                $status->getColorDescription(),
-                $status->getCreatedAt(),
-                $status->getUpdatedAt()
-            ),
+            fn (Status $status): StatusModel => $this->toModel($status),
             $statuses
         );
     }
@@ -114,15 +93,7 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
         $statuses = $this->statusRepository->findStatusesByColor($color);
 
         return array_map(
-            static fn (Status $status): StatusModel => new StatusModel(
-                $status->getId(),
-                $status->getLetter(),
-                $status->getColor(),
-                $status->getDescription(),
-                $status->getColorDescription(),
-                $status->getCreatedAt(),
-                $status->getUpdatedAt()
-            ),
+            fn (Status $status): StatusModel => $this->toModel($status),
             $statuses
         );
     }
@@ -151,5 +122,41 @@ class StatusRepositoryDecorator implements StatusRepositoryInterface
     public function remove(Status $status): void
     {
         $this->statusRepository->remove($status);
+    }
+
+    /**
+     * @param Status $status
+     * @param bool $addRelations
+     * @return StatusModel
+     */
+    public function toModel(Status $status, bool $addRelations = false): StatusModel
+    {
+        $groupModel = null;
+
+        if ($addRelations) {
+            $groupModel = $this->groupRepository->findModel($status->getGroup()->getId());
+        }
+
+        return self::makeStatusModel($status, $groupModel);
+    }
+
+    /**
+     * @param Status $status
+     * @param GroupModel|null $groupModel
+     * @return StatusModel
+     */
+    static function makeStatusModel(Status $status, ?GroupModel $groupModel = null): StatusModel
+    {
+        return new StatusModel(
+            $status->getId(),
+            $status->getGroup()->getId(),
+            $status->getLetter(),
+            $status->getColor(),
+            $status->getDescription(),
+            $status->getColorDescription(),
+            $groupModel,
+            $status->getCreatedAt(),
+            $status->getUpdatedAt()
+        );
     }
 }
