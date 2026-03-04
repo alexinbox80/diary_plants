@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Doctrine\Types;
 
-use App\Domain\ValueObject\Email;
 use Doctrine\DBAL\Types\StringType;
+use App\Domain\ValueObject\User\Email;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Webmozart\Assert\Assert as WebmozartAssert;
 

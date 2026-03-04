@@ -5,10 +5,10 @@ namespace App\Infrastructure\Doctrine\Types;
 use Doctrine\DBAL\Types\Type;
 use InvalidArgumentException;
 use App\Domain\ValueObject\OId;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySQL80Platform;
-use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Webmozart\Assert\Assert as WebmozartAssert;
 
 final class OIdType extends Type

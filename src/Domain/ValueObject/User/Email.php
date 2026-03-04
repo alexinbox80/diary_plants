@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\ValueObject;
+namespace App\Domain\ValueObject\User;
 
 use Webmozart\Assert\Assert as WebmozartAssert;
 

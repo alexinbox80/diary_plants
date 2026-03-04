@@ -3,9 +3,9 @@
 namespace App\Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Domain\ValueObject\Name;
-use App\Domain\ValueObject\Email;
-use App\Domain\ValueObject\Phone;
+use App\Domain\ValueObject\User\Name;
+use App\Domain\ValueObject\User\Email;
+use App\Domain\ValueObject\User\Phone;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
