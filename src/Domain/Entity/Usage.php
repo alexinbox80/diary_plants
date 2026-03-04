@@ -147,18 +147,4 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     {
         $this->setCommonFields($useDate, $plant, $comment, $usableId, $usableType);
     }
-
-    public  function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'plant' => $this->getPlant()->toArray(),
-            'use_date' => $this->getUseDate()->format('Y-m-d'),
-            'comment' => $this->getComment(),
-            'usable_id' => $this->getUsableId(),
-            'usable_type' => $this->getUsableType(),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updated_at' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
-        ];
-    }
 }
