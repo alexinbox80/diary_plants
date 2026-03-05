@@ -20,4 +20,5 @@ interface UsageRepositoryInterface
     public function create(Usage $usage): int;
     public function update(): void;
     public function remove(Usage $usage): void;
+    public function toModel(Usage $usage, bool $addRelations = false): UsageModel;
 }

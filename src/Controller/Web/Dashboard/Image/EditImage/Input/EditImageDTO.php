@@ -2,9 +2,9 @@
 
 namespace App\Controller\Web\Dashboard\Image\EditImage\Input;
 
-use DateTimeImmutable;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use App\Domain\ValueObject\Enum\ImageMimeType;
-use App\Domain\ValueObject\Enum\AttachableType;
+use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;

@@ -2,15 +2,27 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Model\Group\GroupModel;
+use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Repository\PestRepositoryInterface;
 use App\Domain\Repository\UsageRepositoryInterface;
-use DateTimeImmutable;
+use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\Repository\AttachableResolverInterface;
+use App\Domain\Repository\StimulantRepositoryInterface;
+use App\Domain\Repository\FertilizerRepositoryInterface;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class UsageRepositoryDecorator implements UsageRepositoryInterface
 {
     public function __construct(
+        private readonly GroupRepositoryDecorator $groupRepository,
         private readonly UsageRepository $usageRepository,
+        private readonly AttachableResolverInterface $attachableResolver,
+        private readonly FertilizerRepositoryInterface $fertilizerRepository,
+        private readonly PestRepositoryInterface $pestRepository,
+        private readonly StimulantRepositoryInterface $stimulantRepository,
     ) {
     }
 
@@ -22,16 +34,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         $usages = $this->usageRepository->findByUsable($usableType, $usableId);
 
         return array_map(
-            static fn (Usage $usage): UsageModel => new UsageModel(
-                $usage->getId(),
-                $usage->getUseDate(),
-                $usage->getPlant()->getId(),
-                $usage->getComment(),
-                $usage->getUsableId(),
-                $usage->getUsableType(),
-                $usage->getCreatedAt(),
-                $usage->getUpdatedAt()
-            ),
+            fn (Usage $usage) => $this->toModel($usage),
             $usages
         );
     }
@@ -45,16 +48,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         $usages = $this->usageRepository->findByUsableWithDeleted($usableType, $usableId);
 
         return array_map(
-            static fn (Usage $usage): UsageModel => new UsageModel(
-                $usage->getId(),
-                $usage->getUseDate(),
-                $usage->getPlant()->getId(),
-                $usage->getComment(),
-                $usage->getUsableId(),
-                $usage->getUsableType(),
-                $usage->getCreatedAt(),
-                $usage->getUpdatedAt()
-            ),
+            fn (Usage $usage) => $this->toModel($usage),
             $usages
         );
     }
@@ -74,21 +68,21 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
      */
     public function getUsagesPaginated(int $page, int $perPage): array
     {
-        $usages = $this->usageRepository->getUsagesPaginated($page, $perPage);
+        $usagesPaginated = $this->usageRepository->getUsagesPaginated($page, $perPage);
 
-        return array_map(
-            static fn (Usage $usage): UsageModel => new UsageModel(
-                $usage->getId(),
-                $usage->getUseDate(),
-                $usage->getPlant()->getId(),
-                $usage->getComment(),
-                $usage->getUsableId(),
-                $usage->getUsableType(),
-                $usage->getCreatedAt(),
-                $usage->getUpdatedAt()
-            ),
-            $usages
+        if (!is_array($usagesPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for usages');
+        }
+
+        $usagesModel = array_map(
+            fn (Usage $usage): UsageModel => $this->toModel($usage, true),
+            $usagesPaginated['items']
         );
+
+        return [
+            'usagesModel' => $usagesModel,
+            'pagination' => $usagesPaginated['pagination']
+        ];
     }
 
     /**
@@ -108,16 +102,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     {
         $usage = $this->usageRepository->find($usageId);
 
-        return new UsageModel(
-            $usage->getId(),
-            $usage->getUseDate(),
-            $usage->getPlant()->getId(),
-            $usage->getComment(),
-            $usage->getUsableId(),
-            $usage->getUsableType(),
-            $usage->getCreatedAt(),
-            $usage->getUpdatedAt()
-        );
+        return $this->toModel($usage);
     }
 
     /**
@@ -128,16 +113,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         $usages = $this->usageRepository->findAll();
 
         return array_map(
-            static fn (Usage $usage): UsageModel => new UsageModel(
-                $usage->getId(),
-                $usage->getUseDate(),
-                $usage->getPlant()->getId(),
-                $usage->getComment(),
-                $usage->getUsableId(),
-                $usage->getUsableType(),
-                $usage->getCreatedAt(),
-                $usage->getUpdatedAt()
-            ),
+            fn (Usage $usage): UsageModel => $this->toModel($usage, true),
             $usages
         );
     }
@@ -151,16 +127,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         $usages = $this->usageRepository->findUsagesByUseDate($useDate);
 
         return array_map(
-            static fn (Usage $usage): UsageModel => new UsageModel(
-                $usage->getId(),
-                $usage->getUseDate(),
-                $usage->getPlant()->getId(),
-                $usage->getComment(),
-                $usage->getUsableId(),
-                $usage->getUsableType(),
-                $usage->getCreatedAt(),
-                $usage->getUpdatedAt()
-            ),
+            fn (Usage $usage) => $this->toModel($usage),
             $usages
         );
     }
@@ -189,5 +156,67 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     public function remove(Usage $usage): void
     {
         $this->usageRepository->remove($usage);
+    }
+
+    /**
+     * @param Usage $usage
+     * @param bool $addRelations
+     * @return UsageModel
+     */
+    public function toModel(Usage $usage, bool $addRelations = false): UsageModel
+    {
+        $groupModel = $this->groupRepository->findModel($usage->getGroup()->getId());
+
+        $attachableModel = null;
+
+        if ($addRelations) {
+            $attachableEntity = $this->attachableResolver->resolve(
+                $usage->getTarget()->getUsableType(),
+                $usage->getTarget()->getUsableId()
+            );
+
+            $attachableModel = $this->toAttachableModel($attachableEntity);
+        }
+
+        return self::makeUsageModel($usage, $groupModel, $attachableModel);
+    }
+
+    /**
+     * @param AttachableInterface|null $entity
+     * @return AttachableModelInterface|null
+     */
+    private function toAttachableModel(?AttachableInterface $entity): ?AttachableModelInterface
+    {
+        if (!$entity) return null;
+
+        return match (get_class($entity)) {
+            \App\Domain\Entity\Fertilizer::class => $this->fertilizerRepository->findModel($entity->getId()),
+            \App\Domain\Entity\Pest::class => $this->pestRepository->findModel($entity->getId()),
+            \App\Domain\Entity\Stimulant::class => $this->stimulantRepository->findModel($entity->getId()),
+            default => null,
+        };
+    }
+
+    /**
+     * @param Usage $usage
+     * @param GroupModel|null $groupModel
+     * @param AttachableModelInterface|null $attachableModel
+     * @return UsageModel
+     */
+    static function makeUsageModel(Usage $usage, ?GroupModel $groupModel = null, ?AttachableModelInterface $attachableModel = null): UsageModel
+    {
+        return new UsageModel(
+            $usage->getId(),
+            $usage->getGroup()->getId(),
+            $groupModel,
+            $usage->getUseDate(),
+            $usage->getPlant()->getId(),
+            $usage->getComment(),
+            $usage->getTarget()->getUsableId(),
+            $usage->getTarget()->getUsableType(),
+            $attachableModel,
+            $usage->getCreatedAt(),
+            $usage->getUpdatedAt()
+        );
     }
 }

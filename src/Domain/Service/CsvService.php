@@ -241,10 +241,11 @@ class CsvService
         return $this->modelFactory
             ->makeModel(
                 CreateUsageModel::class,
+                (int) $usageModel['group_id'],
                 new DateTimeImmutable($usageModel['use_date']),
-                $usageModel['plant_id'],
+                (int) $usageModel['plant_id'],
                 $usageModel['comment'] !== '' ? $usageModel['comment'] : null,
-                $usageModel['usable_id'] ,
+                (int) $usageModel['usable_id'] ,
                 $usageModel['usable_type'] ,
             );
     }

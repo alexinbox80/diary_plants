@@ -2,21 +2,23 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
-use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
-use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert as WebmozartAssert;
+use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\ValueObject\Usage\AttachableReference;
+use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
 #[ORM\Table(name: 'usage')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'usage__usable__ind', columns: ['usable_type', 'usable_id'])]
 #[ORM\Index(name: 'usage__plant_id__ind', columns: ['plant_id'])]
+#[ORM\Index(name: 'usage__group_id__ind', columns: ['group_id'])]
 class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -33,31 +35,29 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\Column(type: 'text', length: 1024, nullable: true)]
     private ?string $comment = null;
 
-    #[ORM\Column(name: 'usable_id', type: 'bigint', nullable: true)]
-    private ?int $usableId = null;
-
-    #[ORM\Column(name: 'usable_type', type: 'string', nullable: true)]
-    private ?string $usableType = null;
+    //идентификатор связанной сущности, тип связанной сущности
+    #[ORM\Embedded(class: AttachableReference::class, columnPrefix: false)]
+    private AttachableReference $target;
 
     //идентификатор растения
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'usages')]
     #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
     private Plant $plant;
 
-    public function setUsableType(?string $usableType = null): void
-    {
-        $this->usableType = $usableType;
-    }
-
-    public function setUsableId(?int $usableId = null): void
-    {
-        $this->usableId = $usableId;
-    }
+    //идентификатор связанной сущности group
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'usages')]
+    #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
+    private Group $group;
 
     public function getId(): int
     {
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
         return $this->id;
+    }
+
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 
     public function getUseDate(): DateTimeImmutable
@@ -70,34 +70,32 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         return $this->comment;
     }
 
-    public function getUsableId(): ?int
-    {
-        return $this->usableId;
-    }
-
-    public function getUsableType(): ?string
-    {
-        return $this->usableType;
-    }
-
     public function getPlant(): Plant
     {
         return $this->plant;
     }
 
+    public function getTarget(): AttachableReference
+    {
+        return $this->target;
+    }
+
     private function setCommonFields(
+        Group $group,
         DateTimeImmutable $useDate,
         Plant $plant,
         ?string $comment = null,
-        ?int $usableId = null,
-        ?string $usableType = null,
     ): void
     {
+        $this->setGroupValidate($group);
         $this->setUseDateValidate($useDate);
         $this->setPlantValidate($plant);
         $this->setCommentValidate($comment);
-        $this->setUsableIdValidate($usableId);
-        $this->setUsableTypeValidate($usableType);
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     private function setUseDateValidate(DateTimeImmutable $useDate): void
@@ -117,34 +115,35 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->comment = $comment;
     }
 
-    private function setUsableIdValidate(?int $usableId = null): void
-    {
-        $this->usableId = $usableId;
-    }
-
-    private function setUsableTypeValidate(?string $usableType = null): void
-    {
-        $this->usableType = $usableType;
-    }
-
     public function __construct(
+        Group $group,
         DateTimeImmutable $useDate,
         Plant $plant,
-        ?string $comment = null,
-        ?int $usableId = null,
-        ?string $usableType = null,
+        AttachableReference $target,
+        ?string $comment = null
     ) {
-        $this->setCommonFields($useDate, $plant, $comment, $usableId, $usableType);
+        $this->setCommonFields($group, $useDate, $plant, $comment);
+
+        $this->target = $target;
     }
 
     public function changeFields(
+        Group $group,
         DateTimeImmutable $useDate,
         Plant $plant,
+        AttachableReference $target,
         ?string $comment = null,
-        ?int $usableId = null,
-        ?string $usableType = null,
     ):void
     {
-        $this->setCommonFields($useDate, $plant, $comment, $usableId, $usableType);
+        $this->setCommonFields($group, $useDate, $plant, $comment);
+
+        $this->target = $target;
+    }
+
+    public function moveToGroup(Group $group): self
+    {
+        $this->group = $group;
+
+        return $this;
     }
 }

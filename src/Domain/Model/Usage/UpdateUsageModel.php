@@ -9,6 +9,9 @@ class UpdateUsageModel
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public readonly int $groupId,
+        #[Assert\NotBlank]
         public readonly DateTimeImmutable $useDate,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]

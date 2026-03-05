@@ -6,8 +6,9 @@ use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
-class StimulantModel
+class StimulantModel implements AttachableModelInterface
 {
     public function __construct(
         private readonly int $id,

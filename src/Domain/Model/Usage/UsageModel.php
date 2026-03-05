@@ -3,16 +3,21 @@
 namespace App\Domain\Model\Usage;
 
 use DateTimeImmutable;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class UsageModel
 {
     public function __construct(
         private readonly int $id,
+        private readonly int $groupId,
+        private readonly ?GroupModel $group = null,
         private readonly DateTimeImmutable $useDate,
         private readonly int $plantId,
         private readonly ?string $comment = null,
         private readonly ?int $usableId = null,
         private readonly ?string $usableType = null,
+        private readonly ?AttachableModelInterface $attachable = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -21,6 +26,16 @@ class UsageModel
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->groupId;
+    }
+
+    public function getGroup(): ?GroupModel
+    {
+        return $this->group;
     }
 
     public function getUseDate(): DateTimeImmutable
@@ -38,14 +53,9 @@ class UsageModel
         return $this->comment;
     }
 
-    public function getUsableId(): ?int
+    public function getAttachable(): ?AttachableModelInterface
     {
-        return $this->usableId;
-    }
-
-    public function getUsableType(): ?string
-    {
-        return $this->usableType;
+        return $this->attachable;
     }
 
     public function getCreatedAt(): DateTimeImmutable

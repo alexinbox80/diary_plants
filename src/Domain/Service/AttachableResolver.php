@@ -3,9 +3,10 @@
 namespace App\Domain\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use App\Domain\ValueObject\Enum\AttachableType;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Repository\AttachableResolverInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType as AttachableTypeUsage;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType as AttachableTypeAttachment;
 
 class AttachableResolver implements AttachableResolverInterface
 {
@@ -16,9 +17,10 @@ class AttachableResolver implements AttachableResolverInterface
 
     public function resolve(string $type, int $id): ?AttachableInterface
     {
-        $class = AttachableType::getClass($type);
+        $class = AttachableTypeAttachment::tryFrom($type)?->getClass($type)
+            ?? AttachableTypeUsage::tryFrom($type)?->getClass($type);
 
-        if (!isset($class)) {
+        if ($class === null) {
             throw new \InvalidArgumentException("Unsupported attachable type: {$type}");
         }
 

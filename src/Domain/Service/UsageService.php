@@ -2,18 +2,20 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Usage;
+use InvalidArgumentException;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Usage\UpdateUsageModel;
 use App\Domain\Repository\UsageRepositoryInterface;
-use DateTimeImmutable;
-use InvalidArgumentException;
+use App\Domain\ValueObject\Usage\AttachableReference;
 
 class UsageService
 {
     public function __construct(
         private readonly PlantService $plantService,
+        private readonly GroupService $groupService,
         private readonly UsageRepositoryInterface $usageRepository
     ) {
     }
@@ -60,28 +62,23 @@ class UsageService
      */
     public function create(CreateUsageModel $createUsageModel): UsageModel
     {
+        $group = $this->groupService->find($createUsageModel->groupId);
         $plant = $this->plantService->find($createUsageModel->plantId);
 
         $usage = new Usage(
+            $group,
             $createUsageModel->useDate,
             $plant,
-            $createUsageModel->comment,
-            $createUsageModel->usableId,
-            $createUsageModel->usableType
+            new AttachableReference(
+                $createUsageModel->usableId,
+                $createUsageModel->usableType
+            ),
+            $createUsageModel->comment
         );
 
         $this->usageRepository->create($usage);
 
-        return new UsageModel(
-            $usage->getId(),
-            $usage->getUseDate(),
-            $usage->getPlant()->getId(),
-            $usage->getComment(),
-            $usage->getUsableId(),
-            $usage->getUsableType(),
-            $usage->getCreatedAt(),
-            $usage->getUpdatedAt()
-        );
+        return $this->usageRepository->toModel($usage);
     }
 
     /**
@@ -92,28 +89,23 @@ class UsageService
      */
     public function update(Usage $usage, UpdateUsageModel $updateUsageModel): UsageModel
     {
+        $group = $this->groupService->find($updateUsageModel->groupId);
         $plant = $this->plantService->find($updateUsageModel->plantId);
 
         $usage->changeFields(
+            $group,
             $updateUsageModel->useDate,
             $plant,
-            $updateUsageModel->comment,
-            $updateUsageModel->usableId,
-            $updateUsageModel->usableType
+            new AttachableReference(
+                $updateUsageModel->usableId,
+                $updateUsageModel->usableType
+            ),
+            $updateUsageModel->comment
         );
 
         $this->usageRepository->update();
 
-        return new UsageModel(
-            $usage->getId(),
-            $usage->getUseDate(),
-            $usage->getPlant()->getId(),
-            $usage->getComment(),
-            $usage->getUsableId(),
-            $usage->getUsableType(),
-            $usage->getCreatedAt(),
-            $usage->getUpdatedAt()
-        );
+        return $this->usageRepository->toModel($usage);
     }
 
     /**

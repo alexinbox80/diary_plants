@@ -50,6 +50,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS task__group_id__ind ON task (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS status__group_id__ind ON status (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__usable__ind ON usage (usable_type, usable_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__group_id__ind ON usage (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS attachment__attachable__ind ON attachment (attachable_type, attachable_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS attachment__group_id__ind ON attachment (group_id)');
     }
@@ -81,6 +82,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS task__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS status__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__plant_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__usable__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS attachment__attachable__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS attachment__group_id__ind');

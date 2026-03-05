@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\ValueObject\Enum;
+namespace App\Domain\ValueObject\Enum\Attachment;
 
 enum AttachableType: string
 {

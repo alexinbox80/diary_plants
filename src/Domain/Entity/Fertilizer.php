@@ -8,6 +8,7 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\ValueObject\Preparation\PreparationVolume;
 use App\Domain\ValueObject\Preparation\PreparationDetails;
@@ -19,7 +20,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\Index(name: 'fertilizer__plant_id__ind', columns: ['plant_id'])]
 #[ORM\Index(name: 'fertilizer__group_id__ind', columns: ['group_id'])]
 #[ORM\UniqueConstraint(name: 'fertilizer__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
-class Fertilizer extends Preparation implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Fertilizer extends Preparation implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 

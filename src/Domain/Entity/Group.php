@@ -73,6 +73,10 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'group', cascade: ['remove'])]
     private Collection $tasks;
 
+    //связь с использованием
+    #[ORM\OneToMany(targetEntity: Usage::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $usages;
+
     public function __construct(
         bool $isActive,
         string $title,
@@ -90,6 +94,7 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->users = new ArrayCollection();
         $this->statuses = new ArrayCollection();
         $this->tasks = new ArrayCollection();
+        $this->usages = new ArrayCollection();
     }
 
     private function setCommonFields(
