@@ -2,19 +2,22 @@
 /*
  * структура папок на фс
  * public/
-        └── uploads/
-            └── videos/
-            └── images/
-                └── plant/
-                    offspring/
-                    pest/
-                    ...
-                    └── id/
-                        ├── original/
-                        │   └── abc123.jpg
-                        └── thumbnails/
-                            └── thumb_abc123.jpg
-         * */
+ *       └── uploads/
+ *           └── videos/
+ *           └── attachments/
+ *               └── plant/
+ *                   offspring/
+ *                   user/
+ *                   ...
+ *                   └── id/
+ *                       └── hesh123.jpg
+ *                   qr-code/
+ *                       └── group_id/
+ *                           └── id/
+ *                               └── UUIDv4.jpg
+ *
+ * */
+
 namespace App\Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;

@@ -29,9 +29,11 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    //дата использования
     #[ORM\Column(name: 'use_date', type: 'datetimetz_immutable', nullable: false)]
     private DateTimeImmutable $useDate;
 
+    //комментарий
     #[ORM\Column(type: 'text', length: 1024, nullable: true)]
     private ?string $comment = null;
 
