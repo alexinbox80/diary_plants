@@ -53,14 +53,14 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private ?string $colorDescription = null;
 
-    //связь с событиями
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'status')]
-    private Collection $tasks;
-
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'statuses')]
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'markers')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
+
+    //связь с поливом
+    #[ORM\OneToMany(targetEntity: Watering::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $waterings;
 
     private function setCommonFields(
         Group $group,
@@ -127,7 +127,7 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     {
         $this->setCommonFields($group, $letter, $color, $description, $colorDescription);
 
-        $this->tasks = new ArrayCollection();
+        $this->waterings = new ArrayCollection();
     }
 
     public function changeFields(

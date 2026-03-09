@@ -70,10 +70,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\Embedded(class: SalesInfo::class, columnPrefix: false)]
     private ?SalesInfo $salesInfo;
 
-    //связь с задачами
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'plant')]
-    private Collection $tasks;
-
     //связь с использованием удобрений, стимуляторов и обнаруженными вредителями
     #[ORM\OneToMany(targetEntity: Usage::class, mappedBy: 'plant')]
     private Collection $usages;
@@ -135,7 +131,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->lifeCycle = new LifeCycle();
         $this->salesInfo = new SalesInfo();
 
-        $this->tasks = new ArrayCollection();
         $this->offsprings = new ArrayCollection();
         $this->fertilizers = new ArrayCollection();
         $this->usages = new ArrayCollection();
@@ -269,11 +264,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     public function getSalesInfo(): SalesInfo
     {
         return $this->salesInfo;
-    }
-
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
     }
 
     public function getOffsprings(): Collection

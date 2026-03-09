@@ -2,15 +2,16 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Entity\Watering;
 use DateTimeImmutable;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\User\CreateUserModel;
-use App\Domain\Model\Task\CreateTaskModel;
+use App\Domain\Model\Watering\CreateWateringModel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Group\CreateGroupModel;
-use App\Domain\Model\Status\CreateStatusModel;
+use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
@@ -26,9 +27,9 @@ class CsvService
         private readonly GroupService      $groupService,
         private readonly UserService       $userService,
         private readonly PlantService      $plantService,
-        private readonly StatusService     $statusService,
+        private readonly MarkerService     $markerService,
         private readonly OffspringService  $offspringService,
-        private readonly TaskService       $taskService,
+        private readonly WateringService   $wateringService,
         private readonly PestService       $pestService,
         private readonly FertilizerService $fertilizerService,
         private readonly StimulantService  $stimulantService,
@@ -126,16 +127,16 @@ class CsvService
             );
     }
 
-    private function createStatusModel(array $statusModel): CreateStatusModel
+    private function createMArkerModel(array $markerModel): CreateMarkerModel
     {
         return $this->modelFactory
             ->makeModel(
-                CreateStatusModel::class,
-                (int) $statusModel['group_id'],
-                $statusModel['letter'],
-                $statusModel['color'],
-                $statusModel['description'],
-                $statusModel['color_description']
+                CreateMarkerModel::class,
+                (int) $markerModel['group_id'],
+                $markerModel['letter'],
+                $markerModel['color'],
+                $markerModel['description'],
+                $markerModel['color_description']
             );
     }
 
@@ -156,16 +157,20 @@ class CsvService
             );
     }
 
-    private function createTaskModel(array $taskModel): CreateTaskModel
+    private function createWateringModel(array $wateringModel): CreateWateringModel
     {
         return $this->modelFactory
             ->makeModel(
-                CreateTaskModel::class,
-                (int) $taskModel['group_id'],
-                (int) $taskModel['status_id'],
-                (int) $taskModel['plant_id'],
-                new DateTimeImmutable($taskModel['date']),
-                $taskModel['description']
+                CreateWateringModel::class,
+                (int) $wateringModel['group_id'],
+                (int) $wateringModel['marker_id'],
+                (int) $wateringModel['amount'],
+                $wateringModel['type'],
+                $wateringModel['method'],
+                new DateTimeImmutable($wateringModel['watered_at']),
+                $wateringModel['temperature'],
+                $wateringModel['description'],
+                $wateringModel['comment']
             );
     }
 
@@ -265,17 +270,17 @@ class CsvService
                 $plantModel = $this->createPlantModel($array);
                 $this->plantService->create($plantModel);
                 break;
-            case 'status':
-                $statusModel = $this->createStatusModel($array);
-                $this->statusService->create($statusModel);
+            case 'marker':
+                $markerModel = $this->createMarkerModel($array);
+                $this->markerService->create($markerModel);
                 break;
             case 'offspring':
                 $offspringModel = $this->createOffspringModel($array);
                 $this->offspringService->create($offspringModel);
                 break;
-            case 'task':
-                $taskModel = $this->createTaskModel($array);
-                $this->taskService->create($taskModel);
+            case 'watering':
+                $wateringModel = $this->createWateringModel($array);
+                $this->wateringService->create($wateringModel);
                 break;
             case 'pest':
                 $pestModel = $this->createPestModel($array);

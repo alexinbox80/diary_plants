@@ -10,7 +10,7 @@ use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 class WateringDetails
 {
     //количество воды в мл
-    #[ORM\Column(type: 'integer', options: ['comment' => 'Volume in ml.'])]
+    #[ORM\Column(type: 'integer', nullable: false)]
     private int $amount;
 
     //тип воды

@@ -26,7 +26,7 @@ final class Version20250923211327 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS plant__oid__uniq ON plant (oid) WHERE (deleted_at IS NULL)');
-        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS status__letter_group__uniq ON status (letter, group_id) WHERE (deleted_at IS NULL)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS marker__letter_group__uniq ON marker (letter, group_id) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__email__uniq ON "user" (email) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__phone__uniq ON "user" (phone) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__refresh_token__uniq ON "user" (refresh_token) WHERE (deleted_at IS NULL)');
@@ -47,8 +47,9 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS stimulant__plant_id__ind ON stimulant (plant_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS stimulant__group_id__ind ON stimulant (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__plant_id__ind ON usage (plant_id)');
-        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS task__group_id__ind ON task (group_id)');
-        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS status__group_id__ind ON status (group_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS watering__group_id__ind ON watering (group_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS watering__marker_id__ind ON watering (marker_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS marker__group_id__ind ON marker (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__usable__ind ON usage (usable_type, usable_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS usage__group_id__ind ON usage (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS attachment__attachable__ind ON attachment (attachable_type, attachable_id)');
@@ -59,7 +60,7 @@ final class Version20250923211327 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS plant__oid__uniq');
-        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS status__letter_group__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS marker__letter_group__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__email__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__phone__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__refresh_token__uniq');
@@ -79,8 +80,9 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS plant__oid__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS stimulant__plant_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS stimulant__group_id__ind');
-        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS task__group_id__ind');
-        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS status__group_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS watering__group_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS watering__marker_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS marker__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__plant_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__usable__ind');
