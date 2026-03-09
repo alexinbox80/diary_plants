@@ -151,7 +151,7 @@ final class Version20250825201143 extends AbstractMigration
                     amount INT NOT NULL,
                     type VARCHAR(255) NOT NULL,
                     method VARCHAR(255) NOT NULL,
-                    temperature NUMERIC(4, 1) DEFAULT NULL,
+                    temperature NUMERIC(3, 1) DEFAULT NULL,
                     PRIMARY KEY (id))');
 
 

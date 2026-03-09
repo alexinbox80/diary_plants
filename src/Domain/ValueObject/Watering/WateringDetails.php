@@ -22,7 +22,7 @@ class WateringDetails
     private WateringMethod $method = WateringMethod::TOP;
 
     //температура воды
-    #[ORM\Column(type: 'decimal', precision: 4, scale: 1, nullable: true)]
+    #[ORM\Column(type: 'decimal', precision: 3, scale: 1, nullable: true)]
     private ?string $temperature = null;
 
     public function __construct(
