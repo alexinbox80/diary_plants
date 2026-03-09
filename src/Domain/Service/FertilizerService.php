@@ -87,7 +87,7 @@ class FertilizerService
         $group = $this->groupService->find($createFertilizerModel->groupId);
         $plant = $this->plantService->find($createFertilizerModel->plantId);
 
-        $fertilizer= new Fertilizer(
+        $fertilizer = new Fertilizer(
             $group,
             $plant,
             $createFertilizerModel->title,
