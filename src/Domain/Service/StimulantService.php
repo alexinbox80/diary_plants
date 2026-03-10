@@ -16,7 +16,7 @@ class StimulantService
 {
     public function __construct(
         private readonly GroupService $groupService,
-        private readonly PlantService $plantService,
+        private readonly MarkerService $markerService,
         private readonly ModelFactory $modelFactory,
         private readonly StimulantRepositoryInterface $stimulantRepository
     ) {
@@ -83,11 +83,11 @@ class StimulantService
     public function create(CreateStimulantModel $createStimulantModel): StimulantModel
     {
         $group = $this->groupService->find($createStimulantModel->groupId);
-        $plant = $this->plantService->find($createStimulantModel->plantId);
+        $marker = $this->markerService->find($createStimulantModel->markerId);
 
         $stimulant = new Stimulant(
             $group,
-            $plant,
+            $marker,
             $createStimulantModel->title,
             new PreparationVolume(
                 $createStimulantModel->quantity,
@@ -114,11 +114,11 @@ class StimulantService
     public function update(Stimulant $stimulant, UpdateStimulantModel $updateStimulantModel): StimulantModel
     {
         $group = $this->groupService->find($updateStimulantModel->groupId);
-        $plant = $this->plantService->find($updateStimulantModel->plantId);
+        $marker = $this->markerService->find($updateStimulantModel->markerId);
 
-        $stimulant->changeFieldsWithPlant(
+        $stimulant->changeFieldsWithMarker(
             $group,
-            $plant,
+            $marker,
             $updateStimulantModel->title,
             new PreparationVolume(
                 $updateStimulantModel->quantity,

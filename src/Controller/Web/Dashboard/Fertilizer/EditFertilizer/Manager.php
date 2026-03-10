@@ -21,7 +21,7 @@ class Manager
     {
         $formData = new EditFertilizerDTO(
             $fertilizer->getGroup()->getId(),
-            $fertilizer->getPlant()->getId(),
+            $fertilizer->getMarker()->getId(),
             $fertilizer->getTitle(),
             $fertilizer->getVolume()->getQuantity(),
             $fertilizer->getVolume()->getLetter(),

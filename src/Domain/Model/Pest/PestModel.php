@@ -5,7 +5,7 @@ namespace App\Domain\Model\Pest;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class PestModel implements AttachableModelInterface
@@ -13,7 +13,7 @@ class PestModel implements AttachableModelInterface
     public function __construct(
         private readonly int $id,
         private readonly int $groupId,
-        private readonly int $plantId,
+        private readonly int $markerId,
         private readonly string $title,
         private readonly int $quantity,
         private readonly string $letter,
@@ -21,7 +21,7 @@ class PestModel implements AttachableModelInterface
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
         private readonly ?GroupModel $group = null,
-        private readonly ?PlantModel $plant = null,
+        private readonly ?MarkerModel $marker = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -37,9 +37,9 @@ class PestModel implements AttachableModelInterface
         return $this->groupId;
     }
 
-    public function getPlantId(): int
+    public function getMarkerId(): int
     {
-        return $this->plantId;
+        return $this->markerId;
     }
 
     public function getTitle(): string
@@ -77,9 +77,9 @@ class PestModel implements AttachableModelInterface
         return $this->group;
     }
 
-    public function getPlant(): ?PlantModel
+    public function getMarker(): ?MarkerModel
     {
-        return $this->plant;
+        return $this->marker;
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -98,8 +98,8 @@ class PestModel implements AttachableModelInterface
             'id' => '#',
             'group_id' => 'Идентификатор группы',
             'group_title' => 'Группа',
-            'plant_id' => 'Идентификатор растения',
-            'plant_title' => 'Растение',
+            'marker_id' => 'Идентификатор маркера',
+            'marker_letter' => 'Обозначение',
             'title' => 'Заголовок',
             'quantity' => 'Количество',
             'letter' => 'Буква обозначения',
@@ -119,8 +119,8 @@ class PestModel implements AttachableModelInterface
             'id' => $this->getId(),
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
-            'plant_id' => $this->getPlantId(),
-            'plant_title' => $this->getPlant()?->getTitle(),
+            'marker_id' => $this->getMarkerId(),
+            'marker_letter' => $this->getMarker()?->getLetter(),
             'title' => $this->getTitle(),
             'quantity' => $this->getQuantity(),
             'letter' => $this->getLetter(),

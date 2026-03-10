@@ -1,8 +1,6 @@
 <?php //полив
 //TODO:
 //1) убрать letter из VO Preparation ??? или добавить в него другой реквизит
-//2) убрать прямую и обратную связь с Plant из Fertilizer Pest Stimulant
-//3) добавить прямую и обратную связь для Marker из Fertilizer Pest Stimulant
 
 namespace App\Domain\Entity;
 

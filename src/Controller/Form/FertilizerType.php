@@ -2,7 +2,7 @@
 
 namespace App\Controller\Form;
 
-use App\Domain\Service\PlantService;
+use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\Model\Fertilizer\FertilizerModel;
@@ -16,7 +16,7 @@ use App\Controller\Web\Dashboard\Fertilizer\CreateFertilizer\Input\CreateFertili
 class FertilizerType extends AbstractType
 {
     public function __construct(
-        private readonly PlantService $plantService,
+        private readonly MarkerService $markerService,
     ) {
     }
 
@@ -26,11 +26,11 @@ class FertilizerType extends AbstractType
         $labels = FertilizerModel::getTableHeaderRu();
 
         $builder
-            ->add('plantId', ChoiceType::class, [
-                'label' => $labels['plant_id'],
+            ->add('markerId', ChoiceType::class, [
+                'label' => $labels['marker_id'],
                 'required' => true,
-                'choices' => $this->plantService->getChoicesForChoiceType($groupId),
-                'placeholder' => 'Выберите растение',
+                'choices' => $this->markerService->getChoicesForChoiceType($groupId),
+                'placeholder' => 'Выберите сокращение',
             ])
             ->add('title', TextType::class, [
                 'label' => $labels['title'],

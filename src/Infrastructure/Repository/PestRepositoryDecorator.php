@@ -6,14 +6,14 @@ use DateTimeImmutable;
 use App\Domain\Entity\Pest;
 use App\Domain\Model\Pest\PestModel;
 use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Repository\PestRepositoryInterface;
 
 class PestRepositoryDecorator implements PestRepositoryInterface
 {
     public function __construct(
         private readonly GroupRepositoryDecorator $groupRepository,
-        private readonly PlantRepositoryDecorator $plantRepository,
+        private readonly MarkerRepositoryDecorator $markerRepository,
         private readonly PestRepository $pestRepository,
     ) {
     }
@@ -151,28 +151,28 @@ class PestRepositoryDecorator implements PestRepositoryInterface
     public function toModel(Pest $pest, bool $addRelations = false): PestModel
     {
         $groupModel = null;
-        $plantModel = null;
+        $markerModel = null;
 
         if ($addRelations) {
             $groupModel = $this->groupRepository->findModel($pest->getGroup()->getId());
-            $plantModel = $this->plantRepository->findModel($pest->getPlant()->getId());
+            $markerModel = $this->markerRepository->findModel($pest->getMarker()->getId());
         }
 
-        return self::makePestModel($pest, $groupModel, $plantModel);
+        return self::makePestModel($pest, $groupModel, $markerModel);
     }
 
     /**
      * @param Pest $pest
      * @param GroupModel|null $groupModel
-     * @param PlantModel|null $plantModel
+     * @param MarkerModel|null $markerModel
      * @return PestModel
      */
-    static function makePestModel(Pest $pest, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): PestModel
+    static function makePestModel(Pest $pest, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): PestModel
     {
         return new PestModel(
             $pest->getId(),
             $pest->getGroup()->getId(),
-            $pest->getPlant()->getId(),
+            $pest->getMarker()->getId(),
             $pest->getTitle(),
             $pest->getVolume()->getQuantity(),
             $pest->getVolume()->getLetter(),
@@ -180,7 +180,7 @@ class PestRepositoryDecorator implements PestRepositoryInterface
             $pest->getDetails()->getDescription(),
             $pest->getDetails()->getComment(),
             $groupModel,
-            $plantModel,
+            $markerModel,
             $pest->getCreatedAt(),
             $pest->getUpdatedAt()
         );

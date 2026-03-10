@@ -2,21 +2,21 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Pest;
+use App\Domain\Model\Pest\PestModel;
+use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Pest\UpdatePestModel;
-use App\Domain\Model\Pest\PestModel;
 use App\Domain\Repository\PestRepositoryInterface;
 use App\Domain\ValueObject\Preparation\PreparationDetails;
 use App\Domain\ValueObject\Preparation\PreparationVolume;
-use DateTimeImmutable;
-use Psr\Cache\InvalidArgumentException;
 
 class PestService
 {
     public function __construct(
         private readonly GroupService $groupService,
-        private readonly PlantService $plantService,
+        private readonly MarkerService $markerService,
         private readonly ModelFactory $modelFactory,
         private readonly PestRepositoryInterface $pestRepository
     ) {
@@ -83,11 +83,11 @@ class PestService
     public function create(CreatePestModel $createPestModel): PestModel
     {
         $group = $this->groupService->find($createPestModel->groupId);
-        $plant = $this->plantService->find($createPestModel->plantId);
+        $marker = $this->markerService->find($createPestModel->markerId);
 
         $pest = new Pest(
             $group,
-            $plant,
+            $marker,
             $createPestModel->title,
             new PreparationVolume(
                 $createPestModel->quantity,
@@ -114,11 +114,11 @@ class PestService
     public function update(Pest $pest, UpdatePestModel $updatePestModel): PestModel
     {
         $group = $this->groupService->find($updatePestModel->groupId);
-        $plant = $this->plantService->find($updatePestModel->plantId);
+        $marker = $this->markerService->find($updatePestModel->markerId);
 
-        $pest->changeFieldsWithPlant(
+        $pest->changeFieldsWithMarker(
             $group,
-            $plant,
+            $marker,
             $updatePestModel->title,
             new PreparationVolume(
                 $updatePestModel->quantity,

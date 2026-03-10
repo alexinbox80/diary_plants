@@ -17,7 +17,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\Table(name: 'pest')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Index(name: 'pest__plant_id__ind', columns: ['plant_id'])]
+#[ORM\Index(name: 'pest__marker_id__ind', columns: ['marker_id'])]
 #[ORM\Index(name: 'pest__group_id__ind', columns: ['group_id'])]
 #[ORM\UniqueConstraint(name: 'pest__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
 class Pest extends Preparation implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
@@ -30,10 +30,10 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    //связь с растениями
-    #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'pests')]
-    #[ORM\JoinColumn(name: 'plant_id', referencedColumnName: 'id')]
-    private Plant $plant;
+    //идентификатор связанной сущности маркер
+    #[ORM\ManyToOne(targetEntity: Marker::class, inversedBy: 'pests')]
+    #[ORM\JoinColumn(name: 'marker_id', referencedColumnName: 'id', nullable: false)]
+    private Marker $marker;
 
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'pests')]
@@ -42,7 +42,7 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
 
     public function __construct(
         Group $group,
-        Plant $plant,
+        Marker $marker,
         string $title,
         PreparationVolume $volume,
         PreparationDetails $details = new PreparationDetails()
@@ -51,7 +51,7 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
         parent::__construct($title, $volume, $details);
 
         $this->group = $group;
-        $this->plant = $plant;
+        $this->marker = $marker;
     }
 
     public function getId(): int
@@ -66,14 +66,14 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
         return $this->group;
     }
 
-    public function getPlant(): Plant
+    public function getMarker(): Marker
     {
-        return $this->plant;
+        return $this->marker;
     }
 
-    public function changeFieldsWithPlant(
+    public function changeFieldsWithMarker(
         Group $group,
-        Plant $plant,
+        Marker $marker,
         string $title,
         PreparationVolume $volume,
         PreparationDetails $details
@@ -82,6 +82,6 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
         parent::changeFields($title, $volume, $details);
 
         $this->group = $group;
-        $this->plant = $plant;
+        $this->marker = $marker;
     }
 }

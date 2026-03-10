@@ -78,18 +78,6 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
-    //связь с удобрениями
-    #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'plant')]
-    private Collection $fertilizers;
-
-    //связь со стимуляторами
-    #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'plant')]
-    private Collection $stimulants;
-
-    //связь с вредителями
-    #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'plant')]
-    private Collection $pests;
-
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'plants')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
@@ -132,10 +120,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         $this->salesInfo = new SalesInfo();
 
         $this->offsprings = new ArrayCollection();
-        $this->fertilizers = new ArrayCollection();
         $this->usages = new ArrayCollection();
-        $this->stimulants = new ArrayCollection();
-        $this->pests = new ArrayCollection();
     }
 
     public function moveToGroup(Group $group): self

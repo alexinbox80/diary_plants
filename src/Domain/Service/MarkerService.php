@@ -18,6 +18,22 @@ class MarkerService
     }
 
     /**
+     * @param int|null $groupId
+     * @return MarkerModel[]
+     */
+    public function getChoicesForChoiceType(?int $groupId = null): array
+    {
+        // Получаем список выбора: [title => id]
+        $choices = [];
+        $markerModels = $this->markerRepository->getMarkersForForm($groupId);
+        foreach ($markerModels as $marker) {
+            $choices[$marker->getLetter()] = $marker->getId();
+        }
+
+        return $choices;
+    }
+
+    /**
      * @param int $markerId
      * @return ?Marker
      */

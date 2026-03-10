@@ -18,7 +18,7 @@ class FertilizerService
 {
     public function __construct(
         private readonly GroupService $groupService,
-        private readonly PlantService $plantService,
+        private readonly MarkerService $markerService,
         private readonly ModelFactory $modelFactory,
         private readonly FertilizerRepositoryInterface $fertilizerRepository
     ) {
@@ -85,11 +85,11 @@ class FertilizerService
     public function create(CreateFertilizerModel $createFertilizerModel): FertilizerModel
     {
         $group = $this->groupService->find($createFertilizerModel->groupId);
-        $plant = $this->plantService->find($createFertilizerModel->plantId);
+        $marker = $this->markerService->find($createFertilizerModel->markerId);
 
         $fertilizer = new Fertilizer(
             $group,
-            $plant,
+            $marker,
             $createFertilizerModel->title,
             new PreparationVolume(
                 $createFertilizerModel->quantity,
@@ -116,7 +116,7 @@ class FertilizerService
         $model = $this->modelFactory->makeModel(
             CreateFertilizerModel::class,
             2,
-            $dto->plantId,
+            $dto->markerId,
             $dto->title,
             $dto->quantity,
             $dto->letter,
@@ -138,11 +138,11 @@ class FertilizerService
     public function update(Fertilizer $fertilizer, UpdateFertilizerModel $updateFertilizerModel): FertilizerModel
     {
         $group = $this->groupService->find($updateFertilizerModel->groupId);
-        $plant = $this->plantService->find($updateFertilizerModel->plantId);
+        $marker = $this->markerService->find($updateFertilizerModel->markerId);
 
-        $fertilizer->changeFieldsWithPlant(
+        $fertilizer->changeFieldsWithMarker(
             $group,
-            $plant,
+            $marker,
             $updateFertilizerModel->title,
             new PreparationVolume(
                 $updateFertilizerModel->quantity,
@@ -170,7 +170,7 @@ class FertilizerService
         $model = $this->modelFactory->makeModel(
             UpdateFertilizerModel::class,
             2,
-            $dto->plantId,
+            $dto->markerId,
             $dto->title,
             $dto->quantity,
             $dto->letter,

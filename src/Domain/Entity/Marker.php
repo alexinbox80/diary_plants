@@ -62,6 +62,18 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     #[ORM\OneToMany(targetEntity: Watering::class, mappedBy: 'group', cascade: ['remove'])]
     private Collection $waterings;
 
+    //связь с удобрениями
+    #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $fertilizers;
+
+    //связь с вредителями
+    #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $pests;
+
+    //связь со стимуляторами
+    #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'group', cascade: ['remove'])]
+    private Collection $stimulants;
+
     private function setCommonFields(
         Group $group,
         string $letter,
@@ -84,7 +96,7 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     private function setLetterValidate(string $letter): void
     {
         WebmozartAssert::stringNotEmpty($letter, 'Letter should not be empty. Got: %s');
-        WebmozartAssert::lengthBetween($letter, 1, 2, 'Title must be a string valid length of 1-2 letters. Got: %s');
+        WebmozartAssert::lengthBetween($letter, 1, 3, 'Title must be a string valid length of 1-3 letters. Got: %s');
 
         $this->letter = $letter;
     }
@@ -128,6 +140,9 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         $this->setCommonFields($group, $letter, $color, $description, $colorDescription);
 
         $this->waterings = new ArrayCollection();
+        $this->fertilizers = new ArrayCollection();
+        $this->pests = new ArrayCollection();
+        $this->stimulants = new ArrayCollection();
     }
 
     public function changeFields(

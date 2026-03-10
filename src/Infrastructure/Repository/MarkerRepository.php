@@ -22,6 +22,25 @@ class MarkerRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
+     * @return array
+     */
+    public function getMarkersForForm(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('m')
+            ->from(Marker::class, 'm')
+            ->orderBy('m.letter', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('m.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param int $markerId
      * @return Marker|null
      */

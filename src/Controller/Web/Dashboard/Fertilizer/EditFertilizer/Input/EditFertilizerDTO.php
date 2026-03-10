@@ -10,7 +10,7 @@ class EditFertilizerDTO
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public ?int $groupId = null,
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
-        public int $plantId,
+        public int $markerId,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:255)]
         public string $title,

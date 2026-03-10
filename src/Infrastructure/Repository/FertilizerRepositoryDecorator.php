@@ -5,16 +5,16 @@ namespace App\Infrastructure\Repository;
 use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
 
 class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
 {
     public function __construct(
-        private readonly GroupRepositoryDecorator $groupRepository,
-        private readonly PlantRepositoryDecorator $plantRepository,
-        private readonly FertilizerRepository     $fertilizerRepository
+        private readonly GroupRepositoryDecorator  $groupRepository,
+        private readonly MarkerRepositoryDecorator $markerRepository,
+        private readonly FertilizerRepository      $fertilizerRepository
     ) {
     }
 
@@ -149,28 +149,28 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     public function toModel(Fertilizer $fertilizer, bool $addRelations = false): FertilizerModel
     {
         $groupModel = null;
-        $plantModel = null;
+        $markerModel = null;
 
         if ($addRelations) {
             $groupModel = $this->groupRepository->findModel($fertilizer->getGroup()->getId());
-            $plantModel = $this->plantRepository->findModel($fertilizer->getPlant()->getId());
+            $markerModel = $this->markerRepository->findModel($fertilizer->getMarker()->getId());
         }
 
-        return self::makeFertilizerModel($fertilizer, $groupModel, $plantModel);
+        return self::makeFertilizerModel($fertilizer, $groupModel, $markerModel);
     }
 
     /**
      * @param Fertilizer $fertilizer
      * @param GroupModel|null $groupModel
-     * @param PlantModel|null $plantModel
+     * @param MarkerModel|null $markerModel
      * @return FertilizerModel
      */
-    static function makeFertilizerModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): FertilizerModel
+    static function makeFertilizerModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): FertilizerModel
     {
         return new FertilizerModel(
             $fertilizer->getId(),
             $fertilizer->getGroup()->getId(),
-            $fertilizer->getPlant()->getId(),
+            $fertilizer->getMarker()->getId(),
             $fertilizer->getTitle(),
             $fertilizer->getVolume()->getQuantity(),
             $fertilizer->getVolume()->getLetter(),
@@ -178,7 +178,7 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
             $fertilizer->getDetails()->getDescription(),
             $fertilizer->getDetails()->getComment(),
             $groupModel,
-            $plantModel,
+            $markerModel,
             $fertilizer->getCreatedAt(),
             $fertilizer->getUpdatedAt()
         );

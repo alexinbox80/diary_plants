@@ -180,7 +180,7 @@ class CsvService
             ->makeModel(
                 CreatePestModel::class,
                 (int) $pestModel['group_id'],
-                (int) $pestModel['plant_id'],
+                (int) $pestModel['marker_id'],
                 $pestModel['title'],
                 (int) $pestModel['quantity'],
                 $pestModel['letter'],
@@ -196,7 +196,7 @@ class CsvService
             ->makeModel(
                 CreateFertilizerModel::class,
                 (int) $fertilizerModel['group_id'],
-                (int) $fertilizerModel['plant_id'],
+                (int) $fertilizerModel['marker_id'],
                 $fertilizerModel['title'],
                 (int) $fertilizerModel['quantity'],
                 $fertilizerModel['letter'],
@@ -212,7 +212,7 @@ class CsvService
             ->makeModel(
                 CreateStimulantModel::class,
                 (int) $stimulantModel['group_id'],
-                (int) $stimulantModel['plant_id'],
+                (int) $stimulantModel['marker_id'],
                 $stimulantModel['title'],
                 (int) $stimulantModel['quantity'],
                 $stimulantModel['letter'],

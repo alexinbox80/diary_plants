@@ -5,7 +5,7 @@ namespace App\Infrastructure\Repository;
 use DateTimeImmutable;
 use App\Domain\Entity\Stimulant;
 use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
 
@@ -13,7 +13,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
 {
     public function __construct(
         private readonly GroupRepositoryDecorator $groupRepository,
-        private readonly PlantRepositoryDecorator $plantRepository,
+        private readonly MarkerRepositoryDecorator $markerRepository,
         private readonly StimulantRepository $stimulantRepository,
     ) {
     }
@@ -149,28 +149,28 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     public function toModel(Stimulant $stimulant, bool $addRelations = false): StimulantModel
     {
         $groupModel = null;
-        $plantModel = null;
+        $markerModel = null;
 
         if ($addRelations) {
             $groupModel = $this->groupRepository->findModel($stimulant->getGroup()->getId());
-            $plantModel = $this->plantRepository->findModel($stimulant->getPlant()->getId());
+            $markerModel = $this->markerRepository->findModel($stimulant->getMarker()->getId());
         }
 
-        return self::makeStimulantModel($stimulant, $groupModel, $plantModel);
+        return self::makeStimulantModel($stimulant, $groupModel, $markerModel);
     }
 
     /**
      * @param Stimulant $stimulant
      * @param GroupModel|null $groupModel
-     * @param PlantModel|null $plantModel
+     * @param MarkerModel|null $markerModel
      * @return StimulantModel
      */
-    static function makeStimulantModel(Stimulant $stimulant, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): StimulantModel
+    static function makeStimulantModel(Stimulant $stimulant, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): StimulantModel
     {
         return new StimulantModel(
             $stimulant->getId(),
             $stimulant->getGroup()->getId(),
-            $stimulant->getPlant()->getId(),
+            $stimulant->getMarker()->getId(),
             $stimulant->getTitle(),
             $stimulant->getVolume()->getQuantity(),
             $stimulant->getVolume()->getLetter(),
@@ -178,7 +178,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
             $stimulant->getDetails()->getDescription(),
             $stimulant->getDetails()->getComment(),
             $groupModel,
-            $plantModel,
+            $markerModel,
             $stimulant->getCreatedAt(),
             $stimulant->getUpdatedAt()
         );
