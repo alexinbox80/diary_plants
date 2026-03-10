@@ -12,6 +12,7 @@ class MarkerModel
         private readonly int $groupId,
         private readonly string $letter,
         private readonly string $color,
+        private readonly string $type,
         private readonly ?string $description = null,
         private readonly ?string $colorDescription = null,
         private readonly ?GroupModel $group = null,
@@ -48,6 +49,11 @@ class MarkerModel
     public function getColorDescription(): ?string
     {
         return $this->colorDescription;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     public function getGroup(): ?GroupModel

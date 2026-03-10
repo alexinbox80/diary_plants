@@ -8,6 +8,7 @@ use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Marker\UpdateMarkerModel;
 use App\Domain\Repository\MarkerRepositoryInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 class MarkerService
 {
@@ -19,15 +20,18 @@ class MarkerService
 
     /**
      * @param int|null $groupId
-     * @return MarkerModel[]
+     * @param string|null $type
+     * @return array
      */
-    public function getChoicesForChoiceType(?int $groupId = null): array
+    public function getChoicesForChoiceType(?int $groupId = null, ?string $type = null): array
     {
-        // Получаем список выбора: [title => id]
+        // Получаем список выбора: [letter, description => id]
         $choices = [];
-        $markerModels = $this->markerRepository->getMarkersForForm($groupId);
+        $markerModels = $this->markerRepository->getMarkersForForm($groupId, $type);
+
         foreach ($markerModels as $marker) {
-            $choices[$marker->getLetter()] = $marker->getId();
+            $label = sprintf('%s (%s)', $marker->getLetter(), $marker->getDescription());
+            $choices[$label] = $marker->getId();
         }
 
         return $choices;
@@ -91,6 +95,7 @@ class MarkerService
             $group,
             $createMarkerModel->letter,
             $createMarkerModel->color,
+            AttachableType::From($createMarkerModel->type),
             $createMarkerModel->description,
             $createMarkerModel->colorDescription
         );
@@ -114,6 +119,7 @@ class MarkerService
             $group,
             $updateMarkerModel->letter,
             $updateMarkerModel->color,
+            AttachableType::From($updateMarkerModel->type),
             $updateMarkerModel->description,
             $updateMarkerModel->colorDescription
         );

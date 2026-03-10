@@ -118,6 +118,7 @@ final class Version20250825201143 extends AbstractMigration
                     description VARCHAR(1024) DEFAULT NULL,
                     color VARCHAR(7) NOT NULL,
                     color_description VARCHAR(1024) DEFAULT NULL,
+                    type VARCHAR(20) NOT NULL,
                     created_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
                     updated_at TIMESTAMP(0) WITH TIME ZONE NOT NULL,
                     deleted_at TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
@@ -202,15 +203,15 @@ final class Version20250825201143 extends AbstractMigration
                     PRIMARY KEY (id))');
 
         $this->addSql('ALTER TABLE attachment ADD CONSTRAINT attachment__group_id__fk  FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE fertilizer ADD CONSTRAINT fertilizer__marker_id__fk FOREIGN KEY (marker_id) REFERENCES plant (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE fertilizer ADD CONSTRAINT fertilizer__marker_id__fk FOREIGN KEY (marker_id) REFERENCES marker (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE fertilizer ADD CONSTRAINT fertilizer__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE plant ADD CONSTRAINT plant__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT user__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE offspring ADD CONSTRAINT offspring__plant_id__fk FOREIGN KEY (plant_id) REFERENCES plant (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE offspring ADD CONSTRAINT offspring__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE pest ADD CONSTRAINT pest__marker_id__fk FOREIGN KEY (marker_id) REFERENCES plant (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE pest ADD CONSTRAINT pest__marker_id__fk FOREIGN KEY (marker_id) REFERENCES marker (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE pest ADD CONSTRAINT pest__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE stimulant ADD CONSTRAINT stimulant__marker_id__fk FOREIGN KEY (marker_id) REFERENCES plant (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE stimulant ADD CONSTRAINT stimulant__marker_id__fk FOREIGN KEY (marker_id) REFERENCES marker (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE stimulant ADD CONSTRAINT stimulant__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE watering ADD CONSTRAINT watering__group_id__fk FOREIGN KEY (group_id) REFERENCES "group" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE watering ADD CONSTRAINT watering__marker_id__fk FOREIGN KEY (marker_id) REFERENCES marker (id) NOT DEFERRABLE INITIALLY IMMEDIATE');

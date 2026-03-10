@@ -29,7 +29,7 @@ class FertilizerType extends AbstractType
             ->add('markerId', ChoiceType::class, [
                 'label' => $labels['marker_id'],
                 'required' => true,
-                'choices' => $this->markerService->getChoicesForChoiceType($groupId),
+                'choices' => $this->markerService->getChoicesForChoiceType($groupId, 'fertilizer::class'),
                 'placeholder' => 'Выберите сокращение',
             ])
             ->add('title', TextType::class, [

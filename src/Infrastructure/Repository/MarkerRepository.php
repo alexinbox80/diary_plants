@@ -23,9 +23,10 @@ class MarkerRepository extends AbstractRepository
 
     /**
      * @param int|null $groupId
+     * @param string|null $type
      * @return array
      */
-    public function getMarkersForForm(?int $groupId = null): array
+    public function getMarkersForForm(?int $groupId = null, ?string $type = null): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
@@ -37,6 +38,12 @@ class MarkerRepository extends AbstractRepository
             $qb->where('m.group = :groupId')
                 ->setParameter('groupId', $groupId);
         }
+
+        if ($type !== null) {
+            $qb->andWhere('m.type = :type')
+                ->setParameter('type', $type);
+        }
+
         return  $qb->getQuery()->getResult();
     }
 

@@ -39,11 +39,12 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
 
     /**
      * @param int|null $groupId
-     * @return MarkerModel[]
+     * @param string|null $type
+     * @return array
      */
-    public function getMarkersForForm(?int $groupId = null): array
+    public function getMarkersForForm(?int $groupId = null, ?string $type = null): array
     {
-        $markers = $this->markerRepository->getMarkersForForm($groupId);
+        $markers = $this->markerRepository->getMarkersForForm($groupId, $type);
 
         return array_map(
             fn (Marker $marker): MarkerModel => $this->toModel($marker),
@@ -166,6 +167,7 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
             $marker->getGroup()->getId(),
             $marker->getLetter(),
             $marker->getColor(),
+            $marker->getType()->value,
             $marker->getDescription(),
             $marker->getColorDescription(),
             $groupModel,

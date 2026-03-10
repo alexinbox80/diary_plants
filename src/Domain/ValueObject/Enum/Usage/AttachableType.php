@@ -7,6 +7,7 @@ enum AttachableType: string
     case FERTILIZER = 'fertilizer::class';
     case PEST = 'pest::class';
     case STIMULANT = 'stimulant::class';
+    case WATERING = 'watering::class';
 
     public static function getClass(string $value): ?string
     {
@@ -14,6 +15,7 @@ enum AttachableType: string
             self::FERTILIZER->value => \App\Domain\Entity\Fertilizer::class,
             self::PEST->value => \App\Domain\Entity\Pest::class,
             self::STIMULANT->value => \App\Domain\Entity\Stimulant::class,
+            self::WATERING->value => \App\Domain\Entity\Watering::class,
             default => null,
         };
     }
@@ -26,6 +28,7 @@ enum AttachableType: string
     public static function getChoices(): array
     {
         return [
+            'Полив' => self::WATERING->value,
             'Удобрение' => self::FERTILIZER->value,
             'Вредитель' => self::PEST->value,
             'Стимулятор' => self::STIMULANT->value,
@@ -35,6 +38,7 @@ enum AttachableType: string
     public static function getLabel(string $value): string
     {
         return match ($value) {
+            self::WATERING->value => 'Полив',
             self::FERTILIZER->value => 'Удобрение',
             self::PEST->value => 'Вредитель',
             self::STIMULANT->value => 'Стимулятор',

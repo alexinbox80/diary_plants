@@ -135,6 +135,7 @@ class CsvService
                 (int) $markerModel['group_id'],
                 $markerModel['letter'],
                 $markerModel['color'],
+                $markerModel['type'],
                 $markerModel['description'],
                 $markerModel['color_description']
             );

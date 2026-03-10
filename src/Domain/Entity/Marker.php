@@ -10,6 +10,7 @@ use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -53,6 +54,10 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private ?string $colorDescription = null;
 
+    //тип сущности для которой сокращение
+    #[ORM\Column(type: 'string', length: 20, enumType: AttachableType::class)]
+    private AttachableType $type;
+
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'markers')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
@@ -63,21 +68,22 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     private Collection $waterings;
 
     //связь с удобрениями
-    #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'group', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Fertilizer::class, mappedBy: 'marker', cascade: ['remove'])]
     private Collection $fertilizers;
 
     //связь с вредителями
-    #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'group', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Pest::class, mappedBy: 'marker', cascade: ['remove'])]
     private Collection $pests;
 
     //связь со стимуляторами
-    #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'group', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Stimulant::class, mappedBy: 'marker', cascade: ['remove'])]
     private Collection $stimulants;
 
     private function setCommonFields(
         Group $group,
         string $letter,
         string $color,
+        AttachableType $type,
         ?string $description = null,
         ?string $colorDescription = null
     ): void {
@@ -86,6 +92,12 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         $this->setColorValidate($color);
         $this->setDescriptionValidate($description);
         $this->setColorDescriptionValidate($colorDescription);
+        $this->setTypeValidate($type);
+    }
+
+    private function setTypeValidate(AttachableType $type): void
+    {
+        $this->type = $type;
     }
 
     private function setGroupValidate(Group $group): void
@@ -133,11 +145,12 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         Group $group,
         string $letter,
         string $color,
+        AttachableType $type,
         ?string $description = null,
         ?string $colorDescription = null
     )
     {
-        $this->setCommonFields($group, $letter, $color, $description, $colorDescription);
+        $this->setCommonFields($group, $letter, $color, $type, $description, $colorDescription);
 
         $this->waterings = new ArrayCollection();
         $this->fertilizers = new ArrayCollection();
@@ -149,11 +162,12 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
         Group $group,
         string $letter,
         string $color,
+        AttachableType $type,
         ?string $description = null,
         ?string $colorDescription = null
     ): void
     {
-        $this->setCommonFields($group, $letter, $color, $description, $colorDescription);
+        $this->setCommonFields($group, $letter, $color, $type, $description, $colorDescription);
     }
 
     public function getId(): int
@@ -186,5 +200,10 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     public function getColorDescription(): ?string
     {
         return $this->colorDescription;
+    }
+
+    public function getType(): AttachableType
+    {
+        return $this->type;
     }
 }
