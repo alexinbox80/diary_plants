@@ -23,8 +23,8 @@ class Manager
             $fertilizer->getGroup()->getId(),
             $fertilizer->getMarker()->getId(),
             $fertilizer->getTitle(),
-            $fertilizer->getVolume()->getQuantity(),
-            $fertilizer->getVolume()->getLetter(),
+            $fertilizer->getVolume()->getAmount(),
+            $fertilizer->getVolume()->getApplicationRate(),
             $fertilizer->getDetails()->getManufacturer(),
             $fertilizer->getDetails()->getDescription(),
             $fertilizer->getDetails()->getComment()

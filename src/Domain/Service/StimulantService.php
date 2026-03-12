@@ -90,8 +90,8 @@ class StimulantService
             $marker,
             $createStimulantModel->title,
             new PreparationVolume(
-                $createStimulantModel->quantity,
-                $createStimulantModel->letter
+                $createStimulantModel->amount,
+                $createStimulantModel->applicationRate
             ),
             new PreparationDetails(
                 $createStimulantModel->manufacturer,
@@ -121,8 +121,8 @@ class StimulantService
             $marker,
             $updateStimulantModel->title,
             new PreparationVolume(
-                $updateStimulantModel->quantity,
-                $updateStimulantModel->letter
+                $updateStimulantModel->amount,
+                $updateStimulantModel->applicationRate
             ),
             new PreparationDetails(
                 $updateStimulantModel->manufacturer,

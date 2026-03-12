@@ -1,6 +1,4 @@
 <?php //полив
-//TODO:
-//1) убрать letter из VO Preparation ??? или добавить в него другой реквизит
 
 namespace App\Domain\Entity;
 

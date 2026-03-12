@@ -92,8 +92,8 @@ class FertilizerService
             $marker,
             $createFertilizerModel->title,
             new PreparationVolume(
-                $createFertilizerModel->quantity,
-                $createFertilizerModel->letter
+                $createFertilizerModel->amount,
+                $createFertilizerModel->applicationRate
             ),
             new PreparationDetails(
                 $createFertilizerModel->manufacturer,
@@ -118,8 +118,8 @@ class FertilizerService
             2,
             $dto->markerId,
             $dto->title,
-            $dto->quantity,
-            $dto->letter,
+            $dto->amount,
+            $dto->applicationRate,
             $dto->description,
             $dto->manufacturer,
             $dto->description,
@@ -145,8 +145,8 @@ class FertilizerService
             $marker,
             $updateFertilizerModel->title,
             new PreparationVolume(
-                $updateFertilizerModel->quantity,
-                $updateFertilizerModel->letter
+                $updateFertilizerModel->amount,
+                $updateFertilizerModel->applicationRate
             ),
             new PreparationDetails(
                 $updateFertilizerModel->manufacturer,
@@ -172,8 +172,8 @@ class FertilizerService
             2,
             $dto->markerId,
             $dto->title,
-            $dto->quantity,
-            $dto->letter,
+            $dto->amount,
+            $dto->applicationRate,
             $dto->description,
             $dto->manufacturer,
             $dto->description,

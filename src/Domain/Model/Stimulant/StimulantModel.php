@@ -2,11 +2,10 @@
 
 namespace App\Domain\Model\Stimulant;
 
-use App\Domain\Model\Marker\MarkerModel;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class StimulantModel implements AttachableModelInterface
@@ -16,8 +15,8 @@ class StimulantModel implements AttachableModelInterface
         private readonly int $groupId,
         private readonly int $markerId,
         private readonly string $title,
-        private readonly int $quantity,
-        private readonly string $letter,
+        private readonly int $amount,
+        private readonly ?string $applicationRate = null,
         private readonly ?string $manufacturer = null,
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
@@ -53,14 +52,14 @@ class StimulantModel implements AttachableModelInterface
         return $this->manufacturer;
     }
 
-    public function getQuantity(): int
+    public function getAmount(): int
     {
-        return $this->quantity;
+        return $this->amount;
     }
 
-    public function getLetter(): string
+    public function getApplicationRate(): ?string
     {
-        return $this->letter;
+        return $this->applicationRate;
     }
 
     public function getDescription(): ?string
@@ -102,8 +101,8 @@ class StimulantModel implements AttachableModelInterface
             'marker_id' => 'Идентификатор маркера',
             'marker_letter' => 'Обозначение',
             'title' => 'Заголовок',
-            'quantity' => 'Количество',
-            'letter' => 'Буква обозначения',
+            'amount' => 'Количество',
+            'application_rate' => 'Норма расхода',
             'manufacturer' => 'Изготовитель',
             'description' => 'Описание',
             'comment' => 'Комментарий',
@@ -123,8 +122,8 @@ class StimulantModel implements AttachableModelInterface
             'marker_id' => $this->getMarkerId(),
             'marker_letter' => $this->getMarker()?->getLetter(),
             'title' => $this->getTitle(),
-            'quantity' => $this->getQuantity(),
-            'letter' => $this->getLetter(),
+            'amount' => $this->getAmount(),
+            'application_rate' => $this->getApplicationRate(),
             'manufacturer' => $this->getManufacturer(),
             'description' => $this->getDescription(),
             'comment' => $this->getComment(),

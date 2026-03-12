@@ -19,7 +19,6 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'pest__marker_id__ind', columns: ['marker_id'])]
 #[ORM\Index(name: 'pest__group_id__ind', columns: ['group_id'])]
-#[ORM\UniqueConstraint(name: 'pest__letter__uniq', columns: ['letter'], options: ['where' => '(deleted_at IS NULL)'])]
 class Pest extends Preparation implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;

@@ -90,8 +90,8 @@ class PestService
             $marker,
             $createPestModel->title,
             new PreparationVolume(
-                $createPestModel->quantity,
-                $createPestModel->letter
+                $createPestModel->amount,
+                $createPestModel->applicationRate
             ),
             new PreparationDetails(
                 $createPestModel->manufacturer,
@@ -121,8 +121,8 @@ class PestService
             $marker,
             $updatePestModel->title,
             new PreparationVolume(
-                $updatePestModel->quantity,
-                $updatePestModel->letter
+                $updatePestModel->amount,
+                $updatePestModel->applicationRate
             ),
             new PreparationDetails(
                 $updatePestModel->manufacturer,

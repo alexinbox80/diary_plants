@@ -127,7 +127,7 @@ class CsvService
             );
     }
 
-    private function createMArkerModel(array $markerModel): CreateMarkerModel
+    private function createMarkerModel(array $markerModel): CreateMarkerModel
     {
         return $this->modelFactory
             ->makeModel(
@@ -183,8 +183,8 @@ class CsvService
                 (int) $pestModel['group_id'],
                 (int) $pestModel['marker_id'],
                 $pestModel['title'],
-                (int) $pestModel['quantity'],
-                $pestModel['letter'],
+                (int) $pestModel['amount'],
+                $pestModel['application_rate'],
                 $pestModel['manufacturer'] !== '' ? $pestModel['manufacturer'] : null,
                 $pestModel['description'] !== '' ? $pestModel['description'] : null,
                 $pestModel['comment'] !== '' ? $pestModel['comment'] : null
@@ -199,8 +199,8 @@ class CsvService
                 (int) $fertilizerModel['group_id'],
                 (int) $fertilizerModel['marker_id'],
                 $fertilizerModel['title'],
-                (int) $fertilizerModel['quantity'],
-                $fertilizerModel['letter'],
+                (int) $fertilizerModel['amount'],
+                $fertilizerModel['application_rate'],
                 $fertilizerModel['manufacturer'] !== '' ? $fertilizerModel['manufacturer'] : null,
                 $fertilizerModel['description'] !== '' ? $fertilizerModel['description'] : null,
                 $fertilizerModel['comment'] !== '' ? $fertilizerModel['comment'] : null
@@ -215,8 +215,8 @@ class CsvService
                 (int) $stimulantModel['group_id'],
                 (int) $stimulantModel['marker_id'],
                 $stimulantModel['title'],
-                (int) $stimulantModel['quantity'],
-                $stimulantModel['letter'],
+                (int) $stimulantModel['amount'],
+                $stimulantModel['application_rate'],
                 $stimulantModel['manufacturer'] !== '' ? $stimulantModel['manufacturer'] : null,
                 $stimulantModel['description'] !== '' ? $stimulantModel['description'] : null,
                 $stimulantModel['comment'] !== '' ? $stimulantModel['comment'] : null

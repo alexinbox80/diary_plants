@@ -36,12 +36,12 @@ class FertilizerType extends AbstractType
                 'label' => $labels['title'],
                 'required' => false,
             ])
-            ->add('quantity', TextType::class, [
-                'label' => $labels['quantity'],
+            ->add('amount', TextType::class, [
+                'label' => $labels['amount'],
                 'required' => false,
             ])
-            ->add('letter', TextType::class, [
-                'label' => $labels['letter'],
+            ->add('applicationRate', TextType::class, [
+                'label' => $labels['application_rate'],
                 'required' => false,
             ])
             ->add('manufacturer', TextType::class, [

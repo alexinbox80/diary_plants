@@ -1,4 +1,4 @@
-<?php //Отвечает за количество и буквенное обозначение
+<?php //отвечает за количество и норма расхода
 
 namespace App\Domain\ValueObject\Preparation;
 
@@ -9,31 +9,33 @@ use Webmozart\Assert\Assert as WebmozartAssert;
 class PreparationVolume
 {
     //количество
-    #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
-    private int $quantity;
+    #[ORM\Column(name: 'amount', type: 'integer', nullable: false)]
+    private int $amount;
 
-    //буква обозначения
-    #[ORM\Column(name: 'letter', type: 'string', length: 2, nullable: false)]
-    private string $letter;
+    //норма расхода 5 мл на 10 л воды
+    #[ORM\Column(name: 'application_rate', type: 'string', length: 50, nullable: true)]
+    private ?string $applicationRate = null;
 
     public function __construct(
-        int $quantity,
-        string $letter
+        int $amount,
+        ?string $applicationRate = null
     ) {
-        WebmozartAssert::greaterThan($quantity, 0, 'Quantity must be positive');
-        $this->quantity = $quantity;
+        WebmozartAssert::greaterThan($amount, 0, 'Amount must be positive');
+        $this->amount = $amount;
 
-        WebmozartAssert::lengthBetween($letter, 2, 2, 'Letter must be exactly 2 characters');
-        $this->letter = $letter;
+        if ($this->applicationRate !== null)
+            WebmozartAssert::lengthBetween($applicationRate, 2, 50, 'Application rate must be between 2 and 50 characters long. Got %characters');
+
+        $this->applicationRate = $applicationRate;
     }
 
-    public function getQuantity(): int
+    public function getAmount(): int
     {
-        return $this->quantity;
+        return $this->amount;
     }
 
-    public function getLetter(): string
+    public function getApplicationRate(): ?string
     {
-        return $this->letter;
+        return $this->applicationRate;
     }
 }

@@ -16,7 +16,7 @@ abstract class Preparation
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    //буква обозначения, количество
+    //количество и норма расхода
     #[ORM\Embedded(class: PreparationVolume::class, columnPrefix: false)]
     private PreparationVolume $volume;
 

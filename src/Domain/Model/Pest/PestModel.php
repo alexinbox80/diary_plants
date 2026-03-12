@@ -15,9 +15,9 @@ class PestModel implements AttachableModelInterface
         private readonly int $groupId,
         private readonly int $markerId,
         private readonly string $title,
-        private readonly int $quantity,
-        private readonly string $letter,
+        private readonly int $amount,
         private readonly ?string $manufacturer = null,
+        private readonly ?string $applicationRate = null,
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
         private readonly ?GroupModel $group = null,
@@ -52,14 +52,14 @@ class PestModel implements AttachableModelInterface
         return $this->manufacturer;
     }
 
-    public function getQuantity(): int
+    public function getAmount(): int
     {
-        return $this->quantity;
+        return $this->amount;
     }
 
-    public function getLetter(): string
+    public function getApplicationRate(): ?string
     {
-        return $this->letter;
+        return $this->applicationRate;
     }
 
     public function getDescription(): ?string
@@ -101,8 +101,8 @@ class PestModel implements AttachableModelInterface
             'marker_id' => 'Идентификатор маркера',
             'marker_letter' => 'Обозначение',
             'title' => 'Заголовок',
-            'quantity' => 'Количество',
-            'letter' => 'Буква обозначения',
+            'amount' => 'Количество',
+            'application_rate' => 'Норма расхода',
             'manufacturer' => 'Изготовитель',
             'description' => 'Описание',
             'comment' => 'Комментарий',
@@ -122,8 +122,8 @@ class PestModel implements AttachableModelInterface
             'marker_id' => $this->getMarkerId(),
             'marker_letter' => $this->getMarker()?->getLetter(),
             'title' => $this->getTitle(),
-            'quantity' => $this->getQuantity(),
-            'letter' => $this->getLetter(),
+            'amount' => $this->getAmount(),
+            'application_rate' => $this->getApplicationRate(),
             'manufacturer' => $this->getManufacturer(),
             'description' => $this->getDescription(),
             'comment' => $this->getComment(),
