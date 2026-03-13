@@ -9,8 +9,10 @@ use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Pest\UpdatePestModel;
 use App\Domain\Repository\PestRepositoryInterface;
-use App\Domain\ValueObject\Preparation\PreparationDetails;
 use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
+use App\Controller\Web\Dashboard\Pest\EditPest\Input\EditPestDTO;
+use App\Controller\Web\Dashboard\Pest\CreatePest\Input\CreatePestDTO;
 
 class PestService
 {
@@ -106,6 +108,28 @@ class PestService
     }
 
     /**
+     * @param CreatePestDTO $dto
+     * @return PestModel
+     */
+    public function createFromCreatePestDTO(CreatePestDTO $dto): PestModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreatePestModel::class,
+            2,
+            $dto->markerId,
+            $dto->title,
+            $dto->amount,
+            $dto->applicationRate,
+            $dto->description,
+            $dto->manufacturer,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Pest $pest
      * @param UpdatePestModel $updatePestModel
      * @return PestModel
@@ -134,6 +158,29 @@ class PestService
         $this->pestRepository->update();
 
         return $this->pestRepository->toModel($pest);
+    }
+
+    /**
+     * @param Pest $pest
+     * @param EditPestDTO $dto
+     * @return PestModel
+     */
+    public function updateFromEditPestDTO(Pest $pest, EditPestDTO $dto): PestModel
+    {
+        $model = $this->modelFactory->makeModel(
+            UpdatePestModel::class,
+            2,
+            $dto->markerId,
+            $dto->title,
+            $dto->amount,
+            $dto->applicationRate,
+            $dto->description,
+            $dto->manufacturer,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->update($pest, $model);
     }
 
     /**

@@ -9,12 +9,15 @@ use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Marker\UpdateMarkerModel;
 use App\Domain\Repository\MarkerRepositoryInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use App\Controller\Web\Dashboard\Marker\EditMarker\Input\EditMarkerDTO;
+use App\Controller\Web\Dashboard\Marker\CreateMarker\Input\CreateMarkerDTO;
 
 class MarkerService
 {
     public function __construct(
         private readonly GroupService $groupService,
-        private readonly MarkerRepositoryInterface $markerRepository
+        private readonly MarkerRepositoryInterface $markerRepository,
+        private readonly ModelFactory $modelFactory,
     ) {
     }
 
@@ -106,6 +109,25 @@ class MarkerService
     }
 
     /**
+     * @param CreateMarkerDTO $dto
+     * @return MarkerModel
+     */
+    public function createFromCreateMarkerDTO(CreateMarkerDTO $dto): MarkerModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateMarkerModel::class,
+            2,
+            $dto->letter,
+            $dto->color,
+            $dto->type,
+            $dto->description,
+            $dto->colorDescription
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Marker $marker
      * @param UpdateMarkerModel $updateMarkerModel
      * @return MarkerModel
@@ -127,6 +149,26 @@ class MarkerService
         $this->markerRepository->update();
 
         return $this->markerRepository->toModel($marker);
+    }
+
+    /**
+     * @param Marker $marker
+     * @param EditMarkerDTO $dto
+     * @return MarkerModel
+     */
+    public function updateFromEditMarkerDTO(Marker $marker, EditMarkerDTO $dto): MarkerModel
+    {
+        $model = $this->modelFactory->makeModel(
+            UpdateMarkerModel::class,
+            2,
+            $dto->letter,
+            $dto->color,
+            $dto->type,
+            $dto->description,
+            $dto->colorDescription
+        );
+
+        return $this->update($marker, $model);
     }
 
     /**

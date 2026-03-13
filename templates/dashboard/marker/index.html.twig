@@ -1,0 +1,49 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Сокращения'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/dashboard/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список сокращений',
+                            'array': markers,
+                            'pagination': pagination,
+                            'route_index': 'dashboard.markers.index',
+                            'route_pagination': 'dashboard.markers_paginated.index',
+                            'route_edit': 'dashboard.markers.edit',
+                            'route_create': 'dashboard.markers.create',
+                            'route_delete': 'dashboard.markers.delete'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список сокращений',
+                            'array': markers,
+                            'route_index': 'dashboard.markers.index',
+                            'route_pagination': 'dashboard.markers_paginated.index',
+                            'route_edit': 'dashboard.markers.edit',
+                            'route_create': 'dashboard.markers.create',
+                            'route_delete': 'dashboard.markers.delete'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/table/main.js') }}" data-entity="marker"></script>
+{% endblock %}

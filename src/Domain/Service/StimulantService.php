@@ -11,6 +11,8 @@ use App\Domain\Model\Stimulant\UpdateStimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
 use App\Domain\ValueObject\Preparation\PreparationDetails;
 use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Controller\Web\Dashboard\Stimulant\EditStimulant\Input\EditStimulantDTO;
+use App\Controller\Web\Dashboard\Stimulant\CreateStimulant\Input\CreateStimulantDTO;
 
 class StimulantService
 {
@@ -106,6 +108,28 @@ class StimulantService
     }
 
     /**
+     * @param CreateStimulantDTO $dto
+     * @return StimulantModel
+     */
+    public function createFromCreateStimulantDTO(CreateStimulantDTO $dto): StimulantModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateStimulantModel::class,
+            2,
+            $dto->markerId,
+            $dto->title,
+            $dto->amount,
+            $dto->applicationRate,
+            $dto->description,
+            $dto->manufacturer,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Stimulant $stimulant
      * @param UpdateStimulantModel $updateStimulantModel
      * @return StimulantModel
@@ -134,6 +158,29 @@ class StimulantService
         $this->stimulantRepository->update();
 
         return $this->stimulantRepository->toModel($stimulant);
+    }
+
+    /**
+     * @param Stimulant $stimulant
+     * @param EditStimulantDTO $dto
+     * @return StimulantModel
+     */
+    public function updateFromEditStimulantDTO(Stimulant $stimulant, EditStimulantDTO $dto): StimulantModel
+    {
+        $model = $this->modelFactory->makeModel(
+            UpdateStimulantModel::class,
+            2,
+            $dto->markerId,
+            $dto->title,
+            $dto->amount,
+            $dto->applicationRate,
+            $dto->description,
+            $dto->manufacturer,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->update($stimulant, $model);
     }
 
     /**
