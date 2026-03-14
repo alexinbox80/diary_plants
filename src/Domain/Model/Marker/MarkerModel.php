@@ -79,7 +79,7 @@ class MarkerModel
             'group_id' => 'Идентификатор группы',
             'group_title' => 'Группа',
             'letter' => 'Обозначение',
-            'сolor' => 'Цвет',
+            'color' => 'Цвет',
             'type' => 'Тип обозначения',
             'description' => 'Описание',
             'color_description' => 'Описание цвета',

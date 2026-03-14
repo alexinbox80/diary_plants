@@ -130,7 +130,7 @@ class WateringModel
             'amount' => $this->getAmount(),
             'watering_type' => $this->getWateringType(),
             'watering_method' => $this->getWateringMethod(),
-            'watered_at' => $this->getWateredAt(),
+            'watered_at' => $this->getWateredAt()?->setTimezone($timezone)->format('d.m.Y'),
             'temperature' => $this->getTemperature(),
             'description' => $this->getDescription(),
             'comment' => $this->getComment(),

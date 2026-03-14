@@ -14,7 +14,7 @@ class WateringRepository extends AbstractRepository
     public function getWateringsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('f')
+        $queryBuilder->select('w')
             ->from(Watering::class, 'w')
             ->orderBy('w.updatedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)

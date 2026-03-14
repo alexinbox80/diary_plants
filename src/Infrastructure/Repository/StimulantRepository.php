@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\Marker;
 use App\Domain\Entity\Stimulant;
 use DateTimeImmutable;
 
@@ -14,12 +15,13 @@ class StimulantRepository extends AbstractRepository
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('s')
-            ->from(Stimulant::class, 't')
-            ->orderBy('t.id', 'DESC')
-            ->setFirstResult($perPage * $page)
-            ->setMaxResults($perPage);
+            ->from(Stimulant::class, 's')
+            ->orderBy('s.updatedAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery();
 
-        return $queryBuilder->getQuery()->getResult();
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**

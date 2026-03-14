@@ -12,13 +12,14 @@ class MarkerRepository extends AbstractRepository
     public function getMarkersPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
+        $queryBuilder->select('m')
             ->from(Marker::class, 'm')
-            ->orderBy('m.id', 'DESC')
-            ->setFirstResult($perPage * $page)
-            ->setMaxResults($perPage);
+            ->orderBy('m.updatedAt', 'DESC')
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery();
 
-        return $queryBuilder->getQuery()->getResult();
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**
