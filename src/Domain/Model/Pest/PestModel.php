@@ -47,7 +47,7 @@ class PestModel implements AttachableModelInterface
         return $this->title;
     }
 
-    public function getManufacturer(): string
+    public function getManufacturer(): ?string
     {
         return $this->manufacturer;
     }
