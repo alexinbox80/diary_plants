@@ -12,8 +12,8 @@ use App\Domain\ValueObject\Enum\Watering\WaterType;
 use App\Domain\ValueObject\Watering\WateringDetails;
 use App\Domain\Repository\WateringRepositoryInterface;
 use App\Domain\ValueObject\Enum\Watering\WateringMethod;
-//use App\Controller\Web\Dashboard\Watering\EditWatering\Input\EditWateringDTO;
-//use App\Controller\Web\Dashboard\Watering\CreateWatering\Input\CreateWateringDTO;
+use App\Controller\Web\Dashboard\Watering\EditWatering\Input\EditWateringDTO;
+use App\Controller\Web\Dashboard\Watering\CreateWatering\Input\CreateWateringDTO;
 
 class WateringService
 {
@@ -108,27 +108,27 @@ class WateringService
         return $this->wateringRepository->toModel($watering);
     }
 
-//    /**
-//     * @param CreateWateringDTO $dto
-//     * @return WateringModel
-//     */
-//    public function createFromCreateWateringDTO(CreateWateringDTO $dto): WateringModel
-//    {
-//        $model = $this->modelFactory->makeModel(
-//            CreateWateringModel::class,
-//            2,
-//            $dto->plantId,
-//            $dto->title,
-//            $dto->quantity,
-//            $dto->letter,
-//            $dto->description,
-//            $dto->manufacturer,
-//            $dto->description,
-//            $dto->comment
-//        );
-//
-//        return $this->create($model);
-//    }
+    /**
+     * @param CreateWateringDTO $dto
+     * @return WateringModel
+     */
+    public function createFromCreateWateringDTO(CreateWateringDTO $dto): WateringModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateWateringModel::class,
+            2,
+            $dto->markerId,
+            $dto->amount,
+            $dto->wateringType,
+            $dto->wateringMethod,
+            $dto->wateredAt,
+            $dto->temperature,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->create($model);
+    }
 
     /**
      * @param Watering $watering
@@ -158,28 +158,28 @@ class WateringService
         return $this->wateringRepository->toModel($watering);
     }
 
-//    /**
-//     * @param Watering $watering
-//     * @param EditWateringDTO $dto
-//     * @return WateringModel
-//     */
-//    public function updateFromEditWateringDTO(Watering $watering, EditWateringDTO $dto): WateringModel
-//    {
-//        $model = $this->modelFactory->makeModel(
-//            UpdateWateringModel::class,
-//            2,
-//            $dto->plantId,
-//            $dto->title,
-//            $dto->quantity,
-//            $dto->letter,
-//            $dto->description,
-//            $dto->manufacturer,
-//            $dto->description,
-//            $dto->comment
-//        );
-//
-//        return $this->update($watering, $model);
-//    }
+    /**
+     * @param Watering $watering
+     * @param EditWateringDTO $dto
+     * @return WateringModel
+     */
+    public function updateFromEditWateringDTO(Watering $watering, EditWateringDTO $dto): WateringModel
+    {
+        $model = $this->modelFactory->makeModel(
+            UpdateWateringModel::class,
+            2,
+            $dto->markerId,
+            $dto->amount,
+            $dto->wateringType,
+            $dto->wateringMethod,
+            $dto->wateredAt,
+            $dto->temperature,
+            $dto->description,
+            $dto->comment
+        );
+
+        return $this->update($watering, $model);
+    }
 
     /**
      * @param int $wateringId

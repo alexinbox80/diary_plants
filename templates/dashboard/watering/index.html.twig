@@ -1,0 +1,49 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Поливы'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/dashboard/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список поливов',
+                            'array': waterings,
+                            'pagination': pagination,
+                            'route_index': 'dashboard.waterings.index',
+                            'route_pagination': 'dashboard.waterings_paginated.index',
+                            'route_edit': 'dashboard.waterings.edit',
+                            'route_create': 'dashboard.waterings.create',
+                            'route_delete': 'dashboard.waterings.delete'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список поливов',
+                            'array': waterings,
+                            'route_index': 'dashboard.waterings.index',
+                            'route_pagination': 'dashboard.waterings_paginated.index',
+                            'route_edit': 'dashboard.waterings.edit',
+                            'route_create': 'dashboard.waterings.create',
+                            'route_delete': 'dashboard.waterings.delete'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/table/main.js') }}" data-entity="watering"></script>
+{% endblock %}
