@@ -65,7 +65,7 @@ class PlantService
      */
     public function findAll(): array
     {
-        return $this->plantRepository->findAll();
+        return $this->plantRepository->findAllWithAttachments();
     }
 
     /**

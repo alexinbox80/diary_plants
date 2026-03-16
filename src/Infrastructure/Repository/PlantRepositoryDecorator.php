@@ -6,14 +6,15 @@ use App\Domain\Entity\Plant;
 use App\Domain\Entity\Attachment;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\PlantRepositoryInterface;
 
 class PlantRepositoryDecorator implements PlantRepositoryInterface
 {
     public function __construct(
-        private readonly PlantRepository $plantRepository,
-        private readonly AttachmentRepository $attachmentRepository,
+        private readonly GroupRepositoryDecorator $groupRepository,
+        private readonly PlantRepository $plantRepository
     ) {
     }
 
@@ -25,7 +26,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
-        $plantsPaginated = $this->plantRepository->getPlantsPaginated($page, $perPage);
+        $plantsPaginated = $this->plantRepository->getPlantsPaginatedWithAttachments($page, $perPage);
 
         if (!is_array($plantsPaginated['items'])) {
             throw new \InvalidArgumentException('Expected array for plants');
@@ -98,6 +99,19 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     }
 
     /**
+     * @return PlantModel[]
+     */
+    public function findAllWithAttachments(): array
+    {
+        $plants = $this->plantRepository->findAllWithAttachments();
+
+        return array_map(
+            fn (Plant $plant): PlantModel => $this->toModel($plant, true),
+            $plants
+        );
+    }
+
+    /**
      * @param string $title
      * @return PlantModel[]
      */
@@ -159,25 +173,29 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     public function toModel(Plant $plant, bool $addRelations = false): PlantModel
     {
         $attachmentModels = [];
+        $groupModel = null;
 
         if ($addRelations) {
-            $attachments = $this->attachmentRepository->findByAttachable('plant::class', $plant->getId());
+            if ($plant->getLoadedAttachments()) {
+                $attachmentModels = array_map(
+                    fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
+                    $plant->getLoadedAttachments()
+                );
+            }
 
-            $attachmentModels = array_map(
-                fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
-                $attachments
-            );
+            $groupModel = $this->groupRepository->toModel($plant->getGroup());
         }
 
-        return self::makePlantModel($plant, $attachmentModels);
+        return self::makePlantModel($plant, $attachmentModels, $groupModel);
     }
 
     /**
      * @param Plant $plant
      * @param array $attachmentModels
+     * @param GroupModel|null $groupModel
      * @return PlantModel
      */
-    static function makePlantModel(Plant $plant, array $attachmentModels = []): PlantModel
+    static function makePlantModel(Plant $plant, array $attachmentModels = [], ?GroupModel $groupModel = null): PlantModel
     {
         return new PlantModel(
             $plant->getId(),
@@ -202,6 +220,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $plant->getSalesInfo()->getSellingDate(),
             $plant->getSalesInfo()->getSellingPrice(),
             $plant->getComment(),
+            $groupModel,
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );

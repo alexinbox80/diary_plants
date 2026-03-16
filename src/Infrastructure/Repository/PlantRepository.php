@@ -4,9 +4,44 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\Price;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PlantRepository extends AbstractRepository
 {
+    private AttachmentRepository $attachmentRepository;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        AttachmentRepository $attachmentRepository,
+    )
+    {
+        parent::__construct($entityManager);
+
+        $this->attachmentRepository = $attachmentRepository;
+    }
+
+    /**
+     * Инкапсулирует логику загрузки и распределения вложений
+     * @param Plant[] $plants
+     */
+    private function loadAttachmentsForPlants(array $plants): void
+    {
+        if (empty($plants)) return;
+
+        $ids = array_map(fn(Plant $p) => $p->getId(), $plants);
+
+        $attachments = $this->attachmentRepository->findAllByAttachable('plant::class', $ids);
+
+        $grouped = [];
+        foreach ($attachments as $attachment) {
+            $grouped[$attachment->getTarget()->getAttachableId()][] = $attachment;
+        }
+
+        foreach ($plants as $plant) {
+            $plant->setLoadedAttachments($grouped[$plant->getId()] ?? []);
+        }
+    }
+
     /**
      * @param int $page
      * @param int $perPage
@@ -15,14 +50,36 @@ class PlantRepository extends AbstractRepository
     public function getPlantsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('p')
+        $queryBuilder->select('p', 'g')
             ->from(Plant::class, 'p')
+            ->leftJoin('p.group', 'g')
             ->orderBy('p.updatedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return Plant[]
+     */
+    public function getPlantsPaginatedWithAttachments(int $page, int $perPage): array
+    {
+        $result = $this->getPlantsPaginated($page, $perPage);
+
+        if (!isset($result['items'])) {
+            throw new \RuntimeException('Pagination result is missing "items".');
+        }
+
+        if (!is_array($result['items'])) {
+            throw new \InvalidArgumentException('"items" must be an array.');
+        }
+
+        $this->loadAttachmentsForPlants($result['items']);
+
+        return $result;
     }
 
     /**
@@ -74,11 +131,24 @@ class PlantRepository extends AbstractRepository
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         return $queryBuilder
-            ->select('p')
+            ->select('p', 'g')
             ->from(Plant::class, 'p')
+            ->leftJoin('p.group', 'g')
             ->orderBy('p.updatedAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Plant[]
+     */
+    public function findAllWithAttachments(): array
+    {
+        $plants = $this->findAll();
+
+        $this->loadAttachmentsForPlants($plants);
+
+        return $plants;
     }
 
     /**

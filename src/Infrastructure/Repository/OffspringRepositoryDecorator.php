@@ -4,9 +4,11 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Offspring;
 use App\Domain\Entity\Attachment;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Repository\GroupRepositoryInterface;
 use App\Domain\Repository\PlantRepositoryInterface;
 use App\Domain\Repository\OffspringRepositoryInterface;
 
@@ -14,8 +16,8 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
 {
     public function __construct(
         private readonly OffspringRepository  $offspringRepository,
-        private readonly AttachmentRepository $attachmentRepository,
         private readonly PlantRepositoryInterface $plantRepository,
+        private readonly GroupRepositoryInterface $groupRepository,
     ) {
     }
 
@@ -24,7 +26,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
      */
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
-        $offspringsPaginated = $this->offspringRepository->getOffspringsPaginated($page, $perPage);
+        $offspringsPaginated = $this->offspringRepository->getOffspringsPaginatedWithAttachments($page, $perPage);
 
         if (!is_array($offspringsPaginated['items'])) {
             throw new \InvalidArgumentException('Expected array for plants');
@@ -67,6 +69,19 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     public function findAll(): array
     {
         $offsprings = $this->offspringRepository->findAll();
+
+        return array_map(
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring, true),
+            $offsprings
+        );
+    }
+
+    /**
+     * @return OffspringModel[]
+     */
+    public function findAllWithAttachments(): array
+    {
+        $offsprings = $this->offspringRepository->findAllWithAttachments();
 
         return array_map(
             fn (Offspring $offspring): OffspringModel => $this->toModel($offspring, true),
@@ -151,27 +166,31 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     {
         $attachmentModels = [];
         $plantModel = null;
+        $groupModel = null;
 
         if ($addRelations) {
-            $attachments = $this->attachmentRepository->findByAttachable('offspring::class', $offspring->getId());
-
-            $attachmentModels = array_map(
-                fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
-                $attachments
-            );
+            if ($offspring->getLoadedAttachments()) {
+                $attachmentModels = array_map(
+                    fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
+                    $offspring->getLoadedAttachments()
+                );
+            }
 
             $plantModel = $this->plantRepository->findModel($offspring->getPlant()->getId());
+            $groupModel = $this->groupRepository->toModel($offspring->getGroup());
         }
 
-        return self::makeOffspringModel($offspring, $attachmentModels, $plantModel);
+        return self::makeOffspringModel($offspring, $attachmentModels, $plantModel, $groupModel);
     }
 
     /**
      * @param Offspring $offspring
      * @param array $attachmentModels
+     * @param PlantModel|null $plantModel
+     * @param GroupModel|null $groupModel
      * @return OffspringModel
      */
-    static function makeOffspringModel(Offspring $offspring, array $attachmentModels = [], ?PlantModel $plantModel = null): OffspringModel
+    static function makeOffspringModel(Offspring $offspring, array $attachmentModels = [], ?PlantModel $plantModel = null, ?GroupModel $groupModel = null): OffspringModel
     {
         return new OffspringModel(
             $offspring->getId(),
@@ -186,6 +205,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
             $offspring->getFruitMetrics()->getQuantity(),
             $offspring->getComment(),
             $plantModel,
+            $groupModel,
             $offspring->getCreatedAt(),
             $offspring->getUpdatedAt()
         );

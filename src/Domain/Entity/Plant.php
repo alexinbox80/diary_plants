@@ -78,6 +78,9 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
+    //загруженные в репозитории связанные вложения
+    private array $loadedAttachments = [];
+
     //идентификатор связанной сущности group
     #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'plants')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
@@ -256,23 +259,18 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         return $this->offsprings;
     }
 
-    public function getFertilizers(): Collection
-    {
-        return $this->fertilizers;
-    }
-
     public function getUsages(): Collection
     {
         return $this->usages;
     }
 
-    public function getStimulants(): Collection
+    public function setLoadedAttachments(array $attachments): void
     {
-        return $this->stimulants;
+        $this->loadedAttachments = $attachments;
     }
 
-    public function getPests(): Collection
+    public function getLoadedAttachments(): array
     {
-        return $this->pests;
+        return $this->loadedAttachments;
     }
 }

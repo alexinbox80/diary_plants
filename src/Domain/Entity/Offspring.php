@@ -51,6 +51,9 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
+    //загруженные в репозитории связанные вложения
+    private array $loadedAttachments = [];
+
     private function setGroupValidate(Group $group): void
     {
         $this->group = $group;
@@ -130,5 +133,15 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     public function getComment(): ?string
     {
         return $this->comment;
+    }
+
+    public function setLoadedAttachments(array $attachments): void
+    {
+        $this->loadedAttachments = $attachments;
+    }
+
+    public function getLoadedAttachments(): array
+    {
+        return $this->loadedAttachments;
     }
 }

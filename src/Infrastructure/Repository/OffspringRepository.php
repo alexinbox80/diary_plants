@@ -3,23 +3,81 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Offspring;
+use Doctrine\ORM\EntityManagerInterface;
 
 class OffspringRepository extends AbstractRepository
 {
+    private AttachmentRepository $attachmentRepository;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        AttachmentRepository $attachmentRepository,
+    )
+    {
+        parent::__construct($entityManager);
+
+        $this->attachmentRepository = $attachmentRepository;
+    }
+
+    /**
+     * Инкапсулирует логику загрузки и распределения вложений
+     * @param Offspring[] $offsprings
+     */
+    private function loadAttachmentsForOffsprings(array $offsprings): void
+    {
+        if (empty($offsprings)) return;
+
+        $ids = array_map(fn(Offspring $o) => $o->getId(), $offsprings);
+
+        $attachments = $this->attachmentRepository->findAllByAttachable('offspring::class', $ids);
+
+        $grouped = [];
+        foreach ($attachments as $attachment) {
+            $grouped[$attachment->getTarget()->getAttachableId()][] = $attachment;
+        }
+
+        foreach ($offsprings as $offspring) {
+            $offspring->setLoadedAttachments($grouped[$offspring->getId()] ?? []);
+        }
+    }
+
     /**
      * @return Offspring[]
      */
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('o')
+        $queryBuilder->select('o', 'p', 'g')
             ->from(Offspring::class, 'o')
+            ->leftJoin('o.plant', 'p')
+            ->leftJoin('o.group', 'g')
             ->orderBy('o.updatedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return Offspring[]
+     */
+    public function getOffspringsPaginatedWithAttachments(int $page, int $perPage): array
+    {
+        $result = $this->getOffspringsPaginated($page, $perPage);
+
+        if (!isset($result['items'])) {
+            throw new \RuntimeException('Pagination result is missing "items".');
+        }
+
+        if (!is_array($result['items'])) {
+            throw new \InvalidArgumentException('"items" must be an array.');
+        }
+
+        $this->loadAttachmentsForOffsprings($result['items']);
+
+        return $result;
     }
 
     /**
@@ -40,14 +98,27 @@ class OffspringRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        //return $this->entityManager->getRepository(Offspring::class)->findAll();
         $queryBuilder = $this->entityManager->createQueryBuilder();
         return $queryBuilder
-            ->select('o')
+            ->select('o', 'p', 'g')
             ->from(Offspring::class, 'o')
+            ->leftJoin('o.plant', 'p')
+            ->leftJoin('o.group', 'g')
             ->orderBy('o.updatedAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Offspring[]
+     */
+    public function findAllWithAttachments(): array
+    {
+        $offsprings = $this->findAll();
+
+        $this->loadAttachmentsForOffsprings($offsprings);
+
+        return $offsprings;
     }
 
     /**

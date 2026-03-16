@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Attachment;
 use DateTimeImmutable;
+use App\Domain\Entity\Attachment;
 
 /**
  * @method Attachment|null findOneBy(array $criteria, array $orderBy = null)
@@ -27,6 +27,23 @@ class AttachmentRepository extends AbstractRepository
             ->andWhere('a.target.attachableId = :id')
             ->setParameter('type', $attachableType)
             ->setParameter('id', $attachableId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param string $attachableType
+     * @param array $attachableId
+     * @return array
+     */
+    public function findAllByAttachable(string $attachableType, array $attachableId): array
+    {
+        return $this->entityManager->getRepository(Attachment::class)
+            ->createQueryBuilder('a')
+            ->where('a.target.attachableId IN (:ids)')
+            ->andWhere('a.target.attachableType = :type')
+            ->setParameter('ids', $attachableId)
+            ->setParameter('type', $attachableType)
             ->getQuery()
             ->getResult();
     }

@@ -2,9 +2,10 @@
 
 namespace App\Domain\Model\Offspring;
 
-use App\Domain\Model\Plant\PlantModel;
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class OffspringModel implements AttachableModelInterface
@@ -22,6 +23,7 @@ class OffspringModel implements AttachableModelInterface
         private readonly ?int $quantity = null,
         private readonly ?string $comment = null,
         private readonly ?PLantModel $plant = null,
+        private readonly ?GroupModel $group = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -87,6 +89,11 @@ class OffspringModel implements AttachableModelInterface
         return $this->plant;
     }
 
+    public function getGroup(): ?GroupModel
+    {
+        return $this->group;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -101,6 +108,8 @@ class OffspringModel implements AttachableModelInterface
     {
         return [
             'id' => '#',
+            'group_id' => 'Идентификатор группы',
+            'group_title' => 'Группа',
             'plant_id' => 'Идентификатор растения',
             'plant_title' => 'Растение',
             'img_gallery' => 'Изображение',
@@ -125,6 +134,8 @@ class OffspringModel implements AttachableModelInterface
 
         return [
             'id' => $this->getId(),
+            'group_id' => $this->getGroupId(),
+            'group_title' => $this->getGroup()?->getTitle(),
             'plant_id' => $this->getPlantId(),
             'plant_title' => $this->getPlant()?->getTitle(),
             'img_gallery' => $imgGallery,

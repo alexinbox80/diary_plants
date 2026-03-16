@@ -6,6 +6,7 @@ use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
+use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
@@ -34,6 +35,7 @@ class PlantModel implements AttachableModelInterface
         private readonly ?DateTimeImmutable $sellingDate = null,
         private readonly ?Price $sellingPrice = null,
         private readonly ?string $comment = null,
+        private readonly ?GroupModel $group = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -152,6 +154,11 @@ class PlantModel implements AttachableModelInterface
         return $this->attachment;
     }
 
+    public function getGroup(): ?GroupModel
+    {
+        return $this->group;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -166,6 +173,8 @@ class PlantModel implements AttachableModelInterface
     {
         return [
             'id' => '#',
+            'group_id' => 'Идентификатор группы',
+            'group_title' => 'Группа',
             'oid' => 'Универсальный идентификатор',
             'img_gallery' => 'Изображение',
             'title' => 'Название',
@@ -200,6 +209,8 @@ class PlantModel implements AttachableModelInterface
 
         return [
             'id' => $this->getId(),
+            'group_id' => $this->getGroupId(),
+            'group_title' => $this->getGroup()?->getTitle(),
             'oid' => $this->getOid()->toString(),
             'img_gallery' => $imgGallery,
             'title' => $this->getTitle(),

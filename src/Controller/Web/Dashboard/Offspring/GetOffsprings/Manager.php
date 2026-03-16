@@ -2,8 +2,8 @@
 
 namespace App\Controller\Web\Dashboard\Offspring\GetOffsprings;
 
-use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Service\OffspringService;
+use App\Domain\Model\Offspring\OffspringModel;
 
 class Manager
 {
@@ -18,8 +18,9 @@ class Manager
      */
     public function getOffsprings(): array
     {
-        $offspringsModel = $this->offspringService->findAll();
+        $offspringsModel = $this->offspringService->findAllWithAttachments();
         $tableHeader = OffspringModel::getTableHeaderRu();
+
         $tableBody = array_map(
             static fn (OffspringModel $model): array => $model->toArray(),
             $offspringsModel

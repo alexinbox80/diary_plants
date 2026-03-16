@@ -3,10 +3,10 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Offspring;
-use App\Domain\ValueObject\Offspring\FruitMetrics;
-use App\Domain\ValueObject\Offspring\Phenology;
 use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Offspring\OffspringModel;
+use App\Domain\ValueObject\Offspring\Phenology;
+use App\Domain\ValueObject\Offspring\FruitMetrics;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Offspring\UpdateOffspringModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
@@ -47,6 +47,14 @@ class OffspringService
     public function findAll(): array
     {
         return $this->offspringRepository->findAll();
+    }
+
+    /**
+     * @return OffspringModel[]
+     */
+    public function findAllWithAttachments(): array
+    {
+        return $this->offspringRepository->findAllWithAttachments();
     }
 
     /**
