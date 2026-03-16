@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
+use Doctrine\ORM\QueryBuilder;
 use App\Domain\ValueObject\Price;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,6 +19,20 @@ class PlantRepository extends AbstractRepository
         parent::__construct($entityManager);
 
         $this->attachmentRepository = $attachmentRepository;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('p', 'g')
+            ->from(Plant::class, 'p')
+            ->leftJoin('p.group', 'g')
+            ->where('p.deletedAt IS NULL')
+            ->orderBy('p.updatedAt', 'DESC');
     }
 
     /**
@@ -46,14 +61,11 @@ class PlantRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Plant[]
+     * @throws \Exception
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('p', 'g')
-            ->from(Plant::class, 'p')
-            ->leftJoin('p.group', 'g')
-            ->orderBy('p.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 
@@ -64,6 +76,8 @@ class PlantRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Plant[]
+     *
+     * @throws \Exception
      */
     public function getPlantsPaginatedWithAttachments(int $page, int $perPage): array
     {
@@ -117,11 +131,11 @@ class PlantRepository extends AbstractRepository
      */
     public function find(int $plantId): ?Plant
     {
-        $repository = $this->entityManager->getRepository(Plant::class);
-        /** @var Plant|null $plant */
-        $plant = $repository->find($plantId);
-
-        return $plant;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $plantId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -129,12 +143,7 @@ class PlantRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        return $queryBuilder
-            ->select('p', 'g')
-            ->from(Plant::class, 'p')
-            ->leftJoin('p.group', 'g')
-            ->orderBy('p.updatedAt', 'DESC')
+        return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
     }
@@ -157,7 +166,11 @@ class PlantRepository extends AbstractRepository
      */
     public function findPlantsByTitle(string $title): array
     {
-        return $this->entityManager->getRepository(Plant::class)->findBy(['title' => $title]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -166,7 +179,11 @@ class PlantRepository extends AbstractRepository
      */
     public function findPlantsByPrice(Price $price): array
     {
-        return $this->entityManager->getRepository(Plant::class)->findBy(['price' => $price]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.price = :price')
+            ->setParameter('price', $price)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

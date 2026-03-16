@@ -176,7 +176,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
                 );
             }
 
-            $plantModel = $this->plantRepository->findModel($offspring->getPlant()->getId());
+            $plantModel = $this->plantRepository->toModel($offspring->getPlant());
             $groupModel = $this->groupRepository->toModel($offspring->getGroup());
         }
 

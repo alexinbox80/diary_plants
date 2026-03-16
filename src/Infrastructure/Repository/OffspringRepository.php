@@ -4,6 +4,7 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Offspring;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class OffspringRepository extends AbstractRepository
 {
@@ -42,16 +43,29 @@ class OffspringRepository extends AbstractRepository
     }
 
     /**
-     * @return Offspring[]
+     * @return QueryBuilder
      */
-    public function getOffspringsPaginated(int $page, int $perPage): array
+    private function getBaseQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('o', 'p', 'g')
+        return $queryBuilder
+            ->select('o', 'p', 'g')
             ->from(Offspring::class, 'o')
             ->leftJoin('o.plant', 'p')
             ->leftJoin('o.group', 'g')
-            ->orderBy('o.updatedAt', 'DESC')
+            ->where('p.deletedAt IS NULL')
+            ->orderBy('o.updatedAt', 'DESC');
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     * @throws \Exception
+     */
+    public function getOffspringsPaginated(int $page, int $perPage): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 
@@ -62,6 +76,7 @@ class OffspringRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Offspring[]
+     * @throws \Exception
      */
     public function getOffspringsPaginatedWithAttachments(int $page, int $perPage): array
     {
@@ -86,11 +101,11 @@ class OffspringRepository extends AbstractRepository
      */
     public function find(int $offspringId): ?Offspring
     {
-        $repository = $this->entityManager->getRepository(Offspring::class);
-        /** @var Offspring|null $offspring */
-        $offspring = $repository->find($offspringId);
-
-        return $offspring;
+        return $this->getBaseQueryBuilder()
+            ->where('o.id = :id')
+            ->setParameter('id', $offspringId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -98,13 +113,7 @@ class OffspringRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        return $queryBuilder
-            ->select('o', 'p', 'g')
-            ->from(Offspring::class, 'o')
-            ->leftJoin('o.plant', 'p')
-            ->leftJoin('o.group', 'g')
-            ->orderBy('o.updatedAt', 'DESC')
+        return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
     }
@@ -127,7 +136,11 @@ class OffspringRepository extends AbstractRepository
      */
     public function findOffspringsByMass(string $mass): array
     {
-        return $this->entityManager->getRepository(Offspring::class)->findBy(['mass' => $mass]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('o.mass = :mass')
+            ->setParameter('mass', $mass)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -136,7 +149,11 @@ class OffspringRepository extends AbstractRepository
      */
     public function findOffspringsByFlavor(string $flavor): array
     {
-        return $this->entityManager->getRepository(Offspring::class)->findBy(['flavor' => $flavor]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('o.flavor = :flavor')
+            ->setParameter('flavor', $flavor)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -145,7 +162,11 @@ class OffspringRepository extends AbstractRepository
      */
     public function findOffspringsByColor(string $color): array
     {
-        return $this->entityManager->getRepository(Offspring::class)->findBy(['color' => $color]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('o.color = :color')
+            ->setParameter('color', $color)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
