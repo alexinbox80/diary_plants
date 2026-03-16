@@ -35,7 +35,7 @@ class Fertilizer extends Preparation implements EntityInterface, AttachableInter
     private Marker $marker;
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'fertilizers')]
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'fertilizers')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 

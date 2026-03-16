@@ -27,10 +27,6 @@ class OffspringType extends AbstractType
         $labels = OffspringModel::getTableHeaderRu();
 
         $builder
-//            ->add('plantId', TextType::class, [
-//                'label' => $labels['plant_id'],
-//                'required' => true
-//            ])
             ->add('plantId', ChoiceType::class, [
                 'label' => $labels['plant_id'],
                 'required' => true,
@@ -78,7 +74,7 @@ class OffspringType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditOffspringDTO::class,
-            'empty_data' => new CreateOffspringDTO(),
+            'empty_data' => new CreateOffspringDTO(1),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

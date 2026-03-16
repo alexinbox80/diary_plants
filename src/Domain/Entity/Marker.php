@@ -59,7 +59,7 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     private AttachableType $type;
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'markers')]
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'markers')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 

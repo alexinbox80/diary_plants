@@ -47,7 +47,7 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     private Plant $plant;
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'offsprings')]
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'offsprings')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 

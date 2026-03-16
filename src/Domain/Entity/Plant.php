@@ -79,7 +79,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     private Collection $offsprings;
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'plants')]
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'plants')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 

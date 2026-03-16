@@ -88,7 +88,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     private string $timeZone = 'Europe/Moscow';
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], fetch: 'EAGER', inversedBy: 'users')]
+    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'users')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
