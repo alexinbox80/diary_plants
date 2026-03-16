@@ -5,8 +5,10 @@ namespace App\Controller\Form;
 use Symfony\Component\Form\AbstractType;
 use App\Domain\Model\Marker\MarkerModel;
 use Symfony\Component\Form\FormBuilderInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use App\Controller\Web\Dashboard\Marker\EditMarker\Input\EditMarkerDTO;
 use App\Controller\Web\Dashboard\Marker\CreateMarker\Input\CreateMarkerDTO;
 
@@ -26,15 +28,16 @@ class MarkerType extends AbstractType
                 'label' => $labels['color'],
                 'required' => false,
             ])
-            ->add('type', TextType::class, [
+            ->add('type', ChoiceType::class, [
                 'label' => $labels['type'],
-                'required' => false,
+                'required' => true,
+                'choices' => AttachableType::asSelectArray(),
+                'placeholder' => 'Выберите тип обозначения',
             ])
             ->add('description', TextType::class, [
                 'label' => $labels['description'],
                 'required' => false,
             ])
-
             ->add('colorDescription', TextType::class, [
                 'label' => $labels['color_description'],
                 'required' => false,

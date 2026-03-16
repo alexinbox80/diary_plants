@@ -3,6 +3,7 @@
 namespace App\Controller\Web\Dashboard\Marker\EditMarker;
 
 use App\Domain\Entity\Marker;
+use App\Controller\Form\MarkerType;
 use App\Domain\Service\MarkerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -27,7 +28,7 @@ class Manager
             $marker->getColorDescription(),
         );
 
-        $form = $this->formFactory->create(Marker::class, $formData, ['group_id' => 2]);
+        $form = $this->formFactory->create(MarkerType::class, $formData, ['group_id' => 2]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

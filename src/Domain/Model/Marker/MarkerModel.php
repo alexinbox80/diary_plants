@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\Marker;
 
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
@@ -98,7 +99,7 @@ class MarkerModel
             'group_title' => $this->getGroup()?->getTitle(),
             'letter' => $this->getLetter(),
             'color' => $this->getColor(),
-            'type' => $this->getType(),
+            'type' => AttachableType::getLabel($this->getType()),
             'description' => $this->getDescription(),
             'color_description' => $this->getColorDescription(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
