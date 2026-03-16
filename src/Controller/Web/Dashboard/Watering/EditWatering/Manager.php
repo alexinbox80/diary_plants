@@ -23,8 +23,9 @@ class Manager
             $watering->getGroup()->getId(),
             $watering->getMarker()->getId(),
             $watering->getDetails()->getAmount(),
-            $watering->getDetails()->getMethod()->value,
             $watering->getDetails()->getType()->value,
+            $watering->getDetails()->getMethod()->value,
+            $watering->getWateredAt(),
             $watering->getDetails()->getTemperature(),
             $watering->getDescription(),
             $watering->getComment()

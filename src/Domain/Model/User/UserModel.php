@@ -170,7 +170,7 @@ class UserModel
             'img_tag' => (!empty($this->getAvatarLink())) ? $this->getAvatarLink() : null,
             'email' => $this->getEmail(),
             'password' => $this->getPassword(),
-            'roles' => UserRole::toString($this->getRoles()) ?? '',
+            'roles' => UserRole::getLabel(UserRole::toString($this->getRoles()) ?? ''),
             'is_active' => $this->isActive() ? 'Да' : 'Нет',
             'email_confirmed' => $this->isEmailConfirmed() ? 'Да' : 'Нет',
             'phone_confirmed' => $this->isPhoneConfirmed() ? 'Да' : 'Нет',

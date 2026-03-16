@@ -8,7 +8,7 @@ class CreateFertilizerDTO
 {
     public function __construct(
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
-        public ?int $groupId = null,
+        public int $groupId,
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public int $markerId,
         #[Assert\Length(min:2)]

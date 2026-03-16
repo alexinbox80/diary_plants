@@ -6,6 +6,8 @@ use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
+use App\Domain\ValueObject\Enum\Watering\WaterType;
+use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 
 class WateringModel
 {
@@ -14,7 +16,7 @@ class WateringModel
         private readonly int $groupId,
         private readonly int $markerId,
         private readonly int $amount,
-        private readonly string $wateringType,
+        private readonly string $waterType,
         private readonly string $wateringMethod,
         private readonly DateTimeImmutable $wateredAt,
         private readonly ?string $temperature = null,
@@ -47,9 +49,9 @@ class WateringModel
         return $this->amount;
     }
 
-    public function getWateringType(): string
+    public function getWaterType(): string
     {
-        return $this->wateringType;
+        return $this->waterType;
     }
 
     public function getWateringMethod(): string
@@ -106,7 +108,7 @@ class WateringModel
             'group_title' => 'Группа',
             'marker_letter' => 'Обозначение',
             'amount' => 'Количество',
-            'watering_type' => 'Тип полива',
+            'water_type' => 'Тип полива',
             'watering_method' => 'Метод полива',
             'watered_at' => 'Дата полива',
             'temperature' => 'Температура',
@@ -128,8 +130,8 @@ class WateringModel
             'marker_id' => $this->getMarkerId(),
             'marker_letter' => $this->getMarker()?->getLetter(),
             'amount' => $this->getAmount(),
-            'watering_type' => $this->getWateringType(),
-            'watering_method' => $this->getWateringMethod(),
+            'water_type' => WaterType::tryFrom($this->getWaterType())?->getLabel(),
+            'watering_method' => WateringMethod::tryFrom($this->getWateringMethod())?->getLabel(),
             'watered_at' => $this->getWateredAt()?->setTimezone($timezone)->format('d.m.Y'),
             'temperature' => $this->getTemperature(),
             'description' => $this->getDescription(),

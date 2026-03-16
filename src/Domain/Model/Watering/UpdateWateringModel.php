@@ -19,7 +19,7 @@ class UpdateWateringModel
         public readonly int $amount,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $wateringType,
+        public readonly string $waterType,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $wateringMethod,

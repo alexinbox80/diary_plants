@@ -3,37 +3,37 @@
 namespace App\Controller\Web\Dashboard\Watering\CreateWatering\Input;
 
 use DateTimeImmutable;
+use App\Domain\ValueObject\Enum\Watering\WaterType;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 
 class CreateWateringDTO
 {
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
-        public readonly int $groupId,
+        public int $groupId,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
-        public readonly int $markerId,
+        public int $markerId,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
-        public readonly int $amount,
-        #[Assert\NotBlank]
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $wateringType,
-        #[Assert\NotBlank]
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $wateringMethod,
+        public int $amount,
+        #[Assert\Choice(callback: [WaterType::class, 'getValues'])]
+        public string $waterType,
+        #[Assert\Choice(callback: [WateringMethod::class, 'getValues'])]
+        public string $wateringMethod,
         #[Assert\Type(type: ['null', DateTimeImmutable::class])]
-        public readonly ?DateTimeImmutable $wateredAt = null,
+        public ?DateTimeImmutable $wateredAt = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
-        public readonly string $temperature,
+        public string $temperature,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:1024)]
-        public readonly ?string $description = null,
+        public ?string $description = null,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:1024)]
-        public readonly ?string $comment = null,
+        public ?string $comment = null,
     ) {
     }
 }

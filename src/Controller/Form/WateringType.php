@@ -8,7 +8,9 @@ use DateTimeImmutable;
 use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use App\Domain\ValueObject\Enum\Watering\WaterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -39,13 +41,17 @@ class WateringType extends AbstractType
                 'label' => $labels['amount'],
                 'required' => false,
             ])
-            ->add('wateringType', TextType::class, [
-                'label' => $labels['watering_type'],
-                'required' => false,
+            ->add('waterType', ChoiceType::class, [
+                'label' => $labels['water_type'],
+                'required' => true,
+                'choices' => WaterType::asSelectArray(),
+                'placeholder' => 'Выберите сокращение',
             ])
-            ->add('wateringMethod', TextType::class, [
+            ->add('wateringMethod', ChoiceType::class, [
                 'label' => $labels['watering_method'],
-                'required' => false,
+                'required' => true,
+                'choices' => WateringMethod::asSelectArray(),
+                'placeholder' => 'Выберите сокращение',
             ])
             ->add('wateredAt', DateType::class, [
                 'label' => $labels['watered_at'],
@@ -73,7 +79,7 @@ class WateringType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditWateringDTO::class,
-            'empty_data' => new CreateWateringDTO(2, 2, '', 2, '', new DateTimeImmutable(), ''),
+            'empty_data' => new CreateWateringDTO(2, 2, 0, '', '', new DateTimeImmutable(), 0),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

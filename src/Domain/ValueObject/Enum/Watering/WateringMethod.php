@@ -20,4 +20,19 @@ enum WateringMethod: string
             self::WICK => 'Фитильный',
         };
     }
+
+    public static function getValues(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function asSelectArray(): array
+    {
+        $options = [];
+        foreach (self::cases() as $case) {
+            $options[$case->getLabel()] = $case->value;
+        }
+
+        return $options;
+    }
 }

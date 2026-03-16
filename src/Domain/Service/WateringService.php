@@ -93,7 +93,7 @@ class WateringService
             $marker,
             new WateringDetails(
                 $createWateringModel->amount,
-                WaterType::from($createWateringModel->wateringType),
+                WaterType::from($createWateringModel->waterType),
                 WateringMethod::from($createWateringModel->wateringMethod),
                 $createWateringModel->temperature,
             )
@@ -119,7 +119,7 @@ class WateringService
             2,
             $dto->markerId,
             $dto->amount,
-            $dto->wateringType,
+            $dto->waterType,
             $dto->wateringMethod,
             $dto->wateredAt,
             $dto->temperature,
@@ -146,7 +146,7 @@ class WateringService
             $marker,
             new WateringDetails(
                 $updateWateringModel->amount,
-                WaterType::from($updateWateringModel->wateringType),
+                WaterType::from($updateWateringModel->waterType),
                 WateringMethod::from($updateWateringModel->wateringMethod),
                 $updateWateringModel->temperature,
             ))
@@ -170,7 +170,7 @@ class WateringService
             2,
             $dto->markerId,
             $dto->amount,
-            $dto->wateringType,
+            $dto->waterType,
             $dto->wateringMethod,
             $dto->wateredAt,
             $dto->temperature,

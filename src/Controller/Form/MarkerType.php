@@ -7,7 +7,6 @@ use App\Domain\Model\Marker\MarkerModel;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\Controller\Web\Dashboard\Marker\EditMarker\Input\EditMarkerDTO;
 use App\Controller\Web\Dashboard\Marker\CreateMarker\Input\CreateMarkerDTO;
 
