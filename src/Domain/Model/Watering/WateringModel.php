@@ -103,10 +103,12 @@ class WateringModel
     {
         return [
             'id' => '#',
+            'icon_tag' => 'Маркер',
             'group_id' => 'Идентификатор группы',
             'marker_id' => 'Идентификатор сокращения',
             'group_title' => 'Группа',
             'marker_letter' => 'Обозначение',
+            'marker_color' => 'Цвет',
             'amount' => 'Количество',
             'water_type' => 'Тип полива',
             'watering_method' => 'Метод полива',
@@ -125,10 +127,12 @@ class WateringModel
 
         return [
             'id' => $this->getId(),
+            'icon_tag' => '',
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
             'marker_id' => $this->getMarkerId(),
             'marker_letter' => $this->getMarker()?->getLetter(),
+            'marker_color' => $this->getMarker()?->getColor(),
             'amount' => $this->getAmount(),
             'water_type' => WaterType::tryFrom($this->getWaterType())?->getLabel(),
             'watering_method' => WateringMethod::tryFrom($this->getWateringMethod())?->getLabel(),

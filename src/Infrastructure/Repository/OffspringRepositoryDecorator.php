@@ -171,7 +171,7 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
         if ($addRelations) {
             if ($offspring->getLoadedAttachments()) {
                 $attachmentModels = array_map(
-                    fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
+                    fn (Attachment $attachment): AttachmentModel => AttachmentModel::fromEntity($attachment),
                     $offspring->getLoadedAttachments()
                 );
             }

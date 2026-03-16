@@ -4,6 +4,7 @@ namespace App\Domain\Model\Plant;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Group\GroupModel;
@@ -167,6 +168,46 @@ class PlantModel implements AttachableModelInterface
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Plant $plant
+     * @param array $attachmentModels
+     * @param GroupModel|null $groupModel
+     * @return PlantModel
+     */
+    public static function fromEntity(
+        Plant $plant,
+        array $attachmentModels = [],
+        ?GroupModel $groupModel = null
+    ): self {
+        return new self(
+            $plant->getId(),
+            $plant->getGroup()->getId(),
+            $plant->getPlantIdentifier()->getOid(),
+            $plant->getTitle(),
+            $plant->getRoom(),
+            $plant->isShown(),
+            $attachmentModels,
+            $plant->getDescription(),
+            $plant->getPlantIdentifier()->getQrCodeLink(),
+            $plant->getPurchaseInfo()->getPurchaseDate(),
+            $plant->getLifeCycle()->getVaccinationDate(),
+            $plant->getLifeCycle()->getPlantingDate(),
+            $plant->getPurchaseInfo()->getSeller(),
+            $plant->getPurchaseInfo()->getNursery(),
+            $plant->getPurchaseInfo()->getPrice(),
+            $plant->getPurchaseInfo()->getShippingCost(),
+            $plant->getPurchaseInfo()->getPackagingCost(),
+            $plant->getLifeCycle()->getSoil(),
+            $plant->getSalesInfo()->isSold(),
+            $plant->getSalesInfo()->getSellingDate(),
+            $plant->getSalesInfo()->getSellingPrice(),
+            $plant->getComment(),
+            $groupModel,
+            $plant->getCreatedAt(),
+            $plant->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

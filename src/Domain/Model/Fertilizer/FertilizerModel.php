@@ -96,10 +96,12 @@ class FertilizerModel implements AttachableModelInterface
     {
         return [
             'id' => '#',
+            'icon_tag' => 'Маркер',
             'group_id' => 'Идентификатор группы',
             'group_title' => 'Группа',
             'marker_id' => 'Идентификатор маркера',
             'marker_letter' => 'Обозначение',
+            'marker_color' => 'Цвет',
             'title' => 'Заголовок',
             'amount' => 'Количество',
             'application_rate' => 'Норма расхода',
@@ -117,10 +119,12 @@ class FertilizerModel implements AttachableModelInterface
 
         return [
             'id' => $this->getId(),
+            'icon_tag' => '',
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
             'marker_id' => $this->getMarkerId(),
             'marker_letter' => $this->getMarker()?->getLetter(),
+            'marker_color' => $this->getMarker()?->getColor(),
             'title' => $this->getTitle(),
             'amount' => $this->getAmount(),
             'application_rate' => $this->getApplicationRate(),

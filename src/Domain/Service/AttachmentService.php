@@ -2,17 +2,17 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\ValueObject\Attachment\AttachableReference;
-use App\Domain\ValueObject\Attachment\DisplaySettings;
-use App\Domain\ValueObject\Attachment\FileInfo;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use App\Domain\Entity\Attachment;
+use App\Domain\ValueObject\Attachment\FileInfo;
 use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\ValueObject\Attachment\DisplaySettings;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
-use App\Domain\Repository\AttachmentRepositoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Domain\Repository\AttachmentRepositoryInterface;
+use App\Domain\ValueObject\Attachment\AttachableReference;
 use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
 use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 

@@ -217,7 +217,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
             $attachableModel = $this->toAttachableModel($attachableEntity);
         }
 
-        return self::makeAttachmentModel($attachment, $groupModel, $attachableModel);
+        return AttachmentModel::fromEntity($attachment, $groupModel, $attachableModel);
     }
 
     /**
@@ -228,38 +228,10 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     {
         if (!$entity) return null;
 
-        return match (get_class($entity)) {
-            \App\Domain\Entity\Plant::class => $this->plantRepository->findModel($entity->getId()),
-            \App\Domain\Entity\Offspring::class => $this->offspringRepository->findModel($entity->getId()),
+        return match (true) {
+            $entity instanceof \App\Domain\Entity\Plant => $this->plantRepository->toModel($entity),
+            $entity instanceof \App\Domain\Entity\Offspring => $this->offspringRepository->toModel($entity),
             default => null,
         };
-    }
-
-    /**
-     * @param Attachment $attachment
-     * @param GroupModel|null $groupModel
-     * @param AttachableModelInterface|null $attachableModel
-     * @return AttachmentModel
-     */
-    static function makeAttachmentModel(Attachment $attachment, ?GroupModel $groupModel = null, ?AttachableModelInterface $attachableModel = null): AttachmentModel
-    {
-        return new AttachmentModel(
-            $attachment->getId(),
-            $attachment->getGroup()->getId(),
-            $attachment->getDisplaySettings()->isShown(),
-            $attachment->getDisplaySettings()->getAlt(),
-            $attachment->getDisplaySettings()->getTitle(),
-            $attachment->getFileInfo()->getFileDate(),
-            $groupModel,
-            $attachment->getFileInfo()->getFilename(),
-            $attachment->getFileInfo()->getPath(),
-            $attachment->getFileInfo()->getMimeType(),
-            $attachment->getDisplaySettings()->getDescription(),
-            $attachment->getTarget()->getAttachableId(),
-            $attachment->getTarget()->getAttachableType(),
-            $attachableModel,
-            $attachment->getCreatedAt(),
-            $attachment->getUpdatedAt()
-        );
     }
 }

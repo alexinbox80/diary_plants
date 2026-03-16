@@ -6,7 +6,6 @@ use App\Domain\Entity\Plant;
 use App\Domain\Entity\Attachment;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
-use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\PlantRepositoryInterface;
 
@@ -23,6 +22,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
      * @param int $perPage
      * @return array
      * @return array{plantsModel: plantModel[], pagination: array}
+     * @throws \Exception
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
@@ -82,7 +82,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     {
         $plant = $this->plantRepository->find($plantId);
 
-        return $this->toModel($plant);
+        return $plant ? $this->toModel($plant) : null;
     }
 
     /**
@@ -178,7 +178,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         if ($addRelations) {
             if ($plant->getLoadedAttachments()) {
                 $attachmentModels = array_map(
-                    fn (Attachment $attachment): AttachmentModel => AttachmentRepositoryDecorator::makeAttachmentModel($attachment),
+                    fn (Attachment $attachment): AttachmentModel => AttachmentModel::fromEntity($attachment),
                     $plant->getLoadedAttachments()
                 );
             }
@@ -186,43 +186,6 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $groupModel = $this->groupRepository->toModel($plant->getGroup());
         }
 
-        return self::makePlantModel($plant, $attachmentModels, $groupModel);
-    }
-
-    /**
-     * @param Plant $plant
-     * @param array $attachmentModels
-     * @param GroupModel|null $groupModel
-     * @return PlantModel
-     */
-    static function makePlantModel(Plant $plant, array $attachmentModels = [], ?GroupModel $groupModel = null): PlantModel
-    {
-        return new PlantModel(
-            $plant->getId(),
-            $plant->getGroup()->getId(),
-            $plant->getPlantIdentifier()->getOid(),
-            $plant->getTitle(),
-            $plant->getRoom(),
-            $plant->isShown(),
-            $attachmentModels,
-            $plant->getDescription(),
-            $plant->getPlantIdentifier()->getQrCodeLink(),
-            $plant->getPurchaseInfo()->getPurchaseDate(),
-            $plant->getLifeCycle()->getVaccinationDate(),
-            $plant->getLifeCycle()->getPlantingDate(),
-            $plant->getPurchaseInfo()->getSeller(),
-            $plant->getPurchaseInfo()->getNursery(),
-            $plant->getPurchaseInfo()->getPrice(),
-            $plant->getPurchaseInfo()->getShippingCost(),
-            $plant->getPurchaseInfo()->getPackagingCost(),
-            $plant->getLifeCycle()->getSoil(),
-            $plant->getSalesInfo()->isSold(),
-            $plant->getSalesInfo()->getSellingDate(),
-            $plant->getSalesInfo()->getSellingPrice(),
-            $plant->getComment(),
-            $groupModel,
-            $plant->getCreatedAt(),
-            $plant->getUpdatedAt()
-        );
+        return PlantModel::fromEntity($plant, $attachmentModels, $groupModel);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\Attachment;
 
+use App\Domain\Entity\Attachment;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
@@ -110,6 +111,37 @@ class AttachmentModel
         return $this->updatedAt;
     }
 
+    /**
+     * @param Attachment $attachment
+     * @param GroupModel|null $groupModel
+     * @param AttachableModelInterface|null $attachableModel
+     * @return AttachmentModel
+     */
+    static function fromEntity(
+        Attachment $attachment,
+        ?GroupModel $groupModel = null,
+        ?AttachableModelInterface $attachableModel = null
+    ): self {
+        return new self(
+            $attachment->getId(),
+            $attachment->getGroup()->getId(),
+            $attachment->getDisplaySettings()->isShown(),
+            $attachment->getDisplaySettings()->getAlt(),
+            $attachment->getDisplaySettings()->getTitle(),
+            $attachment->getFileInfo()->getFileDate(),
+            $groupModel,
+            $attachment->getFileInfo()->getFilename(),
+            $attachment->getFileInfo()->getPath(),
+            $attachment->getFileInfo()->getMimeType(),
+            $attachment->getDisplaySettings()->getDescription(),
+            $attachment->getTarget()->getAttachableId(),
+            $attachment->getTarget()->getAttachableType(),
+            $attachableModel,
+            $attachment->getCreatedAt(),
+            $attachment->getUpdatedAt()
+        );
+    }
+
     public static function getTableHeaderRu(): array
     {
         return [
@@ -149,8 +181,7 @@ class AttachmentModel
             'alt' => $this->getAlt(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
-            'file_date' => $this->getFileDate()->setTimezone($timezone)->format('d.m.Y H:i:s'),
-            //'attachable_id' => $this->getAttachableId(),
+            'file_date' => $this->getFileDate()->format('d.m.Y'),
             'attachable_id' => $this->getAttachable()?->getId(),
             'attachable_type' => AttachableType::getLabel($this->getAttachableType()),
             'attachable' => $this->getAttachable(),
