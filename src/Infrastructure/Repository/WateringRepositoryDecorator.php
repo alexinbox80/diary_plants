@@ -4,8 +4,6 @@ namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Watering;
-use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Watering\WateringModel;
 use App\Domain\Repository\WateringRepositoryInterface;
 
@@ -152,36 +150,10 @@ class WateringRepositoryDecorator implements WateringRepositoryInterface
         $markerModel = null;
 
         if ($addRelations) {
-            $groupModel = $this->groupRepository->findModel($watering->getGroup()->getId());
-            $markerModel = $this->markerRepository->findModel($watering->getMarker()->getId());
+            $groupModel = $this->groupRepository->toModel($watering->getGroup());
+            $markerModel = $this->markerRepository->toModel($watering->getMarker());
         }
 
-        return self::makeWateringModel($watering, $groupModel, $markerModel);
-    }
-
-    /**
-     * @param Watering $watering
-     * @param GroupModel|null $groupModel
-     * @param MarkerModel|null $markerModel
-     * @return WateringModel
-     */
-    static function makeWateringModel(Watering $watering, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): WateringModel
-    {
-        return new WateringModel(
-            $watering->getId(),
-            $watering->getGroup()->getId(),
-            $watering->getMarker()->getId(),
-            $watering->getDetails()->getAmount(),
-            $watering->getDetails()->getType()->value,
-            $watering->getDetails()->getMethod()->value,
-            $watering->getWateredAt(),
-            $watering->getDetails()->getTemperature(),
-            $watering->getDescription(),
-            $watering->getComment(),
-            $groupModel,
-            $markerModel,
-            $watering->getCreatedAt(),
-            $watering->getUpdatedAt()
-        );
+        return WateringModel::fromEntity($watering, $groupModel, $markerModel);
     }
 }

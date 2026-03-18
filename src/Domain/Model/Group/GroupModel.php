@@ -4,6 +4,7 @@ namespace App\Domain\Model\Group;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Group;
 
 class GroupModel
 {
@@ -45,6 +46,18 @@ class GroupModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    static function fromEntity(Group $group): self
+    {
+        return new GroupModel(
+            $group->getId(),
+            $group->getTitle(),
+            $group->isActive(),
+            $group->getDescription(),
+            $group->getCreatedAt(),
+            $group->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

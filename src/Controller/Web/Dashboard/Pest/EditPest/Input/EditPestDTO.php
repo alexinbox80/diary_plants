@@ -21,7 +21,7 @@ class EditPestDTO
         public int $amount,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:255)]
-        public string $manufacturer,
+        public ?string $manufacturer = null,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:50)]
         public ?string $applicationRate = null,

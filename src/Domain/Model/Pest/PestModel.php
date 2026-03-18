@@ -4,6 +4,7 @@ namespace App\Domain\Model\Pest;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Pest;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -90,6 +91,31 @@ class PestModel implements AttachableModelInterface
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Pest $pest
+     * @param GroupModel|null $groupModel
+     * @param MarkerModel|null $markerModel
+     * @return PestModel
+     */
+    static function fromEntity(Pest $pest, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    {
+        return new self(
+            $pest->getId(),
+            $pest->getGroup()->getId(),
+            $pest->getMarker()->getId(),
+            $pest->getTitle(),
+            $pest->getVolume()->getAmount(),
+            $pest->getDetails()->getManufacturer(),
+            $pest->getVolume()->getApplicationRate(),
+            $pest->getDetails()->getDescription(),
+            $pest->getDetails()->getComment(),
+            $groupModel,
+            $markerModel,
+            $pest->getCreatedAt(),
+            $pest->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

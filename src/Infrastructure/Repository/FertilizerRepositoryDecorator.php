@@ -4,8 +4,6 @@ namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
-use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
 
@@ -152,35 +150,10 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
         $markerModel = null;
 
         if ($addRelations) {
-            $groupModel = $this->groupRepository->findModel($fertilizer->getGroup()->getId());
-            $markerModel = $this->markerRepository->findModel($fertilizer->getMarker()->getId());
+            $groupModel = $this->groupRepository->toModel($fertilizer->getGroup());
+            $markerModel = $this->markerRepository->toModel($fertilizer->getMarker());
         }
 
-        return self::makeFertilizerModel($fertilizer, $groupModel, $markerModel);
-    }
-
-    /**
-     * @param Fertilizer $fertilizer
-     * @param GroupModel|null $groupModel
-     * @param MarkerModel|null $markerModel
-     * @return FertilizerModel
-     */
-    static function makeFertilizerModel(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): FertilizerModel
-    {
-        return new FertilizerModel(
-            $fertilizer->getId(),
-            $fertilizer->getGroup()->getId(),
-            $fertilizer->getMarker()->getId(),
-            $fertilizer->getTitle(),
-            $fertilizer->getVolume()->getAmount(),
-            $fertilizer->getVolume()->getApplicationRate(),
-            $fertilizer->getDetails()->getManufacturer(),
-            $fertilizer->getDetails()->getDescription(),
-            $fertilizer->getDetails()->getComment(),
-            $groupModel,
-            $markerModel,
-            $fertilizer->getCreatedAt(),
-            $fertilizer->getUpdatedAt()
-        );
+        return FertilizerModel::fromEvent($fertilizer, $groupModel, $markerModel);
     }
 }

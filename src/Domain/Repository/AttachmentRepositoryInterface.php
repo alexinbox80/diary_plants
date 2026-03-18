@@ -16,6 +16,7 @@ interface AttachmentRepositoryInterface
     public function find(int $attachmentId): ?Attachment;
     public function findModel(int $attachmentId): ?AttachmentModel;
     public function findAll(): array;
+    public function findAllWithTargets(): array;
     public function findAttachmentsByTitle(string $title): array;
     public function findAttachmentsByFilename(string $filename): array;
     public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array;

@@ -29,7 +29,7 @@ class Manager
             $attachment->getFileInfo()->getFileDate(),
             $attachment->getDisplaySettings()->getDescription(),
             (int) $attachment->getTarget()->getAttachableId(),
-            $attachment->getTarget()->getAttachableType(),
+            $attachment->getTarget()->getAttachableType()->value,
             null
         );
 

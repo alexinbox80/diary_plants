@@ -2,6 +2,7 @@
 
 namespace App\Domain\Model\User;
 
+use App\Domain\Entity\User;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Model\Group\GroupModel;
@@ -131,6 +132,37 @@ class UserModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param User $user
+     * @param GroupModel|null $groupModel
+     * @return UserModel
+     */
+    static function fromEntity(User $user, ?GroupModel $groupModel = null): self
+    {
+        return new self(
+            $user->getId(),
+            $user->getGroup()->getId(),
+            $user->getEmail(),
+            $user->getPassword(),
+            $user->getRoles(),
+            $user->isActive(),
+            $user->isEmailConfirmed(),
+            $user->isPhoneConfirmed(),
+            $user->getTimeZone(),
+            $user->getName()->getLast(),
+            $user->getName()->getFirst(),
+            $user->getName()->getMiddle(),
+            $user->getRefreshToken(),
+            $user->getPhone(),
+            $user->getAvatarLink(),
+            $user->getEmailCode(),
+            $user->getPhoneCode(),
+            $groupModel,
+            $user->getCreatedAt(),
+            $user->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

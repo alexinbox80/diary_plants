@@ -2,24 +2,35 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Marker;
-use App\Domain\Entity\Stimulant;
 use DateTimeImmutable;
+use Doctrine\ORM\QueryBuilder;
+use App\Domain\Entity\Stimulant;
 
 class StimulantRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('s', 'g', 'm')
+            ->from(Stimulant::class, 's')
+            ->leftJoin('s.group', 'g')
+            ->leftJoin('s.marker', 'm')
+            ->orderBy('s.updatedAt', 'DESC');
+    }
+
+    /**
      * @return Stimulant[]
+     * @throws \Exception
      */
     public function getStimulantsPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
-            ->from(Stimulant::class, 's')
-            ->orderBy('s.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -30,11 +41,11 @@ class StimulantRepository extends AbstractRepository
      */
     public function find(int $stimulantId): ?Stimulant
     {
-        $repository = $this->entityManager->getRepository(Stimulant::class);
-        /** @var Stimulant|null $stimulant */
-        $stimulant = $repository->find($stimulantId);
-
-        return $stimulant;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('s.id = :id')
+            ->setParameter('id', $stimulantId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -42,7 +53,9 @@ class StimulantRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Stimulant::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -51,7 +64,11 @@ class StimulantRepository extends AbstractRepository
      */
     public function findStimulantsByTitle(string $title): array
     {
-        return $this->entityManager->getRepository(Stimulant::class)->findBy(['title' => $title]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('s.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -60,7 +77,11 @@ class StimulantRepository extends AbstractRepository
      */
     public function findStimulantsByManufacturer(string $manufacturer): array
     {
-        return $this->entityManager->getRepository(Stimulant::class)->findBy(['manufacturer' => $manufacturer]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('s.manufacturer = :manufacturer')
+            ->setParameter('manufacturer', $manufacturer)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -69,7 +90,11 @@ class StimulantRepository extends AbstractRepository
      */
     public function findStimulantsByUseDate(DateTimeImmutable $date): array
     {
-        return $this->entityManager->getRepository(Stimulant::class)->findBy(['use_date' => $date]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('s.use_date = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

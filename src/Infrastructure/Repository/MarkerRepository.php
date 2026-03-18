@@ -3,21 +3,32 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Marker;
+use Doctrine\ORM\QueryBuilder;
 
 class MarkerRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('m', 'g')
+            ->from(Marker::class, 'm')
+            ->leftJoin('m.group', 'g')
+            ->orderBy('m.updatedAt', 'DESC');
+    }
+
+    /**
      * @return Marker[]
+     * @throws \Exception
      */
     public function getMarkersPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('m')
-            ->from(Marker::class, 'm')
-            ->orderBy('m.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -54,11 +65,11 @@ class MarkerRepository extends AbstractRepository
      */
     public function find(int $markerId): ?Marker
     {
-        $repository = $this->entityManager->getRepository(Marker::class);
-        /** @var Marker|null $marker */
-        $marker = $repository->find($markerId);
-
-        return $marker;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('m.id = :id')
+            ->setParameter('id', $markerId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -66,7 +77,9 @@ class MarkerRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Marker::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -75,7 +88,11 @@ class MarkerRepository extends AbstractRepository
      */
     public function findMarkersByLetter(string $letter): array
     {
-        return $this->entityManager->getRepository(Marker::class)->findBy(['letter' => $letter]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('m.letter = :letter')
+            ->setParameter('letter', $letter)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -84,7 +101,11 @@ class MarkerRepository extends AbstractRepository
      */
     public function findMarkersByColor(string $color): array
     {
-        return $this->entityManager->getRepository(Marker::class)->findBy(['color' => $color]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('m.color = :color')
+            ->setParameter('color', $color)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

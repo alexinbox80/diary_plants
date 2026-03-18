@@ -3,23 +3,35 @@
 namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
+use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Watering;
 
 
 class WateringRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('w', 'g', 'm')
+            ->from(Watering::class, 'w')
+            ->leftJoin('w.group', 'g')
+            ->leftJoin('w.marker', 'm')
+            ->orderBy('w.updatedAt', 'DESC');
+    }
+
+    /**
      * @return Watering[]
+     * @throws \Exception
      */
     public function getWateringsPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('w')
-            ->from(Watering::class, 'w')
-            ->orderBy('w.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -30,11 +42,11 @@ class WateringRepository extends AbstractRepository
      */
     public function find(int $wateringId): ?Watering
     {
-        $repository = $this->entityManager->getRepository(Watering::class);
-        /** @var Watering|null $watering */
-        $watering = $repository->find($wateringId);
-
-        return $watering;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('w.id = :id')
+            ->setParameter('id', $wateringId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -42,7 +54,9 @@ class WateringRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Watering::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -51,7 +65,11 @@ class WateringRepository extends AbstractRepository
      */
     public function findWateringsByType(string $type): array
     {
-        return $this->entityManager->getRepository(Watering::class)->findBy(['type' => $type]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('w.type = :type')
+            ->setParameter('type', $type)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -60,7 +78,11 @@ class WateringRepository extends AbstractRepository
      */
     public function findWateringsByMethod(string $method): array
     {
-        return $this->entityManager->getRepository(Watering::class)->findBy(['method' => $method]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('w.method = :method')
+            ->setParameter('method', $method)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -69,7 +91,11 @@ class WateringRepository extends AbstractRepository
      */
     public function findWateringsByWateredAt(DateTimeImmutable $wateredAt): array
     {
-        return $this->entityManager->getRepository(Watering::class)->findBy(['watered_at' => $wateredAt]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('m.watered_at = :watered_at')
+            ->setParameter('watered_at', $wateredAt)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

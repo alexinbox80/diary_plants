@@ -4,6 +4,7 @@ namespace App\Domain\Model\Watering;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Watering;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\ValueObject\Enum\Watering\WaterType;
@@ -97,6 +98,32 @@ class WateringModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Watering $watering
+     * @param GroupModel|null $groupModel
+     * @param MarkerModel|null $markerModel
+     * @return WateringModel
+     */
+    static function fromEntity(Watering $watering, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    {
+        return new self(
+            $watering->getId(),
+            $watering->getGroup()->getId(),
+            $watering->getMarker()->getId(),
+            $watering->getDetails()->getAmount(),
+            $watering->getDetails()->getType()->value,
+            $watering->getDetails()->getMethod()->value,
+            $watering->getWateredAt(),
+            $watering->getDetails()->getTemperature(),
+            $watering->getDescription(),
+            $watering->getComment(),
+            $groupModel,
+            $markerModel,
+            $watering->getCreatedAt(),
+            $watering->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

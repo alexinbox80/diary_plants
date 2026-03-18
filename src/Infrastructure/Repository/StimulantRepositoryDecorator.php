@@ -4,8 +4,6 @@ namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Stimulant;
-use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
 
@@ -152,35 +150,10 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
         $markerModel = null;
 
         if ($addRelations) {
-            $groupModel = $this->groupRepository->findModel($stimulant->getGroup()->getId());
-            $markerModel = $this->markerRepository->findModel($stimulant->getMarker()->getId());
+            $groupModel = $this->groupRepository->toModel($stimulant->getGroup());
+            $markerModel = $this->markerRepository->toModel($stimulant->getMarker());
         }
 
-        return self::makeStimulantModel($stimulant, $groupModel, $markerModel);
-    }
-
-    /**
-     * @param Stimulant $stimulant
-     * @param GroupModel|null $groupModel
-     * @param MarkerModel|null $markerModel
-     * @return StimulantModel
-     */
-    static function makeStimulantModel(Stimulant $stimulant, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): StimulantModel
-    {
-        return new StimulantModel(
-            $stimulant->getId(),
-            $stimulant->getGroup()->getId(),
-            $stimulant->getMarker()->getId(),
-            $stimulant->getTitle(),
-            $stimulant->getVolume()->getAmount(),
-            $stimulant->getVolume()->getApplicationRate(),
-            $stimulant->getDetails()->getManufacturer(),
-            $stimulant->getDetails()->getDescription(),
-            $stimulant->getDetails()->getComment(),
-            $groupModel,
-            $markerModel,
-            $stimulant->getCreatedAt(),
-            $stimulant->getUpdatedAt()
-        );
+        return StimulantModel::fromEntity($stimulant, $groupModel, $markerModel);
     }
 }

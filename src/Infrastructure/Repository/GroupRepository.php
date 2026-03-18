@@ -3,23 +3,34 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Group;
+use Doctrine\ORM\QueryBuilder;
 
 class GroupRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('g')
+            ->from(Group::class, 'g')
+            ->orderBy('g.updatedAt', 'DESC');
+    }
+
+    /**
      * @param int $page
      * @param int $perPage
      * @return Group[]
+     * @throws \Exception
      */
     public function getGroupsPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('g')
-            ->from(Group::class, 'g')
-            ->orderBy('g.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
+
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -30,11 +41,11 @@ class GroupRepository extends AbstractRepository
      */
     public function find(int $groupId): ?Group
     {
-        $repository = $this->entityManager->getRepository(Group::class);
-        /** @var Group|null $group */
-        $group = $repository->find($groupId);
-
-        return $group;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('g.id = :id')
+            ->setParameter('id', $groupId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -42,7 +53,9 @@ class GroupRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Group::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -70,7 +83,11 @@ class GroupRepository extends AbstractRepository
      */
     public function findGroupsByTitle(string $title): array
     {
-        return $this->entityManager->getRepository(Group::class)->findBy(['title' => $title]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('g.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

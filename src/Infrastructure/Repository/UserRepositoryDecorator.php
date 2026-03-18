@@ -20,6 +20,7 @@ class UserRepositoryDecorator implements UserRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return array{usersModel: UserModel[], pagination: array}
+     * @throws \Exception
      */
     public function getUsersPaginated(int $page, int $perPage): array
     {
@@ -133,35 +134,9 @@ class UserRepositoryDecorator implements UserRepositoryInterface
     {
         $userModel = null;
         if ($addRelations) {
-            $userModel = $this->groupRepository->findModel($user->getGroup()->getId());
+            $userModel = $this->groupRepository->toModel($user->getGroup());
         }
 
-        return self::makeUserModel($user, $userModel);
-    }
-
-    static function makeUserModel(User $user, ?GroupModel $groupModel = null): UserModel
-    {
-        return new userModel(
-            $user->getId(),
-            $user->getGroup()->getId(),
-            $user->getEmail(),
-            $user->getPassword(),
-            $user->getRoles(),
-            $user->isActive(),
-            $user->isEmailConfirmed(),
-            $user->isPhoneConfirmed(),
-            $user->getTimeZone(),
-            $user->getName()->getLast(),
-            $user->getName()->getFirst(),
-            $user->getName()->getMiddle(),
-            $user->getRefreshToken(),
-            $user->getPhone(),
-            $user->getAvatarLink(),
-            $user->getEmailCode(),
-            $user->getPhoneCode(),
-            $groupModel,
-            $user->getCreatedAt(),
-            $user->getUpdatedAt()
-        );
+        return UserModel::fromEntity($user, $userModel);
     }
 }

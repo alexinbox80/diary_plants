@@ -2,23 +2,35 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Fertilizer;
 use DateTimeImmutable;
+use Doctrine\ORM\QueryBuilder;
+use App\Domain\Entity\Fertilizer;
 
 class FertilizerRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('f', 'g', 'm')
+            ->from(Fertilizer::class, 'f')
+            ->leftJoin('f.group', 'g')
+            ->leftJoin('f.marker', 'm')
+            ->orderBy('f.updatedAt', 'DESC');
+    }
+
+    /**
      * @return Fertilizer[]
+     * @throws \Exception
      */
     public function getFertilizersPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('f')
-            ->from(Fertilizer::class, 'f')
-            ->orderBy('f.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -29,11 +41,11 @@ class FertilizerRepository extends AbstractRepository
      */
     public function find(int $fertilizerId): ?Fertilizer
     {
-        $repository = $this->entityManager->getRepository(Fertilizer::class);
-        /** @var Fertilizer|null $fertilizer */
-        $fertilizer = $repository->find($fertilizerId);
-
-        return $fertilizer;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('f.id = :id')
+            ->setParameter('id', $fertilizerId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -41,7 +53,9 @@ class FertilizerRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Fertilizer::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -50,7 +64,11 @@ class FertilizerRepository extends AbstractRepository
      */
     public function findFertilizersByTitle(string $title): array
     {
-        return $this->entityManager->getRepository(Fertilizer::class)->findBy(['title' => $title]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('f.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -59,7 +77,11 @@ class FertilizerRepository extends AbstractRepository
      */
     public function findFertilizersByManufacturer(string $manufacturer): array
     {
-        return $this->entityManager->getRepository(Fertilizer::class)->findBy(['manufacturer' => $manufacturer]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('f.manufacturer = :manufacturer')
+            ->setParameter('manufacturer', $manufacturer)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -68,7 +90,11 @@ class FertilizerRepository extends AbstractRepository
      */
     public function findFertilizersByUseDate(DateTimeImmutable $date): array
     {
-        return $this->entityManager->getRepository(Fertilizer::class)->findBy(['use_date' => $date]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('f.use_date = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

@@ -4,21 +4,35 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Pest;
 use DateTimeImmutable;
+use Doctrine\ORM\QueryBuilder;
 
 class PestRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('p', 'g', 'm')
+            ->from(Pest::class, 'p')
+            ->leftJoin('p.group', 'g')
+            ->leftJoin('p.marker', 'm')
+            ->orderBy('p.updatedAt', 'DESC');
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
      * @return Pest[]
+     * @throws \Exception
      */
     public function getPestsPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('p')
-            ->from(Pest::class, 'p')
-            ->orderBy('p.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -29,11 +43,11 @@ class PestRepository extends AbstractRepository
      */
     public function find(int $pestId): ?Pest
     {
-        $repository = $this->entityManager->getRepository(Pest::class);
-        /** @var Pest|null $pest */
-        $pest = $repository->find($pestId);
-
-        return $pest;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $pestId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -41,7 +55,9 @@ class PestRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Pest::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -50,7 +66,11 @@ class PestRepository extends AbstractRepository
      */
     public function findPestsByTitle(string $title): array
     {
-        return $this->entityManager->getRepository(Pest::class)->findBy(['title' => $title]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -59,7 +79,11 @@ class PestRepository extends AbstractRepository
      */
     public function findPestsByManufacturer(string $manufacturer): array
     {
-        return $this->entityManager->getRepository(Pest::class)->findBy(['manufacturer' => $manufacturer]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.manufacturer = :manufacturer')
+            ->setParameter('manufacturer', $manufacturer)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -68,7 +92,11 @@ class PestRepository extends AbstractRepository
      */
     public function findPestsByUseDate(DateTimeImmutable $date): array
     {
-        return $this->entityManager->getRepository(Pest::class)->findBy(['use_date' => $date]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.use_date = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

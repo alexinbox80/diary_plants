@@ -3,7 +3,9 @@
 namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
+use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Attachment;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 
 /**
  * @method Attachment|null findOneBy(array $criteria, array $orderBy = null)
@@ -11,6 +13,44 @@ use App\Domain\Entity\Attachment;
  */
 class AttachmentRepository extends AbstractRepository
 {
+    /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('a', 'g')
+            ->from(Attachment::class, 'a')
+            ->leftJoin('a.group', 'g')
+            ->orderBy('a.updatedAt', 'DESC');
+    }
+
+    private function preloadTargets(array $attachments): void
+    {
+        $map = [];
+        foreach ($attachments as $attachment) {
+            $target = $attachment->getTarget();
+            // Наш Enum из поля attachableType
+            $type = $target->getAttachableType();
+            if ($type) {
+                $map[$type->value][] = $target->getAttachableId();
+            }
+        }
+
+        foreach ($map as $typeAlias => $ids) {
+            $ids = array_unique(array_filter($ids));
+            if (empty($ids)) continue;
+
+            $enumCase = AttachableType::from($typeAlias);
+            $className = $enumCase->getClass($enumCase->value);
+
+            // Загружаем пачкой все сущности этого типа.
+            // Doctrine положит их в UnitOfWork (Identity Map).
+            $this->entityManager->getRepository($className)->findBy(['id' => $ids]);
+        }
+    }
+
     /**
      * Получить все вложения для определённой сущности.
      *
@@ -20,9 +60,7 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findByAttachable(string $attachableType, int $attachableId): array
     {
-        return $this->entityManager->createQueryBuilder()
-            ->select('a')
-            ->from(Attachment::class, 'a')
+        return $this->getBaseQueryBuilder()
             ->where('a.target.attachableType = :type')
             ->andWhere('a.target.attachableId = :id')
             ->setParameter('type', $attachableType)
@@ -38,8 +76,7 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findAllByAttachable(string $attachableType, array $attachableId): array
     {
-        return $this->entityManager->getRepository(Attachment::class)
-            ->createQueryBuilder('a')
+        return $this->getBaseQueryBuilder()
             ->where('a.target.attachableId IN (:ids)')
             ->andWhere('a.target.attachableType = :type')
             ->setParameter('ids', $attachableId)
@@ -57,11 +94,9 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findByAttachableWithDeleted(string $attachableType, int $attachableId): array
     {
-        return $this->entityManager->createQueryBuilder()
-            ->select('a')
-            ->from(Attachment::class, 'a')
-            ->where('a.attachableType = :type')
-            ->andWhere('a.attachableId = :id')
+        return $this->getBaseQueryBuilder()
+            ->where('a.target.attachableType = :type')
+            ->andWhere('a.target.attachableId = :id')
             ->andWhere('a.deletedAt IS NULL')
             ->setParameter('type', $attachableType)
             ->setParameter('id', $attachableId)
@@ -74,11 +109,9 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findOneByAttachable(string $attachableType, int $attachableId, int $attachmentId): ?Attachment
     {
-        return $this->entityManager->createQueryBuilder()
-            ->select('a')
-            ->from(Attachment::class, 'a')
-            ->where('a.attachableType = :type')
-            ->andWhere('a.attachableId = :id')
+        return $this->getBaseQueryBuilder()
+            ->where('a.target.attachableType = :type')
+            ->andWhere('a.target.attachableId = :id')
             ->andWhere('a.id = :attachmentId')
             ->setParameter('type', $attachableType)
             ->setParameter('id', $attachableId)
@@ -94,8 +127,8 @@ class AttachmentRepository extends AbstractRepository
     {
         $this->entityManager->createQueryBuilder('a')
             ->delete()
-            ->andWhere('a.attachableType = :type')
-            ->andWhere('a.attachableId = :id')
+            ->andWhere('a.target.attachableType = :type')
+            ->andWhere('a.target.attachableId = :id')
             ->andWhere('a.id = :attachmentId')
             ->setParameter('type', $attachableType)
             ->setParameter('id', $attachableId)
@@ -108,18 +141,19 @@ class AttachmentRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Attachment[]
+     * @throws \Exception
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('a')
-            ->from(Attachment::class, 'a')
-            ->orderBy('a.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
-        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+        $results = $this->getPaginatedResults($queryBuilder, $page, $perPage);
+
+        $this->preloadTargets($results['items']);
+
+        return $results;
     }
 
     /**
@@ -128,11 +162,11 @@ class AttachmentRepository extends AbstractRepository
      */
     public function find(int $attachmentId): ?Attachment
     {
-        $repository = $this->entityManager->getRepository(Attachment::class);
-        /** @var Attachment|null $attachment */
-        $attachment = $repository->find($attachmentId);
-
-        return $attachment;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('m.id = :id')
+            ->setParameter('id', $attachmentId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -140,7 +174,21 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Attachment::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Attachment[]
+     */
+    public function findAllWithTargets(): array
+    {
+        $attachments = $this->findAll();
+
+        $this->preloadTargets($attachments);
+
+        return $attachments;
     }
 
     /**
@@ -149,7 +197,11 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findAttachmentsByTitle(string $title): array
     {
-        return $this->entityManager->getRepository(Attachment::class)->findBy(['title' => $title]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('a.title = :title')
+            ->setParameter('title', $title)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -158,7 +210,11 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findAttachmentsByFilename(string $filename): array
     {
-        return $this->entityManager->getRepository(Attachment::class)->findBy(['filename' => $filename]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('a.filename = :filename')
+            ->setParameter('filename', $filename)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -167,7 +223,11 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array
     {
-        return $this->entityManager->getRepository(Attachment::class)->findBy(['file_date' => $fileDate]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('a.file_date = :file_date')
+            ->setParameter('file_date', $fileDate)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -176,7 +236,11 @@ class AttachmentRepository extends AbstractRepository
      */
     public function findAttachmentsByPath(string $path): array
     {
-        return $this->entityManager->getRepository(Attachment::class)->findBy(['path' => $path]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('a.path = :path')
+            ->setParameter('path', $path)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

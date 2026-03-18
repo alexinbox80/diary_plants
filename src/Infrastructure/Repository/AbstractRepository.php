@@ -21,24 +21,32 @@ abstract class AbstractRepository
     /**
      * Получает данные с пагинацией.
      *
-     * @param QueryBuilder $query
+     * @param QueryBuilder $queryBuilder
      * @param int $page
      * @param int $perPage
+     * @param bool $fetchJoinCollection,
+     * @param bool $useOutputWalkers,
      * @return array{plants: object[], pagination: array}
      * @throws \Exception
      */
-    protected function getPaginatedResults(QueryBuilder $query, int $page, int $perPage): array
-    {
-        $query->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage);
+    protected function getPaginatedResults(
+        QueryBuilder $queryBuilder,
+        int $page,
+        int $perPage,
+        bool $fetchJoinCollection = false,
+        bool $useOutputWalkers = false,
+    ): array {
+        $offset = ($page - 1) * $perPage;
 
-        $doctrinePaginator = new DoctrinePaginator($query, true);
+        $queryBuilder->setFirstResult($offset)
+                        ->setMaxResults($perPage);
 
-        $doctrinePaginator->setUseOutputWalkers(true);
+        $doctrinePaginator = new DoctrinePaginator($queryBuilder, $fetchJoinCollection);
+
+        $doctrinePaginator->setUseOutputWalkers($useOutputWalkers);
 
         $totalItems = count($doctrinePaginator);
         $totalPages = (int) ceil($totalItems / $perPage);
-        $offset = ($page - 1) * $perPage;
 
         $items = iterator_to_array($doctrinePaginator->getIterator());
 

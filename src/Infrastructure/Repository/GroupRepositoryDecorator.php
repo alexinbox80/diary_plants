@@ -123,13 +123,6 @@ class GroupRepositoryDecorator implements GroupRepositoryInterface
 
     public function toModel(Group $group): GroupModel
     {
-        return new GroupModel(
-            $group->getId(),
-            $group->getTitle(),
-            $group->isActive(),
-            $group->getDescription(),
-            $group->getCreatedAt(),
-            $group->getUpdatedAt()
-        );
+        return GroupModel::fromEntity($group);
     }
 }

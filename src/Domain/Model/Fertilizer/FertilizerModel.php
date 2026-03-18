@@ -4,6 +4,7 @@ namespace App\Domain\Model\Fertilizer;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -90,6 +91,31 @@ class FertilizerModel implements AttachableModelInterface
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Fertilizer $fertilizer
+     * @param GroupModel|null $groupModel
+     * @param MarkerModel|null $markerModel
+     * @return FertilizerModel
+     */
+    static function fromEvent(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    {
+        return new self(
+            $fertilizer->getId(),
+            $fertilizer->getGroup()->getId(),
+            $fertilizer->getMarker()->getId(),
+            $fertilizer->getTitle(),
+            $fertilizer->getVolume()->getAmount(),
+            $fertilizer->getVolume()->getApplicationRate(),
+            $fertilizer->getDetails()->getManufacturer(),
+            $fertilizer->getDetails()->getDescription(),
+            $fertilizer->getDetails()->getComment(),
+            $groupModel,
+            $markerModel,
+            $fertilizer->getCreatedAt(),
+            $fertilizer->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

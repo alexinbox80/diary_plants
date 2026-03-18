@@ -62,6 +62,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return array{attachmentsModel: AttachmentModel[], pagination: array}
+     * @throws \Exception
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
@@ -108,6 +109,19 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     public function findAll(): array
     {
         $attachments = $this->attachmentRepository->findAll();
+
+        return array_map(
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),
+            $attachments
+        );
+    }
+
+    /**
+     * @return AttachmentModel[]
+     */
+    public function findAllWithTargets(): array
+    {
+        $attachments = $this->attachmentRepository->findAllWithTargets();
 
         return array_map(
             fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),
@@ -204,7 +218,7 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
      */
     public function toModel(Attachment $attachment, bool $addRelations = false): AttachmentModel
     {
-        $groupModel = $this->groupRepository->findModel($attachment->getGroup()->getId());
+        $groupModel = $this->groupRepository->toModel($attachment->getGroup());
 
         $attachableModel = null;
 

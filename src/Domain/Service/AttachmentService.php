@@ -41,7 +41,7 @@ class AttachmentService
      */
     public function findAll(): array
     {
-        return $this->attachmentRepository->findAll();
+        return $this->attachmentRepository->findAllWithTargets();
     }
 
     /**

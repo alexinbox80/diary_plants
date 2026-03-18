@@ -5,8 +5,6 @@ namespace App\Infrastructure\Repository;
 use DateTimeImmutable;
 use App\Domain\Entity\Pest;
 use App\Domain\Model\Pest\PestModel;
-use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Repository\PestRepositoryInterface;
 
 class PestRepositoryDecorator implements PestRepositoryInterface
@@ -22,6 +20,7 @@ class PestRepositoryDecorator implements PestRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return PestModel[]
+     * @throws \Exception
      */
     public function getPestsPaginated(int $page, int $perPage): array
     {
@@ -154,35 +153,10 @@ class PestRepositoryDecorator implements PestRepositoryInterface
         $markerModel = null;
 
         if ($addRelations) {
-            $groupModel = $this->groupRepository->findModel($pest->getGroup()->getId());
-            $markerModel = $this->markerRepository->findModel($pest->getMarker()->getId());
+            $groupModel = $this->groupRepository->toModel($pest->getGroup());
+            $markerModel = $this->markerRepository->toModel($pest->getMarker());
         }
 
-        return self::makePestModel($pest, $groupModel, $markerModel);
-    }
-
-    /**
-     * @param Pest $pest
-     * @param GroupModel|null $groupModel
-     * @param MarkerModel|null $markerModel
-     * @return PestModel
-     */
-    static function makePestModel(Pest $pest, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): PestModel
-    {
-        return new PestModel(
-            $pest->getId(),
-            $pest->getGroup()->getId(),
-            $pest->getMarker()->getId(),
-            $pest->getTitle(),
-            $pest->getVolume()->getAmount(),
-            $pest->getDetails()->getManufacturer(),
-            $pest->getVolume()->getApplicationRate(),
-            $pest->getDetails()->getDescription(),
-            $pest->getDetails()->getComment(),
-            $groupModel,
-            $markerModel,
-            $pest->getCreatedAt(),
-            $pest->getUpdatedAt()
-        );
+        return PestModel::fromEntity($pest, $groupModel, $markerModel);
     }
 }

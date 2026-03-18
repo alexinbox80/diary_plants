@@ -21,6 +21,10 @@ enum AttachableType: string
 
     public static function fromClass(string $className): self
     {
+        if (str_contains($className, 'Proxies\__CG__\\')) {
+            $className = str_replace('Proxies\__CG__\\', '', $className);
+        }
+
         return match ($className) {
             Plant::class => self::PLANT,
             Offspring::class => self::OFFSPRING,

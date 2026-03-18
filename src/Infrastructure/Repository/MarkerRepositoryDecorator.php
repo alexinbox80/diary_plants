@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Marker;
-use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Repository\MarkerRepositoryInterface;
 
@@ -17,6 +16,7 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
 
     /**
      * @return MarkerModel[]
+     * @throws \Exception
      */
     public function getMarkersPaginated(int $page, int $perPage): array
     {
@@ -149,30 +149,9 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
         $groupModel = null;
 
         if ($addRelations) {
-            $groupModel = $this->groupRepository->findModel($marker->getGroup()->getId());
+            $groupModel = $this->groupRepository->toModel($marker->getGroup());
         }
 
-        return self::makeMarkerModel($marker, $groupModel);
-    }
-
-    /**
-     * @param Marker $marker
-     * @param GroupModel|null $groupModel
-     * @return MarkerModel
-     */
-    static function makeMarkerModel(Marker $marker, ?GroupModel $groupModel = null): MarkerModel
-    {
-        return new MarkerModel(
-            $marker->getId(),
-            $marker->getGroup()->getId(),
-            $marker->getLetter(),
-            $marker->getColor(),
-            $marker->getType()->value,
-            $marker->getDescription(),
-            $marker->getColorDescription(),
-            $groupModel,
-            $marker->getCreatedAt(),
-            $marker->getUpdatedAt()
-        );
+        return MarkerModel::fromEntity($marker, $groupModel);
     }
 }

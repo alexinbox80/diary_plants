@@ -54,7 +54,6 @@ class OffspringRepository extends AbstractRepository
             ->from(Offspring::class, 'o')
             ->leftJoin('o.plant', 'p')
             ->leftJoin('o.group', 'g')
-            ->where('p.deletedAt IS NULL')
             ->orderBy('o.updatedAt', 'DESC');
     }
 

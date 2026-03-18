@@ -4,6 +4,7 @@ namespace App\Domain\Model\Stimulant;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Stimulant;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -90,6 +91,31 @@ class StimulantModel implements AttachableModelInterface
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Stimulant $stimulant
+     * @param GroupModel|null $groupModel
+     * @param MarkerModel|null $markerModel
+     * @return StimulantModel
+     */
+    static function fromEntity(Stimulant $stimulant, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    {
+        return new self(
+            $stimulant->getId(),
+            $stimulant->getGroup()->getId(),
+            $stimulant->getMarker()->getId(),
+            $stimulant->getTitle(),
+            $stimulant->getVolume()->getAmount(),
+            $stimulant->getVolume()->getApplicationRate(),
+            $stimulant->getDetails()->getManufacturer(),
+            $stimulant->getDetails()->getDescription(),
+            $stimulant->getDetails()->getComment(),
+            $groupModel,
+            $markerModel,
+            $stimulant->getCreatedAt(),
+            $stimulant->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

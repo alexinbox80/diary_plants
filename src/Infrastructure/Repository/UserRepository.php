@@ -3,23 +3,34 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 
 class UserRepository extends AbstractRepository
 {
     /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('u', 'g')
+            ->from(User::class, 'u')
+            ->leftJoin('u.group', 'g')
+            ->orderBy('u.updatedAt', 'DESC');
+    }
+
+    /**
      * @param int $page
      * @param int $perPage
      * @return User[]
+     * @throws \Exception
      */
     public function getUsersPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('u')
-            ->from(User::class, 'u')
-            ->orderBy('u.updatedAt', 'DESC')
+        $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->getQuery();
+            ->setMaxResults($perPage);
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -30,11 +41,11 @@ class UserRepository extends AbstractRepository
      */
     public function find(int $userId): ?User
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        /** @var User|null $user */
-        $user = $repository->find($userId);
-
-        return $user;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -42,7 +53,9 @@ class UserRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(User::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -70,7 +83,11 @@ class UserRepository extends AbstractRepository
      */
     public function findUsersByEmail(string $email): array
     {
-        return $this->entityManager->getRepository(User::class)->findBy(['email' => $email]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

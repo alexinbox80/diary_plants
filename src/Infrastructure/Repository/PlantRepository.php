@@ -32,7 +32,6 @@ class PlantRepository extends AbstractRepository
         return $queryBuilder->select('p', 'g')
             ->from(Plant::class, 'p')
             ->leftJoin('p.group', 'g')
-            ->where('p.deletedAt IS NULL')
             ->orderBy('p.updatedAt', 'DESC');
     }
 

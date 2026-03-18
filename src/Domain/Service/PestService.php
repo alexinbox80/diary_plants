@@ -120,7 +120,6 @@ class PestService
             $dto->title,
             $dto->amount,
             $dto->applicationRate,
-            $dto->description,
             $dto->manufacturer,
             $dto->description,
             $dto->comment
@@ -174,7 +173,6 @@ class PestService
             $dto->title,
             $dto->amount,
             $dto->applicationRate,
-            $dto->description,
             $dto->manufacturer,
             $dto->description,
             $dto->comment

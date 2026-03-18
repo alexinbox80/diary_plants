@@ -28,7 +28,7 @@ class PreparationDetails
         ?string $description = null,
         ?string $comment = null
     ) {
-        if ($manufacturer !== null) {
+        if (!is_null($manufacturer)) {
             WebmozartAssert::regex(
                 $manufacturer,
                 self::REGEX_ALPHA_NUM,

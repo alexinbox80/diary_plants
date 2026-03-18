@@ -2,10 +2,11 @@
 
 namespace App\Domain\Model\Marker;
 
-use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Marker;
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 class MarkerModel
 {
@@ -71,6 +72,27 @@ class MarkerModel
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Marker $marker
+     * @param GroupModel|null $groupModel
+     * @return MarkerModel
+     */
+    static function fromEntity(Marker $marker, ?GroupModel $groupModel = null): self
+    {
+        return new self(
+            $marker->getId(),
+            $marker->getGroup()->getId(),
+            $marker->getLetter(),
+            $marker->getColor(),
+            $marker->getType()->value,
+            $marker->getDescription(),
+            $marker->getColorDescription(),
+            $groupModel,
+            $marker->getCreatedAt(),
+            $marker->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array
