@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use InvalidArgumentException;
@@ -71,7 +72,7 @@ class UsageService
             $plant,
             new AttachableReference(
                 $createUsageModel->usableId,
-                $createUsageModel->usableType
+                AttachableType::tryFrom($createUsageModel->usableType)
             ),
             $createUsageModel->comment
         );
@@ -98,7 +99,7 @@ class UsageService
             $plant,
             new AttachableReference(
                 $updateUsageModel->usableId,
-                $updateUsageModel->usableType
+                AttachableType::tryFrom($updateUsageModel->usableType)
             ),
             $updateUsageModel->comment
         );

@@ -2,20 +2,25 @@
 
 namespace App\Domain\ValueObject\Enum\Usage;
 
+use App\Domain\Entity\Pest;
+use App\Domain\Entity\Watering;
+use App\Domain\Entity\Stimulant;
+use App\Domain\Entity\Fertilizer;
+
 enum AttachableType: string
 {
-    case FERTILIZER = 'fertilizer::class';
-    case PEST = 'pest::class';
-    case STIMULANT = 'stimulant::class';
-    case WATERING = 'watering::class';
+    case FERTILIZER = 'fertilizer';
+    case PEST = 'pest';
+    case STIMULANT = 'stimulant';
+    case WATERING = 'watering';
 
     public static function getClass(string $value): ?string
     {
         return match ($value) {
-            self::FERTILIZER->value => \App\Domain\Entity\Fertilizer::class,
-            self::PEST->value => \App\Domain\Entity\Pest::class,
-            self::STIMULANT->value => \App\Domain\Entity\Stimulant::class,
-            self::WATERING->value => \App\Domain\Entity\Watering::class,
+            self::FERTILIZER->value => Fertilizer::class,
+            self::PEST->value => Pest::class,
+            self::STIMULANT->value => Stimulant::class,
+            self::WATERING->value => Watering::class,
             default => null,
         };
     }

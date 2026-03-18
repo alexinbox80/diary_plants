@@ -3,6 +3,7 @@
 namespace App\Domain\ValueObject\Usage;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 #[ORM\Embeddable]
 class AttachableReference
@@ -10,12 +11,12 @@ class AttachableReference
     #[ORM\Column(name: 'usable_id', type: 'bigint', nullable: true)]
     private ?int $usableId = null;
 
-    #[ORM\Column(name: 'usable_type', type: 'string', nullable: true)]
-    private ?string $usableType = null;
+    #[ORM\Column(name: 'usable_type', type: 'string', nullable: true, enumType: AttachableType::class)]
+    private ?AttachableType $usableType = null;
 
     public function __construct(
         ?int $usableId = null,
-        ?string $usableType = null
+        ?AttachableType $usableType = null
     ) {
         $this->usableId = $usableId;
         $this->usableType = $usableType;
@@ -26,7 +27,7 @@ class AttachableReference
         return $this->usableId;
     }
 
-    public function getUsableType(): ?string
+    public function getUsableType(): ?AttachableType
     {
         return $this->usableType;
     }
@@ -34,16 +35,21 @@ class AttachableReference
     // Проверка: к чему привязано?
     public function isPest(): bool
     {
-        return $this->usableType === 'pest';
+        return $this->usableType === AttachableType::PEST;
     }
 
     public function isStimulant(): bool
     {
-        return $this->usableType === 'stimulant';
+        return $this->usableType === AttachableType::STIMULANT;
     }
 
     public function isFertilizer(): bool
     {
-        return $this->usableType === 'fertilizer';
+        return $this->usableType === AttachableType::FERTILIZER;
+    }
+
+    public function isWatering(): bool
+    {
+        return $this->usableType === AttachableType::WATERING;
     }
 }

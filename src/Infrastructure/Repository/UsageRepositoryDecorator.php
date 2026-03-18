@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\Repository\WateringRepositoryInterface;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use App\Domain\Model\Usage\UsageModel;
@@ -17,12 +18,13 @@ use App\Domain\Model\Interfaces\AttachableModelInterface;
 class UsageRepositoryDecorator implements UsageRepositoryInterface
 {
     public function __construct(
-        private readonly GroupRepositoryDecorator $groupRepository,
-        private readonly UsageRepository $usageRepository,
-        private readonly AttachableResolverInterface $attachableResolver,
+        private readonly GroupRepositoryDecorator      $groupRepository,
+        private readonly UsageRepository               $usageRepository,
+        private readonly AttachableResolverInterface   $attachableResolver,
         private readonly FertilizerRepositoryInterface $fertilizerRepository,
-        private readonly PestRepositoryInterface $pestRepository,
-        private readonly StimulantRepositoryInterface $stimulantRepository,
+        private readonly PestRepositoryInterface       $pestRepository,
+        private readonly StimulantRepositoryInterface  $stimulantRepository,
+        private readonly WateringRepositoryInterface   $wateringRepository,
     ) {
     }
 
@@ -190,9 +192,10 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         if (!$entity) return null;
 
         return match (get_class($entity)) {
-            \App\Domain\Entity\Fertilizer::class => $this->fertilizerRepository->findModel($entity->getId()),
-            \App\Domain\Entity\Pest::class => $this->pestRepository->findModel($entity->getId()),
-            \App\Domain\Entity\Stimulant::class => $this->stimulantRepository->findModel($entity->getId()),
+            \App\Domain\Entity\Fertilizer::class => $this->fertilizerRepository->toModel($entity),
+            \App\Domain\Entity\Pest::class => $this->pestRepository->toModel($entity),
+            \App\Domain\Entity\Stimulant::class => $this->stimulantRepository->toModel($entity),
+            \App\Domain\Entity\Watering::class => $this->wateringRepository->toModel($entity),
             default => null,
         };
     }
@@ -213,7 +216,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
             $usage->getPlant()->getId(),
             $usage->getComment(),
             $usage->getTarget()->getUsableId(),
-            $usage->getTarget()->getUsableType(),
+            $usage->getTarget()->getUsableType()->value,
             $attachableModel,
             $usage->getCreatedAt(),
             $usage->getUpdatedAt()

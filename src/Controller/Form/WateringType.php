@@ -9,6 +9,7 @@ use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\ValueObject\Enum\Watering\WaterType;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -34,7 +35,7 @@ class WateringType extends AbstractType
             ->add('markerId', ChoiceType::class, [
                 'label' => $labels['marker_id'],
                 'required' => true,
-                'choices' => $this->markerService->getChoicesForChoiceType($groupId, 'watering::class'),
+                'choices' => $this->markerService->getChoicesForChoiceType($groupId, AttachableType::WATERING->value),
                 'placeholder' => 'Выберите сокращение',
             ])
             ->add('amount', TextType::class, [

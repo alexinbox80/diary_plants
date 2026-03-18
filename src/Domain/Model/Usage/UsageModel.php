@@ -53,6 +53,16 @@ class UsageModel
         return $this->comment;
     }
 
+    public function getUsableId(): ?int
+    {
+        return $this->usableId;
+    }
+
+    public function getUsableType(): ?string
+    {
+        return $this->usableType;
+    }
+
     public function getAttachable(): ?AttachableModelInterface
     {
         return $this->attachable;

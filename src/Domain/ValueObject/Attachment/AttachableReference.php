@@ -37,11 +37,11 @@ class AttachableReference
     // Проверка: к чему привязано?
     public function isPlant(): bool
     {
-        return $this->attachableType === AttachableType::from('plant');
+        return $this->attachableType === AttachableType::PLANT;
     }
 
     public function isOffspring(): bool
     {
-        return $this->attachableType === AttachableType::from('offspring');
+        return $this->attachableType === AttachableType::OFFSPRING;
     }
 }

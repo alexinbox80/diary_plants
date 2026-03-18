@@ -6,6 +6,7 @@ use App\Domain\Model\Pest\PestModel;
 use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,7 +30,7 @@ class PestType extends AbstractType
             ->add('markerId', ChoiceType::class, [
                 'label' => $labels['marker_id'],
                 'required' => true,
-                'choices' => $this->markerService->getChoicesForChoiceType($groupId, 'pest::class'),
+                'choices' => $this->markerService->getChoicesForChoiceType($groupId, AttachableType::PEST->value),
                 'placeholder' => 'Выберите сокращение',
             ])
             ->add('title', TextType::class, [

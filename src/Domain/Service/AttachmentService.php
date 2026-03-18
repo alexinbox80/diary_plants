@@ -182,7 +182,7 @@ class AttachmentService
             )->updateTarget(
                 new AttachableReference(
                     $updateAttachmentModel->attachableId,
-                    $updateAttachmentModel->attachableType
+                    AttachableType::tryFrom($updateAttachmentModel->attachableType)
                 )
             );
 
