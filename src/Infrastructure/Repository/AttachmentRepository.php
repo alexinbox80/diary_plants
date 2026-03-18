@@ -26,6 +26,10 @@ class AttachmentRepository extends AbstractRepository
             ->orderBy('a.updatedAt', 'DESC');
     }
 
+    /**
+     * @param Attachment[] $attachments
+     * @return void
+     */
     private function preloadTargets(array $attachments): void
     {
         $map = [];
@@ -33,7 +37,7 @@ class AttachmentRepository extends AbstractRepository
             $target = $attachment->getTarget();
             // Наш Enum из поля attachableType
             $type = $target->getAttachableType();
-            if ($type) {
+            if ($type instanceof AttachableType) {
                 $map[$type->value][] = $target->getAttachableId();
             }
         }
