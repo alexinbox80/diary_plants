@@ -6,6 +6,7 @@ use App\Domain\Entity\Plant;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\ValueObject\Price;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 
 class PlantRepository extends AbstractRepository
 {
@@ -45,7 +46,7 @@ class PlantRepository extends AbstractRepository
 
         $ids = array_map(fn(Plant $p) => $p->getId(), $plants);
 
-        $attachments = $this->attachmentRepository->findAllByAttachable('plant::class', $ids);
+        $attachments = $this->attachmentRepository->findAllByAttachable(AttachableType::PLANT->value, $ids);
 
         $grouped = [];
         foreach ($attachments as $attachment) {

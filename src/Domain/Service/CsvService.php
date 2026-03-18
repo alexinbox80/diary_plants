@@ -298,7 +298,7 @@ class CsvService
             case 'attachment':
                 //Сохранить файлы из var/data в uploads
                 $entityId = $array['attachable_id'];
-                [$entity, $class] = explode('::', $array['attachable_type']);
+                $entity = $array['attachable_type'];
 
                 $sourceDir = $this->csvImageFilePrefix . $entity . '/' . $entityId;
                 if (!is_dir($sourceDir)) {

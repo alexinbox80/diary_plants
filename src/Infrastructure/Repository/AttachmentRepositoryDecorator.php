@@ -4,12 +4,12 @@ namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
-use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Repository\AttachableResolverInterface;
 use App\Domain\Repository\AttachmentRepositoryInterface;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 
 class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
 {
@@ -226,12 +226,16 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
      */
     private function toAttachableModel(?AttachableInterface $entity): ?AttachableModelInterface
     {
-        if (!$entity) return null;
+        if (!$entity) {
+            return null;
+        }
 
-        return match (true) {
-            $entity instanceof \App\Domain\Entity\Plant => $this->plantRepository->toModel($entity),
-            $entity instanceof \App\Domain\Entity\Offspring => $this->offspringRepository->toModel($entity),
-            default => null,
+        $className = get_class($entity);
+
+        return match (AttachableType::fromClass($className)) {
+            AttachableType::PLANT => $this->plantRepository->toModel($entity),
+            AttachableType::OFFSPRING => $this->offspringRepository->toModel($entity),
+            null => null,
         };
     }
 }

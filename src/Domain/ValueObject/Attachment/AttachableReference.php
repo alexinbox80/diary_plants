@@ -3,6 +3,7 @@
 namespace App\Domain\ValueObject\Attachment;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 
 #[ORM\Embeddable]
 class AttachableReference
@@ -12,12 +13,12 @@ class AttachableReference
     private ?int $attachableId = null;
 
     //тип связанной сущности
-    #[ORM\Column(name: 'attachable_type', type: 'string', nullable: true)]
-    private ?string $attachableType = null;// Тип сущности (Plant, User и т.п.)
+    #[ORM\Column(name: 'attachable_type', type: 'string', nullable: true, enumType: AttachableType::class)]
+    private ?AttachableType $attachableType = null;// Тип сущности (Plant, User и т.п.)
 
     public function __construct(
         ?int $attachableId = null,
-        ?string $attachableType = null
+        ?AttachableType $attachableType = null
     ) {
         $this->attachableId = $attachableId;
         $this->attachableType = $attachableType;
@@ -28,7 +29,7 @@ class AttachableReference
         return $this->attachableId;
     }
 
-    public function getAttachableType(): ?string
+    public function getAttachableType(): ?AttachableType
     {
         return $this->attachableType;
     }
@@ -36,11 +37,11 @@ class AttachableReference
     // Проверка: к чему привязано?
     public function isPlant(): bool
     {
-        return $this->attachableType === 'plant';
+        return $this->attachableType === AttachableType::from('plant');
     }
 
     public function isOffspring(): bool
     {
-        return $this->attachableType === 'offspring';
+        return $this->attachableType === AttachableType::from('offspring');
     }
 }

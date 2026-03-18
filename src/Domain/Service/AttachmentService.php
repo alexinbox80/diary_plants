@@ -13,6 +13,7 @@ use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Domain\Repository\AttachmentRepositoryInterface;
 use App\Domain\ValueObject\Attachment\AttachableReference;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
 use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 
@@ -118,7 +119,7 @@ class AttachmentService
             ))->updateTarget(
                 new AttachableReference(
                     $createAttachmentModel->attachableId,
-                    $createAttachmentModel->attachableType
+                    AttachableType::tryFrom($createAttachmentModel->attachableType)
                 )
         );
 

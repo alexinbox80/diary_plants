@@ -2,9 +2,10 @@
 
 namespace App\Infrastructure\Repository;
 
+use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Offspring;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 
 class OffspringRepository extends AbstractRepository
 {
@@ -30,7 +31,7 @@ class OffspringRepository extends AbstractRepository
 
         $ids = array_map(fn(Offspring $o) => $o->getId(), $offsprings);
 
-        $attachments = $this->attachmentRepository->findAllByAttachable('offspring::class', $ids);
+        $attachments = $this->attachmentRepository->findAllByAttachable(AttachableType::OFFSPRING->value, $ids);
 
         $grouped = [];
         foreach ($attachments as $attachment) {

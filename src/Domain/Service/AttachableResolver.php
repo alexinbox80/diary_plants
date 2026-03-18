@@ -15,13 +15,12 @@ class AttachableResolver implements AttachableResolverInterface
     ) {
     }
 
-    public function resolve(string $type, int $id): ?AttachableInterface
+    public function resolve(AttachableTypeAttachment|AttachableTypeUsage $type, int $id): ?AttachableInterface
     {
-        $class = AttachableTypeAttachment::tryFrom($type)?->getClass($type)
-            ?? AttachableTypeUsage::tryFrom($type)?->getClass($type);
+        $class = $type->getClass($type->value);
 
         if ($class === null) {
-            throw new \InvalidArgumentException("Unsupported attachable type: {$type}");
+            throw new \InvalidArgumentException("Unsupported attachable type: {$type->value}");
         }
 
         $entity = $this->entityManager->find($class, $id);

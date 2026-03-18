@@ -2,12 +2,12 @@
 
 namespace App\Domain\Model\Attachment;
 
+use DateTimeZone;
+use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
-use DateTimeImmutable;
-use DateTimeZone;
 
 class AttachmentModel
 {
@@ -135,7 +135,7 @@ class AttachmentModel
             $attachment->getFileInfo()->getMimeType(),
             $attachment->getDisplaySettings()->getDescription(),
             $attachment->getTarget()->getAttachableId(),
-            $attachment->getTarget()->getAttachableType(),
+            $attachment->getTarget()->getAttachableType()->value,
             $attachableModel,
             $attachment->getCreatedAt(),
             $attachment->getUpdatedAt()
