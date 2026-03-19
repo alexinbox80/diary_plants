@@ -92,8 +92,8 @@ class WateringRepository extends AbstractRepository
     public function findWateringsByWateredAt(DateTimeImmutable $wateredAt): array
     {
         return $this->getBaseQueryBuilder()
-            ->andWhere('m.watered_at = :watered_at')
-            ->setParameter('watered_at', $wateredAt)
+            ->andWhere('m.wateredAt = :wateredAt')
+            ->setParameter('wateredAt', $wateredAt)
             ->getQuery()
             ->getResult();
     }

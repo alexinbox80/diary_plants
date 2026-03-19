@@ -2,15 +2,15 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Model\Group\GroupModel;
-use App\Domain\Repository\WateringRepositoryInterface;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Repository\PestRepositoryInterface;
 use App\Domain\Repository\UsageRepositoryInterface;
 use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use App\Domain\Repository\AttachableResolverInterface;
+use App\Domain\Repository\WateringRepositoryInterface;
 use App\Domain\Repository\StimulantRepositoryInterface;
 use App\Domain\Repository\FertilizerRepositoryInterface;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -19,6 +19,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
 {
     public function __construct(
         private readonly GroupRepositoryDecorator      $groupRepository,
+        private readonly PlantRepositoryDecorator      $plantRepository,
         private readonly UsageRepository               $usageRepository,
         private readonly AttachableResolverInterface   $attachableResolver,
         private readonly FertilizerRepositoryInterface $fertilizerRepository,
@@ -121,6 +122,19 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     }
 
     /**
+     * @return UsageModel[]
+     */
+    public function findAllWithTargets(): array
+    {
+        $usages = $this->usageRepository->findAllWithTargets();
+
+        return array_map(
+            fn (Usage $usage): UsageModel => $this->toModel($usage, true),
+            $usages
+        );
+    }
+
+    /**
      * @param DateTimeImmutable $useDate
      * @return UsageModel[]
      */
@@ -167,7 +181,8 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
      */
     public function toModel(Usage $usage, bool $addRelations = false): UsageModel
     {
-        $groupModel = $this->groupRepository->findModel($usage->getGroup()->getId());
+        $groupModel = $this->groupRepository->toModel($usage->getGroup());
+        $plantModel = $this->plantRepository->toModel($usage->getPlant());
 
         $attachableModel = null;
 
@@ -180,7 +195,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
             $attachableModel = $this->toAttachableModel($attachableEntity);
         }
 
-        return self::makeUsageModel($usage, $groupModel, $attachableModel);
+        return UsageModel::fromEntity($usage, $groupModel, $plantModel, $attachableModel);
     }
 
     /**
@@ -189,37 +204,18 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
      */
     private function toAttachableModel(?AttachableInterface $entity): ?AttachableModelInterface
     {
-        if (!$entity) return null;
+        if (!$entity) {
+            return null;
+        }
 
-        return match (get_class($entity)) {
-            \App\Domain\Entity\Fertilizer::class => $this->fertilizerRepository->toModel($entity),
-            \App\Domain\Entity\Pest::class => $this->pestRepository->toModel($entity),
-            \App\Domain\Entity\Stimulant::class => $this->stimulantRepository->toModel($entity),
-            \App\Domain\Entity\Watering::class => $this->wateringRepository->toModel($entity),
-            default => null,
+        $className = get_class($entity);
+
+        return match (AttachableType::fromClass($className)) {
+            AttachableType::FERTILIZER => $this->fertilizerRepository->toModel($entity),
+            AttachableType::PEST => $this->pestRepository->toModel($entity),
+            AttachableType::STIMULANT => $this->stimulantRepository->toModel($entity),
+            AttachableType::WATERING => $this->wateringRepository->toModel($entity),
+            null => null,
         };
-    }
-
-    /**
-     * @param Usage $usage
-     * @param GroupModel|null $groupModel
-     * @param AttachableModelInterface|null $attachableModel
-     * @return UsageModel
-     */
-    static function makeUsageModel(Usage $usage, ?GroupModel $groupModel = null, ?AttachableModelInterface $attachableModel = null): UsageModel
-    {
-        return new UsageModel(
-            $usage->getId(),
-            $usage->getGroup()->getId(),
-            $groupModel,
-            $usage->getUseDate(),
-            $usage->getPlant()->getId(),
-            $usage->getComment(),
-            $usage->getTarget()->getUsableId(),
-            $usage->getTarget()->getUsableType()->value,
-            $attachableModel,
-            $usage->getCreatedAt(),
-            $usage->getUpdatedAt()
-        );
     }
 }

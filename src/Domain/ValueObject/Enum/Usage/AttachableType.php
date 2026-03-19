@@ -25,6 +25,21 @@ enum AttachableType: string
         };
     }
 
+    public static function fromClass(string $className): self
+    {
+        if (str_contains($className, 'Proxies\__CG__\\')) {
+            $className = str_replace('Proxies\__CG__\\', '', $className);
+        }
+
+        return match ($className) {
+            Fertilizer::class => self::FERTILIZER,
+            Stimulant::class => self::STIMULANT,
+            Pest::class => self::PEST,
+            Watering::class => self::WATERING,
+            default => self::tryFrom($className) ?? throw new \InvalidArgumentException("Unknown class: $className"),
+        };
+    }
+
     public static function isValid(string $value): bool
     {
         return in_array($value, array_column(self::cases(), 'value'), true);

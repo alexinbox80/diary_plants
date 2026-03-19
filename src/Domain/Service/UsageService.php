@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use InvalidArgumentException;
@@ -11,13 +10,17 @@ use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Usage\UpdateUsageModel;
 use App\Domain\Repository\UsageRepositoryInterface;
 use App\Domain\ValueObject\Usage\AttachableReference;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use App\Controller\Web\Dashboard\Usage\EditUsage\Input\EditUsageDTO;
+use App\Controller\Web\Dashboard\Usage\CreateUsage\Input\CreateUsageDTO;
 
 class UsageService
 {
     public function __construct(
         private readonly PlantService $plantService,
         private readonly GroupService $groupService,
-        private readonly UsageRepositoryInterface $usageRepository
+        private readonly UsageRepositoryInterface $usageRepository,
+        private readonly ModelFactory $modelFactory,
     ) {
     }
 
@@ -35,7 +38,7 @@ class UsageService
      */
     public function findAll(): array
     {
-        return $this->usageRepository->findAll();
+        return $this->usageRepository->findAllWithTargets();
     }
 
     /**
@@ -83,6 +86,25 @@ class UsageService
     }
 
     /**
+     * @param CreateUsageDTO $dto
+     * @return UsageModel
+     */
+    public function createFromCreateUsageDTO(CreateUsageDTO $dto): UsageModel
+    {
+        $model = $this->modelFactory->makeModel(
+            CreateUsageModel::class,
+            2,
+            $dto->plantId,
+            $dto->useDate,
+            $dto->usableId,
+            $dto->usableType,
+            $dto->comment
+        );
+
+        return $this->create($model);
+    }
+
+    /**
      * @param Usage $usage
      * @param UpdateUsageModel $updateUsageModel
      * @return UsageModel
@@ -107,6 +129,25 @@ class UsageService
         $this->usageRepository->update();
 
         return $this->usageRepository->toModel($usage);
+    }
+
+    /**
+     * @param Usage $usage
+     * @param EditUsageDTO $dto
+     */
+    public function updateFromEditUsageDTO(Usage $usage, EditUsageDTO $dto): void
+    {
+        $model = $this->modelFactory->makeModel(
+            UpdateUsageModel::class,
+            2,
+            $dto->plantId,
+            $dto->useDate,
+            $dto->usableId,
+            $dto->usableType,
+            $dto->comment
+        );
+
+        $this->update($usage, $model);
     }
 
     /**

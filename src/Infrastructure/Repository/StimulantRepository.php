@@ -91,7 +91,7 @@ class StimulantRepository extends AbstractRepository
     public function findStimulantsByUseDate(DateTimeImmutable $date): array
     {
         return $this->getBaseQueryBuilder()
-            ->andWhere('s.use_date = :date')
+            ->andWhere('s.useDate = :date')
             ->setParameter('date', $date)
             ->getQuery()
             ->getResult();

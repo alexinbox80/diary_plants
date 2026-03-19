@@ -93,7 +93,7 @@ class PestRepository extends AbstractRepository
     public function findPestsByUseDate(DateTimeImmutable $date): array
     {
         return $this->getBaseQueryBuilder()
-            ->andWhere('p.use_date = :date')
+            ->andWhere('p.useDate = :date')
             ->setParameter('date', $date)
             ->getQuery()
             ->getResult();

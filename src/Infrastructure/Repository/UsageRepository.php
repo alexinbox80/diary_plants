@@ -2,8 +2,10 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Usage;
 use DateTimeImmutable;
+use App\Domain\Entity\Usage;
+use Doctrine\ORM\QueryBuilder;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 /**
  * @method Usage|null findOneBy(array $criteria, array $orderBy = null)
@@ -11,6 +13,58 @@ use DateTimeImmutable;
  */
 class UsageRepository extends AbstractRepository
 {
+    /**
+     * @return QueryBuilder
+     */
+    private function getBaseQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        return $queryBuilder->select('u', 'g', 'p')
+            ->from(Usage::class, 'u')
+            ->leftJoin('u.group', 'g')
+            ->leftJoin('u.plant', 'p')
+            ->orderBy('u.updatedAt', 'DESC');
+    }
+
+    /**
+     * @param Usage[] $usages
+     * @return void
+     */
+    private function preloadTargets(array $usages): void
+    {
+        $map = [];
+        foreach ($usages as $usage) {
+            $target = $usage->getTarget();
+            // Наш Enum из поля attachableType
+            $type = $target->getUsableType();
+            if ($type instanceof AttachableType) {
+                $map[$type->value][] = $target->getUsableId();
+            }
+        }
+
+        foreach ($map as $typeAlias => $ids) {
+            $ids = array_unique(array_filter($ids));
+            if (empty($ids)) continue;
+
+            $enumCase = AttachableType::from($typeAlias);
+            $className = $enumCase->getClass($enumCase->value);
+
+            // Создаем запрос вручную, чтобы добавить JOIN маркера
+            $this->entityManager->getRepository($className)
+                ->createQueryBuilder('t')
+                ->select('t', 'm')            // Выбираем и цель, и маркер
+                ->leftJoin('t.marker', 'm')   // Сразу джоиним маркер
+                ->where('t.id IN (:ids)')
+                // Важно: если используете SoftDelete, лучше добавить это условие явно,
+                // чтобы избежать создания лишних Proxy для удаленных записей
+                ->andWhere('t.deletedAt IS NULL')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->getResult();
+        }
+    }
+
     /**
      * Получить все использования для определённой сущности.
      *
@@ -20,9 +74,9 @@ class UsageRepository extends AbstractRepository
      */
     public function findByUsable(string $usableType, int $usableId): array
     {
-        return $this->entityManager->createQueryBuilder('u')
-            ->andWhere('u.usableType = :type')
-            ->andWhere('u.usableId = :id')
+        return $this->getBaseQueryBuilder()
+            ->where('u.target.usableType = :type')
+            ->andWhere('u.target.usableId = :id')
             ->setParameter('type', $usableType)
             ->setParameter('id', $usableId)
             ->getQuery()
@@ -34,9 +88,9 @@ class UsageRepository extends AbstractRepository
      */
     public function findByUsableWithDeleted(string $usableType, int $usableId): array
     {
-        return $this->entityManager->createQueryBuilder('u')
-            ->andWhere('u.usableType = :type')
-            ->andWhere('u.usableId = :id')
+        return $this->getBaseQueryBuilder()
+            ->where('u.target.usableType = :type')
+            ->andWhere('u.target.usableId = :id')
             ->setParameter('type', $usableType)
             ->setParameter('id', $usableId)
             ->getQuery()
@@ -48,9 +102,9 @@ class UsageRepository extends AbstractRepository
      */
     public function findOneByUsable(string $usableType, int $usableId, int $usageId): ?Usage
     {
-        return $this->entityManager->createQueryBuilder('u')
-            ->andWhere('u.usableType = :type')
-            ->andWhere('u.usableId = :id')
+        return $this->getBaseQueryBuilder()
+            ->where('u.target.usableType = :type')
+            ->andWhere('u.target.usableId = :id')
             ->andWhere('u.id = :usageId')
             ->setParameter('type', $usableType)
             ->setParameter('id', $usableId)
@@ -64,7 +118,7 @@ class UsageRepository extends AbstractRepository
      */
     public function deleteByUsable(string $usableType, int $usableId, int $usageId): void
     {
-        $this->entityManager->createQueryBuilder('u')
+        $this->getBaseQueryBuilder()
             ->delete()
             ->andWhere('u.usableType = :type')
             ->andWhere('u.usableId = :id')
@@ -78,17 +132,19 @@ class UsageRepository extends AbstractRepository
 
     /**
      * @return Usage[]
+     * @throws \Exception
      */
     public function getUsagesPaginated(int $page, int $perPage): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->select('s')
-            ->from(Usage::class, 'u')
-            ->orderBy('u.id', 'DESC')
-            ->setFirstResult($perPage * $page)
+        $queryBuilder = $this->getBaseQueryBuilder()
+            ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
 
-        return $queryBuilder->getQuery()->getResult();
+        $results = $this->getPaginatedResults($queryBuilder, $page, $perPage);
+
+        $this->preloadTargets($results['items']);
+
+        return $results;
     }
 
     /**
@@ -97,11 +153,11 @@ class UsageRepository extends AbstractRepository
      */
     public function find(int $usageId): ?Usage
     {
-        $repository = $this->entityManager->getRepository(Usage::class);
-        /** @var Usage|null $usage */
-        $usage = $repository->find($usageId);
-
-        return $usage;
+        return $this->getBaseQueryBuilder()
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $usageId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -109,7 +165,21 @@ class UsageRepository extends AbstractRepository
      */
     public function findAll(): array
     {
-        return $this->entityManager->getRepository(Usage::class)->findAll();
+        return $this->getBaseQueryBuilder()
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Usage[]
+     */
+    public function findAllWithTargets(): array
+    {
+        $usages = $this->findAll();
+
+        $this->preloadTargets($usages);
+
+        return $usages;
     }
 
     /**
@@ -118,7 +188,11 @@ class UsageRepository extends AbstractRepository
      */
     public function findUsagesByUseDate(DateTimeImmutable $useDate): array
     {
-        return $this->entityManager->getRepository(Usage::class)->findBy(['use_date' => $useDate]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('u.useDate = :useDate')
+            ->setParameter('useDate', $useDate)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -127,7 +201,11 @@ class UsageRepository extends AbstractRepository
      */
     public function findUsagesByUsableId(int $usableId): array
     {
-        return $this->entityManager->getRepository(Usage::class)->findBy(['usable_id' => $usableId]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('u.usableId = :usableId')
+            ->setParameter('usableId', $usableId)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -136,7 +214,11 @@ class UsageRepository extends AbstractRepository
      */
     public function findUsagesByUsableType(string $usableType): array
     {
-        return $this->entityManager->getRepository(Usage::class)->findBy(['usable_type' => $usableType]);
+        return $this->getBaseQueryBuilder()
+            ->andWhere('u.usableType = :usableType')
+            ->setParameter('usableType', $usableType)
+            ->getQuery()
+            ->getResult();
     }
 
     /**

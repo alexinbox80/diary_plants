@@ -1,0 +1,49 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Использование'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/dashboard/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список использований',
+                            'array': usages,
+                            'pagination': pagination,
+                            'route_index': 'dashboard.usages.index',
+                            'route_pagination': 'dashboard.usages_paginated.index',
+                            'route_edit': 'dashboard.usages.edit',
+                            'route_create': 'dashboard.usages.create',
+                            'route_delete': 'dashboard.usages.delete'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список использований',
+                            'array': usages,
+                            'route_index': 'dashboard.usages.index',
+                            'route_pagination': 'dashboard.usages_paginated.index',
+                            'route_edit': 'dashboard.usages.edit',
+                            'route_create': 'dashboard.usages.create',
+                            'route_delete': 'dashboard.usages.delete'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/table/main.js') }}" data-entity="usage"></script>
+{% endblock %}

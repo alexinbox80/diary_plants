@@ -9,8 +9,9 @@ use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\ValueObject\Enum\Watering\WaterType;
 use App\Domain\ValueObject\Enum\Watering\WateringMethod;
+use App\Domain\Model\Interfaces\AttachableModelInterface;
 
-class WateringModel
+class WateringModel implements AttachableModelInterface
 {
     public function __construct(
         private readonly int $id,

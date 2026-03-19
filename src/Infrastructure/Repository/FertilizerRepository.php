@@ -91,7 +91,7 @@ class FertilizerRepository extends AbstractRepository
     public function findFertilizersByUseDate(DateTimeImmutable $date): array
     {
         return $this->getBaseQueryBuilder()
-            ->andWhere('f.use_date = :date')
+            ->andWhere('f.useDate = :date')
             ->setParameter('date', $date)
             ->getQuery()
             ->getResult();

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Domain\Model\Usage;
+namespace App\Controller\Web\Dashboard\Usage\EditUsage\Input;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateUsageModel
+class EditUsageDTO
 {
     public function __construct(
         #[Assert\NotBlank]

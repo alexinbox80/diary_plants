@@ -228,8 +228,8 @@ class AttachmentRepository extends AbstractRepository
     public function findAttachmentsByFileDate(DateTimeImmutable $fileDate): array
     {
         return $this->getBaseQueryBuilder()
-            ->andWhere('a.file_date = :file_date')
-            ->setParameter('file_date', $fileDate)
+            ->andWhere('a.fileDate = :fileDate')
+            ->setParameter('fileDate', $fileDate)
             ->getQuery()
             ->getResult();
     }

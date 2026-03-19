@@ -2,11 +2,11 @@
 
 namespace App\Controller\Web\Dashboard\Image\CreateImage\Input;
 
-use App\Domain\ValueObject\Enum\Attachment\AttachableType;
-use App\Domain\ValueObject\Enum\ImageMimeType;
 use DateTimeImmutable;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Domain\ValueObject\Enum\ImageMimeType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class CreateImageDTO
