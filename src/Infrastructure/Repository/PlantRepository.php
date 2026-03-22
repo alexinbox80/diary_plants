@@ -122,6 +122,27 @@ class PlantRepository extends AbstractRepository
             $qb->where('p.group = :groupId')
                 ->setParameter('groupId', $groupId);
         }
+
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return array
+     */
+    public function getPlantsForDairy(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('p')
+            ->from(Plant::class, 'p')
+            ->orderBy('p.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('p.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
         return  $qb->getQuery()->getResult();
     }
 

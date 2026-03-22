@@ -11,6 +11,7 @@ interface PlantRepositoryInterface
     public function getPlantsPaginated(int $page, int $perPage): array;
     public function getPlantsCount(): int;
     public function getPlantsForForm(?int $groupId = null): array;
+    public function getPlantsForDiary(?int $groupId = null): array;
     public function find(int $plantId): ?Plant;
     public function findModel(int $plantId): ?PlantModel;
     public function findAll(): array;

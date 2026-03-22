@@ -60,6 +60,32 @@ class MarkerRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
+     * @param string|null $type
+     * @return array
+     */
+    public function getMarkersForDairy(?int $groupId = null, ?string $type = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('m')
+            ->from(Marker::class, 'm')
+            ->orderBy('m.letter', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('m.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        if ($type !== null) {
+            $qb->andWhere('m.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param int $markerId
      * @return Marker|null
      */

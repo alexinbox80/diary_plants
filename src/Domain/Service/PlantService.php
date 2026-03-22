@@ -26,6 +26,11 @@ class PlantService
     ) {
     }
 
+    public function getPlantsForDiary(int $groupID): array
+    {
+        return $this->plantRepository->getPlantsForDiary($groupID);
+    }
+
     /**
      * @param int|null $groupId
      * @return PlantModel[]

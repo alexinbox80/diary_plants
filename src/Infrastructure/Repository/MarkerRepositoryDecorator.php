@@ -53,6 +53,26 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
     }
 
     /**
+     * @param int|null $groupId
+     * @param string|null $type
+     * @return array
+     */
+    public function getMarkersForDairy(?int $groupId = null, ?string $type = null): array
+    {
+        $markers = $this->markerRepository->getMarkersForDairy($groupId, $type);
+
+        return array_map(
+            fn (Marker $marker): array => [
+                'id'=> $marker->getId(),
+                'letter'=> $marker->getLetter(),
+                'description'=> $marker->getDescription(),
+                'color'=> $marker->getColor(),
+            ],
+            $markers
+        );
+    }
+
+    /**
      * @param int $markerId
      * @return Marker|null
      */

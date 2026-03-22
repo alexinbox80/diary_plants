@@ -9,6 +9,7 @@ interface MarkerRepositoryInterface
 {
     public function getMarkersPaginated(int $page, int $perPage): array;
     public function getMarkersForForm(?int $groupId = null, ?string $type = null): array;
+    public function getMarkersForDairy(?int $groupId = null, ?string $type = null): array;
     public function find(int $markerId): ?Marker;
     public function findModel(int $markerId): ?MarkerModel;
     public function findAll(): array;

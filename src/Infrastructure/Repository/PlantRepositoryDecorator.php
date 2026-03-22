@@ -66,6 +66,24 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     }
 
     /**
+     * @param int|null $groupId
+     * @return array
+     */
+    public function getPlantsForDiary(?int $groupId = null): array
+    {
+        $plants = $this->plantRepository->getPlantsForDairy($groupId);
+
+        return array_map(
+            fn (Plant $plant): array => [
+                'id'=> $plant->getId(),
+                'title'=> $plant->getTitle(),
+                'oid'=> $plant->getPlantIdentifier()->getOid()->toString(),
+            ],
+            $plants
+        );
+    }
+
+    /**
      * @param int $plantId
      * @return Plant|null
      */

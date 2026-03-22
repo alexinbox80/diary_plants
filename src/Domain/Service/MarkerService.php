@@ -41,6 +41,16 @@ class MarkerService
     }
 
     /**
+     * @param int|null $groupId
+     * @param string|null $type
+     * @return array
+     */
+    public function getMarkersForDairy(?int $groupId = null, ?string $type = null): array
+    {
+        return $this->markerRepository->getMarkersForDairy($groupId, $type);
+    }
+
+    /**
      * @param int $markerId
      * @return ?Marker
      */
