@@ -2,16 +2,15 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\Entity\Watering;
 use DateTimeImmutable;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\User\CreateUserModel;
-use App\Domain\Model\Watering\CreateWateringModel;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Marker\CreateMarkerModel;
+use App\Domain\Model\Watering\CreateWateringModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
@@ -248,11 +247,11 @@ class CsvService
             ->makeModel(
                 CreateUsageModel::class,
                 (int) $usageModel['group_id'],
-                new DateTimeImmutable($usageModel['use_date']),
                 (int) $usageModel['plant_id'],
-                $usageModel['comment'] !== '' ? $usageModel['comment'] : null,
-                (int) $usageModel['usable_id'] ,
-                $usageModel['usable_type'] ,
+                new DateTimeImmutable($usageModel['use_date']),
+                (int) $usageModel['usable_id'],
+                $usageModel['usable_type'],
+                $usageModel['comment'] !== '' ? $usageModel['comment'] : null
             );
     }
 

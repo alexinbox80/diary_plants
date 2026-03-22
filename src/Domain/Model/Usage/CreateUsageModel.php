@@ -25,7 +25,7 @@ class CreateUsageModel
         public int $usableId,
 
         #[Assert\NotBlank]
-        #[Assert\Length(min:5, max:50)]
+        #[Assert\Length(min:3, max:50)]
         public string $usableType,
 
         #[Assert\Length(min:2)]
