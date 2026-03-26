@@ -19,7 +19,7 @@ class DiaryService
         return [
             'waterings'=> $this->markerService->getMarkersForDairy($groupId, 'watering'),
             'pests'=> $this->markerService->getMarkersForDairy($groupId, 'pest'),
-            'stimulants'=> $this->markerService->getMarkersForDairy($groupId, 'plant'),
+            'stimulants'=> $this->markerService->getMarkersForDairy($groupId, 'stimulant'),
             'fertilizers'=> $this->markerService->getMarkersForDairy($groupId, 'fertilizer'),
         ];
     }

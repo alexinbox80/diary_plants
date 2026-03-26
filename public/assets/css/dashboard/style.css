@@ -23919,6 +23919,23 @@ td.weekend {
     background-color: #f6f8fa!important;
 }
 
+.marker-pointer {
+    cursor: pointer;
+}
+
+.marker-width {
+    width: 27px;
+    text-align: center;
+    border: 1px solid;
+}
+
+.marker-width p {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 25px;
+    font-weight: bold;
+}
+
 /* X-editable */
 .editable-form .editable {
   color: #343a40;

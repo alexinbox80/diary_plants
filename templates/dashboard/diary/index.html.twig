@@ -5,119 +5,127 @@
 {% endblock %}
 
 {% block body %}
+    {% set tabs = {
+        'waterings': 'Полив',
+        'pests': 'Вредители',
+        'stimulants': 'Стимуляторы',
+        'fertilizers': 'Удобрения'
+    } %}
     <div class="container-fluid page-body-wrapper">
         {% include 'components/dashboard/sidebar.html.twig' %}
         <div class="main-panel">
             <div class="content-wrapper">
                 {% if diaries is defined %}
                     <div class="row">
-                        <div class="d-flex justify-content-between">
-                            <div class="col-md-9 px-0 d-flex">
-                                <div class="d-flex flex-column align-items-center">
-                                    <input class="my-1 mx-1 sp__input radioStatusPanel"
-                                           type="radio"
-                                           title="Удалить статус"
-                                           name="exampleRadios"
-                                           id="radio-0"
-                                           data-letter="Х"
-                                           data-color="#E3D2EA"
-                                           data-description="Удалить статус"
-                                           data-id="0"
-                                           value="Х">
-                                    <label class="my-1 mx-1 sp__column" for="radio-0" title="Удалить статус">
-                                        <p class="table__grid-p" style="background-color: #E3D2EA">
-                                            Х
-                                        </p>
-                                    </label>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-end">
+                                    <div class="button">
+                                        <span id="clear__schedule-top" class="btn btn-light me-2">Очистить</span>
+                                        <span id="save__schedule-top" class="btn btn-success me-2">Сохранить</span>
+                                    </div>
                                 </div>
-                                {% for key, type in diaries.table_type.waterings %}
-                                <div class="d-flex flex-column align-items-center">
-                                    <input class="my-1 mx-1 sp__input radioStatusPanel"
-                                           type="radio"
-                                           name="exampleRadios"
-                                           title="{{ type.description }}"
-                                           id="radio-waterings-{{ key }}"
-                                           value="{{ type.letter }}" {{ key is same as 4 ? 'checked' : '' }}>
-                                    <label class="my-1 mx-1 sp__column" for="radio-waterings-{{ key }}" title="{{ type.description  }}">
-                                        <p class="table__grid-p border-1" style="background-color: {{ type.color }};">
-                                            {{ type.letter }}
-                                        </p>
-                                    </label>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="button">
-                                <span id="clear__schedule-top" class="btn btn-outline-info me-2">Очистить</span>
-                                <span id="save__schedule-top" class="btn btn-outline-primary me-2">Сохранить</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Навигация (вкладки) -->
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab">Главная</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Профиль</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">Контакты</button>
-                        </li>
-                    </ul>
-
-                    <!-- Содержимое вкладок -->
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active p-3" id="home" role="tabpanel">
-                            Содержимое первой вкладки...
-                        </div>
-                        <div class="tab-pane fade p-3" id="profile" role="tabpanel">
-                            Содержимое второй вкладки...
-                        </div>
-                        <div class="tab-pane fade p-3" id="contact" role="tabpanel">
-                            Содержимое третьей вкладки...
-                        </div>
-                    </div>
-                    <div class="table-responsive border rounded">
-                        <table class="table table-striped">
-                            <thead>
-                                <th class="align-middle text-center border-1">
-                                    <span>#</span>
-                                </th>
-                                <th class="align-middle text-center border-1">
-                                    <span>Растение</span>
-                                </th>
-                            {% for key, day in diaries.table_header['tableHeader'] %}
-                                <th class="align-middle text-center border-1 {{ day.name_day in ['Сб', 'Вс'] ? 'weekend' : 'workday'}}">
-                                    {{ day.num_day }} <br> {{ day.name_day }}
-                                </th>
-                            {% endfor %}
-                            </thead>
-                            <tbody>
-                                {% for key, plant in diaries.table_body['tableBody'] %}
-                                    <tr>
-                                        <td class="align-middle text-center border-1" title="{{ plant.id }}">
-                                            {{ key + 1 }}
-                                        </td>
-                                        <td class="align-middle text-center border-1">
-                                            <a href="#">
-                                                {{ plant.title }}
-                                            </a>
-                                        </td>
-                                        {% for key, day in diaries.table_header['tableHeader'] %}
-                                            <td class="align-middle text-center border-1 {{ day.name_day in ['Сб', 'Вс'] ? 'weekend' : 'workday'}}"></td>
+                                <div class="col-md-12 px-0">
+                                    <!-- Навигация (вкладки) -->
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        {% for type, markers in diaries.table_type %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link {{ type is same as 'waterings' ? 'active' : '' }}" id="{{ type }}-tab" data-bs-toggle="tab" data-bs-target="#{{ type }}" type="button" role="tab">{{ tabs[type] }}</button>
+                                            </li>
                                         {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    </ul>
+                                    <!-- Содержимое вкладок -->
+                                    <div class="tab-content" id="myTabContent">
+                                        {% for type, markers in diaries.table_type %}
+                                            <div class="tab-pane fade {{ type is same as 'waterings' ? 'show active' : '' }} p-0" id="{{ type }}" role="tabpanel">
+                                                Содержимое {{ type }} вкладки...
+                                                <div class="d-flex">
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <input class="marker-pointer"
+                                                               type="radio"
+                                                               title="Удалить статус"
+                                                               id="radio-{{ type }}-0"
+                                                               data-letter="Х"
+                                                               data-color="#E3D2EA"
+                                                               data-description="Удалить статус"
+                                                               data-id="0"
+                                                               value="Х"
+                                                               name="{{ type }}"
+                                                               checked >
+                                                        <label class="my-1 mx-1 marker-width" for="radio-{{ type }}-0" title="Удалить статус">
+                                                            <p class="marker-pointer" style="background-color: #E3D2EA">
+                                                                Х
+                                                            </p>
+                                                        </label>
+                                                    </div>
+                                                    {% for key, marker in markers %}
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <input class="marker-pointer"
+                                                                   type="radio"
+                                                                   title="{{ marker.description }}"
+                                                                   id="radio-{{ type }}-{{ key + 1}}"
+                                                                   name="{{ type }}"
+                                                                   value="{{ marker.letter }}">
+                                                            <label class="my-1 mx-1 marker-width" for="radio-{{ type }}-{{ key + 1}}" title="{{ marker.description }}">
+                                                                <p class="marker-pointer" style="background-color: {{ marker.color }};">
+                                                                    {{ marker.letter }}
+                                                                </p>
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="table-responsive border-top mt-3">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <th class="align-middle text-center border-1">
+                                                                <span>#</span>
+                                                            </th>
+                                                            <th class="align-middle text-center border-1">
+                                                                <span>Растение</span>
+                                                            </th>
+                                                        {% for key, day in diaries.table_header['tableHeader'] %}
+                                                            <th class="align-middle text-center border-1 {{ day.name_day in ['Сб', 'Вс'] ? 'weekend' : 'workday'}}">
+                                                                {{ day.num_day }} <br> {{ day.name_day }}
+                                                            </th>
+                                                        {% endfor %}
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for key, plant in diaries.table_body['tableBody'] %}
+                                                            <tr>
+                                                                <td class="align-middle text-center border-1" title="{{ plant.id }}">
+                                                                    {{ key + 1 }}
+                                                                </td>
+                                                                <td class="align-middle text-center border-1">
+                                                                    <a href="#">
+                                                                        {{ plant.title }}
+                                                                    </a>
+                                                                </td>
+                                                                {% for key, day in diaries.table_header['tableHeader'] %}
+                                                                    <td class="align-middle text-center border-1 {{ day.name_day in ['Сб', 'Вс'] ? 'weekend' : 'workday'}}"></td>
+                                                                {% endfor %}
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <div class="button">
+                                        <span id="clear__schedule-bottom" class="btn btn-light me-2">Очистить</span>
+                                        <span id="save__schedule-bottom" class="btn btn-success me-2">Сохранить</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {% else %}
                     <div class="d-flex mt-4 flex-wrap align-items-center">
                         <p class="text-muted mb-sm-0">Нет данных</p>
                     </div>
                 {% endif %}
-
             </div>
             <!-- content-wrapper ends -->
             {% include 'components/dashboard/footer.html.twig' %}
