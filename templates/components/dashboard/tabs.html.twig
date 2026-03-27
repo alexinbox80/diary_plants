@@ -1,0 +1,15 @@
+{% import 'macros/dashboard/diary/tab_button.html.twig' as tbutton %}
+{% import 'macros/dashboard/diary/tab_content.html.twig' as tcontent %}
+
+<!-- Навигация (вкладки) -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    {% for type, markers in diaries.table_type %}
+        {{ tbutton.tab_button(type) }}
+    {% endfor %}
+</ul>
+<!-- Содержимое вкладок -->
+<div class="tab-content" id="myTabContent">
+    {% for type, markers in diaries.table_type %}
+        {{ tcontent.tab_content(type, diaries, markers) }}
+    {% endfor %}
+</div>

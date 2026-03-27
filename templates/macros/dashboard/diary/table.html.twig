@@ -1,0 +1,40 @@
+{% macro table(diaries, type) %}
+    {% import 'macros/dashboard/diary/day_class.html.twig' as class %}
+    {% import 'macros/dashboard/diary/cell_id.html.twig' as cell_id %}
+
+    <table class="table table-striped">
+        <thead>
+        <th class="align-middle text-center border-1">
+            <span>#</span>
+        </th>
+        <th class="align-middle text-center border-1">
+            <span>Растение</span>
+        </th>
+        {% for key, day in diaries.table_header['tableHeader'] %}
+            <th class="align-middle text-center border-1 {{ class.day_class(day.name_day) }}">
+                {{ day.num_day }} <br> {{ day.name_day }}
+            </th>
+        {% endfor %}
+        </thead>
+        <tbody>
+        {% for key, plant in diaries.table_body['tableBody'] %}
+            <tr>
+                <td class="align-middle text-center border-1" title="{{ plant.id }}">
+                    {{ key + 1 }}
+                </td>
+                <td class="align-middle text-center border-1">
+                    <a href="#">
+                        {{ plant.title }}
+                    </a>
+                </td>
+                {% for key, day in diaries.table_header['tableHeader'] %}
+                    <td
+                        id="{{ cell_id.get_cell_id(type, plant.id, day.num_day) }}"
+                        class="align-middle text-center border-1 {{ class.day_class(day.name_day) }}"
+                    ></td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

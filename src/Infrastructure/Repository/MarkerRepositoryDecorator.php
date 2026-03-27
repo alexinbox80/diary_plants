@@ -67,6 +67,7 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
                 'letter'=> $marker->getLetter(),
                 'description'=> $marker->getDescription(),
                 'color'=> $marker->getColor(),
+                'type'=> $marker->getType()->value,
             ],
             $markers
         );

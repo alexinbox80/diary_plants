@@ -23929,7 +23929,8 @@ td.weekend {
     border: 1px solid;
 }
 
-.marker-width p {
+.marker-width span {
+    display: block;
     margin-top: 0;
     margin-bottom: 0;
     line-height: 25px;

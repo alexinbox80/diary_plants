@@ -1,0 +1,3 @@
+{% macro get_cell_id(type, id, num_day) -%}
+    {{ type }}-{{ id * 100 + num_day }}
+{%- endmacro %}

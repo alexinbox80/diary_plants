@@ -16,11 +16,18 @@ class DiaryService
     {
         $groupId = 2;
 
+        $markers = $this->markerService->getMarkersForDairy($groupId);
+
+        $groupedData = [];
+        foreach ($markers as $marker) {
+            $groupedData[$marker['type']][] = $marker;
+        }
+
         return [
-            'waterings'=> $this->markerService->getMarkersForDairy($groupId, 'watering'),
-            'pests'=> $this->markerService->getMarkersForDairy($groupId, 'pest'),
-            'stimulants'=> $this->markerService->getMarkersForDairy($groupId, 'stimulant'),
-            'fertilizers'=> $this->markerService->getMarkersForDairy($groupId, 'fertilizer'),
+            'waterings'=> $groupedData['watering'] ?? [],
+            'pests'=> $groupedData['pest'] ?? [],
+            'stimulants'=> $groupedData['stimulant'] ?? [],
+            'fertilizers'=> $groupedData['fertilizer'] ?? [],
         ];
     }
 
@@ -31,7 +38,6 @@ class DiaryService
         $date = new DateTimeImmutable('first day of this month');
 
         $daysInMonth = $date->format('t');
-        $firstDayOfWeek = $date->format('N');
 
         $days = [];
         foreach (range(1, $daysInMonth) as $day) {

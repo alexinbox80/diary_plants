@@ -37,8 +37,8 @@
                 <i class="far fa-lemon menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">
+        <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.diaries' %}active{% endif %}">
+            <a class="nav-link" href="{{ path('dashboard.diaries.index') }}">
                 <span class="menu-title">Еженедельник</span>
                 <i class="fas fa-book menu-icon"></i>
             </a>
@@ -47,12 +47,6 @@
             <a class="nav-link" href="{{ path('dashboard.usages_paginated.index') }}">
                 <span class="menu-title">Использование</span>
                 <i class="fas fa-book-medical menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.diaries' %}active{% endif %}">
-            <a class="nav-link" href="{{ path('dashboard.diaries.index') }}">
-                <span class="menu-title">Еженедельник</span>
-                <i class="fas fa-calendar-alt menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.markers' %}active{% endif %}">

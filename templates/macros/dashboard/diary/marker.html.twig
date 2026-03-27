@@ -1,0 +1,16 @@
+{% macro marker(key, type, letter, description, color) %}
+    <div class="d-flex flex-column align-items-center">
+        <input class="marker-pointer"
+               type="radio"
+               title="{{ description }}"
+               id="radio-{{ type }}-{{ key + 1}}"
+               name="{{ type }}"
+               value="{{ letter }}"
+               {{ key is same as (-1) ? 'checked' : '' }}>
+        <label class="my-1 mx-1 marker-width" for="radio-{{ type }}-{{ key + 1}}" title="{{ description }}">
+            <span class="marker-pointer" style="background-color: {{ color }};">
+                {{ letter }}
+            </span>
+        </label>
+    </div>
+{% endmacro %}

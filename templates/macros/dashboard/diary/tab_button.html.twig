@@ -1,0 +1,12 @@
+{% macro tab_button(type) %}
+    {% set tabs = {
+        'waterings': 'Полив',
+        'pests': 'Вредители',
+        'stimulants': 'Стимуляторы',
+        'fertilizers': 'Удобрения'
+    } %}
+
+    <li class="nav-item" role="presentation">
+        <button class="nav-link {{ type is same as 'waterings' ? 'active' : '' }}" id="{{ type }}-tab" data-bs-toggle="tab" data-bs-target="#{{ type }}" type="button" role="tab">{{ tabs[type] }}</button>
+    </li>
+{% endmacro %}

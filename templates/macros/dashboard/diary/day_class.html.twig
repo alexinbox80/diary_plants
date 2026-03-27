@@ -1,0 +1,3 @@
+{% macro day_class(day) -%}
+    {{ day in ['Сб', 'Вс'] ? 'weekend' : 'workday' }}
+{%- endmacro %}
