@@ -23919,6 +23919,34 @@ td.weekend {
     background-color: #f6f8fa!important;
 }
 
+td.workday, td.weekend {
+    cursor: pointer;
+    padding: 0;
+}
+
+th.col-width {
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    text-align: center;
+}
+
+td.col-height {
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    box-sizing: border-box
+}
+
+td .plant-link {
+    color: var(--bs-table-color);
+    text-decoration: none;
+}
+
+td .plant-link:hover {
+    text-decoration: underline;
+}
+
 .marker-pointer {
     cursor: pointer;
 }

@@ -31,6 +31,12 @@
                 <i class="fa-brands fa-pagelines menu-icon"></i>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <span class="menu-title">Пересадка растений</span>
+                <i class="fas fa-seedling menu-icon"></i>
+            </a>
+        </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.offsprings' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.offsprings_paginated.index') }}">
                 <span class="menu-title">Плоды</span>

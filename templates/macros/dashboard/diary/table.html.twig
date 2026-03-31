@@ -2,16 +2,16 @@
     {% import 'macros/dashboard/diary/day_class.html.twig' as class %}
     {% import 'macros/dashboard/diary/cell_id.html.twig' as cell_id %}
 
-    <table class="table table-striped">
+    <table class="table table-striped table-bordered border-black">
         <thead>
-        <th class="align-middle text-center border-1">
-            <span>#</span>
-        </th>
-        <th class="align-middle text-center border-1">
-            <span>Растение</span>
-        </th>
+            <th class="align-middle text-center table-bordered border-black col-width">
+                <span>#</span>
+            </th>
+            <th class="align-middle text-center table-bordered border-black">
+                <span>Растение</span>
+            </th>
         {% for key, day in diaries.table_header['tableHeader'] %}
-            <th class="align-middle text-center border-1 {{ class.day_class(day.name_day) }}">
+            <th class="align-middle text-center table-bordered border-black col-width {{ class.day_class(day.name_day) }}">
                 {{ day.num_day }} <br> {{ day.name_day }}
             </th>
         {% endfor %}
@@ -19,18 +19,18 @@
         <tbody>
         {% for key, plant in diaries.table_body['tableBody'] %}
             <tr>
-                <td class="align-middle text-center border-1" title="{{ plant.id }}">
+                <td class="align-middle text-center col-height" title="{{ plant.id }}">
                     {{ key + 1 }}
                 </td>
-                <td class="align-middle text-center border-1">
-                    <a href="#">
+                <td class="align-middle text-center">
+                    <a class="plant-link" href="#">
                         {{ plant.title }}
                     </a>
                 </td>
                 {% for key, day in diaries.table_header['tableHeader'] %}
                     <td
                         id="{{ cell_id.get_cell_id(type, plant.id, day.num_day) }}"
-                        class="align-middle text-center border-1 {{ class.day_class(day.name_day) }}"
+                        class="align-middle text-center {{ class.day_class(day.name_day) }}"
                     ></td>
                 {% endfor %}
             </tr>
