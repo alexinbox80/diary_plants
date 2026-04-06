@@ -17,6 +17,20 @@ class WateringRepositoryDecorator implements WateringRepositoryInterface
     }
 
     /**
+     * @param int $groupId
+     * @return WateringModel[]
+     */
+    public function getWateringsForDairy(int $groupId): array
+    {
+        $waterings = $this->wateringRepository->getWateringsForDairy($groupId);
+
+        return array_map(
+            fn (Watering $watering): WateringModel => $this->toModel($watering, true),
+            $waterings
+        );
+    }
+
+    /**
      * @return WateringModel[]
      */
     public function getWateringsPaginated(int $page, int $perPage): array

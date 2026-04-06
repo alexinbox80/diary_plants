@@ -23911,6 +23911,13 @@ div.tagsinput span.tag a {
   margin-bottom: 1em;
 }
 
+.save__schedule, .clear__schedule {
+    min-width: 210px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 th.weekend {
     background-color: #f6f8fa!important;
 }
@@ -23947,6 +23954,14 @@ td .plant-link:hover {
     text-decoration: underline;
 }
 
+.marker-cell {
+    margin: 2px;
+    display: block;
+    line-height: 25px;
+    border: 1px solid;
+    box-sizing: border-box;
+}
+
 .marker-pointer {
     cursor: pointer;
 }
@@ -23962,7 +23977,22 @@ td .plant-link:hover {
     margin-top: 0;
     margin-bottom: 0;
     line-height: 25px;
-    font-weight: bold;
+}
+
+.current-day {
+    background-color: rgba(0, 123, 255, 0.04) !important;
+}
+
+th.current-day {
+    background-color: #e7f1ff !important;
+}
+
+td.current-day:hover {
+    background-color: rgba(0, 123, 255, 0.08) !important;
+}
+
+td.current-day span.marker-cell {
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 
 /* X-editable */

@@ -89,6 +89,44 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     }
 
     /**
+     * @param int $year
+     * @param int $month
+     * @param int $groupId
+     * @return UsageModel[]
+     */
+    public function getUsages(int $year, int $month, int $groupId): array
+    {
+        $usages = $this->usageRepository->getUsages($year, $month, $groupId);
+
+        return array_map(
+            fn (Usage $usage): UsageModel => $this->toModel($usage, true),
+            $usages
+        );
+    }
+
+    /**
+     * @param int $groupId
+     * @param array $plantIds
+     * @param array $dates
+     * @return Usage[]
+     */
+    public function findExistingKeys(int $groupId, array $plantIds, array $dates): array
+    {
+        $usages = $this->usageRepository->findExistingKeys($groupId, $plantIds, $dates);
+
+        return array_map(function($row) {
+            return sprintf(
+                '%s_%s_%s_%s_%s',
+                $row['groupId'],
+                $row['plantId'],
+                $row['useDate']->format('Y-m-d'),
+                $row['usableId'],
+                $row['usableType']->value
+            );
+        }, $usages);
+    }
+
+    /**
      * @param int $usageId
      * @return Usage|null
      */
@@ -172,6 +210,16 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     public function remove(Usage $usage): void
     {
         $this->usageRepository->remove($usage);
+    }
+
+    /**
+     * @param array $ids
+     * @param int $groupId
+     * @return int
+     */
+    public function removeByIds(array $ids, int $groupId): int
+    {
+        return $this->usageRepository->removeByIds($ids, $groupId);
     }
 
     /**

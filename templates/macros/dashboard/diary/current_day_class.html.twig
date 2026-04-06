@@ -1,0 +1,3 @@
+{% macro current_day_class(day1, day2) -%}
+    {{ day1|number_format is same as day2|number_format ? 'current-day' : '' }}
+{%- endmacro %}

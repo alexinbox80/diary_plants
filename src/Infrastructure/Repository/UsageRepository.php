@@ -5,6 +5,8 @@ namespace App\Infrastructure\Repository;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Parameter;
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 /**
@@ -148,6 +150,52 @@ class UsageRepository extends AbstractRepository
     }
 
     /**
+     * @return Usage[]
+     * @throws \Exception
+     */
+    public function getUsages(int $year, int $month, int $groupId): array
+    {
+        $startDate = new DateTimeImmutable("$year-$month-01 00:00:00");
+        $endDate = $startDate->modify('last day of this month')->setTime(23, 59, 59);
+
+        return $this->getBaseQueryBuilder()
+            ->where('u.group = :groupId')
+            ->andWhere('u.useDate BETWEEN :start AND :end')
+            ->setParameter('groupId', $groupId)
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate)
+            ->orderBy('u.useDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param int $groupId
+     * @param array $plantIds
+     * @param array $dates
+     * @return Usage[]
+     */
+    public function findExistingKeys(int $groupId, array $plantIds, array $dates): array
+    {
+        $parameters = new ArrayCollection([
+            new Parameter('groupId', $groupId),
+            new Parameter('plantIds', $plantIds),
+            new Parameter('dates', $dates),
+        ]);
+
+        $qb = $this->entityManager->createQueryBuilder('u');
+
+        return $qb->select('IDENTITY(u.group) as groupId, IDENTITY(u.plant) as plantId, u.useDate, u.target.usableType as usableType, u.target.usableId as usableId')
+            ->from(Usage::class, 'u')
+            ->where('u.group = :groupId')
+            ->andWhere('u.plant IN (:plantIds)')
+            ->andWhere('u.useDate IN (:dates)')
+            ->setParameters($parameters)
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    /**
      * @param int $usageId
      * @return Usage|null
      */
@@ -246,5 +294,22 @@ class UsageRepository extends AbstractRepository
     {
         $usage->setDeletedAt();
         $this->flush();
+    }
+
+    /**
+     * @param array $ids
+     * @param int $groupId
+     * @return int
+     */
+    public function removeByIds(array $ids, int $groupId): int
+    {
+        return $this->entityManager->createQueryBuilder('u')
+            ->delete(Usage::class, 'u')
+            ->where('u.id IN (:ids)')
+            ->andWhere('u.group = :groupId')
+            ->setParameter('ids', $ids)
+            ->setParameter('groupId', $groupId)
+            ->getQuery()
+            ->execute();
     }
 }

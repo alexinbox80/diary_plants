@@ -23,6 +23,19 @@ class FertilizerRepository extends AbstractRepository
     }
 
     /**
+     * @param int $groupId
+     * @return Fertilizer[]
+     */
+    public function getFertilizersForDairy(int $groupId): array
+    {
+        return $this->getBaseQueryBuilder()
+            ->andWhere('f.group = :groupId')
+            ->setParameter('groupId', $groupId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Fertilizer[]
      * @throws \Exception
      */

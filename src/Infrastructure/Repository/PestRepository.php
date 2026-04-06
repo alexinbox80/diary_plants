@@ -23,6 +23,19 @@ class PestRepository extends AbstractRepository
     }
 
     /**
+     * @param int $groupId
+     * @return Pest[]
+     */
+    public function getPestsForDairy(int $groupId): array
+    {
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.group = :groupId')
+            ->setParameter('groupId', $groupId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param int $page
      * @param int $perPage
      * @return Pest[]

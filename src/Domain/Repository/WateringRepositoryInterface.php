@@ -8,6 +8,7 @@ use App\Domain\Model\Watering\WateringModel;
 
 interface WateringRepositoryInterface
 {
+    public function getWateringsForDairy(int $groupId): array;
     public function getWateringsPaginated(int $page, int $perPage): array;
     public function find(int $wateringId): ?Watering;
     public function findModel(int $wateringId): ?WateringModel;

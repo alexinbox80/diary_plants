@@ -25,6 +25,15 @@ class StimulantService
     }
 
     /**
+     * @param int $groupId
+     * @return StimulantModel[]
+     */
+    public function getStimulantsForDairy($groupId): array
+    {
+        return $this->stimulantRepository->getStimulantsForDairy($groupId);
+    }
+
+    /**
      * @param int $stimulantId
      * @return ?Stimulant
      */

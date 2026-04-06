@@ -69,3 +69,6 @@ php bin/console doctrine:migrations:execute --down DoctrineMigrations\\Version20
 
 #check console command
 php bin/console debug:container --tag=console.command
+
+#Registered Listeners for "kernel.controller" Event
+php bin/console debug:event-dispatcher kernel.controller

@@ -1,0 +1,11 @@
+{% macro month_navigation_url_next(year, month) %}
+    {% set current_date = year ~ '-' ~ month ~ '-01' %}
+
+    {% set next = current_date|date_modify('+1 month') %}
+    {% set next_url = path('dashboard.diaries.index', {
+        'year': next|date('Y'),
+        'month': next|date('n')
+    }) %}
+
+    {{ next_url }}
+{% endmacro %}

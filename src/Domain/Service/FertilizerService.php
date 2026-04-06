@@ -25,6 +25,15 @@ class FertilizerService
     }
 
     /**
+     * @param int $groupId
+     * @return FertilizerModel[]
+     */
+    public function getFertilizersForDairy($groupId): array
+    {
+        return $this->fertilizerRepository->getFertilizersForDairy($groupId);
+    }
+
+    /**
      * @param int $fertilizerId
      * @return ?Fertilizer
      */

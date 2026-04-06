@@ -30,6 +30,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__email__uniq ON "user" (email) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__phone__uniq ON "user" (phone) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS user__refresh_token__uniq ON "user" (refresh_token) WHERE (deleted_at IS NULL)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS usage__group_plant_use_date_usable_id_usable_type__uniq ON "usage" (group_id, plant_id, use_date, usable_type, usable_id) WHERE (deleted_at IS NULL)');
 
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__marker_id__ind ON fertilizer (marker_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__group_id__ind ON fertilizer (group_id)');
@@ -61,6 +62,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__email__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__phone__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user__refresh_token__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS usage__group_plant_use_date_usable_id_usable_type__uniq');
 
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__marker_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__group_id__ind');

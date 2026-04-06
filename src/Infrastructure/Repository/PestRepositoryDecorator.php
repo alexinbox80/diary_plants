@@ -17,6 +17,20 @@ class PestRepositoryDecorator implements PestRepositoryInterface
     }
 
     /**
+     * @param int $groupId
+     * @return PestModel[]
+     */
+    public function getPestsForDairy(int $groupId): array
+    {
+        $pests = $this->pestRepository->getPestsForDairy($groupId);
+
+        return array_map(
+            fn (Pest $pest): PestModel => $this->toModel($pest, true),
+            $pests
+        );
+    }
+
+    /**
      * @param int $page
      * @param int $perPage
      * @return PestModel[]

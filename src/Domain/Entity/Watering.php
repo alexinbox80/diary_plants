@@ -19,6 +19,11 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'watering__marker_id__ind', columns: ['marker_id'])]
 #[ORM\Index(name: 'watering__group_id__ind', columns: ['group_id'])]
+#[ORM\UniqueConstraint(
+    name: 'watering__group_id_marker_id__uniq',
+    columns: ['group_id', 'marker_id'],
+    options: ['where' => '(deleted_at IS NULL)']
+)]
 class Watering implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
@@ -34,7 +39,7 @@ class Watering implements EntityInterface, AttachableInterface, HasMetaTimestamp
     #[ORM\Embedded(class: WateringDetails::class, columnPrefix: false)]
     private WateringDetails $details;
 
-    //дата и время полива
+    //дата и время полива ???? todo: скорее всего не нужно время фиксируется в сущности usage
     #[ORM\Column(name: 'watered_at', type: 'datetimetz_immutable', nullable: false)]
     private DateTimeImmutable $wateredAt;
 

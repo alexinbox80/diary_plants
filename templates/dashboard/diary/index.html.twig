@@ -1,3 +1,9 @@
+{% import 'macros/dashboard/diary/human_month.html.twig' as month %}
+{% import 'macros/dashboard/diary/select_month.html.twig' as select %}
+{% import 'macros/dashboard/diary/clear_save_button.html.twig' as button %}
+{% import 'macros/dashboard/diary/month_navigation_url_prev.html.twig' as navigation_prev %}
+{% import 'macros/dashboard/diary/month_navigation_url_next.html.twig' as navigation_next %}
+
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
@@ -10,23 +16,32 @@
         <div class="main-panel">
             <div class="content-wrapper">
                 {% if diaries is defined %}
+                    {% set title = {
+                        'month': diaries.table_title.month,
+                        'year': diaries.table_title.year
+                    } %}
+
+                    {% set prev = navigation_prev.month_navigation_url_prev(diaries.table_title.year, diaries.table_title.month) %}
+                    {% set next = navigation_next.month_navigation_url_next(diaries.table_title.year, diaries.table_title.month) %}
+
                     <div class="row">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-flex justify-content-end">
-                                    <div class="button">
-                                        <span id="clear__schedule-top" class="btn btn-light me-2">Очистить</span>
-                                        <span id="save__schedule-top" class="btn btn-success me-2">Сохранить</span>
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="mb-sm-0"> {{ month.human_month(title.month) }} {{ title.year }} года </h4>
                                     </div>
+                                    {{ button.clear_save('top') }}
                                 </div>
+
+                                {% include 'macros/dashboard/diary/alert.html.twig' %}
+                                {{ select.select_month('top', prev, next) }}
                                 <div class="col-md-12 px-0">
                                     {% include 'components/dashboard/tabs.html.twig' with { 'diaries': diaries } %}
                                 </div>
-                                <div class="d-flex justify-content-end mt-4">
-                                    <div class="button">
-                                        <span id="clear__schedule-bottom" class="btn btn-light me-2">Очистить</span>
-                                        <span id="save__schedule-bottom" class="btn btn-success me-2">Сохранить</span>
-                                    </div>
+                                {{ select.select_month('top', prev, next) }}
+                                <div class="d-flex justify-content-end">
+                                    {{ button.clear_save('bottom') }}
                                 </div>
                             </div>
                         </div>
@@ -46,4 +61,5 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/diary/main.js') }}"></script>
 {% endblock %}

@@ -1,13 +1,16 @@
-{% macro marker(key, type, letter, description, color) %}
-    <div class="d-flex flex-column align-items-center">
+{% macro marker(key, type, letter, description, color, id) %}
+    <div class="d-flex flex-column align-items-center" title="{{ description }}">
         <input class="marker-pointer"
                type="radio"
                title="{{ description }}"
                id="radio-{{ type }}-{{ key + 1}}"
                name="{{ type }}"
                value="{{ letter }}"
-               {{ key is same as (-1) ? 'checked' : '' }}>
-        <label class="my-1 mx-1 marker-width" for="radio-{{ type }}-{{ key + 1}}" title="{{ description }}">
+{#               {{ key is same as (-1) ? 'checked' : '' }}#}
+               data-color="{{ color }}"
+               data-id="{{ id is not empty ? id : key + 1 }}"
+        >
+        <label class="my-1 mx-1 marker-width" for="radio-{{ type }}-{{ key + 1}}">
             <span class="marker-pointer" style="background-color: {{ color }};">
                 {{ letter }}
             </span>

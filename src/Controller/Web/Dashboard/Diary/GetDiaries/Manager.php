@@ -15,14 +15,16 @@ class Manager
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function getDiaries(): array
+    public function getDiaries(?int $year = null, ?int $month = null): array
     {
-        $dairyType = $this->diaryService->getDiaryType();
-        $tableHeader = $this->diaryService->getDiaryHeader();
+        $diaryType = $this->diaryService->getDiaryType();
+        $diaryTitle = $this->diaryService->getDiaryTitle($year, $month);
+        $tableHeader = $this->diaryService->getDiaryHeader($year, $month);
         $tableBody = $this->diaryService->getDiaryBody();
 
         return [
-            'dairyType' => $dairyType,
+            'diaryType' => $diaryType,
+            'diaryTitle' => $diaryTitle,
             'tableHeader' => $tableHeader,
             'tableBody' => $tableBody
         ];

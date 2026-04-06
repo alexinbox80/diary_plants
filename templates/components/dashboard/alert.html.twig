@@ -1,7 +1,7 @@
 {% for type, messages in flashes %}
     {% for message in messages %}
         <div class="position-absolute top-50 start-50 translate-middle z-1">
-            <div class="alert alert-{{ type }} alert-dismissible fade show d-flex flex-column" role="alert">
+            <div class="form-alert alert alert-{{ type }} alert-dismissible fade show d-flex flex-column" role="alert">
                 <div class="alert-header">
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -20,7 +20,7 @@
     // Ждем 3 секунды, затем скрываем alert
     setTimeout(function() {
         // Находим первый alert-элемент на странице
-        const alertElement = document.querySelector('.alert');
+        const alertElement = document.querySelector('.form-alert');
         if (alertElement) {
             alertElement.classList.add('fade', 'show'); // Добавляем классы для анимации
             alertElement.classList.remove('show'); // Удаляем 'show' для начала анимации

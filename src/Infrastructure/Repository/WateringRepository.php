@@ -24,6 +24,19 @@ class WateringRepository extends AbstractRepository
     }
 
     /**
+     * @param int $groupId
+     * @return Watering[]
+     */
+    public function getWateringsForDairy(int $groupId): array
+    {
+        return $this->getBaseQueryBuilder()
+            ->andWhere('w.group = :groupId')
+            ->setParameter('groupId', $groupId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Watering[]
      * @throws \Exception
      */

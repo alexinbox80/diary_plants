@@ -17,6 +17,20 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     }
 
     /**
+     * @param int $groupId
+     * @return FertilizerModel[]
+     */
+    public function getFertilizersForDairy(int $groupId): array
+    {
+        $fertilizers = $this->fertilizerRepository->getfertilizersForDairy($groupId);
+
+        return array_map(
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer, true),
+            $fertilizers
+        );
+    }
+
+    /**
      * @return FertilizerModel[]
      */
     public function getFertilizersPaginated(int $page, int $perPage): array

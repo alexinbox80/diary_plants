@@ -19,6 +19,11 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\Index(name: 'usage__usable__ind', columns: ['usable_type', 'usable_id'])]
 #[ORM\Index(name: 'usage__plant_id__ind', columns: ['plant_id'])]
 #[ORM\Index(name: 'usage__group_id__ind', columns: ['group_id'])]
+#[ORM\UniqueConstraint(
+    name: 'usage__group_plant_use_date_usable_id_usable_type__uniq',
+    columns: ['group_id', 'plant_id', 'use_date', 'usable_type', 'usable_id'],
+    options: ['where' => '(deleted_at IS NULL)']
+)]
 class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;

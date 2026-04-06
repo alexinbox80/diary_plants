@@ -8,6 +8,7 @@ use App\Domain\Model\Fertilizer\FertilizerModel;
 
 interface FertilizerRepositoryInterface
 {
+    public function getFertilizersForDairy(int $groupId): array;
     public function getFertilizersPaginated(int $page, int $perPage): array;
     public function find(int $fertilizerId): ?Fertilizer;
     public function findModel(int $fertilizerId): ?FertilizerModel;

@@ -23,6 +23,19 @@ class StimulantRepository extends AbstractRepository
     }
 
     /**
+     * @param int $groupId
+     * @return Stimulant[]
+     */
+    public function getStimulantsForDairy(int $groupId): array
+    {
+        return $this->getBaseQueryBuilder()
+            ->andWhere('s.group = :groupId')
+            ->setParameter('groupId', $groupId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Stimulant[]
      * @throws \Exception
      */

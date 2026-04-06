@@ -148,4 +148,18 @@ class UsageModel
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s')
         ];
     }
+
+    public function toJson(): array
+    {
+        $timezone = new DateTimeZone('Europe/Moscow');
+        $day = (int) $this->getUseDate()->setTimezone($timezone)->format('d');
+
+        return [
+            'base_id' => $this->getId(),
+            'cell_id' => $this->getUsableType() . '-' . $this->getPlantId() * 100 + $day,
+            'date' => $this->getUseDate()->setTimezone($timezone)->format('Y-m-d'),
+            'usable_id' => $this->getUsableId(),
+            'usable_type' => $this->getUsableType()
+        ];
+    }
 }

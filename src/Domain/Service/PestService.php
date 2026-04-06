@@ -25,6 +25,15 @@ class PestService
     }
 
     /**
+     * @param int $groupId
+     * @return PestModel[]
+     */
+    public function getPestsForDairy($groupId): array
+    {
+        return $this->pestRepository->getPestsForDairy($groupId);
+    }
+
+    /**
      * @param int $pestId
      * @return ?Pest
      */

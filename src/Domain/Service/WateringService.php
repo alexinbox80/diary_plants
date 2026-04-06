@@ -26,6 +26,15 @@ class WateringService
     }
 
     /**
+     * @param int $groupId
+     * @return WateringModel[]
+     */
+    public function getWateringsForDairy($groupId): array
+    {
+        return $this->wateringRepository->getWateringsForDairy($groupId);
+    }
+
+    /**
      * @param int $wateringId
      * @return ?Watering
      */

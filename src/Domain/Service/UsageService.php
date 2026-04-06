@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use InvalidArgumentException;
@@ -13,6 +14,7 @@ use App\Domain\ValueObject\Usage\AttachableReference;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use App\Controller\Web\Dashboard\Usage\EditUsage\Input\EditUsageDTO;
 use App\Controller\Web\Dashboard\Usage\CreateUsage\Input\CreateUsageDTO;
+use App\Controller\Api\Dashboard\Usage\CreateUsage\v1\Input\CreateUsageDTO as CreateUsagesDTO;
 
 class UsageService
 {
@@ -60,6 +62,32 @@ class UsageService
     }
 
     /**
+     * @param ?int $year
+     * @param ?int $month
+     * @return UsageModel[]
+     */
+    public function getUsages(?int $year = null, ?int $month = null): array
+    {
+        $timezone = new DateTimeZone('Europe/Moscow');
+        $date = new DateTimeImmutable()->setTimezone($timezone);
+
+        if ($month === null) {
+            $month = $date->format('n');
+        }
+
+        if ($year === null) {
+            $year = $date->format('Y');
+        }
+
+        $usagesModel = $this->usageRepository->getUsages($year, $month, 2);
+
+        return array_map(
+            static fn (UsageModel $model): array => $model->toJson(),
+            $usagesModel
+        );
+    }
+
+    /**
      * @param CreateUsageModel $createUsageModel
      * @return UsageModel
      * @throws InvalidArgumentException
@@ -83,6 +111,68 @@ class UsageService
         $this->usageRepository->create($usage);
 
         return $this->usageRepository->toModel($usage);
+    }
+
+    /**
+     * @param array $createUsagesDTO
+     * @return null|array
+     * @throws \DateMalformedStringException
+     */
+    public function createUsages(array $createUsagesDTO): ?array
+    {
+        $groupId = 2;
+
+        // 1. Собираем все ID растений и даты для фильтрации
+        $plantIds = array_unique(array_map(fn($dto) => $dto->plantId, $createUsagesDTO));
+        $dates = array_unique(array_map(fn($dto) => $dto->date, $createUsagesDTO));
+
+        // 2. Получаем ключи уже существующих в БД записей одним запросом
+        $existingKeys = $this->usageRepository->findExistingKeys($groupId, $plantIds, $dates);
+
+        $results = [];
+        foreach ($createUsagesDTO as $createUsageDTO) {
+            $currentKey = sprintf(
+                '%s_%s_%s_%s_%s',
+                $groupId,
+                $createUsageDTO->plantId,
+                $createUsageDTO->date,
+                $createUsageDTO->usableId,
+                $createUsageDTO->usableType
+            );
+
+            $date = new DateTimeImmutable($createUsageDTO->date);
+
+            // Проверяем, нет ли уже такой записи
+            if (in_array($currentKey, $existingKeys, true)) {
+                continue;
+            }
+
+            $model = $this->modelFactory->makeModel(
+                CreateUsageModel::class,
+                $groupId, // groupId
+                $createUsageDTO->plantId,
+                $date,
+                $createUsageDTO->usableId,
+                $createUsageDTO->usableType,
+                null
+            );
+
+            $newModel = $this->create($model);
+
+            $timezone = new DateTimeZone('Europe/Moscow');
+            $day = (int) $newModel->getUseDate()->setTimezone($timezone)->format('d');
+
+            $results[] = [
+                'cellId' => $newModel->getUsableType() . '-' . $newModel->getPlant()->getId() * 100 + $day, // "watering-4510"
+                'baseId' => $newModel->getId()
+            ];
+
+            if (!$results) {
+                return null;
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -171,5 +261,14 @@ class UsageService
     public function removeUsage(Usage $usage): void
     {
         $this->usageRepository->remove($usage);
+    }
+
+    /**
+     * @param array $ids
+     * @return int
+     */
+    public function removeUsages(array $ids): int
+    {
+        return $this->usageRepository->removeByIds($ids, 2);
     }
 }

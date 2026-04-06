@@ -8,6 +8,7 @@ use App\Domain\Model\Pest\PestModel;
 
 interface PestRepositoryInterface
 {
+    public function getPestsForDairy(int $groupId): array;
     public function getPestsPaginated(int $page, int $perPage): array;
     public function find(int $pestId): ?Pest;
     public function findModel(int $pestId): ?PestModel;

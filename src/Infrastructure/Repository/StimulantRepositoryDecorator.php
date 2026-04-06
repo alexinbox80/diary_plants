@@ -17,6 +17,20 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     }
 
     /**
+     * @param int $groupId
+     * @return StimulantModel[]
+     */
+    public function getStimulantsForDairy(int $groupId): array
+    {
+        $stimulants = $this->stimulantRepository->getStimulantsForDairy($groupId);
+
+        return array_map(
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant, true),
+            $stimulants
+        );
+    }
+
+    /**
      * @return StimulantModel[]
      */
     public function getStimulantsPaginated(int $page, int $perPage): array

@@ -8,6 +8,7 @@ use App\Domain\Model\Stimulant\StimulantModel;
 
 interface StimulantRepositoryInterface
 {
+    public function getStimulantsForDairy(int $groupId): array;
     public function getStimulantsPaginated(int $page, int $perPage): array;
     public function find(int $stimulantId): ?Stimulant;
     public function findModel(int $stimulantId): ?StimulantModel;
