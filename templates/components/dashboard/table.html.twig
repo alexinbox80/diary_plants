@@ -40,7 +40,7 @@
                                                         {% if key == 'img_tag' %}
                                                             {{ image_tag.image(row_number, 'table-image-thumb', item['title'] ?? 'Аватар', item['alt'] ?? 'Аватар', item[key], 'single') }}
                                                         {% elseif key == 'icon_tag' %}
-                                                            {{ icon_tag.marker(item.marker_color, item.marker_letter) }}
+                                                            {{ icon_tag.marker(item.marker_color ?? item.color, item.marker_letter ?? item.letter) }}
                                                         {% elseif key == 'img_gallery' %}
                                                             {{ gallery.images(item.img_gallery, item.id) }}
                                                         {% elseif key == 'img_qr_code_link' %}

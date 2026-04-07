@@ -99,6 +99,7 @@ class MarkerModel
     {
         return [
             'id' => '#',
+            'icon_tag' => 'Маркер',
             'group_id' => 'Идентификатор группы',
             'group_title' => 'Группа',
             'letter' => 'Обозначение',
@@ -117,6 +118,7 @@ class MarkerModel
 
         return [
             'id' => $this->getId(),
+            'icon_tag' => '',
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
             'letter' => $this->getLetter(),
