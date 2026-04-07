@@ -1,4 +1,4 @@
-import EventEmitter from '../helper/eventEmitter.js';
+import EventEmitter from '../../infrastructure/eventEmitter.js';
 
 /**
  * Класс для управления событиями сортировки

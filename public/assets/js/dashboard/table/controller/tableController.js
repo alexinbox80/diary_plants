@@ -1,5 +1,5 @@
 import configure from '../config/configure.js';
-import EventEmitter from '../helper/eventEmitter.js';
+import EventEmitter from '../../infrastructure/eventEmitter.js';
 import TableColumn from '../model/tableColumn.js';
 
 import SortManager from '../manager/sortManager.js';

@@ -1,4 +1,4 @@
-import EventEmitter from '../helper/eventEmitter.js';
+import EventEmitter from '../../infrastructure/eventEmitter.js';
 
 export default class TableColumn {
     #defaultVisibleColumns;
