@@ -20,7 +20,6 @@ class WateringModel implements AttachableModelInterface
         private readonly int $amount,
         private readonly string $waterType,
         private readonly string $wateringMethod,
-        private readonly DateTimeImmutable $wateredAt,
         private readonly ?string $temperature = null,
         private readonly ?string $description = null,
         private readonly ?string $comment = null,
@@ -59,11 +58,6 @@ class WateringModel implements AttachableModelInterface
     public function getWateringMethod(): string
     {
         return $this->wateringMethod;
-    }
-
-    public function getWateredAt(): DateTimeImmutable
-    {
-        return $this->wateredAt;
     }
 
     public function getTemperature(): string
@@ -116,7 +110,6 @@ class WateringModel implements AttachableModelInterface
             $watering->getDetails()->getAmount(),
             $watering->getDetails()->getType()->value,
             $watering->getDetails()->getMethod()->value,
-            $watering->getWateredAt(),
             $watering->getDetails()->getTemperature(),
             $watering->getDescription(),
             $watering->getComment(),
@@ -140,7 +133,6 @@ class WateringModel implements AttachableModelInterface
             'amount' => 'Количество',
             'water_type' => 'Тип полива',
             'watering_method' => 'Метод полива',
-            'watered_at' => 'Дата полива',
             'temperature' => 'Температура',
             'description' => 'Описание',
             'comment' => 'Комментарий',
@@ -164,7 +156,6 @@ class WateringModel implements AttachableModelInterface
             'amount' => $this->getAmount(),
             'water_type' => WaterType::tryFrom($this->getWaterType())?->getLabel(),
             'watering_method' => WateringMethod::tryFrom($this->getWateringMethod())?->getLabel(),
-            'watered_at' => $this->getWateredAt()?->setTimezone($timezone)->format('d.m.Y'),
             'temperature' => $this->getTemperature(),
             'description' => $this->getDescription(),
             'comment' => $this->getComment(),

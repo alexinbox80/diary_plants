@@ -23,8 +23,6 @@ class CreateWateringDTO
         public string $waterType,
         #[Assert\Choice(callback: [WateringMethod::class, 'getValues'])]
         public string $wateringMethod,
-        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
-        public ?DateTimeImmutable $wateredAt = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public string $temperature,

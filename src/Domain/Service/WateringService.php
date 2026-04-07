@@ -130,7 +130,6 @@ class WateringService
             $dto->amount,
             $dto->waterType,
             $dto->wateringMethod,
-            $dto->wateredAt,
             $dto->temperature,
             $dto->description,
             $dto->comment
@@ -181,7 +180,6 @@ class WateringService
             $dto->amount,
             $dto->waterType,
             $dto->wateringMethod,
-            $dto->wateredAt,
             $dto->temperature,
             $dto->description,
             $dto->comment

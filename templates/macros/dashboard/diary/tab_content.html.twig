@@ -3,7 +3,6 @@
     {% import 'macros/dashboard/diary/table.html.twig' as diary_grid %}
 
     <div class="tab-pane fade {{ type is same as 'watering' ? 'show active' : '' }} p-0" id="{{ type }}" role="tabpanel">
-        Содержимое {{ type }} вкладки...
         <div class="d-flex">
             {{ marker_header.marker(-1, type, 'X', 'Удалить статус', '#E3D2EA') }}
             {% for key, marker in markers %}

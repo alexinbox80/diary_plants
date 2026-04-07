@@ -25,7 +25,6 @@ class Manager
             $watering->getDetails()->getAmount(),
             $watering->getDetails()->getType()->value,
             $watering->getDetails()->getMethod()->value,
-            $watering->getWateredAt(),
             $watering->getDetails()->getTemperature(),
             $watering->getDescription(),
             $watering->getComment()

@@ -1,3 +1,5 @@
+const getCsrfToken = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
 export default {
     async get(errorCallBack, url) {
         return await fetch(url, {
@@ -24,7 +26,7 @@ export default {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': getCsrfToken()
             },
             body: JSON.stringify(data)
         })
@@ -40,18 +42,18 @@ export default {
             })
     },
 
-    async delete(errorCallBack, url, id) {
+    async delete(errorCallBack, url, ids) {
         return await fetch(url, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': getCsrfToken()
             },
-            body: JSON.stringify({ids: id})
+            body: JSON.stringify({ids: ids})
         })
             .then((response) => {
                 if (response.ok) {
-                    return true;
+                    return response.json()
                 } else {
                     return errorCallBack(response.status);
                 }

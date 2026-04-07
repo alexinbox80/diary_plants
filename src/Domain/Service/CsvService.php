@@ -167,7 +167,6 @@ class CsvService
                 (int) $wateringModel['amount'],
                 $wateringModel['type'],
                 $wateringModel['method'],
-                new DateTimeImmutable($wateringModel['watered_at']),
                 $wateringModel['temperature'],
                 $wateringModel['description'],
                 $wateringModel['comment']

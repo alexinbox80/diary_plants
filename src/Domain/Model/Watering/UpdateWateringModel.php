@@ -2,7 +2,6 @@
 
 namespace App\Domain\Model\Watering;
 
-use DateTimeImmutable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdateWateringModel
@@ -23,8 +22,6 @@ class UpdateWateringModel
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $wateringMethod,
-        #[Assert\Type(type: ['null', DateTimeImmutable::class])]
-        public readonly ?DateTimeImmutable $wateredAt = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid string.')]
         public readonly string $temperature,

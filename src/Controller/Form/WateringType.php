@@ -54,13 +54,6 @@ class WateringType extends AbstractType
                 'choices' => WateringMethod::asSelectArray(),
                 'placeholder' => 'Выберите сокращение',
             ])
-            ->add('wateredAt', DateType::class, [
-                'label' => $labels['watered_at'],
-                'required' => false,
-                'widget' => 'single_text',
-                'html5' => true,
-                'format' => 'yyyy-MM-dd',
-            ])
             ->add('temperature', TextType::class, [
                 'label' => $labels['temperature'],
                 'required' => false,
@@ -80,7 +73,7 @@ class WateringType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditWateringDTO::class,
-            'empty_data' => new CreateWateringDTO(2, 2, 0, '', '', new DateTimeImmutable(), 0),
+            'empty_data' => new CreateWateringDTO(2, 2, 0, '', '', 0),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

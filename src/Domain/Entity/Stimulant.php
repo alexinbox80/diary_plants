@@ -19,6 +19,11 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'stimulant__marker_id__ind', columns: ['marker_id'])]
 #[ORM\Index(name: 'stimulant__group_id__ind', columns: ['group_id'])]
+#[ORM\UniqueConstraint(
+    name: 'stimulant__group_id_marker_id__uniq',
+    columns: ['group_id', 'marker_id'],
+    options: ['where' => '(deleted_at IS NULL)']
+)]
 class Stimulant extends Preparation implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
