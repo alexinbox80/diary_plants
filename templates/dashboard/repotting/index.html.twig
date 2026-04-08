@@ -1,0 +1,49 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Пересадка'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/dashboard/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список пересадок',
+                            'array': repottings,
+                            'pagination': pagination,
+                            'route_index': 'dashboard.repottings.index',
+                            'route_pagination': 'dashboard.repottings_paginated.index',
+                            'route_edit': 'dashboard.repottings.edit',
+                            'route_create': 'dashboard.repottings.create',
+                            'route_delete': 'dashboard.repottings.delete'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'Список пересадок',
+                            'array': repottings,
+                            'route_index': 'dashboard.repottings.index',
+                            'route_pagination': 'dashboard.repottings_paginated.index',
+                            'route_edit': 'dashboard.repottings.edit',
+                            'route_create': 'dashboard.repottings.create',
+                            'route_delete': 'dashboard.repottings.delete'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/table/main.js') }}" data-entity="repotting"></script>
+{% endblock %}

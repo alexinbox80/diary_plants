@@ -94,7 +94,7 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
     }
 
     /**
-     * @return markerModel[]
+     * @return MarkerModel[]
      */
     public function findAll(): array
     {

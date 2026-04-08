@@ -12,6 +12,7 @@ use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Watering\CreateWateringModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
+use App\Domain\Model\Repotting\CreateRepottingModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
@@ -28,6 +29,7 @@ class CsvService
         private readonly PlantService      $plantService,
         private readonly MarkerService     $markerService,
         private readonly OffspringService  $offspringService,
+        private readonly RepottingService  $repottingService,
         private readonly WateringService   $wateringService,
         private readonly PestService       $pestService,
         private readonly FertilizerService $fertilizerService,
@@ -157,6 +159,21 @@ class CsvService
             );
     }
 
+    private function createRepottingModel(array $repottingModel): CreateRepottingModel
+    {
+        return $this->modelFactory
+            ->makeModel(
+                CreateRepottingModel::class,
+                (int) $repottingModel['group_id'],
+                (int) $repottingModel['plant_id'],
+                $repottingModel['repotted_at'] !== '' ? new DateTimeImmutable($repottingModel['repotted_at']) : null,
+                $repottingModel['type'],
+                $repottingModel['pot_material'],
+                $repottingModel['pot_size'],
+                $repottingModel['comment'],
+            );
+    }
+
     private function createWateringModel(array $wateringModel): CreateWateringModel
     {
         return $this->modelFactory
@@ -276,6 +293,10 @@ class CsvService
             case 'offspring':
                 $offspringModel = $this->createOffspringModel($array);
                 $this->offspringService->create($offspringModel);
+                break;
+            case 'repotting':
+                $repottingModel = $this->createRepottingModel($array);
+                $this->repottingService->create($repottingModel);
                 break;
             case 'watering':
                 $wateringModel = $this->createWateringModel($array);

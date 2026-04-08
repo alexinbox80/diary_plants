@@ -78,6 +78,10 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\OneToMany(targetEntity: Offspring::class, mappedBy: 'plant')]
     private Collection $offsprings;
 
+    //связь с пересадкой растения
+    #[ORM\OneToMany(targetEntity: Repotting::class, mappedBy: 'plant')]
+    private Collection $repottings;
+
     //загруженные в репозитории связанные вложения
     private array $loadedAttachments = [];
 
@@ -124,6 +128,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
 
         $this->offsprings = new ArrayCollection();
         $this->usages = new ArrayCollection();
+        $this->repottings = new ArrayCollection();
     }
 
     public function moveToGroup(Group $group): self
@@ -262,6 +267,11 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     public function getUsages(): Collection
     {
         return $this->usages;
+    }
+
+    public function getRepottings(): Collection
+    {
+        return $this->repottings;
     }
 
     public function setLoadedAttachments(array $attachments): void

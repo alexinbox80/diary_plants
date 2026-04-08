@@ -85,7 +85,6 @@ class MarkerService
         return $this->markerRepository->findMarkersByColor($color);
     }
 
-
     /**
      * @return MarkerModel[]
      * @throws InvalidArgumentException
