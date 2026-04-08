@@ -140,7 +140,7 @@ class RepottingModel
             'group_title' => $this->getGroup()?->getTitle(),
             'plant_id' => $this->getPlantId(),
             'plant_title' => $this->getPlant()?->getTitle(),
-            'repotted_at' => $this->getRepottedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
+            'repotted_at' => $this->getRepottedAt()->setTimezone($timezone)->format('d.m.Y'),
             'type' => RepottingType::tryFrom($this->getType())?->getLabel(),
             'pot_material' => PotMaterial::tryFrom($this->getPotMaterial())?->getLabel(),
             'pot_size' => $this->getPotSize(),

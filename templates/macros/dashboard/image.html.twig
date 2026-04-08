@@ -3,7 +3,7 @@
 
     {% set src = 'uploads/' ~ src %}
     {% if src is not null %}
-        <a href="#" data-bs-toggle="modal" data-bs-target="#PreviewModal{{ id }}">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#PreviewModalIm{{ id }}">
             <img src="{{ asset(src) }}" title="{{ title }}" alt="{{ alt }}"  class="img-fluid {{ class }}" style="cursor: pointer;">
         </a>
     {% else %}
