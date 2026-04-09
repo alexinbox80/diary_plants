@@ -11,9 +11,10 @@ use PHPUnit\Framework\TestCase;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Marker\MarkerModel;
+use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\ValueObject\Usage\AttachableReference;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
-use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class UsageModelTest extends TestCase
 {
@@ -53,9 +54,17 @@ class UsageModelTest extends TestCase
         $plantModel = $this->createMock(PlantModel::class);
         $plantModel->method('getTitle')->willReturn('Ficus');
 
-        $attachable = $this->createMock(AttachableModelInterface::class);
+        // Используйте любой класс, который реально передается в UsageModel (например, FertilizerModel)
+        $attachable = $this->createMock(FertilizerModel::class);
 
-        // 4. Вызов тестируемого метода
+        // Теперь PHPUnit позволит сконфигурировать getMarker
+        $marker = $this->createMock(MarkerModel::class);
+        $marker->method('getLetter')->willReturn('S');
+        $marker->method('getColor')->willReturn('#00FF00');
+
+        $attachable->method('getMarker')->willReturn($marker);
+
+        // 4. Вызов тестируемого метода (остается прежним)
         $model = UsageModel::fromEntity($usage, $groupModel, $plantModel, $attachable);
 
         // 5. Проверки toArray()
