@@ -117,6 +117,7 @@ class UsageModel
     {
         return [
             'id' => '#',
+            'icon_tag' => 'Маркер',
             'group_id' => 'Идентификатор группы',
             'group_title' => 'Группа',
             'use_date' => 'Дата использования',
@@ -136,6 +137,9 @@ class UsageModel
 
         return [
             'id' => $this->getId(),
+            'icon_tag' => '',
+            'marker_letter' => $this->getAttachable()?->getMarker()->getLetter(),
+            'marker_color' => $this->getAttachable()?->getMarker()->getColor(),
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
             'use_date' => $this->getUseDate()->setTimezone($timezone)->format('d.m.Y'),

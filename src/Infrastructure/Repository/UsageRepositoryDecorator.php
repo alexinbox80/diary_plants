@@ -259,10 +259,10 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         $className = get_class($entity);
 
         return match (AttachableType::fromClass($className)) {
-            AttachableType::FERTILIZER => $this->fertilizerRepository->toModel($entity),
-            AttachableType::PEST => $this->pestRepository->toModel($entity),
-            AttachableType::STIMULANT => $this->stimulantRepository->toModel($entity),
-            AttachableType::WATERING => $this->wateringRepository->toModel($entity),
+            AttachableType::FERTILIZER => $this->fertilizerRepository->toModel($entity, true),
+            AttachableType::PEST => $this->pestRepository->toModel($entity, true),
+            AttachableType::STIMULANT => $this->stimulantRepository->toModel($entity, true),
+            AttachableType::WATERING => $this->wateringRepository->toModel($entity, true),
             null => null,
         };
     }
