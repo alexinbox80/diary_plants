@@ -2,7 +2,6 @@
 
 namespace App\Domain\Entity;
 
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
@@ -74,7 +73,6 @@ class Watering implements EntityInterface, AttachableInterface, HasMetaTimestamp
         $this->group = $group;
         $this->details = $details;
         $this->marker = $marker;
-        $this->wateredAt = new DateTimeImmutable();
     }
 
     public function moveToGroup(Group $group): self
@@ -108,11 +106,6 @@ class Watering implements EntityInterface, AttachableInterface, HasMetaTimestamp
     public function getDetails(): WateringDetails
     {
         return $this->details;
-    }
-
-    public function getWateredAt(): DateTimeImmutable
-    {
-        return $this->wateredAt;
     }
 
     public function getDescription(): ?string

@@ -4,10 +4,11 @@ namespace App\Domain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
+use Webmozart\Assert\Assert as WebmozartAssert;
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
@@ -122,6 +123,7 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
     public function getId(): int
     {
+        WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
         return $this->id;
     }
 
@@ -138,5 +140,60 @@ class Group implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     public function isActive(): bool
     {
         return $this->isActive;
+    }
+
+    public function getRepottings(): Collection
+    {
+        return $this->repottings;
+    }
+
+    public function getUsages(): Collection
+    {
+        return $this->usages;
+    }
+
+    public function getWaterings(): Collection
+    {
+        return $this->waterings;
+    }
+
+    public function getMarkers(): Collection
+    {
+        return $this->markers;
+    }
+
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function getPests(): Collection
+    {
+        return $this->pests;
+    }
+
+    public function getStimulants(): Collection
+    {
+        return $this->stimulants;
+    }
+
+    public function getFertilizers(): Collection
+    {
+        return $this->fertilizers;
+    }
+
+    public function getOffsprings(): Collection
+    {
+        return $this->offsprings;
+    }
+
+    public function getPlants(): Collection
+    {
+        return $this->plants;
+    }
+
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
     }
 }

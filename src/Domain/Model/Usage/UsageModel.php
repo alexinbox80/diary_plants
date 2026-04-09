@@ -9,6 +9,7 @@ use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
+
 class UsageModel
 {
     public function __construct(

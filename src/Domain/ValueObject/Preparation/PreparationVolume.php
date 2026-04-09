@@ -23,8 +23,8 @@ class PreparationVolume
         WebmozartAssert::greaterThan($amount, 0, 'Amount must be positive');
         $this->amount = $amount;
 
-        if ($this->applicationRate !== null)
-            WebmozartAssert::lengthBetween($applicationRate, 2, 50, 'Application rate must be between 2 and 50 characters long. Got %characters');
+        if ($applicationRate !== null)
+            WebmozartAssert::lengthBetween($applicationRate, 2, 50, 'Application rate must be between 2 and 50 characters long.');
 
         $this->applicationRate = $applicationRate;
     }

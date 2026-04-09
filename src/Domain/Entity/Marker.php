@@ -129,6 +129,11 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
 
     private function setDescriptionValidate(?string $description = null): void
     {
+        if (null === $description) {
+            $this->description = null;
+            return;
+        }
+
         WebmozartAssert::lengthBetween($description, 3, 1024, 'Description must be a string valid length of of 3-1024 letters. Got: %s');
 
         $this->description = $description;
@@ -136,6 +141,11 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
 
     private function setColorDescriptionValidate(?string $colorDescription = null): void
     {
+        if (null === $colorDescription) {
+            $this->colorDescription = null;
+            return;
+        }
+
         WebmozartAssert::lengthBetween($colorDescription, 3, 1024, 'Description must be a string valid length of of 3-1024 letters. Got: %s');
 
         $this->colorDescription = $colorDescription;
@@ -205,5 +215,25 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     public function getType(): AttachableType
     {
         return $this->type;
+    }
+
+    public function getWaterings(): Collection
+    {
+        return $this->waterings;
+    }
+
+    public function getFertilizers(): Collection
+    {
+        return $this->fertilizers;
+    }
+
+    public function getPests(): Collection
+    {
+        return $this->pests;
+    }
+
+    public function getStimulants(): Collection
+    {
+        return $this->stimulants;
     }
 }

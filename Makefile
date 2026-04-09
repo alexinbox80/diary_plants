@@ -1,8 +1,16 @@
-test:
-	php bin/phpunit
+test: entity-test model-test vo-test
 
 cli-test:
 	php bin/phpunit tests/Controller/Cli/ConvertCSVCommandTest.php
+
+entity-test:
+	php bin/phpunit tests/Unit/Domain/Entity
+
+model-test:
+	php bin/phpunit tests/Unit/Domain/Model
+
+vo-test:
+	php bin/phpunit tests/Unit/Domain/ValueObject
 
 convert:
 	php bin/console database:convert:csv
