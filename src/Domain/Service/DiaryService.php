@@ -29,13 +29,14 @@ class DiaryService
 
         $groupedData = array_reduce($allUsages, function (array $acc, $marker) {
             $type = $marker->getMarker()->getType();
+            $typeKey = ($type instanceof \BackedEnum) ? $type->value : (string) $type;
 
-            $acc[$type][] = [
+            $acc[$typeKey][] = [
                 'id' => $marker->getId(),
                 'letter' => $marker->getMarker()->getLetter(),
                 'description' => $marker->getDescription(),
                 'color' => $marker->getMarker()->getColor(),
-                'type' => $type,
+                'type' => $typeKey,
             ];
 
             return $acc;
@@ -53,20 +54,23 @@ class DiaryService
     {
         $daysRu = [1 => 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-        if ($year === null && $month === null)
-            $date = new DateTimeImmutable('first day of this month');
-        else
-            $date = new DateTimeImmutable($year . '-' . $month . '-1');
+        if ($year === null || $month === null) {
+            $now = new DateTimeImmutable('now');
+            $year = $year ?? (int)$now->format('Y');
+            $month = $month ?? (int)$now->format('n');
+        }
+
+        $date = new DateTimeImmutable($year . '-' . $month . '-1');
 
         $timezone = new DateTimeZone('Europe/Moscow');
         $currentDay = new DateTimeImmutable()->setTimezone($timezone);
 
-        $daysInMonth = $date->format('t');
+        $daysInMonth = (int) $date->format('t');
 
         $days = [];
         foreach (range(1, $daysInMonth) as $day) {
-            $date = DateTimeImmutable::createFromFormat('j', $day);
-            $index = $date->format('N');
+            $fullDate = new DateTimeImmutable("$year-$month-$day");
+            $index = $fullDate->format('N');
             $days[] = ['num_day' => $day, 'name_day' => $daysRu[$index]];
         }
 
@@ -103,5 +107,4 @@ class DiaryService
             'year' => $year,
         ];
     }
-
 }
