@@ -1,0 +1,44 @@
+{% macro modal_qrlist(items) %}
+    <div class="modal fade" id="qrModal" tabindex="-1" aria-hidden="true" style="top: -1.5rem;">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Реестр растений и QR-кодов</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-margin">
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" style="width: 180px;">QR-код</th>
+                                    <th scope="col">Название растения</th>
+                                    <th scope="col">Комната / Расположение</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% if items is defined %}
+                                {% for item in items %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ asset('uploads/' ~ item.img_qr_code_link) }}" alt="QR" class="img-thumbnail">
+                                    </td>
+                                    <td><strong>{{ item.title }}</strong></td>
+                                    <td>{{ item.room }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pt-3">
+                        <a type="button" class="btn btn-secondary" data-bs-dismiss="modal" href="#">Выгрузить в pdf</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

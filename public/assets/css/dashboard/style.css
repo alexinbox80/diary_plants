@@ -4463,6 +4463,11 @@ progress {
   -webkit-overflow-scrolling: touch;
 }
 
+.modal-margin {
+    padding-right: 64px!important;
+    padding-left: 64px!important;
+}
+
 @media (max-width: 575.98px) {
   .table-responsive-sm {
     overflow-x: auto;

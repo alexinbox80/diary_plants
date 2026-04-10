@@ -3,6 +3,7 @@
 {% import 'macros/dashboard/images.html.twig' as gallery %}
 {% import 'macros/dashboard/modal_delete.html.twig' as modal_del %}
 {% import 'macros/dashboard/marker.html.twig' as icon_tag %}
+{% import 'macros/dashboard/modal_qrlist.html.twig' as qrlist %}
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -16,7 +17,15 @@
                     {% else %}
                         <a href="{{ path(route_pagination) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать записи с пагинацией</a>
                     {% endif %}
-                    <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">Создать</a>
+                    <div class="ms-5 d-flex justify-content-end">
+                        <div class="button">
+                            {% if app.request.attributes.get('_route') starts with 'dashboard.plants' %}
+                                <span id="" class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#qrModal">Лист qr-кодов</span>
+                                {{ qrlist.modal_qrlist(array.table_body) }}
+                            {% endif %}
+                            <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">Создать</a>
+                        </div>
+                    </div>
                 </div>
                 {% if array is defined %}
                     <div class="table-responsive border rounded pt-1">
