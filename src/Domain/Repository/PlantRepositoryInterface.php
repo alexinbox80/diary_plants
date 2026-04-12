@@ -9,6 +9,7 @@ use App\Domain\Model\Plant\PlantModel;
 interface PlantRepositoryInterface
 {
     public function getPlantsPaginated(int $page, int $perPage): array;
+    public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array;
     public function getPlantsCount(): int;
     public function getPlantsForForm(?int $groupId = null): array;
     public function getPlantsForDiary(?int $groupId = null): array;

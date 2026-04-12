@@ -74,6 +74,16 @@ class PlantService
     }
 
     /**
+     * @return PlantModel[]
+     */
+    public function findAllByGroupId(): array
+    {
+        $groupId = 2;
+
+        return $this->plantRepository->findAllWithAttachments($groupId);
+    }
+
+    /**
      * @param string $title
      * @return PlantModel[]
      */
@@ -100,6 +110,19 @@ class PlantService
     public function getPlantsPaginated(int $page, int $perPage): array
     {
         return $this->plantRepository->getPlantsPaginated($page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getPlantsPaginatedByGroupId(int $page, int $perPage): array
+    {
+        $groupId = 2;
+
+        return $this->plantRepository->getPlantsPaginatedByGroupId($page, $perPage, $groupId);
     }
 
     public function getPlantsCount(): int

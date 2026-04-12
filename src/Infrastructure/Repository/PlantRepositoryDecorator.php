@@ -44,6 +44,33 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return array
+     * @return array{plantsModel: plantModel[], pagination: array}
+     * @throws \Exception
+     */
+    public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $plantsPaginated = $this->plantRepository->getPlantsPaginatedByGroupIdWithAttachments($page, $perPage, $groupId);
+
+        if (!is_array($plantsPaginated['items'])) {
+            throw new \InvalidArgumentException('Expected array for plants');
+        }
+
+        $plantsModel = array_map(
+            fn (Plant $plant): PlantModel => $this->toModel($plant, true),
+            $plantsPaginated['items']
+        );
+
+        return [
+            'plantsModel' => $plantsModel,
+            'pagination' => $plantsPaginated['pagination']
+        ];
+    }
+
+    /**
      * @return int
      */
     public function getPlantsCount(): int
@@ -119,9 +146,9 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     /**
      * @return PlantModel[]
      */
-    public function findAllWithAttachments(): array
+    public function findAllWithAttachments(?int $groupId = null): array
     {
-        $plants = $this->plantRepository->findAllWithAttachments();
+        $plants = $this->plantRepository->findAllWithAttachments($groupId);
 
         return array_map(
             fn (Plant $plant): PlantModel => $this->toModel($plant, true),

@@ -75,6 +75,29 @@ class PlantRepository extends AbstractRepository
     /**
      * @param int $page
      * @param int $perPage
+     * @param int|null $groupId
+     * @return Plant[]
+     * @throws \Exception
+     */
+    public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('p.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
      * @return Plant[]
      *
      * @throws \Exception
@@ -82,6 +105,31 @@ class PlantRepository extends AbstractRepository
     public function getPlantsPaginatedWithAttachments(int $page, int $perPage): array
     {
         $result = $this->getPlantsPaginated($page, $perPage);
+
+        if (!isset($result['items'])) {
+            throw new \RuntimeException('Pagination result is missing "items".');
+        }
+
+        if (!is_array($result['items'])) {
+            throw new \InvalidArgumentException('"items" must be an array.');
+        }
+
+        $this->loadAttachmentsForPlants($result['items']);
+
+        return $result;
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return Plant[]
+     *
+     * @throws \Exception
+     */
+    public function getPlantsPaginatedByGroupIdWithAttachments(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $result = $this->getPlantsPaginatedByGroupId($page, $perPage, $groupId);
 
         if (!isset($result['items'])) {
             throw new \RuntimeException('Pagination result is missing "items".');
@@ -108,7 +156,7 @@ class PlantRepository extends AbstractRepository
 
     /**
      * @param int|null $groupId
-     * @return array
+     * @return Plant[]
      */
     public function getPlantsForForm(?int $groupId = null): array
     {
@@ -128,14 +176,13 @@ class PlantRepository extends AbstractRepository
 
     /**
      * @param int|null $groupId
-     * @return array
+     * @return Plant[]
      */
     public function getPlantsForDairy(?int $groupId = null): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder = $this->getBaseQueryBuilder();
 
-        $qb = $queryBuilder->select('p')
-            ->from(Plant::class, 'p')
+        $qb = $queryBuilder
             ->orderBy('p.title', 'ASC');
 
         if ($groupId !== null) {
@@ -170,11 +217,30 @@ class PlantRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
      * @return Plant[]
      */
-    public function findAllWithAttachments(): array
+    public function findAllByGroupId(?int $groupId = null): array
     {
-        $plants = $this->findAll();
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder;
+
+        if ($groupId !== null) {
+            $qb->where('p.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return Plant[]
+     */
+    public function findAllWithAttachments(?int $groupId = null): array
+    {
+        $plants = $this->findAllByGroupId($groupId);
 
         $this->loadAttachmentsForPlants($plants);
 

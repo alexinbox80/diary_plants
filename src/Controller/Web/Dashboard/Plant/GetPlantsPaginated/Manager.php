@@ -20,7 +20,7 @@ class Manager
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
-        $plantsModel = $this->plantService->getPlantsPaginated($page, $perPage);
+        $plantsModel = $this->plantService->getPlantsPaginatedByGroupId($page, $perPage);
         $tableHeader = PlantModel::getTableHeaderRu();
         $tableBody = array_map(
             static fn (PlantModel $model): array => $model->toArray(),

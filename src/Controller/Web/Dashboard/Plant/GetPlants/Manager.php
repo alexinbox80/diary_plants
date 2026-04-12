@@ -18,7 +18,7 @@ class Manager
      */
     public function getPlants(): array
     {
-        $plantsModel = $this->plantService->findAll();
+        $plantsModel = $this->plantService->findAllByGroupId();
         $tableHeader = PlantModel::getTableHeaderRu();
 
         $tableBody = array_map(
