@@ -31,7 +31,14 @@ class PreparationVolumeTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         // Ожидаем исключение, так как 1 символ меньше минимальных 2
-        new PreparationVolume(10, '1');
+        new PreparationVolume(10, '');
+    }
+
+    public function testApplicationRateSingleCharIsValid(): void
+    {
+        // Проверяем, что 1 символ теперь НЕ вызывает ошибку
+        $volume = new PreparationVolume(10, 'l');
+        $this->assertSame('l', $volume->getApplicationRate());
     }
 
     public function testApplicationRateTooLong(): void
