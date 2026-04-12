@@ -1,0 +1,61 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Профиль растения'} %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        <div class="main-panel w-100">
+            <div class="content-wrapper">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Паспорт растения: {{ plant.table_body.title }}</h5>
+                        <span class="badge bg-light text-dark">ID: {{ plant.table_body.id }}</span>
+                    </div>
+
+                    <div class="card-body passport-scroll-container">
+                        {% for key, label in plant.table_header %}
+                            <div class="passport-row">
+                                <div class="passport-label">
+                                    {{ label }}
+                                </div>
+                                <div class="passport-value">
+                                    {% set value = plant.table_body[key] %}
+
+                                    {% if key == 'img_qr_code_link' and value %}
+                                        <a href="{{ asset(value) }}" target="_blank" class="btn btn-sm btn-outline-primary py-0">Смотреть QR</a>
+
+                                    {% elseif key == 'oid' %}
+                                        <code class="small text-muted">{{ value }}</code>
+
+                                    {% elseif key == 'is_shown' or key == 'is_sold' %}
+                                        <span class="badge {{ value == 'Да' ? 'bg-success' : 'bg-secondary' }}">
+                                                {{ value }}
+                                            </span>
+
+                                    {% elseif value is null or value == "" %}
+                                        <span class="text-muted small"><em>не указано</em></span>
+
+                                    {% elseif key == 'img_gallery' %}
+                                        {{ dump(value) }}
+
+                                    {% else %}
+                                        {{ value }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="card-footer text-end">
+                        <small class="text-muted">Обновлено: {{ plant.table_body.updated_at }}</small>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}

@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Storage;
 
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Builder\BuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -127,9 +129,9 @@ class LocalFileStorage
 
         // Используем билдер пакета
         $result = $this->customQrCodeBuilder->build(
-            writer: new \Endroid\QrCode\Writer\PngWriter(),
-            data: $url . '/' . $uuid,
-            encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
+            writer: new PngWriter(),
+            data: $url,
+            encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::Low,
             size: 300,
             margin: 10,

@@ -24,7 +24,7 @@ class PreparationVolume
         $this->amount = $amount;
 
         if ($applicationRate !== null)
-            WebmozartAssert::lengthBetween($applicationRate, 2, 50, 'Application rate must be between 2 and 50 characters long.');
+            WebmozartAssert::lengthBetween($applicationRate, 1, 50, 'Application rate must be between 1 and 50 characters long.');
 
         $this->applicationRate = $applicationRate;
     }

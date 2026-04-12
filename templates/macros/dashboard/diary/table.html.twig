@@ -33,7 +33,7 @@
                     {{ key + 1 }}
                 </td>
                 <td class="align-middle text-center">
-                    <a class="plant-link" href="#">
+                    <a class="plant-link" href={{ path('dashboard.plants.profile', {'uuid': plant.oid}) }}>
                         {{ plant.title }}
                     </a>
                 </td>

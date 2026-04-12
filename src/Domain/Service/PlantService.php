@@ -3,6 +3,7 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Plant;
+use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
 use Psr\Cache\InvalidArgumentException;
@@ -12,6 +13,7 @@ use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\ValueObject\Plant\PurchaseInfo;
 use App\Domain\Repository\PlantRepositoryInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
@@ -22,7 +24,8 @@ class PlantService
         private readonly PlantRepositoryInterface $plantRepository,
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
-        private readonly FileService $fileService
+        private readonly FileService $fileService,
+        private readonly UrlGeneratorInterface $urlGenerator
     ) {
     }
 
@@ -99,6 +102,15 @@ class PlantService
     public function findPlantsByPrice(Price $price): array
     {
         return $this->plantRepository->findPlantsByPrice($price);
+    }
+
+    /**
+     * @param OId $oid
+     * @return PlantModel|null
+     */
+    public function findPlantByUUID(Oid $oid): ?PlantModel
+    {
+        return $this->plantRepository->findPlantByUUID($oid);
     }
 
     /**
@@ -330,7 +342,8 @@ class PlantService
         $path = $this->fileService->getAttachmentsPath('qr-code::class', $plant->getGroup()->getId());
 
         $uuid = $plant->getPlantIdentifier()->getOid()->toString();
-        $link = $this->fileService->getQrCodeLink($path . $plant->getId() . '/', $uuid, $this->webURL . 'dashboard/plant-info');
+        $url = $this->webURL . $this->urlGenerator->generate('dashboard.plants.profile', ['uuid' => $uuid]);
+        $link = $this->fileService->getQrCodeLink($path . $plant->getId() . '/', $uuid, $url);
 
         $plant->changePlantIdentifier(
             $plant->getPlantIdentifier()->withQrCodeLink($link)

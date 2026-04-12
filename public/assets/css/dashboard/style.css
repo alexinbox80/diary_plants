@@ -4468,6 +4468,49 @@ progress {
     padding-left: 64px!important;
 }
 
+
+
+
+
+/* Вертикальный свиток для всей карточки */
+.passport-scroll-container {
+    max-height: 600px; /* Высота свитка */
+    overflow-y: auto;
+    padding-right: 10px; /* Отступ для полосы прокрутки */
+}
+
+/* Стилизация строк для имитации таблицы */
+.passport-row {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    transition: background-color 0.2s;
+}
+.passport-row:hover {
+    background-color: #f9f9f9;
+}
+.passport-label {
+    font-weight: 600;
+    color: #495057;
+    width: 40%; /* Ширина названий полей */
+}
+.passport-value {
+    width: 60%;
+    color: #212529;
+    word-break: break-word; /* Чтоб длинные UUID не вылезали */
+}
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 575.98px) {
   .table-responsive-sm {
     overflow-x: auto;

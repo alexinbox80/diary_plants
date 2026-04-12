@@ -3,8 +3,9 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Entity\Attachment;
+use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
+use App\Domain\Entity\Attachment;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\PlantRepositoryInterface;
@@ -182,6 +183,17 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             fn (Plant $plant): PlantModel => $this->toModel($plant),
             $plants
         );
+    }
+
+    /**
+     * @param Oid $oid
+     * @return ?PlantModel
+     */
+    public function findPlantByUUID(Oid $oid): ?PlantModel
+    {
+        $plant = $this->plantRepository->findPlantByUUID($oid);
+
+        return $plant ? $this->toModel($plant, true) : null;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
 use Doctrine\ORM\QueryBuilder;
+use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
@@ -271,6 +272,19 @@ class PlantRepository extends AbstractRepository
             ->setParameter('price', $price)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Oid $oid
+     * @return null|Plant
+     */
+    public function findPlantByUUID(Oid $oid): ?Plant
+    {
+        return $this->getBaseQueryBuilder()
+            ->andWhere('p.plantIdentifier.oid = :oid')
+            ->setParameter('oid', $oid->toString())
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

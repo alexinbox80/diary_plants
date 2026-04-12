@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controller\Web\Dashboard\Plant\GetPlants;
+namespace App\Controller\Web\Dashboard\Plant\ProfilePlant;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Controller extends AbstractController
@@ -14,19 +15,25 @@ class Controller extends AbstractController
     ) {
     }
 
-    #[Route(path: '/dashboard/plants', name: 'dashboard.plants.index', methods: ['GET'])]
-    public function __invoke(Request $request): Response
+    #[Route(
+        path: '/dashboard/plants/{uuid}/profile',
+        name: 'dashboard.plants.profile',
+        requirements: ['uuid' => Requirement::UUID_V4],
+        methods: ['GET']
+    )]
+    public function __invoke(Request $request, string $uuid): Response
     {
         //перед вызовом контроллера редактирования установить переменную сессии
         $request->getSession()->set('_previous_route', $request->getRequestUri());
 
-        $plantsModel = $this->manager->getPlants();
-        $plants = ['table_header' => $plantsModel['tableHeader'], 'table_body' => $plantsModel['tableBody']];
+        $plantModel = $this->manager->getPlantProfile($uuid);
+
+        $plant = ['table_header' => $plantModel['tableHeader'], 'table_body' => $plantModel['tableBody']];
 
         return $this->render(
-            'dashboard/plant/index.html.twig',
+            'dashboard/plant/profile.html.twig',
             [
-                'plants' => $plants,
+                'plant' => $plant,
             ]
         );
     }
