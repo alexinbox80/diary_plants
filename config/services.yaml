@@ -16,6 +16,10 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    _instanceof:
+        App\Domain\Service\Csv\Import\EntityImporterInterface:
+            tags: [ 'app.entity_importer' ]
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -30,11 +34,6 @@ services:
         arguments:
             $csvFilePrefix: '%csvFilePrefix%'
 
-    App\Domain\Service\CsvService:
-        arguments:
-            $csvSeparator: '%csvSeparator%'
-            $csvImageFilePrefix: '%csvImageFilePrefix%'
-
     App\Domain\Service\PlantService:
         arguments:
             $webURL: '%webURL%'
@@ -42,3 +41,15 @@ services:
     App\Infrastructure\Storage\LocalFileStorage:
         arguments:
             $uploadDirectory: '%uploadDirectory%'
+
+    App\Domain\Service\Csv\Import\AttachmentImporter:
+        arguments:
+            $csvImageFilePrefix: '%csvImageFilePrefix%'
+
+    # Настраиваем основной сервис CsvService
+    App\Domain\Service\Csv\CsvService:
+        arguments:
+            # Передаем все сервисы, помеченные этим тегом
+            $importers: !tagged_iterator app.entity_importer
+            # Ваши строковые параметры из параметров приложения
+            $csvSeparator: '%csvSeparator%'

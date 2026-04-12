@@ -2,19 +2,19 @@
 
 namespace App\Domain\Service;
 
-use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
-use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Domain\Entity\User;
+use InvalidArgumentException;
+use App\Domain\Model\User\UserModel;
+use App\Domain\ValueObject\User\Name;
+use App\Domain\ValueObject\User\Email;
+use App\Domain\ValueObject\User\Phone;
+use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
-use App\Domain\Model\User\UserModel;
 use App\Domain\Repository\UserRepositoryInterface;
-use App\Domain\ValueObject\Enum\UserRole;
-use App\Domain\ValueObject\User\Email;
-use App\Domain\ValueObject\User\Name;
-use App\Domain\ValueObject\User\Phone;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
+use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 

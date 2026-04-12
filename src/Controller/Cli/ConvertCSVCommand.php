@@ -2,10 +2,9 @@
 
 namespace App\Controller\Cli;
 
-use App\Domain\Service\CsvService;
-use App\Domain\Service\PlantService;
-use Symfony\Component\Console\Attribute\AsCommand;
+use App\Domain\Service\Csv\CsvService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,8 +16,7 @@ final class ConvertCSVCommand extends Command
 
     public function __construct(
         private readonly string $csvFilePrefix,
-        private readonly CsvService $csvService,
-        private readonly PlantService $plantService
+        private readonly CsvService $csvService
     )
     {
         parent::__construct();
@@ -26,8 +24,7 @@ final class ConvertCSVCommand extends Command
 
     protected function configure(): void
     {
-        $this//->setName(self::CONVERT_CSV_COMMAND_NAME)
-            ->setDescription(self::CONVERT_CSV_DESCRIPTION);
+        $this->setDescription(self::CONVERT_CSV_DESCRIPTION);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
