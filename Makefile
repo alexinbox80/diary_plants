@@ -1,7 +1,4 @@
-test: entity-test model-test vo-test service-test
-
-cli-test:
-	php bin/phpunit tests/Controller/Cli/ConvertCSVCommandTest.php
+test: entity-test model-test vo-test service-test cli-test form-test web-test func-test
 
 entity-test:
 	php bin/phpunit tests/Unit/Domain/Entity
@@ -14,6 +11,18 @@ vo-test:
 
 service-test:
 	php bin/phpunit tests/Unit/Domain/Service
+
+cli-test:
+	php bin/phpunit tests/Unit/Controller/Cli
+
+form-test:
+	php bin/phpunit tests/Unit/Controller/Form
+
+web-test:
+	php bin/phpunit tests/Unit/Controller/Web/Dashboard
+
+func-test:
+	php bin/phpunit tests/Functional/Controller/Web/Dashboard
 
 convert:
 	php bin/console database:convert:csv

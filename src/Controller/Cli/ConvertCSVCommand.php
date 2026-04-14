@@ -29,8 +29,12 @@ final class ConvertCSVCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $count = 0;
         $output->write(sprintf("<info> Run command %s </info>\n", self::CONVERT_CSV_COMMAND_NAME ));
+
+        if (!is_dir($this->csvFilePrefix)) {
+            $output->writeln(sprintf("<error>Директория не найдена: %s</error>", $this->csvFilePrefix));
+            return Command::FAILURE;
+        }
 
         // Get all entries (files and directories)
         $allEntries = scandir($this->csvFilePrefix);
@@ -39,6 +43,7 @@ final class ConvertCSVCommand extends Command
         $files = array_diff($allEntries, array('.', '..'));
 
         // Print the list of files
+        $count = 0;
         foreach ($files as $file) {
             $count = $this->csvService->process($this->csvFilePrefix . $file);
 
