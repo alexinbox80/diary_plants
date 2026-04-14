@@ -1,6 +1,6 @@
 PHPUNIT = php bin/phpunit
 
-test: entity-test model-test vo-test service-test cli-test form-test web-test infra-test func-test
+test: entity-test model-test vo-test service-test cli-test form-test web-test infra-test func-test repo-test
 
 entity-test:
 	@echo "--- Running Entity Tests ---"
@@ -37,3 +37,7 @@ func-test:
 infra-test:
 	@echo "--- Running Unit Tests from Infrastructure ---"
 	$(PHPUNIT) tests/Unit/Infrastructure
+
+repo-test:
+	@echo "--- Running Integration Repository Tests ---"
+	$(PHPUNIT) tests/Integration/Infrastructure/Repository

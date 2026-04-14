@@ -78,3 +78,6 @@ php bin/console --env=test doctrine:database:create
 
 #Накатить миграции
 php bin/console --env=test doctrine:migrations:migrate --no-interaction
+
+#Check test environment
+php bin/console debug:dotenv --env=test | grep DATABASE_URL
