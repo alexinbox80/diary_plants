@@ -4,12 +4,13 @@
 include make/tests.mk
 
 # Переменные для удобства (можно вынести в .env или оставить здесь)
-DOCKER_BIN = /usr/local/bin/docker
-PHP_CONT   = dplants_php-fpm
-EXEC_PHP   = $(DOCKER_BIN) exec -it -u www-data $(PHP_CONT)
+DOCKER_BIN  = /usr/local/bin/docker
+PHP_CONT    = dplants_php-fpm
+EXEC_PHP    = $(DOCKER_BIN) exec -it -u www-data $(PHP_CONT)
+PHP_CONSOLE = php bin/console
 
 convert:
-	php bin/console database:convert:csv
+	$(PHP_CONSOLE) database:convert:csv
 
 php-shell:
 	$(EXEC_PHP) bash
