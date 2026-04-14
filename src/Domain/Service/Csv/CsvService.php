@@ -45,9 +45,9 @@ class CsvService
     private function convertCsv(string $filePath): Generator
     {
         $handle = fopen($filePath, 'rb');
-        $headers = fgetcsv($handle, 0, $this->csvSeparator);
+        $headers = fgetcsv($handle, 0, $this->csvSeparator, '"', '');
 
-        while (($row = fgetcsv($handle, 0, $this->csvSeparator)) !== false) {
+        while (($row = fgetcsv($handle, 0, $this->csvSeparator, '"', '')) !== false) {
             // Пропускаем пустые строки
             if ($row === [null] || empty($row)) {
                 continue;
