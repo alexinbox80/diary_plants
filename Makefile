@@ -24,3 +24,6 @@ umount_storage:
 
 clear_storage:
 	$(EXEC_PHP) rm -rf /app/storage/attachments/*
+
+docker-test:
+	$(EXEC_PHP) make test
