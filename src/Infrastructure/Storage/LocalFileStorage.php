@@ -73,7 +73,8 @@ class LocalFileStorage
         if ($moveFlag) {
             return $uploadedFile->move($directory, $fileName);
         } else {
-            copy($uploadedFile->getRealPath(), $directory . '/' . $fileName);
+            //copy($uploadedFile->getRealPath(), $directory . '/' . $fileName);
+            copy($uploadedFile->getPathname(), $directory . '/' . $fileName);
 
             return new File($directory . '/' . $fileName);
         }

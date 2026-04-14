@@ -72,3 +72,9 @@ php bin/console debug:container --tag=console.command
 
 #Registered Listeners for "kernel.controller" Event
 php bin/console debug:event-dispatcher kernel.controller
+
+#Создать базу данных для тестов
+php bin/console --env=test doctrine:database:create
+
+#Накатить миграции
+php bin/console --env=test doctrine:migrations:migrate --no-interaction

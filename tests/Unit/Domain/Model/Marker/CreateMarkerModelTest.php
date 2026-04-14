@@ -47,7 +47,7 @@ class CreateMarkerModelTest extends KernelTestCase
         );
 
         $errors = $this->validator->validate($model);
-        $this->assertGreaterThan(0, $errors);
+        $this->assertGreaterThan(0, count($errors));
         $this->assertEquals('letter', $errors[0]->getPropertyPath());
         $this->assertEquals('Letter must be exactly one character long.', $errors[0]->getMessage());
     }
@@ -65,7 +65,7 @@ class CreateMarkerModelTest extends KernelTestCase
         );
 
         $errors = $this->validator->validate($model);
-        $this->assertGreaterThan(0, $errors);
+        $this->assertGreaterThan(0, count($errors));
         $this->assertEquals('color', $errors[0]->getPropertyPath());
     }
 

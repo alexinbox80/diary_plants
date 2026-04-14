@@ -1,42 +1,26 @@
-test: entity-test model-test vo-test service-test cli-test form-test web-test func-test
+-include Makefile.local
 
-entity-test:
-	php bin/phpunit tests/Unit/Domain/Entity
+# Makefile with test
+include make/tests.mk
 
-model-test:
-	php bin/phpunit tests/Unit/Domain/Model
-
-vo-test:
-	php bin/phpunit tests/Unit/Domain/ValueObject
-
-service-test:
-	php bin/phpunit tests/Unit/Domain/Service
-
-cli-test:
-	php bin/phpunit tests/Unit/Controller/Cli
-
-form-test:
-	php bin/phpunit tests/Unit/Controller/Form
-
-web-test:
-	php bin/phpunit tests/Unit/Controller/Web/Dashboard
-
-func-test:
-	php bin/phpunit tests/Functional/Controller/Web/Dashboard
+# Переменные для удобства (можно вынести в .env или оставить здесь)
+DOCKER_BIN = /usr/local/bin/docker
+PHP_CONT   = dplants_php-fpm
+EXEC_PHP   = $(DOCKER_BIN) exec -it -u www-data $(PHP_CONT)
 
 convert:
 	php bin/console database:convert:csv
 
 php-shell:
-	/usr/local/bin/docker exec -it -u www-data dplants_php-fpm bash
+	$(EXEC_PHP) bash
 
 mount_storage:
-	/usr/local/bin/docker exec -it -u www-data dplants_php-fpm mkdir -p /app/storage/attachments
-	/usr/local/bin/docker exec -it -u www-data dplants_php-fpm ln -s /app/storage/attachments /app/public/uploads/attachments
-	/usr/local/bin/docker exec -it -u www-data dplants_php-fpm cp -r /app/public/uploads/.gitignore /app/storage/
+	$(EXEC_PHP) mkdir -p /app/storage/attachments
+	$(EXEC_PHP) ln -s /app/storage/attachments /app/public/uploads/attachments
+	$(EXEC_PHP) cp -r /app/public/uploads/.gitignore /app/storage/
 
 umount_storage:
-	/usr/local/bin/docker exec -it -u www-data dplants_php-fpm rm -rf /app/public/uploads/attachments
+	$(EXEC_PHP) rm -rf /app/public/uploads/attachments
 
 clear_storage:
-	/usr/local/bin/docker exec -it -u www-data dplants_php-fpm rm -rf /app/storage/attachments/*
+	$(EXEC_PHP) rm -rf /app/storage/attachments/*

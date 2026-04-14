@@ -47,7 +47,7 @@ class UpdateMarkerModelTest extends KernelTestCase
         );
 
         $errors = $this->validator->validate($model);
-        $this->assertGreaterThan(0, $errors);
+        $this->assertGreaterThan(0, count($errors));
         $this->assertEquals('letter', $errors[0]->getPropertyPath());
     }
 
@@ -64,7 +64,7 @@ class UpdateMarkerModelTest extends KernelTestCase
         );
 
         $errors = $this->validator->validate($model);
-        $this->assertGreaterThan(0, $errors);
+        $this->assertGreaterThan(0, count($errors));
         $this->assertEquals('color', $errors[0]->getPropertyPath());
     }
 

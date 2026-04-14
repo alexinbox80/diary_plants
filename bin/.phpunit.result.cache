@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"App\\Tests\\Unit\\Domain\\Entity\\AttachmentTest::constructorInitializesCorrectly":0.004,"App\\Tests\\Unit\\Domain\\Entity\\AttachmentTest::updateMethods":0.001,"App\\Tests\\Unit\\Domain\\Entity\\AttachmentTest::moveToGroup":0,"App\\Tests\\Unit\\Domain\\Entity\\AttachmentTest::getIdThrowsExceptionWhenNull":0.004}}
