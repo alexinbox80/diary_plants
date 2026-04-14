@@ -50,8 +50,21 @@ final class Price
 
     public static function fromString(string $value): self
     {
-        [$amount, $currency] = explode(' ', $value);
+        $parts = explode(' ', trim($value));
 
-        return new self((int) $amount, Currency::tryFrom($currency));
+        // Проверяем, что есть и число, и валюта
+        if (count($parts) !== 2) {
+            throw new \InvalidArgumentException(sprintf('Wrong price format: "%s". Expected "100 RUR"', $value));
+        }
+
+        [$amount, $currencyStr] = $parts;
+
+        $currency = Currency::tryFrom($currencyStr);
+
+        if (null === $currency) {
+            throw new \InvalidArgumentException(sprintf('Unknown currency: "%s"', $currencyStr));
+        }
+
+        return new self((int) $amount, $currency);
     }
 }
