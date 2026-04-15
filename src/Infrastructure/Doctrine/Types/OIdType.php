@@ -5,6 +5,7 @@ namespace App\Infrastructure\Doctrine\Types;
 use Doctrine\DBAL\Types\Type;
 use InvalidArgumentException;
 use App\Domain\ValueObject\OId;
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Platforms\MySQL80Platform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -64,6 +65,10 @@ final class OIdType extends Type
                 'length' => 16,
                 'fixed'  => true,
             ]);
+        }
+
+        if ($platform instanceof SQLitePlatform) {
+            return $platform->getIntegerTypeDeclarationSQL($column);
         }
 
         throw new \RuntimeException('Unsupported platform');
