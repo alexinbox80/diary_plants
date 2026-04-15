@@ -9,11 +9,24 @@
         <div class="main-panel w-100">
             <div class="content-wrapper">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Паспорт растения: {{ plant.table_body.title }}</h5>
-                        <span class="badge bg-light text-dark">ID: {{ plant.table_body.id }}</span>
-                    </div>
+                    <div class="card-header bg-success text-white d-flex justify-content-between">
+                        <div class="d-flex justify-content-between align-items-center w-25">
+                            <h5 class="mb-0">Паспорт растения: апельсин</h5>
+                            <span class="badge bg-light text-dark">ID: 19</span>
+                        </div>
 
+                        <button type="button"
+                                class="btn-close btn-close-white"
+                                aria-label="Close"
+                                onclick="history.back()"
+                                title="Назад">
+                        </button>
+                    </div>
+                    {{ dump(plant.table_body.usages) }}
+                    <br><br>
+                    {{ dump(plant.table_body.offsprings) }}
+                    <br><br>
+                    {{ dump(plant.table_body.repottings) }}
                     <div class="card-body passport-scroll-container">
                         {% for key, label in plant.table_header %}
                             <div class="passport-row">
@@ -48,7 +61,12 @@
                         {% endfor %}
                     </div>
 
-                    <div class="card-footer text-end">
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <button type="button"
+                                class="btn btn-secondary btn-sm"
+                                onclick="history.back()">
+                            Закрыть
+                        </button>
                         <small class="text-muted">Обновлено: {{ plant.table_body.updated_at }}</small>
                     </div>
                 </div>

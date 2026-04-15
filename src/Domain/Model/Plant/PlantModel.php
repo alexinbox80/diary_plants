@@ -201,6 +201,30 @@ class PlantModel implements AttachableModelInterface
     }
 
     /**
+     * Группирует массив по типам и оставляет только 2 последних события по дате
+     */
+    private function getLastTwoByType(array $data): array
+    {
+        $grouped = [];
+
+        // 1. Группируем элементы по полю usable_type
+        foreach ($data as $item) {
+            $grouped[$item['usable_type']][] = $item;
+        }
+
+        // 2. Обрабатываем каждую группу отдельно
+        return array_map(function(array $group) {
+            // Сортируем внутри группы по дате (от старых к новым)
+            usort($group, function($a, $b) {
+                return strtotime($a['use_date']) <=> strtotime($b['use_date']);
+            });
+
+            // Берем 2 последних элемента
+            return array_slice($group, -2);
+        }, $grouped);
+    }
+
+    /**
      * @param Plant $plant
      * @param array $attachmentModels
      * @param GroupModel|null $groupModel
@@ -287,6 +311,14 @@ class PlantModel implements AttachableModelInterface
         $filtered = array_filter($this->getAttachment(), fn ($attachment) => $attachment->getMimeType() !== null);
         $imgGallery = array_map(fn ($attachment) => $attachment->toArray(), $filtered);
 
+        $usages = array_map(fn(UsageModel $u) => $u->toArray(), $this->getUsage());
+        if (!empty($usages)) {
+            $usages = $this->getLastTwoByType($usages);
+        }
+
+        $offsprings = array_map(fn(OffspringModel $o) => $o->toArray(), $this->getOffspring());
+        $repottings = array_map(fn(RepottingModel $r) => $r->toArray(), $this->getRepotting());
+
         return [
             'id' => $this->getId(),
             'group_id' => $this->getGroupId(),
@@ -311,9 +343,9 @@ class PlantModel implements AttachableModelInterface
             'selling_date' => $this->getSellingDate()?->setTimezone($timezone)->format('d.m.Y'),
             'selling_price' => $this->getSellingPrice()?->toString(),
             'comment' => $this->getComment(),
-            'usages' => array_map(fn(UsageModel $u) => $u->toArray(), $this->getUsage()),
-            'offsprings' => array_map(fn(OffspringModel $o) => $o->toArray(), $this->getOffspring()),
-            'repottings' => array_map(fn(RepottingModel $r) => $r->toArray(), $this->getRepotting()),
+            'usages' => $usages,
+            'offsprings' => $offsprings,
+            'repottings' => $repottings,
             'attachment' => $this->getAttachment(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),

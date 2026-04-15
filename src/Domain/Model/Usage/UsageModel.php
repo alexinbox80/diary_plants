@@ -124,7 +124,7 @@ class UsageModel
             'plant_id' => 'Идентификатор растения',
             'plant_title' => 'Растение',
             'usable_id' => 'ID сущности',
-            'usable_type' => 'Тип сущности',
+            'usable_name' => 'Тип сущности',
             'comment' => 'Коментарии',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления'
@@ -146,7 +146,8 @@ class UsageModel
             'plant_id' => $this->getPlantId(),
             'plant_title' => $this->getPlant()?->getTitle(),
             'usable_id' => $this->getUsableId(),
-            'usable_type' => AttachableType::getLabel($this->getUsableType()),
+            'usable_name' => AttachableType::getLabel($this->getUsableType()),
+            'usable_type' => $this->getUsableType(),
             'comment' => $this->getComment(),
             'attachable' => $this->getAttachable(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
