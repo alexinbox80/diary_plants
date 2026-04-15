@@ -12,15 +12,18 @@ use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 class PlantRepository extends AbstractRepository
 {
     private AttachmentRepository $attachmentRepository;
+    private OffspringRepository $offspringRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         AttachmentRepository $attachmentRepository,
+        OffspringRepository $offspringRepository
     )
     {
         parent::__construct($entityManager);
 
         $this->attachmentRepository = $attachmentRepository;
+        $this->offspringRepository = $offspringRepository;
     }
 
     /**
@@ -280,11 +283,28 @@ class PlantRepository extends AbstractRepository
      */
     public function findPlantByUUID(Oid $oid): ?Plant
     {
-        return $this->getBaseQueryBuilder()
+        $result = $this->getBaseQueryBuilder()
+            ->leftJoin('p.usages', 'u')
+            ->addSelect('u')
+            ->leftJoin('p.offsprings', 'o')
+            ->addSelect('o')
+            ->leftJoin('p.repottings', 'r')
+            ->addSelect('r')
             ->andWhere('p.plantIdentifier.oid = :oid')
             ->setParameter('oid', $oid->toString())
             ->getQuery()
             ->getOneOrNullResult();
+
+        if ($result !== null) {
+            $this->loadAttachmentsForPlants([$result]);
+
+            $offsprings = $result->getOffsprings()->toArray();
+            if (!empty($offsprings)) {
+                $this->offspringRepository->loadAttachmentsForOffsprings($offsprings);
+            }
+        }
+
+        return $result;
     }
 
     /**

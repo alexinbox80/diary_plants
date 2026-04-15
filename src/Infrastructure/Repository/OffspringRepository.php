@@ -25,7 +25,7 @@ class OffspringRepository extends AbstractRepository
      * Инкапсулирует логику загрузки и распределения вложений
      * @param Offspring[] $offsprings
      */
-    private function loadAttachmentsForOffsprings(array $offsprings): void
+    public function loadAttachmentsForOffsprings(array $offsprings): void
     {
         if (empty($offsprings)) return;
 
