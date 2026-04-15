@@ -94,7 +94,7 @@ class RepottingModel
      * @param PlantModel|null $plantModel
      * @return RepottingModel
      */
-    static function fromEntity(Repotting $repotting, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): self
+    public static function fromEntity(Repotting $repotting, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null): self
     {
         return new self(
             $repotting->getId(),

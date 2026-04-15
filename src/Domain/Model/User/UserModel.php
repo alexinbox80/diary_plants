@@ -139,7 +139,7 @@ class UserModel
      * @param GroupModel|null $groupModel
      * @return UserModel
      */
-    static function fromEntity(User $user, ?GroupModel $groupModel = null): self
+    public static function fromEntity(User $user, ?GroupModel $groupModel = null): self
     {
         return new self(
             $user->getId(),

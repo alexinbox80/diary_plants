@@ -4,6 +4,7 @@ namespace App\Domain\Model\Offspring;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\Entity\Offspring;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -102,6 +103,34 @@ class OffspringModel implements AttachableModelInterface
     public function getUpdatedAt(): DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Offspring $offspring
+     * @param array $attachmentModels
+     * @param PlantModel|null $plantModel
+     * @param GroupModel|null $groupModel
+     * @return OffspringModel
+     */
+    public static function fromEntity(Offspring $offspring, array $attachmentModels = [], ?PlantModel $plantModel = null, ?GroupModel $groupModel = null): self
+    {
+        return new self(
+            $offspring->getId(),
+            $offspring->getGroup()->getId(),
+            $offspring->getPlant()->getId(),
+            $attachmentModels,
+            $offspring->getPhenology()->getFruitingDate(),
+            $offspring->getPhenology()->getFloweringDate(),
+            $offspring->getFruitMetrics()->getMass(),
+            $offspring->getFruitMetrics()->getColor(),
+            $offspring->getFruitMetrics()->getFlavor(),
+            $offspring->getFruitMetrics()->getQuantity(),
+            $offspring->getComment(),
+            $plantModel,
+            $groupModel,
+            $offspring->getCreatedAt(),
+            $offspring->getUpdatedAt()
+        );
     }
 
     public static function getTableHeaderRu(): array

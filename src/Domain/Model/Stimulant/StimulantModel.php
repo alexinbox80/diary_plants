@@ -99,7 +99,7 @@ class StimulantModel implements AttachableModelInterface
      * @param MarkerModel|null $markerModel
      * @return StimulantModel
      */
-    static function fromEntity(Stimulant $stimulant, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    public static function fromEntity(Stimulant $stimulant, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
     {
         return new self(
             $stimulant->getId(),

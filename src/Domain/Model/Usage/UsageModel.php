@@ -95,7 +95,7 @@ class UsageModel
      * @param AttachableModelInterface|null $attachableModel
      * @return UsageModel
      */
-    static function fromEntity(Usage $usage, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null, ?AttachableModelInterface $attachableModel = null): self
+    public static function fromEntity(Usage $usage, ?GroupModel $groupModel = null, ?PlantModel $plantModel = null, ?AttachableModelInterface $attachableModel = null): self
     {
         return new self(
             $usage->getId(),
@@ -144,7 +144,7 @@ class UsageModel
             'group_title' => $this->getGroup()?->getTitle(),
             'use_date' => $this->getUseDate()->setTimezone($timezone)->format('d.m.Y'),
             'plant_id' => $this->getPlantId(),
-            'plant_title' => $this->getPlant()->getTitle(),
+            'plant_title' => $this->getPlant()?->getTitle(),
             'usable_id' => $this->getUsableId(),
             'usable_type' => AttachableType::getLabel($this->getUsableType()),
             'comment' => $this->getComment(),

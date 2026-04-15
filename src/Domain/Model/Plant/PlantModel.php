@@ -8,6 +8,9 @@ use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Model\Offspring\OffspringModel;
+use App\Domain\Model\Repotting\RepottingModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
@@ -37,6 +40,9 @@ class PlantModel implements AttachableModelInterface
         private readonly ?Price $sellingPrice = null,
         private readonly ?string $comment = null,
         private readonly ?GroupModel $group = null,
+        private readonly array $usage = [],
+        private readonly array $offspring = [],
+        private readonly array $repotting = [],
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -160,6 +166,30 @@ class PlantModel implements AttachableModelInterface
         return $this->group;
     }
 
+    /**
+     * @return UsageModel[]
+     */
+    public function getUsage(): array
+    {
+        return $this->usage;
+    }
+
+    /**
+     * @return OffspringModel[]
+     */
+    public function getOffspring(): array
+    {
+        return $this->offspring;
+    }
+
+    /**
+     * @return RepottingModel[]
+     */
+    public function getRepotting(): array
+    {
+        return $this->repotting;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -174,12 +204,18 @@ class PlantModel implements AttachableModelInterface
      * @param Plant $plant
      * @param array $attachmentModels
      * @param GroupModel|null $groupModel
+     * @param UsageModel[] $usageModels
+     * @param OffspringModel[] $offspringModels
+     * @param RepottingModel[] $repottingModels
      * @return PlantModel
      */
     public static function fromEntity(
         Plant $plant,
         array $attachmentModels = [],
-        ?GroupModel $groupModel = null
+        ?GroupModel $groupModel = null,
+        array $usageModels = [],
+        array $offspringModels = [],
+        array $repottingModels = []
     ): self {
         return new self(
             $plant->getId(),
@@ -205,6 +241,9 @@ class PlantModel implements AttachableModelInterface
             $plant->getSalesInfo()->getSellingPrice(),
             $plant->getComment(),
             $groupModel,
+            $usageModels,
+            $offspringModels,
+            $repottingModels,
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );
@@ -264,7 +303,7 @@ class PlantModel implements AttachableModelInterface
             'planting_date' => $this->getPlantingDate()?->setTimezone($timezone)->format('d.m.Y'),
             'seller' => $this->getSeller(),
             'nursery' => $this->getNursery(),
-            'price' => $this->price?->toString(),
+            'price' => $this->getPrice()?->toString(),
             'shipping_cost' => $this->getShippingCost()?->toString(),
             'packaging_cost' => $this->getPackagingCost()?->toString(),
             'soil' => $this->getSoil(),
@@ -272,6 +311,9 @@ class PlantModel implements AttachableModelInterface
             'selling_date' => $this->getSellingDate()?->setTimezone($timezone)->format('d.m.Y'),
             'selling_price' => $this->getSellingPrice()?->toString(),
             'comment' => $this->getComment(),
+            'usages' => array_map(fn(UsageModel $u) => $u->toArray(), $this->getUsage()),
+            'offsprings' => array_map(fn(OffspringModel $o) => $o->toArray(), $this->getOffspring()),
+            'repottings' => array_map(fn(RepottingModel $r) => $r->toArray(), $this->getRepotting()),
             'attachment' => $this->getAttachment(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),

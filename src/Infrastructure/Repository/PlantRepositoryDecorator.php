@@ -3,10 +3,17 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
+use App\Domain\Entity\Usage;
 use App\Domain\ValueObject\OId;
+use App\Domain\Entity\Offspring;
+use App\Domain\Entity\Repotting;
 use App\Domain\ValueObject\Price;
 use App\Domain\Entity\Attachment;
+use Doctrine\ORM\PersistentCollection;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Model\Repotting\RepottingModel;
+use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\PlantRepositoryInterface;
 
@@ -14,7 +21,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
 {
     public function __construct(
         private readonly GroupRepositoryDecorator $groupRepository,
-        private readonly PlantRepository $plantRepository
+        private readonly PlantRepository $plantRepository,
     ) {
     }
 
@@ -231,6 +238,9 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     {
         $attachmentModels = [];
         $groupModel = null;
+        $offspringModels = [];
+        $repottingModels = [];
+        $usageModels = [];
 
         if ($addRelations) {
             if ($plant->getLoadedAttachments()) {
@@ -241,8 +251,44 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             }
 
             $groupModel = $this->groupRepository->toModel($plant->getGroup());
+
+            $usages = $plant->getUsages();
+            if ($usages instanceof PersistentCollection && $usages->isInitialized() && !$usages->isEmpty()) {
+                $usageModels = array_map(
+                    fn (Usage $usage): UsageModel => UsageModel::fromEntity($usage),
+                    $usages->toArray()
+                );
+            }
+
+            $offsprings = $plant->getOffsprings();
+            if ($offsprings instanceof PersistentCollection && $offsprings->isInitialized() && !$offsprings->isEmpty()) {
+                $offspringModels = array_map(
+                    function (Offspring $offspring): OffspringModel {
+                        // 1. Сначала превращаем сущности Attachment в модели AttachmentModel
+                        $attachmentModels = array_map(
+                            fn (Attachment $attachment): AttachmentModel => AttachmentModel::fromEntity($attachment),
+                            $offspring->getLoadedAttachments()
+                        );
+
+                        // 2. Передаем полученный массив вторым аргументом в fromEntity
+                        return OffspringModel::fromEntity(
+                            $offspring,
+                            $attachmentModels
+                        );
+                    },
+                    $offsprings->toArray()
+                );
+            }
+
+            $repottings = $plant->getRepottings();
+            if ($repottings instanceof PersistentCollection && $repottings->isInitialized() && !$repottings->isEmpty()) {
+                $repottingModels = array_map(
+                    fn (Repotting $repotting): RepottingModel => RepottingModel::fromEntity($repotting),
+                    $repottings->toArray()
+                );
+            }
         }
 
-        return PlantModel::fromEntity($plant, $attachmentModels, $groupModel);
+        return PlantModel::fromEntity($plant, $attachmentModels, $groupModel, $usageModels, $offspringModels, $repottingModels);
     }
 }

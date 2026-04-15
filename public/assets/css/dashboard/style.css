@@ -4473,11 +4473,11 @@ progress {
 
 
 /* Вертикальный свиток для всей карточки */
-.passport-scroll-container {
-    max-height: 600px; /* Высота свитка */
-    overflow-y: auto;
-    padding-right: 10px; /* Отступ для полосы прокрутки */
-}
+/*.passport-scroll-container {*/
+/*    max-height: 600px; !* Высота свитка *!*/
+/*    overflow-y: auto;*/
+/*    padding-right: 10px; !* Отступ для полосы прокрутки *!*/
+/*}*/
 
 /* Стилизация строк для имитации таблицы */
 .passport-row {
@@ -4492,10 +4492,10 @@ progress {
 .passport-label {
     font-weight: 600;
     color: #495057;
-    width: 40%; /* Ширина названий полей */
+    width: 25%; /* Ширина названий полей */
 }
 .passport-value {
-    width: 60%;
+    width:75%;
     color: #212529;
     word-break: break-word; /* Чтоб длинные UUID не вылезали */
 }

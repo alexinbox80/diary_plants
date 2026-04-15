@@ -117,7 +117,7 @@ class AttachmentModel
      * @param AttachableModelInterface|null $attachableModel
      * @return AttachmentModel
      */
-    static function fromEntity(
+    public static function fromEntity(
         Attachment $attachment,
         ?GroupModel $groupModel = null,
         ?AttachableModelInterface $attachableModel = null

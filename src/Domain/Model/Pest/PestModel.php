@@ -99,7 +99,7 @@ class PestModel implements AttachableModelInterface
      * @param MarkerModel|null $markerModel
      * @return PestModel
      */
-    static function fromEntity(Pest $pest, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    public static function fromEntity(Pest $pest, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
     {
         return new self(
             $pest->getId(),

@@ -79,7 +79,7 @@ class MarkerModel
      * @param GroupModel|null $groupModel
      * @return MarkerModel
      */
-    static function fromEntity(Marker $marker, ?GroupModel $groupModel = null): self
+    public static function fromEntity(Marker $marker, ?GroupModel $groupModel = null): self
     {
         return new self(
             $marker->getId(),

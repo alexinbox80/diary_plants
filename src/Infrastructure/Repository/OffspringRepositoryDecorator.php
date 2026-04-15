@@ -4,8 +4,6 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Offspring;
 use App\Domain\Entity\Attachment;
-use App\Domain\Model\Group\GroupModel;
-use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Repository\GroupRepositoryInterface;
@@ -180,34 +178,6 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
             $groupModel = $this->groupRepository->toModel($offspring->getGroup());
         }
 
-        return self::makeOffspringModel($offspring, $attachmentModels, $plantModel, $groupModel);
-    }
-
-    /**
-     * @param Offspring $offspring
-     * @param array $attachmentModels
-     * @param PlantModel|null $plantModel
-     * @param GroupModel|null $groupModel
-     * @return OffspringModel
-     */
-    static function makeOffspringModel(Offspring $offspring, array $attachmentModels = [], ?PlantModel $plantModel = null, ?GroupModel $groupModel = null): OffspringModel
-    {
-        return new OffspringModel(
-            $offspring->getId(),
-            $offspring->getGroup()->getId(),
-            $offspring->getPlant()->getId(),
-            $attachmentModels,
-            $offspring->getPhenology()->getFruitingDate(),
-            $offspring->getPhenology()->getFloweringDate(),
-            $offspring->getFruitMetrics()->getMass(),
-            $offspring->getFruitMetrics()->getColor(),
-            $offspring->getFruitMetrics()->getFlavor(),
-            $offspring->getFruitMetrics()->getQuantity(),
-            $offspring->getComment(),
-            $plantModel,
-            $groupModel,
-            $offspring->getCreatedAt(),
-            $offspring->getUpdatedAt()
-        );
+        return OffspringModel::fromEntity($offspring, $attachmentModels, $plantModel, $groupModel);
     }
 }

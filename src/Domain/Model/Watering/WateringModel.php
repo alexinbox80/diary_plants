@@ -101,7 +101,7 @@ class WateringModel implements AttachableModelInterface
      * @param MarkerModel|null $markerModel
      * @return WateringModel
      */
-    static function fromEntity(Watering $watering, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    public static function fromEntity(Watering $watering, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
     {
         return new self(
             $watering->getId(),

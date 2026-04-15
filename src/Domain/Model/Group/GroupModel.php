@@ -48,7 +48,7 @@ class GroupModel
         return $this->updatedAt;
     }
 
-    static function fromEntity(Group $group): self
+    public static function fromEntity(Group $group): self
     {
         return new GroupModel(
             $group->getId(),
