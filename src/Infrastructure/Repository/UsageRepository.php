@@ -4,6 +4,7 @@ namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
+use App\Domain\Entity\Plant;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -65,6 +66,46 @@ class UsageRepository extends AbstractRepository
                 ->getQuery()
                 ->getResult();
         }
+    }
+
+    /**
+     * @param Plant $plant
+     * @return void
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function loadTopUsagesForPlant(Plant $plant): void
+    {
+        $sql = '
+        SELECT id FROM (
+            SELECT id,
+                   ROW_NUMBER() OVER (PARTITION BY usable_type ORDER BY created_at DESC) as rn
+            FROM usage
+            WHERE plant_id = :plantId
+              AND usable_type IN (\'fertilizer\', \'pest\', \'stimulant\', \'watering\')
+        ) t
+        WHERE t.rn <= 5
+    ';
+
+        $ids = $this->entityManager->getConnection()->fetchFirstColumn($sql, [
+            'plantId' => $plant->getId()
+        ]);
+
+        $collection = $plant->getUsages();
+
+        if (!empty($ids)) {
+            // Подгружаем сами сущности по найденным ID и устанавливаем в коллекцию
+            $usages = $this->entityManager->getRepository(Usage::class)
+                ->findBy(['id' => $ids], ['useDate' => 'DESC']);
+
+            $collection->clear();
+            foreach ($usages as $usage) {
+                $collection->add($usage);
+            }
+
+            // Помечаем коллекцию как "загруженную", чтобы Doctrine не полезла в базу снова
+            $collection->setInitialized(true);
+        } else
+            $collection->setInitialized(true);
     }
 
     /**

@@ -28,7 +28,7 @@ class Controller extends AbstractController
 
         $plantModel = $this->manager->getPlantProfile($uuid);
 
-        $plant = ['table_header' => $plantModel['tableHeader'], 'table_body' => $plantModel['tableBody']];
+        $plant = ['profile_header' => $plantModel['profileHeader'], 'profile_body' => $plantModel['profileBody']];
 
         return $this->render(
             'dashboard/plant/profile.html.twig',

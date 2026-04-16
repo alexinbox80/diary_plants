@@ -4467,50 +4467,46 @@ progress {
     padding-right: 64px!important;
     padding-left: 64px!important;
 }
-
-
-
-
-
 /* Вертикальный свиток для всей карточки */
-/*.passport-scroll-container {*/
+/*profile-scroll-container {*/
 /*    max-height: 600px; !* Высота свитка *!*/
 /*    overflow-y: auto;*/
 /*    padding-right: 10px; !* Отступ для полосы прокрутки *!*/
 /*}*/
 
 /* Стилизация строк для имитации таблицы */
-.passport-row {
+.profile-row {
     display: flex;
     border-bottom: 1px solid #eee;
     padding: 8px 0;
     transition: background-color 0.2s;
 }
-.passport-row:hover {
+.profile-row:hover {
     background-color: #f9f9f9;
 }
-.passport-label {
+.profile-label {
     font-weight: 600;
     color: #495057;
     width: 25%; /* Ширина названий полей */
 }
-.passport-value {
+.profile-value {
     width:75%;
     color: #212529;
     word-break: break-word; /* Чтоб длинные UUID не вылезали */
 }
-
-
-
-
-
-
-
-
-
-
-
-
+.gallery-item { transition: transform 0.2s; }
+.gallery-item:hover { transform: translateY(-3px); }
+.gallery-link { position: relative; display: block; }
+.transition-all { transition: all 0.3s ease-in-out; }
+.gallery-link:hover img { transform: scale(1.1); }
+.gallery-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.gallery-link:hover .gallery-overlay { opacity: 1; }
 @media (max-width: 575.98px) {
   .table-responsive-sm {
     overflow-x: auto;

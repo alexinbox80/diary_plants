@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
+use App\Domain\Entity\Usage;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
@@ -13,17 +14,20 @@ class PlantRepository extends AbstractRepository
 {
     private AttachmentRepository $attachmentRepository;
     private OffspringRepository $offspringRepository;
+    private UsageRepository $usageRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         AttachmentRepository $attachmentRepository,
-        OffspringRepository $offspringRepository
+        OffspringRepository $offspringRepository,
+        UsageRepository $usageRepository
     )
     {
         parent::__construct($entityManager);
 
         $this->attachmentRepository = $attachmentRepository;
         $this->offspringRepository = $offspringRepository;
+        $this->usageRepository = $usageRepository;
     }
 
     /**
@@ -284,8 +288,6 @@ class PlantRepository extends AbstractRepository
     public function findPlantByUUID(Oid $oid): ?Plant
     {
         $result = $this->getBaseQueryBuilder()
-            ->leftJoin('p.usages', 'u')
-            ->addSelect('u')
             ->leftJoin('p.offsprings', 'o')
             ->addSelect('o')
             ->leftJoin('p.repottings', 'r')
@@ -297,6 +299,8 @@ class PlantRepository extends AbstractRepository
 
         if ($result !== null) {
             $this->loadAttachmentsForPlants([$result]);
+
+            $this->usageRepository->loadTopUsagesForPlant($result);
 
             $offsprings = $result->getOffsprings()->toArray();
             if (!empty($offsprings)) {

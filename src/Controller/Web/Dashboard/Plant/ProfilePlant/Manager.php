@@ -22,13 +22,13 @@ class Manager
         $oid = Oid::fromString($uuid);
 
         $plantModel = $this->plantService->findPlantByUUID($oid);
-        $tableHeader = PlantModel::getTableHeaderRu();
+        $profileHeader = PlantModel::getProfileHeaderRu();
 
-        $tableBody = $plantModel->toArray();
+        $profileBody = $plantModel->profileToArray();
 
         return [
-            'tableHeader' => $tableHeader,
-            'tableBody' => $tableBody
+            'profileHeader' => $profileHeader,
+            'profileBody' => $profileBody
         ];
     }
 }
