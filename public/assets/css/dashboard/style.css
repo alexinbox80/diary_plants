@@ -23161,6 +23161,12 @@ td.img_tag {
     border: 1px solid #dee2e6;
     transition: transform 0.2s ease-in-out;
 }
+.table-image-qr {
+    width: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
 .table-image-thumb:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);

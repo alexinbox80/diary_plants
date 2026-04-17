@@ -39,7 +39,7 @@
                                     {% set value = plant.profile_body[key] %}
 
                                     {% if key == 'img_qr_code_link' and value %}
-                                        {{ image_tag.image(plant.profile_body.id, 'table-image-thumb', 'QR код', 'QR', value, 'single') }}
+                                        {{ image_tag.image(plant.profile_body.id, 'table-image-qr', 'QR код', 'QR', value, 'single') }}
                                     {% elseif key == 'oid' %}
                                         <code class="small text-muted">{{ value }}</code>
 
