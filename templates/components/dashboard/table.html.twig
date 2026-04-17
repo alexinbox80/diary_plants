@@ -44,7 +44,7 @@
                                     <tr>
                                         {% for column_number, key in array.table_header|keys %}
                                             {% if column_number > 0 %}
-                                                <td data-column="{{ key }}">
+                                                <td data-column="{{ key }}" class="{% if key == 'img_tag' %}img_tag{% endif %}">
                                                     {% if item[key] is not null %}
                                                         {% if key == 'img_tag' %}
                                                             {{ image_tag.image(row_number, 'table-image-thumb', item['title'] ?? 'Аватар', item['alt'] ?? 'Аватар', item[key], 'single') }}

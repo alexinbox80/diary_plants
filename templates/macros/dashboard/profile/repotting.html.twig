@@ -1,0 +1,49 @@
+{% macro repotting(repottings) %}
+    <div class="d-flex flex-column gap-3">
+        {% for label in repottings %}
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="row g-0 align-items-center">
+                    <!-- Дата и тип -->
+                    <div class="col-md-2 bg-success bg-opacity-10 text-center py-3 border-end">
+                        <div class="fw-bold text-success" style="font-size: 1.1rem;">{{ label.repotted_at }}</div>
+                        <span class="badge bg-success mt-1">{{ label.type }}</span>
+                    </div>
+
+                    <!-- Основные параметры -->
+                    <div class="col-md-4 px-4 py-2">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-box-seam fs-4 text-secondary me-3"></i>
+                            <div>
+                                <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Горшок</small>
+                                <span class="fw-bold">{{ label.pot_material }}</span>
+                                <span class="text-muted ms-1">({{ label.pot_size }} см)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Комментарий -->
+                    <div class="col-md-4 px-4 py-2 border-start-md">
+                        <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Комментарий</small>
+                        <div class="small fst-italic text-truncate" title="{{ label.comment }}">
+                            {% if label.comment %}
+                                <i class="bi bi-chat-left-dots me-1 opacity-50"></i>{{ label.comment }}
+                            {% else %}
+                                <span class="text-muted">Нет заметок</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Мета-информация -->
+                    <div class="col-md-2 text-end pe-3 py-2">
+                        <small class="text-muted" style="font-size: 0.65rem; display: block;">
+                            ID: {{ label.id }}
+                        </small>
+                        <small class="text-muted" style="font-size: 0.65rem;">
+                            {{ label.updated_at|date('d.m.y') }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}

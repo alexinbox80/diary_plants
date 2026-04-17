@@ -1,0 +1,10 @@
+{% macro usage(usages) %}
+    <div class="d-flex flex-wrap gap-2">
+        {% for key, label in usages %}
+            <div class="border rounded p-2 bg-white">
+                <small class="d-block text-muted" style="font-size: 0.7rem;">Дата</small>
+                <span>{{ label.use_date }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}

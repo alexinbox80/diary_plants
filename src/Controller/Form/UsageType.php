@@ -46,7 +46,7 @@ class UsageType extends AbstractType
                 'required' => true
             ])
             ->add('usableType', ChoiceType::class, [
-                'label' => $labels['usable_type'],
+                'label' => $labels['usable_name'],
                 'required' => true,
                 'choices' => AttachableType::getChoices(),
                 'placeholder' => 'Выбери тип',

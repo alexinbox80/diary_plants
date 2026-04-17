@@ -1,0 +1,84 @@
+{% macro offspring_gallery(offsprings) %}
+    {% import 'macros/dashboard/profile/is_published_tag.html.twig' as is_published %}
+    {% import 'macros/dashboard/profile/image.html.twig' as img %}
+    {% for offspring in offsprings %}
+        <div class="offspring-group mb-4">
+            <h5>Плод (ID: {{ offspring.id }})</h5>
+
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+                {% for image in offspring.img_gallery %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0 gallery-item">
+                            {{ img.image(image) }}
+
+                            <div class="card-body p-2 bg-white">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                     <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">
+                                        <i class="bi bi-calendar-event me-1"></i>{{ image.file_date }}
+                                     </span>
+
+                                    {{ is_published.tag(image.is_shown) }}
+                                </div>
+
+                                <div class="card-body px-0 bg-white">
+                                    <!-- Даты: Цветение и Плодоношение -->
+                                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                                        <div class="text-center">
+                                            <small class="text-muted d-block" style="font-size: 0.65rem;">Цветение</small>
+                                            <span class="badge bg-info-subtle text-info small">{{ offspring.flowering_date }}</span>
+                                        </div>
+                                        <div class="text-center border-start ps-3">
+                                            <small class="text-muted d-block" style="font-size: 0.65rem;">Урожай</small>
+                                            <span class="badge bg-warning-subtle text-warning-emphasis small">{{ offspring.fruiting_date }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Характеристики плода -->
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center small">
+                                                <i class="bi bi-pnum-1-circle me-2 text-secondary"></i>
+                                                <span>{{ offspring.quantity }} шт.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center small">
+                                                <i class="bi bi-speedometer2 me-2 text-secondary"></i>
+                                                <span>{{ offspring.mass }} г</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center small">
+                                                <i class="bi bi-palette me-2 text-secondary"></i>
+                                                <span>{{ offspring.color }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Вкус и Комментарий -->
+                                    <div class="bg-light rounded p-2 mb-1">
+                                        <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.6rem;">Вкус:</small>
+                                        <p class="small mb-1 text-dark">{{ offspring.flavor }}</p>
+
+                                        {% if offspring.comment %}
+                                            <hr class="my-1 opacity-25">
+                                            <small class="text-danger-emphasis small fst-italic">
+                                                <i class="bi bi-sticky me-1"></i>{{ offspring.comment }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if image.description %}
+                                    <p class="card-text text-truncate small text-muted mb-0" title="{{ image.description }}">
+                                        {{ image.description }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}

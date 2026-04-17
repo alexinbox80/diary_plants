@@ -23148,8 +23148,25 @@ body.avgrund-active {
   max-width: 100%;
   width: 100%;
 }
+td.img_tag {
+    vertical-align: middle;
+    width: 150px;
+    text-align: center;
+}
 .table-image-thumb {
-    width: 100px;
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    transition: transform 0.2s ease-in-out;
+}
+.table-image-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.modal-body img {
+    border-radius: 4px;
 }
 /* Listify */
 .listify-list input {

@@ -1,0 +1,6 @@
+{% macro tag(flag) %}
+    <span class="badge {{ flag ? 'bg-success' : 'bg-danger' }} rounded-circle d-inline-block shadow-sm"
+          style="width: 10px; height: 10px; padding: 0; vertical-align: middle;"
+          title="{{ flag ? 'Опубликовано' : 'Скрыто' }}">
+    </span>
+{% endmacro %}

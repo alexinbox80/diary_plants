@@ -17,11 +17,11 @@
                 <i class="fas fa-chevron-left"></i>
             </button>
 
-            <div class="position-relative overflow-hidden border rounded" style="height: 250px;">
+            <div class="position-relative overflow-hidden border rounded" style="height: 150px; width: 200px;">
                 <img
                     src="{{ asset('uploads/' ~ validImages[0].path ~ validImages[0].filename) }}"
                     alt="{{ validImages[0].alt }}"
-                    class="img-fluid"
+                    class="img-fluid w-100 h-100"
                     id="galleryImage_{{ galleryId }}"
                     data-current-index="0"
                     data-bs-toggle="modal"
@@ -54,7 +54,7 @@
                 <i class="fas fa-edit text-white bg-dark bg-opacity-50 rounded p-1" style="width: 100%"></i>
             </a>
 
-            <div class="text-muted small position-absolute bottom-0 end-0 m-2">
+            <div class="text-white small position-absolute bottom-0 end-0 m-2">
                 <span id="galleryCounter_{{ galleryId }}">1 / {{ validImages|length }}</span>
             </div>
         {% endif %}
