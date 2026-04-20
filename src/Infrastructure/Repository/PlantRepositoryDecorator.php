@@ -102,11 +102,12 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
 
     /**
      * @param int|null $groupId
+     * @param bool|null $isSold
      * @return array
      */
-    public function getPlantsForDiary(?int $groupId = null): array
+    public function getPlantsForDiary(?int $groupId = null, ?bool $isSold = false): array
     {
-        $plants = $this->plantRepository->getPlantsForDairy($groupId);
+        $plants = $this->plantRepository->getPlantsForDairy($groupId, $isSold);
 
         return array_map(
             fn (Plant $plant): array => [

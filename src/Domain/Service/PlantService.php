@@ -31,7 +31,7 @@ class PlantService
 
     public function getPlantsForDiary(int $groupID): array
     {
-        return $this->plantRepository->getPlantsForDiary($groupID);
+        return $this->plantRepository->getPlantsForDiary($groupID, false);
     }
 
     /**

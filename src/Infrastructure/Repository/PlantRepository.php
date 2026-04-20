@@ -184,9 +184,10 @@ class PlantRepository extends AbstractRepository
 
     /**
      * @param int|null $groupId
+     * @param bool|null $isSold
      * @return Plant[]
      */
-    public function getPlantsForDairy(?int $groupId = null): array
+    public function getPlantsForDairy(?int $groupId = null, ?bool $isSold = false): array
     {
         $queryBuilder = $this->getBaseQueryBuilder();
 
@@ -196,6 +197,11 @@ class PlantRepository extends AbstractRepository
         if ($groupId !== null) {
             $qb->where('p.group = :groupId')
                 ->setParameter('groupId', $groupId);
+        }
+
+        if ($isSold !== null) {
+            $qb->andWhere('p.salesInfo.isSold = :isSold')
+                ->setParameter('isSold', $isSold);
         }
 
         return  $qb->getQuery()->getResult();
