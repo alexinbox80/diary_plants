@@ -4,6 +4,13 @@
             <div class="border rounded p-2 bg-white">
                 <small class="d-block text-muted" style="font-size: 0.7rem;">Дата</small>
                 <span>{{ label.use_date }}</span>
+
+            {% if label.attachable is iterable and label.attachable is not empty %}
+                <div class="mt-1" style="font-size: 0.8rem;">
+                    <div class="text-secondary small text-dark">{{ label.attachable.title }}</div>
+                    <div class="text-secondary small text-dark">{{ label.attachable.amount }}</div>
+                </div>
+            {% endif %}
             </div>
         {% endfor %}
     </div>

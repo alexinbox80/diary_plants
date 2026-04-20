@@ -56,6 +56,9 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
+    //загруженные в репозитории связанные вложения
+    private ?object $loadedAttachment = null;
+
     public function getId(): int
     {
         WebmozartAssert::notNull($this->id, sprintf('Id of Entity %s is null.', get_class($this)));
@@ -152,5 +155,15 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
         $this->group = $group;
 
         return $this;
+    }
+
+    public function setLoadedAttachment(?object $attachment): void
+    {
+        $this->loadedAttachment = $attachment;
+    }
+
+    public function getLoadedAttachment(): ?object
+    {
+        return $this->loadedAttachment;
     }
 }

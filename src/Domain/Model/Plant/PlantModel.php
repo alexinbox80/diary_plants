@@ -241,6 +241,7 @@ class PlantModel implements AttachableModelInterface
             'usable_name' => "Прогноз: " . $lastEntry['usable_name'],
             'comment' => "Средний интервал: $avgDays дн.",
             'marker_color' => '',
+            'attachable' => null,
             'created_at' => (new DateTimeImmutable())->setTimezone($timeZone)->format('d.m.Y H:i:s'),
             'updated_at' => (new DateTimeImmutable())->setTimezone($timeZone)->format('d.m.Y H:i:s')
         ]);
@@ -259,6 +260,9 @@ class PlantModel implements AttachableModelInterface
 
         // 1. Группируем элементы по полю usable_type
         foreach ($data as $item) {
+            if ($item['attachable'] !== null) {
+                $item['attachable'] = $item['attachable']->toArray();
+            }
             $grouped[$item['usable_type']][] = $item;
         }
 

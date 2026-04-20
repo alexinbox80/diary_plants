@@ -6,6 +6,13 @@
                     {{ loop.last ? 'След.' : 'Дата' }}
                 </small>
                 <span class="{{ loop.last ? 'fw-bold' : '' }}">{{ label.use_date }}</span>
+
+            {% if label.usable_type == 'watering' and label.attachable is iterable and label.attachable is not empty %}
+                <div class="mt-1" style="font-size: 0.8rem;">
+                    <div class="text-secondary small text-dark">{{ label.attachable.water_type }}</div>
+                    <div class="text-secondary small text-dark">{{ label.attachable.watering_method }}</div>
+                </div>
+            {% endif %}
             </div>
         {% endfor %}
     </div>

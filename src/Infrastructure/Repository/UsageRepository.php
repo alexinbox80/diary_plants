@@ -69,6 +69,47 @@ class UsageRepository extends AbstractRepository
     }
 
     /**
+     * Инкапсулирует логику загрузки и распределения вложений
+     * @param Usage[] $usages
+     */
+    public function getRelatedMapForUsages(array $usages): void
+    {
+        if (empty($usages)) return;
+
+        $groupedIds = [];
+        foreach ($usages as $usage) {
+            $target = $usage->getTarget();
+            $groupedIds[$target->getUsableType()->value][] = $target->getUsableId();
+        }
+
+        $loadedEntities = [];
+        foreach ($groupedIds as $type => $ids) {
+            $entityClass = AttachableType::getClass($type);
+            if (!$entityClass) continue;
+
+            $entities = $this->entityManager->getRepository($entityClass)
+                ->findBy(['id' => array_unique($ids)]);
+
+            foreach ($entities as $entity) {
+                // Кэшируем: [тип][id_сущности] = Объект
+                $loadedEntities[$type][$entity->getId()] = $entity;
+            }
+        }
+
+        foreach ($usages as $usage) {
+            $target = $usage->getTarget();
+            $type = $target->getUsableType()?->value;
+            $id = $target->getUsableId();
+
+            // Достаем один объект по ключам типа и ID
+            $relatedObject = $loadedEntities[$type][$id] ?? null;
+
+            // Устанавливаем как одиночный объект
+            $usage->setLoadedAttachment($relatedObject);
+        }
+    }
+
+    /**
      * @param Plant $plant
      * @return void
      * @throws \Doctrine\DBAL\Exception

@@ -15,13 +15,22 @@ use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Model\Repotting\RepottingModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Attachment\AttachmentModel;
+use App\Domain\Repository\PestRepositoryInterface;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use App\Domain\Repository\WateringRepositoryInterface;
+use App\Domain\Repository\StimulantRepositoryInterface;
+use App\Domain\Repository\FertilizerRepositoryInterface;
 
 class PlantRepositoryDecorator implements PlantRepositoryInterface
 {
     public function __construct(
         private readonly GroupRepositoryDecorator $groupRepository,
         private readonly PlantRepository $plantRepository,
+        private readonly FertilizerRepositoryInterface $fertilizerRepository,
+        private readonly PestRepositoryInterface       $pestRepository,
+        private readonly StimulantRepositoryInterface  $stimulantRepository,
+        private readonly WateringRepositoryInterface   $wateringRepository,
     ) {
     }
 
@@ -256,7 +265,22 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
             $usages = $plant->getUsages();
             if ($usages instanceof PersistentCollection && $usages->isInitialized() && !$usages->isEmpty()) {
                 $usageModels = array_map(
-                    fn (Usage $usage): UsageModel => UsageModel::fromEntity($usage),
+                    function (Usage $usage): UsageModel
+                    {
+                        $usageAttachment = $usage->getLoadedAttachment();
+
+                        $className = get_class($usageAttachment);
+
+                        $attachmentModel = match (AttachableType::fromClass($className)) {
+                            AttachableType::FERTILIZER => $this->fertilizerRepository->toModel($usageAttachment, false),
+                            AttachableType::PEST => $this->pestRepository->toModel($usageAttachment, false),
+                            AttachableType::STIMULANT => $this->stimulantRepository->toModel($usageAttachment, false),
+                            AttachableType::WATERING => $this->wateringRepository->toModel($usageAttachment, false),
+                            null => null,
+                        };
+
+                        return UsageModel::fromEntity($usage, null, null, $attachmentModel);
+                    },
                     $usages->toArray()
                 );
             }

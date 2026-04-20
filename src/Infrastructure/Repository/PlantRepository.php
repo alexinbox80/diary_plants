@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Entity\Usage;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
@@ -307,6 +306,11 @@ class PlantRepository extends AbstractRepository
             $this->loadAttachmentsForPlants([$result]);
 
             $this->usageRepository->loadTopUsagesForPlant($result);
+
+            $usages = $result->getUsages()->toArray();
+            if(!empty($usages)) {
+                $this->usageRepository->getRelatedMapForUsages($usages);
+            }
 
             $offsprings = $result->getOffsprings()->toArray();
             if (!empty($offsprings)) {
