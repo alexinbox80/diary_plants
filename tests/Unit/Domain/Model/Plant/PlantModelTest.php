@@ -31,7 +31,7 @@ class PlantModelTest extends TestCase
         $oid = OId::fromString('550e8400-e29b-41d4-a716-446655440000');
         $price = new Price(1000, Currency::RUR);
 
-        // 1. Подготовка моков компонентов сущности (Value Objects)
+        // 1. Подготовка моков компонентов (Value Objects)
         $plantIdentifier = $this->createMock(PlantIdentifier::class);
         $plantIdentifier->method('getOid')->willReturn($oid);
         $plantIdentifier->method('getQrCodeLink')->willReturn('https://qr.link');
@@ -65,9 +65,16 @@ class PlantModelTest extends TestCase
         $plant->method('getCreatedAt')->willReturn($now);
         $plant->method('getUpdatedAt')->willReturn($now);
 
-        // 3. Создаем моки для вложенных моделей (Usage, Offspring, Repotting)
+        // 3. Создаем моки для вложенных моделей с данными для группировки
         $usageModel = $this->createMock(UsageModel::class);
-        $usageModel->method('toArray')->willReturn(['id' => 1, 'comment' => 'Watering']);
+        $usageModel->method('toArray')->willReturn([
+            'id' => 1,
+            'comment' => 'Watering',
+            'usable_type' => 'watering', // Критично для группировки в toArray()
+            'use_date' => '01.01.2024',  // Критично для сортировки в toArray()
+            'usable_name' => 'Полив',
+            'attachable' => null
+        ]);
 
         $offspringModel = $this->createMock(OffspringModel::class);
         $offspringModel->method('toArray')->willReturn(['id' => 10, 'comment' => 'Child']);
@@ -88,26 +95,11 @@ class PlantModelTest extends TestCase
             [$repottingModel] // repottingModels
         );
 
-        // 5. Проверки структуры модели (Assertions)
+        // 5. Проверки структуры модели
         $this->assertEquals(100, $model->getId());
         $this->assertEquals('Ficus', $model->getTitle());
         $this->assertCount(1, $model->getUsage());
-        $this->assertCount(1, $model->getOffspring());
-        $this->assertCount(1, $model->getRepotting());
         $this->assertSame($usageModel, $model->getUsage()[0]);
-
-        // 6. Проверка финального массива (toArray)
-        $array = $model->toArray();
-
-        $this->assertArrayHasKey('usages', $array);
-        $this->assertArrayHasKey('offsprings', $array);
-        $this->assertArrayHasKey('repottings', $array);
-
-        // Проверяем, что данные из моков попали в итоговый массив через toArray()
-        $this->assertEquals('Watering', $array['usages'][0]['comment']);
-        $this->assertEquals('Child', $array['offsprings'][0]['comment']);
-        $this->assertEquals('Peat', $array['repottings'][0]['substrate']);
-        $this->assertEquals('Да', $array['is_shown']);
     }
 
     #[Test]

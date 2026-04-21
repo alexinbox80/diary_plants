@@ -9,6 +9,7 @@ use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Model\Analytic\AnalyticModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Repotting\RepottingModel;
 use App\Domain\Model\Attachment\AttachmentModel;
@@ -43,6 +44,7 @@ class PlantModel implements AttachableModelInterface
         private readonly array $usage = [],
         private readonly array $offspring = [],
         private readonly array $repotting = [],
+        private readonly ?AnalyticModel $analytic = null,
         private readonly DateTimeImmutable $createdAt,
         private readonly DateTimeImmutable $updatedAt
     ) {
@@ -164,6 +166,11 @@ class PlantModel implements AttachableModelInterface
     public function getGroup(): ?GroupModel
     {
         return $this->group;
+    }
+
+    public function getAnalytic(): ?AnalyticModel
+    {
+        return $this->analytic;
     }
 
     /**
@@ -300,7 +307,8 @@ class PlantModel implements AttachableModelInterface
         ?GroupModel $groupModel = null,
         array $usageModels = [],
         array $offspringModels = [],
-        array $repottingModels = []
+        array $repottingModels = [],
+        ?AnalyticModel $analyticModel = null,
     ): self {
         return new self(
             $plant->getId(),
@@ -329,6 +337,7 @@ class PlantModel implements AttachableModelInterface
             $usageModels,
             $offspringModels,
             $repottingModels,
+            $analyticModel,
             $plant->getCreatedAt(),
             $plant->getUpdatedAt()
         );

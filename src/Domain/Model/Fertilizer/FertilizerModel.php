@@ -99,7 +99,7 @@ class FertilizerModel implements AttachableModelInterface
      * @param MarkerModel|null $markerModel
      * @return FertilizerModel
      */
-    public static function fromEvent(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
+    public static function fromEntity(Fertilizer $fertilizer, ?GroupModel $groupModel = null, ?MarkerModel $markerModel = null): self
     {
         return new self(
             $fertilizer->getId(),

@@ -80,4 +80,24 @@ enum AttachableType: string
 
         return $options;
     }
+
+    public static function isWatering(string $attachableType): bool
+    {
+        return self::WATERING->value === strtolower($attachableType);
+    }
+
+    public static function isFertilizer(string $attachableType): bool
+    {
+        return self::FERTILIZER->value === strtolower($attachableType);
+    }
+
+    public static function isStimulant(string $attachableType): bool
+    {
+        return self::STIMULANT->value === strtolower($attachableType);
+    }
+
+    public static function isPest(string $attachableType): bool
+    {
+        return self::PEST->value === strtolower($attachableType);
+    }
 }

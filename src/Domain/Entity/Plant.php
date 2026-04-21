@@ -90,6 +90,10 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
+    //связь с сущностью аналитика
+    #[ORM\OneToOne(targetEntity: Analytic::class, mappedBy: 'plant', cascade: ['all'])]
+    private ?Analytic $analytic = null;
+
     private function setGroupValidate(Group $group): void
     {
         $this->group = $group;
@@ -239,6 +243,13 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         return $this;
     }
 
+    public function setAnalytic(Analytic $analytic): self
+    {
+        $this->analytic = $analytic;
+
+        return $this;
+    }
+
     public function getPlantIdentifier(): PlantIdentifier
     {
         return $this->plantIdentifier;
@@ -282,5 +293,10 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     public function getLoadedAttachments(): array
     {
         return $this->loadedAttachments;
+    }
+
+    public function getAnalytic(): ?Analytic
+    {
+        return $this->analytic;
     }
 }

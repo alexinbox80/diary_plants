@@ -168,6 +168,6 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
             $markerModel = $this->markerRepository->toModel($fertilizer->getMarker());
         }
 
-        return FertilizerModel::fromEvent($fertilizer, $groupModel, $markerModel);
+        return FertilizerModel::fromEntity($fertilizer, $groupModel, $markerModel);
     }
 }

@@ -12,7 +12,6 @@ use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 /**
  * @method Usage|null findOneBy(array $criteria, array $orderBy = null)
- * @method Usage[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UsageRepository extends AbstractRepository
 {
@@ -71,6 +70,7 @@ class UsageRepository extends AbstractRepository
     /**
      * Инкапсулирует логику загрузки и распределения вложений
      * @param Usage[] $usages
+     * @return void
      */
     public function getRelatedMapForUsages(array $usages): void
     {
@@ -147,6 +147,18 @@ class UsageRepository extends AbstractRepository
             $collection->setInitialized(true);
         } else
             $collection->setInitialized(true);
+    }
+
+    /**
+     * @param array $criteria
+     * @param array $orderBy
+     * @return Usage[]
+     */
+    public function findBy(array $criteria, array $orderBy): array
+    {
+        return $this->entityManager
+            ->getRepository(Usage::class)
+            ->findBy($criteria, $orderBy);
     }
 
     /**

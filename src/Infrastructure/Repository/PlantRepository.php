@@ -36,9 +36,10 @@ class PlantRepository extends AbstractRepository
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
 
-        return $queryBuilder->select('p', 'g')
+        return $queryBuilder->select('p', 'g', 'a')
             ->from(Plant::class, 'p')
             ->leftJoin('p.group', 'g')
+            ->leftJoin('p.analytic', 'a')
             ->orderBy('p.updatedAt', 'DESC');
     }
 

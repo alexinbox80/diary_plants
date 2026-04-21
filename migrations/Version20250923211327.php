@@ -35,6 +35,8 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS stimulant__group_id_marker_id__uniq ON stimulant (group_id, marker_id) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__group_id_marker_id__uniq ON fertilizer (group_id, marker_id) WHERE (deleted_at IS NULL)');
         $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS pest__group_id_marker_id__uniq ON pest (group_id, marker_id) WHERE (deleted_at IS NULL)');
+        //$this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS analytic__plant_id__uniq ON analytic (plant_id)');
+        $this->addSql('CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS analytic__plant_id__uniq ON analytic (plant_id) WHERE (deleted_at IS NULL)');
 
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__marker_id__ind ON fertilizer (marker_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS fertilizer__group_id__ind ON fertilizer (group_id)');
@@ -58,6 +60,8 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS attachment__group_id__ind ON attachment (group_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS repotting__plant_id__ind ON repotting (plant_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS repotting__group_id__ind ON repotting (group_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS analytic__plant_id__ind ON analytic (plant_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS analytic__group_id__ind ON analytic (group_id)');
     }
 
     public function down(Schema $schema): void
@@ -73,6 +77,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS stimulant__group_id_marker_id__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__group_id_marker_id__uniq');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS pest__group_id_marker_id__uniq');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS analytic__plant_id__uniq');
 
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__marker_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS fertilizer__group_id__ind');
@@ -96,5 +101,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS attachment__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS repotting__group_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS repotting__plant_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS analytic__group_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS analytic__plant_id__ind');
     }
 }

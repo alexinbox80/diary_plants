@@ -2,8 +2,8 @@
 
 namespace App\Domain\ValueObject;
 
-use App\Domain\ValueObject\Enum\Currency;
 use Webmozart\Assert\Assert;
+use App\Domain\ValueObject\Enum\Currency;
 
 /**
  * Value Object моделирующий цену

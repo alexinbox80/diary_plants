@@ -4,6 +4,7 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Plant;
 use App\Domain\Entity\Usage;
+use App\Domain\Model\Analytic\AnalyticModel;
 use App\Domain\ValueObject\OId;
 use App\Domain\Entity\Offspring;
 use App\Domain\Entity\Repotting;
@@ -145,7 +146,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
     {
         $plant = $this->plantRepository->find($plantId);
 
-        return $plant ? $this->toModel($plant) : null;
+        return $plant ? $this->toModel($plant, true) : null;
     }
 
     /**
@@ -251,6 +252,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         $offspringModels = [];
         $repottingModels = [];
         $usageModels = [];
+        $analyticModel = null;
 
         if ($addRelations) {
             if ($plant->getLoadedAttachments()) {
@@ -312,8 +314,13 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
                     $repottings->toArray()
                 );
             }
+
+            $analytic = $plant->getAnalytic();
+            if ($analytic !== null) {
+                $analyticModel = AnalyticModel::fromEntity($analytic);
+            }
         }
 
-        return PlantModel::fromEntity($plant, $attachmentModels, $groupModel, $usageModels, $offspringModels, $repottingModels);
+        return PlantModel::fromEntity($plant, $attachmentModels, $groupModel, $usageModels, $offspringModels, $repottingModels, $analyticModel);
     }
 }

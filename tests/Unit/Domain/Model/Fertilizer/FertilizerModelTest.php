@@ -19,7 +19,7 @@ class FertilizerModelTest extends TestCase
     /**
      * Проверка маппинга из Entity в Model
      */
-    public function testFromEventMapping(): void
+    public function testFromEntityMapping(): void
     {
         // 1. Создаем моки зависимостей сущности
         $group = $this->createMock(Group::class);
@@ -48,7 +48,7 @@ class FertilizerModelTest extends TestCase
         $fertilizer->method('getUpdatedAt')->willReturn(new DateTimeImmutable('2024-01-01 11:00:00'));
 
         // 2. Вызов метода
-        $model = FertilizerModel::fromEvent($fertilizer);
+        $model = FertilizerModel::fromEntity($fertilizer);
 
         // 3. Проверки
         $this->assertEquals(100, $model->getId());

@@ -30,6 +30,8 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     }
 
     /**
+     * @param string $usableType
+     * @param int $usableId
      * @return UsageModel[]
      */
     public function findByUsage(string $usableType, int $usableId): array
@@ -44,6 +46,8 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
 
 
     /**
+     * @param string $usableType
+     * @param int $usableId
      * @return UsageModel[]
      */
     public function findByUsableWithDeleted(string $usableType, int $usableId): array
@@ -56,18 +60,53 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         );
     }
 
+    /**
+     * @param string $usableType
+     * @param int $usableId
+     * @param int $usageId
+     * @return Usage|null
+     */
     public function findOneByUsable(string $usableType, int $usableId, int $usageId): ?Usage
     {
         return $this->usageRepository->findOneByUsable($usableType, $usableId, $usageId);
     }
 
+    /**
+     * @param string $usableType
+     * @param int $usableId
+     * @param int $usageId
+     * @return void
+     */
     public function deleteByUsable(string $usableType, int $usableId, int $usageId): void
     {
         $this->usageRepository->deleteByUsable($usableType, $usableId, $usageId);
     }
 
     /**
+     * @param int $plantId
+     * @param string $usableType
      * @return UsageModel[]
+     */
+    public function findBy(int $plantId, string $usableType): array
+    {
+        $criteria = [
+                'plant' => $plantId,
+                'target.usableType' => $usableType
+            ];
+
+        $orderBy = ['useDate' => 'ASC'];
+
+        return array_map(
+            fn (Usage $usage): UsageModel => $this->toModel($usage),
+            $this->usageRepository->findBy($criteria, $orderBy)
+        );
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return UsageModel[]
+     * @throws \Exception
      */
     public function getUsagesPaginated(int $page, int $perPage): array
     {
@@ -93,6 +132,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
      * @param int $month
      * @param int $groupId
      * @return UsageModel[]
+     * @throws \Exception
      */
     public function getUsages(int $year, int $month, int $groupId): array
     {

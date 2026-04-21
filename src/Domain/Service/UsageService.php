@@ -7,14 +7,16 @@ use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use InvalidArgumentException;
 use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Model\Plant\PlantModel;
+use App\Domain\Event\UsageIsCreatedEvent;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Usage\UpdateUsageModel;
 use App\Domain\Repository\UsageRepositoryInterface;
 use App\Domain\ValueObject\Usage\AttachableReference;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Controller\Web\Dashboard\Usage\EditUsage\Input\EditUsageDTO;
 use App\Controller\Web\Dashboard\Usage\CreateUsage\Input\CreateUsageDTO;
-use App\Controller\Api\Dashboard\Usage\CreateUsage\v1\Input\CreateUsageDTO as CreateUsagesDTO;
 
 class UsageService
 {
@@ -23,6 +25,7 @@ class UsageService
         private readonly GroupService $groupService,
         private readonly UsageRepositoryInterface $usageRepository,
         private readonly ModelFactory $modelFactory,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -41,6 +44,16 @@ class UsageService
     public function findAll(): array
     {
         return $this->usageRepository->findAllWithTargets();
+    }
+
+    /**
+     * @param PlantModel $plantModel
+     * @param string $usableType
+     * @return UsageModel[]
+     */
+    public function findBy(PlantModel $plantModel, string $usableType): array
+    {
+        return $this->usageRepository->findBy($plantModel->getId(), $usableType);
     }
 
     /**
@@ -110,7 +123,18 @@ class UsageService
 
         $this->usageRepository->create($usage);
 
-        return $this->usageRepository->toModel($usage);
+        $model = $this->usageRepository->toModel($usage);
+
+        $this->eventDispatcher->dispatch(new UsageIsCreatedEvent(
+            $model->getId(),
+            $model->getGroupId(),
+            $model->getUseDate(),
+            $model->getPlantId(),
+            $model->getUsableId(),
+            $model->getUsableType()
+        ));
+
+        return $model;
     }
 
     /**

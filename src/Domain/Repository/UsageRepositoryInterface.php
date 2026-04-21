@@ -20,6 +20,7 @@ interface UsageRepositoryInterface
     public function findAll(): array;
     public function findAllWithTargets(): array;
     public function findUsagesByUseDate(DateTimeImmutable $useDate): array;
+    public function findBy(int $plantId, string $usableType): array;
     public function create(Usage $usage): int;
     public function update(): void;
     public function remove(Usage $usage): void;
