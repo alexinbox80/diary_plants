@@ -1,7 +1,8 @@
 {% macro watering(waterins) %}
     <div class="d-flex flex-wrap gap-2">
         {% for key, label in waterins %}
-            <div class="border rounded p-2 {{ loop.last ? 'border-primary bg-primary-subtle' : 'bg-white' }}">
+            <div class="border rounded p-2 {{ loop.last ? 'border-primary bg-primary-subtle' : 'bg-white' }}"
+                title="{{ loop.last ? label.comment  : '' }}">
                 <small class="d-block text-muted" style="font-size: 0.7rem;">
                     {{ loop.last ? 'След.' : 'Дата' }}
                 </small>

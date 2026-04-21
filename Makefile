@@ -11,6 +11,10 @@ PHP_CONSOLE = php bin/console
 
 convert:
 	$(PHP_CONSOLE) database:convert:csv
+	$(PHP_CONSOLE) app:stats:init-watering
+
+analytic:
+	$(PHP_CONSOLE) app:stats:init-watering
 
 php-shell:
 	$(EXEC_PHP) bash

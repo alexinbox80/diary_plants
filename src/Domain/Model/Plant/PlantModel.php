@@ -211,42 +211,50 @@ class PlantModel implements AttachableModelInterface
      * @param array $items Массив записей (например, все поливы)
      * @return array Массив с добавленным 6-м элементом-прогнозом
      */
-    private function addForecastToWatering(array $items, DateTimeZone $timeZone): array
+    private function addForecastToWatering(array $items, DateTimeZone $timeZone, AnalyticModel $analyticModel): array
     {
-        if (count($items) < 2) {
-            return $items; // Недостаточно данных для расчета интервала
+        // 1. Пытаемся получить средний интервал из аналитики
+        $avgDaysFromAnalytic = $analyticModel->getAverageDays();
+        $hasHistory = $analyticModel->getCount() > 0 && $avgDaysFromAnalytic > 0;
+
+        // 2. Если в аналитике пусто и данных в текущем наборе мало — выходим
+        if (!$hasHistory && count($items) < 2) {
+            return $items;
         }
 
-        // 1. Извлекаем и парсим даты
-        $dates = array_map(function ($item) {
-            return \DateTimeImmutable::createFromFormat('d.m.Y', $item['use_date']);
-        }, $items);
+        // 3. Определяем, какой интервал использовать
+        if ($hasHistory) {
+            // Используем данные из AnalyticModel
+            $avgDays = (int) round($avgDaysFromAnalytic);
+            $sourceComment = "Средний интервал (общий): $avgDays дн.";
+        } else {
+            // Старый алгоритм расчета по текущему срезу $items
+            $dates = array_map(fn($item) => DateTimeImmutable::createFromFormat('d.m.Y', $item['use_date']), $items);
+            usort($dates, fn($a, $b) => $a <=> $b);
 
-        // Сортируем даты по возрастанию (от старых к новым)
-        usort($dates, fn($a, $b) => $a <=> $b);
-
-        // 2. Вычисляем интервалы между последовательными датами
-        $intervals = [];
-        for ($i = 1; $i < count($dates); $i++) {
-            $intervals[] = $dates[$i]->getTimestamp() - $dates[$i - 1]->getTimestamp();
+            $intervals = [];
+            for ($i = 1; $i < count($dates); $i++) {
+                $intervals[] = $dates[$i]->getTimestamp() - $dates[$i - 1]->getTimestamp();
+            }
+            $avgSeconds = array_sum($intervals) / count($intervals);
+            $avgDays = (int) round($avgSeconds / 86400);
+            $sourceComment = "Средний интервал (локальный): $avgDays дн.";
         }
 
-        // 3. Считаем средний интервал в секундах и переводим в дни
-        $avgSeconds = array_sum($intervals) / count($intervals);
-        $avgDays = (int) round($avgSeconds / 86400);
-
-        // 4. Берем самую позднюю дату и прибавляем средний интервал
-        $lastDate = max($dates);
+        // 4. Находим дату последнего полива для отсчета прогноза
+        // (даже если используем аналитику, прогноз строим от последней реальной записи в $items)
+        $allDates = array_map(fn($item) => DateTimeImmutable::createFromFormat('d.m.Y', $item['use_date']), $items);
+        $lastDate = max($allDates);
         $forecastDate = $lastDate->modify("+$avgDays days");
 
-        // 5. Клонируем структуру последнего элемента для сохранения метаданных
+        // 5. Формируем запись прогноза
         $lastEntry = end($items);
         $forecastEntry = array_merge($lastEntry, [
             'id' => null,
             'icon_tag' => '',
             'use_date' => $forecastDate->format('d.m.Y'),
-            'usable_name' => "Прогноз: " . $lastEntry['usable_name'],
-            'comment' => "Средний интервал: $avgDays дн.",
+            'usable_name' => 'Прогноз: ' . $lastEntry['usable_name'],
+            'comment' => $sourceComment,
             'marker_color' => '',
             'attachable' => null,
             'created_at' => (new DateTimeImmutable())->setTimezone($timeZone)->format('d.m.Y H:i:s'),
@@ -261,7 +269,7 @@ class PlantModel implements AttachableModelInterface
     /**
      * Группирует массив по типам и оставляет только 5 последних события по дате
      */
-    private function getLastFiveByType(array $data, DateTimeZone $timeZone): array
+    private function getLastFiveByType(array $data, DateTimeZone $timeZone, AnalyticModel $analyticModel): array
     {
         $grouped = [];
 
@@ -274,7 +282,7 @@ class PlantModel implements AttachableModelInterface
         }
 
         // 2. Обрабатываем каждую группу отдельно
-        return array_map(function(array $group) use ($timeZone) {
+        return array_map(function(array $group) use ($timeZone, $analyticModel) {
             // Сортируем внутри группы по дате (от старых к новым)
             usort($group, function($a, $b) {
                 return strtotime($a['use_date']) <=> strtotime($b['use_date']);
@@ -285,7 +293,7 @@ class PlantModel implements AttachableModelInterface
 
             // 3. Если это группа "watering" и в ней больше 1 записи — добавляем прогноз
             if (isset($lastFive[0]) && $lastFive[0]['usable_type'] === 'watering' && count($lastFive) >= 2) {
-                $lastFive = $this->addForecastToWatering($lastFive, $timeZone);
+                $lastFive = $this->addForecastToWatering($lastFive, $timeZone, $analyticModel);
             }
 
             return $lastFive;
@@ -457,7 +465,7 @@ class PlantModel implements AttachableModelInterface
 
         $usages = array_map(fn(UsageModel $u) => $u->toArray(), $this->getUsage());
         if (!empty($usages)) {
-            $usages = $this->getLastFiveByType($usages, $timezone);
+            $usages = $this->getLastFiveByType($usages, $timezone, $this->getAnalytic());
         }
 
         $offsprings = array_map(fn(OffspringModel $o) => $o->toArray(), $this->getOffspring());
