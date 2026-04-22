@@ -4,6 +4,7 @@ namespace App\Controller\Cli;
 
 use App\Domain\Service\PlantService;
 use App\Domain\Service\UsageService;
+use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Service\AnalyticService;
 use App\Domain\Service\AnalyticsCalculator;
 use Symfony\Component\Console\Command\Command;
@@ -41,9 +42,21 @@ class InitWateringStatsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $plantId = $input->getArgument('plantId');
 
-        if ($plantId) {
+        if ($plantId !== null) {
+            // Проверяем, что передано именно число
+            if (!is_numeric($plantId)) {
+                $io->error(sprintf('Plant ID "%s" is not a valid number.', $plantId));
+                return Command::FAILURE;
+            }
+
             $plantModel = $this->plantService->findModel((int)$plantId);
-            $plantModels = $plantModel ? [$plantModel] : [];
+
+            if (!$plantModel) {
+                $io->error(sprintf('Plant with ID %d not found.', $plantId));
+                return Command::FAILURE;
+            }
+
+            $plantModels = [$plantModel];
         } else {
             $plantModels = $this->plantService->findAll();
         }
@@ -56,43 +69,27 @@ class InitWateringStatsCommand extends Command
         $io->progressStart(count($plantModels));
 
         foreach ($plantModels as $plantModel) {
-            $analyticModel = $plantModel->getAnalytic();
-
-            // Если аналитики нет — создаем её через сервис
-            if (!$analyticModel) {
-                // Создаем DTO для создания
-                $createModel = new CreateAnalyticModel(
-                    $plantModel->getId(),
-                    $plantModel->getGroup()->getId()
+            // 1. Убеждаемся, что у растения есть сущность аналитики
+            if (!$plantModel->getAnalytic()) {
+                $this->analyticService->create(
+                    new CreateAnalyticModel(
+                        $plantModel->getId(),
+                        $plantModel->getGroup()->getId()
+                    )
                 );
-
-                $analyticModel = $this->analyticService->create($createModel);
             }
 
+            // 2. Получаем все даты поливов
             $waterings = $this->usageService->findBy($plantModel, AttachableType::WATERING->value);
+            $dates = array_map(fn(UsageModel $usage) => $usage->getUseDate(), $waterings);
 
-            // Инициализируем значения для расчета
-            $count = 0;
-            $average = 0.0;
+            // 3. Делегируем расчет калькулятору
+            $metrics = $this->calculator->calculateFullMetrics($dates);
 
-            if (count($waterings) >= 2) {
-                $lastDate = null;
-                foreach ($waterings as $usage) {
-                    $currentDate = $usage->getUseDate();
-                    if ($lastDate !== null) {
-                        $diff = $currentDate->diff($lastDate);
-                        $daysPassed = (float) $diff->days;
-                        $count++;
-                        $average = $this->calculator->calculateNewAverage($average, $count, $daysPassed);
-                    }
-                    $lastDate = $currentDate;
-                }
-            }
-
-            // Обновляем метрики через сервис (он внутри найдет Entity и сделает flush)
+            // 4. Обновляем метрики
             $this->analyticService->updateWateringMetrics(
                 $plantModel->getId(),
-                new IntervalMetrics($count, $average)
+                $metrics
             );
 
             $io->progressAdvance();

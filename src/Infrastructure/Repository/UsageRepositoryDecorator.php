@@ -227,6 +227,27 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     }
 
     /**
+     * @param int $groupId
+     * @param int $usableId
+     * @param string $usableType
+     * @param DateTimeImmutable $date
+     * @return DateTimeImmutable|null
+     */
+    public function findLatestDateBefore(int $groupId, int $usableId, string $usableType, DateTimeImmutable $date): ?DateTimeImmutable
+    {
+        return $this->usageRepository->findLatestDateBefore($groupId, $usableId, $usableType, $date);
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function findPlantIdsByIds(array $ids): array
+    {
+        return $this->usageRepository->findPlantIdsByIds($ids);
+    }
+
+    /**
      * @param Usage $usage
      * @return int
      */

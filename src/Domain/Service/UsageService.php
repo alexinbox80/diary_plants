@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Event\UsageIsCreatedEvent;
+use App\Domain\Event\UsagesBulkDeletedEvent;
 use App\Domain\Model\Usage\CreateUsageModel;
 use App\Domain\Model\Usage\UpdateUsageModel;
 use App\Domain\Repository\UsageRepositoryInterface;
@@ -63,6 +64,18 @@ class UsageService
     public function findUsagesByUseDate(DateTimeImmutable $useDate): array
     {
         return $this->usageRepository->findUsagesByUseDate($useDate);
+    }
+
+    /**
+     * @param int $groupId
+     * @param int $usableId
+     * @param string $usableType
+     * @param DateTimeImmutable $date
+     * @return DateTimeImmutable|null
+     */
+    public function findLatestDateBefore(int $groupId, int $usableId, string $usableType, DateTimeImmutable $date): ?DateTimeImmutable
+    {
+        return $this->usageRepository->findLatestDateBefore($groupId, $usableId, $usableType, $date);
     }
 
     /**
@@ -125,14 +138,16 @@ class UsageService
 
         $model = $this->usageRepository->toModel($usage);
 
-        $this->eventDispatcher->dispatch(new UsageIsCreatedEvent(
+        $event = new UsageIsCreatedEvent(
             $model->getId(),
             $model->getGroupId(),
             $model->getUseDate(),
             $model->getPlantId(),
             $model->getUsableId(),
             $model->getUsableType()
-        ));
+        );
+
+        $this->eventDispatcher->dispatch($event);
 
         return $model;
     }
@@ -293,6 +308,16 @@ class UsageService
      */
     public function removeUsages(array $ids): int
     {
-        return $this->usageRepository->removeByIds($ids, 2);
+        $plantIds = $this->usageRepository->findPlantIdsByIds($ids);
+
+        $count = $this->usageRepository->removeByIds($ids, 2);
+
+        if ($count > 0 && !empty($plantIds)) {
+            $this->eventDispatcher->dispatch(
+                new UsagesBulkDeletedEvent($plantIds, AttachableType::WATERING->value)
+            );
+        }
+
+        return $count;
     }
 }

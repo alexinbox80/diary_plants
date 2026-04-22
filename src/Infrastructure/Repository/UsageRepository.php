@@ -125,7 +125,7 @@ class UsageRepository extends AbstractRepository
               AND usable_type IN (\'fertilizer\', \'pest\', \'stimulant\', \'watering\')
         ) t
         WHERE t.rn <= 5
-    ';
+        ';
 
         $ids = $this->entityManager->getConnection()->fetchFirstColumn($sql, [
             'plantId' => $plant->getId()
@@ -207,6 +207,34 @@ class UsageRepository extends AbstractRepository
             ->setParameter('usageId', $usageId)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * Получить последнюю дату использования до указанной даты.
+     * @param int $groupId
+     * @param int $usableId
+     * @param string $usableType
+     * @param DateTimeImmutable $date
+     * @return DateTimeImmutable|null
+     */
+    public function findLatestDateBefore(int $groupId, int $usableId, string $usableType, DateTimeImmutable $date): ?DateTimeImmutable
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+
+        return $qb->select('u.useDate')
+            ->from(Usage::class, 'u')
+            ->where('u.group = :groupId')
+//            ->andWhere('u.target.usableId = :usableId')
+            ->andWhere('u.target.usableType = :usableType')
+            ->andWhere('u.useDate < :date')
+            ->setParameter('groupId', $groupId)
+//            ->setParameter('usableId', $usableId)
+            ->setParameter('usableType', $usableType)
+            ->setParameter('date', $date)
+            ->orderBy('u.useDate', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()['useDate'] ?? null;
     }
 
     /**
@@ -361,6 +389,23 @@ class UsageRepository extends AbstractRepository
             ->setParameter('usableType', $usableType)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function findPlantIdsByIds(array $ids): array
+    {
+        $results = $this->entityManager->createQueryBuilder('u')
+            ->select('DISTINCT IDENTITY(u.plant) as plantId')
+            ->from(Usage::class, 'u')
+            ->where('u.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_column($results, 'plantId');
     }
 
     /**

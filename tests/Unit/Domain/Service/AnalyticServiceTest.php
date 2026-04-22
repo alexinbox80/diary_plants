@@ -7,125 +7,108 @@ use App\Domain\Entity\Plant;
 use App\Domain\Entity\Analytic;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Service\GroupService;
-use App\Domain\Service\ModelFactory;
 use App\Domain\Service\PlantService;
 use PHPUnit\Framework\Attributes\Test;
 use App\Domain\Service\AnalyticService;
 use App\Domain\Model\Analytic\AnalyticModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\Attributes\CoversClass;
+use App\Domain\Exception\EntityNotFoundException;
 use App\Domain\Model\Analytic\CreateAnalyticModel;
-use App\Domain\Model\Analytic\UpdateAnalyticModel;
 use App\Domain\ValueObject\Analytic\IntervalMetrics;
 use App\Domain\Repository\AnalyticRepositoryInterface;
 
 #[CoversClass(AnalyticService::class)]
 class AnalyticServiceTest extends TestCase
 {
-    private GroupService&MockObject $groupService;
-    private PlantService&MockObject $plantService;
-    private AnalyticRepositoryInterface&MockObject $analyticRepository;
-    private ModelFactory&MockObject $modelFactory;
+    private GroupService|MockObject $groupService;
+    private PlantService|MockObject $plantService;
+    private AnalyticRepositoryInterface|MockObject $repository;
     private AnalyticService $service;
 
     protected function setUp(): void
     {
         $this->groupService = $this->createMock(GroupService::class);
         $this->plantService = $this->createMock(PlantService::class);
-        $this->analyticRepository = $this->createMock(AnalyticRepositoryInterface::class);
-        $this->modelFactory = $this->createMock(ModelFactory::class);
+        $this->repository = $this->createMock(AnalyticRepositoryInterface::class);
 
         $this->service = new AnalyticService(
             $this->groupService,
             $this->plantService,
-            $this->analyticRepository,
-            $this->modelFactory
+            $this->repository
         );
     }
 
     #[Test]
-    public function createSuccessfullyCreatesAnalytic(): void
+    public function testCreateSuccess(): void
     {
-        // 1. Arrange
-        $createModel = new CreateAnalyticModel(groupId: 1, plantId: 100);
+        $model = new CreateAnalyticModel(plantId: 1, groupId: 10);
 
-        $group = $this->createMock(Group::class);
         $plant = $this->createMock(Plant::class);
+        $group = $this->createMock(Group::class);
         $analyticModel = $this->createMock(AnalyticModel::class);
 
-        $this->groupService->method('find')->with(1)->willReturn($group);
-        $this->plantService->method('find')->with(100)->willReturn($plant);
+        $this->plantService->expects($this->once())->method('find')->with(1)->willReturn($plant);
+        $this->groupService->expects($this->once())->method('find')->with(10)->willReturn($group);
 
-        // Проверяем, что репозиторий вызвал метод сохранения
-        $this->analyticRepository->expects($this->once())->method('create');
-        $this->analyticRepository->method('toModel')->willReturn($analyticModel);
+        $this->repository->expects($this->once())->method('create')->with($this->isInstanceOf(Analytic::class));
+        $this->repository->expects($this->once())->method('toModel')->willReturn($analyticModel);
 
-        // 2. Act
-        $result = $this->service->create($createModel);
-
-        // 3. Assert
+        $result = $this->service->create($model);
         $this->assertSame($analyticModel, $result);
     }
 
     #[Test]
-    public function createThrowsExceptionIfPlantNotFound(): void
+    public function testCreateThrowsExceptionIfPlantNotFound(): void
     {
-        $createModel = new CreateAnalyticModel(1, 100);
-        $this->groupService->method('find')->willReturn($this->createMock(Group::class));
+        $model = new CreateAnalyticModel(1, 10);
+
         $this->plantService->method('find')->willReturn(null);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Group or Plant not found for Analytic creation');
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Group or Plant not found');
 
-        $this->service->create($createModel);
+        $this->service->create($model);
     }
 
     #[Test]
-    public function updateWateringMetricsUpdatesExistingAnalytic(): void
+    public function testUpdateWateringMetricsSuccess(): void
     {
-        // 1. Arrange
-        $plantId = 100;
-        $groupId = 1;
+        $plantId = 1;
         $metrics = new IntervalMetrics(5, 10.5);
-
         $analytic = $this->createMock(Analytic::class);
-        $group = $this->createMock(Group::class);
-        $group->method('getId')->willReturn($groupId);
-        $analytic->method('getGroup')->willReturn($group);
+        $analyticModel = $this->createMock(AnalyticModel::class);
 
-        $updateModel = new UpdateAnalyticModel(
-            plantId: $plantId,
-            groupId: $groupId,
-            count: 5,
-            averageDays: 10.5
-        );
+        $this->repository->expects($this->once())->method('findOneByPlantId')->with($plantId)->willReturn($analytic);
 
-        $this->analyticRepository
-            ->method('findOneByPlantId')
-            ->with($plantId)
-            ->willReturn($analytic);
+        // Проверяем, что в сущности вызывается метод смены метрик
+        $analytic->expects($this->once())->method('changeWateringMetrics')->with($metrics);
 
-        // Настраиваем фабрику, чтобы она возвращала наш подготовленный объект
-        $this->modelFactory
-            ->method('makeModel')
-            ->willReturn($updateModel);
+        $this->repository->expects($this->once())->method('update');
+        $this->repository->expects($this->once())->method('toModel')->with($analytic)->willReturn($analyticModel);
 
-        // Ожидаем, что у сущности вызовут метод смены метрик
-        $analytic->expects($this->once())->method('changeWateringMetrics');
-        $this->analyticRepository->expects($this->once())->method('update');
-
-        // 2. Act
-        $this->service->updateWateringMetrics($plantId, $metrics);
+        $result = $this->service->updateWateringMetrics($plantId, $metrics);
+        $this->assertSame($analyticModel, $result);
     }
 
     #[Test]
-    public function updateWateringMetricsThrowsExceptionIfAnalyticNotFound(): void
+    public function testUpdateThrowsExceptionIfAnalyticNotFound(): void
     {
-        $this->analyticRepository->method('findOneByPlantId')->willReturn(null);
+        $this->repository->method('findOneByPlantId')->willReturn(null);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Analytic entity for plant 100 not found");
+        $this->expectException(EntityNotFoundException::class);
 
-        $this->service->updateWateringMetrics(100, new IntervalMetrics(0, 0));
+        $this->service->updateWateringMetrics(1, new IntervalMetrics(1, 1.0));
+    }
+
+    #[Test]
+    public function testRemoveByPlantId(): void
+    {
+        $analytic = $this->createMock(Analytic::class);
+
+        $this->repository->method('findOneByPlantId')->with(1)->willReturn($analytic);
+        $this->repository->expects($this->once())->method('remove')->with($analytic);
+
+        $this->service->removeByPlantId(1);
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Analytic;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Analytic\AnalyticModel;
+use App\Domain\Exception\EntityNotFoundException;
 use App\Domain\Model\Analytic\CreateAnalyticModel;
 use App\Domain\Model\Analytic\UpdateAnalyticModel;
 use App\Domain\ValueObject\Analytic\IntervalMetrics;
@@ -16,48 +16,33 @@ class AnalyticService
         private readonly GroupService $groupService,
         private readonly PlantService $plantService,
         private readonly AnalyticRepositoryInterface $analyticRepository,
-        private readonly ModelFactory $modelFactory,
     ) {
     }
 
     /**
      * @param int $analyticId
-     * @return ?Analytic
+     * @return AnalyticModel|null
      */
-    public function find(int $analyticId): ?Analytic
+    public function findModel(int $analyticId): ?AnalyticModel
     {
-        return $this->analyticRepository->find($analyticId);
-    }
-
-    /**
-     * @return Analytic[]
-     */
-    public function findAll(): array
-    {
-        return $this->analyticRepository->findAll();
+        $analytic = $this->analyticRepository->find($analyticId);
+        return $analytic ? $this->analyticRepository->toModel($analytic) : null;
     }
 
     /**
      * @param int $plantId
-     * @return AnalyticModel[]
+     * @return AnalyticModel|null
      */
-    public function findAnalyticsByPlantId(int $plantId): array
+    public function findModelByPlantId(int $plantId): ?AnalyticModel
     {
-        return $this->analyticRepository->findAnalyticsByPlantId($plantId);
+        $analytic = $this->analyticRepository->findOneByPlantId($plantId);
+        return $analytic ? $this->analyticRepository->toModel($analytic) : null;
     }
 
     /**
-     * @param int $groupId
+     * @param int $page
+     * @param int $perPage
      * @return AnalyticModel[]
-     */
-    public function findAnalyticsByGroupId(int $groupId): array
-    {
-        return $this->analyticRepository->findAnalyticsByGroupId($groupId);
-    }
-
-    /**
-     * @return AnalyticModel[]
-     * @throws InvalidArgumentException
      */
     public function getAnalyticPaginated(int $page, int $perPage): array
     {
@@ -65,17 +50,16 @@ class AnalyticService
     }
 
     /**
-     * @param CreateAnalyticModel $createAnalyticModel
+     * @param CreateAnalyticModel $model
      * @return AnalyticModel
-     * @throws InvalidArgumentException
      */
-    public function create(CreateAnalyticModel $createAnalyticModel): AnalyticModel
+    public function create(CreateAnalyticModel $model): AnalyticModel
     {
-        $group = $this->groupService->find($createAnalyticModel->groupId);
-        $plant = $this->plantService->find($createAnalyticModel->plantId);
+        $group = $this->groupService->find($model->groupId);
+        $plant = $this->plantService->find($model->plantId);
 
         if (!$group || !$plant) {
-            throw new \Exception('Group or Plant not found for Analytic creation');
+            throw new EntityNotFoundException('Group or Plant not found for Analytic creation');
         }
 
         $analytic = new Analytic($plant, $group);
@@ -85,20 +69,43 @@ class AnalyticService
     }
 
     /**
-     * @param Analytic $analytic
-     * @param UpdateAnalyticModel $updateAnalyticModel
+     * Универсальный метод обновления через DTO
+     * @param int $plantId
+     * @param UpdateAnalyticModel $model
      * @return AnalyticModel
-     * @throws InvalidArgumentException
      */
-    public function update(Analytic $analytic, UpdateAnalyticModel $updateAnalyticModel): AnalyticModel
+    public function update(int $plantId, UpdateAnalyticModel $model): AnalyticModel
     {
+        $analytic = $this->analyticRepository->findOneByPlantId($plantId);
+
+        if (!$analytic) {
+            throw new EntityNotFoundException("Analytic for plant $plantId not found");
+        }
+
         $analytic->changeWateringMetrics(
-            new IntervalMetrics(
-                $updateAnalyticModel->count,
-                $updateAnalyticModel->averageDays,
-            )
+            new IntervalMetrics($model->count, $model->averageDays)
         );
 
+        $this->analyticRepository->update(); // Flush
+
+        return $this->analyticRepository->toModel($analytic);
+    }
+
+    /**
+     * Упрощенный метод специально для метрик (используется в вашей команде)
+     * @param int $plantId
+     * @param IntervalMetrics $metrics
+     * @return AnalyticModel
+     */
+    public function updateWateringMetrics(int $plantId, IntervalMetrics $metrics): AnalyticModel
+    {
+        $analytic = $this->analyticRepository->findOneByPlantId($plantId);
+
+        if (!$analytic) {
+            throw new EntityNotFoundException("Analytic for plant $plantId not found");
+        }
+
+        $analytic->changeWateringMetrics($metrics);
         $this->analyticRepository->update();
 
         return $this->analyticRepository->toModel($analytic);
@@ -106,59 +113,23 @@ class AnalyticService
 
     /**
      * @param int $plantId
-     * @return Analytic|null
-     */
-    public function findEntityByPlantId(int $plantId): ?Analytic
-    {
-        return $this->analyticRepository->findOneByPlantId($plantId);
-    }
-
-    /**
-     * @param int $plantId
-     * @param IntervalMetrics $metrics
-     * @return AnalyticModel
-     * @throws InvalidArgumentException
-     */
-    public function updateWateringMetrics(int $plantId, IntervalMetrics $metrics): AnalyticModel
-    {
-        $analytic = $this->findEntityByPlantId($plantId);
-
-        if (null === $analytic) {
-            throw new \Exception("Analytic entity for plant $plantId not found");
-        }
-
-        /** @var UpdateAnalyticModel $updateModel */
-        $updateModel = $this->modelFactory->makeModel(
-            UpdateAnalyticModel::class,
-            $analytic->getGroup()->getId(),
-            $plantId,
-            $metrics->getCount(),
-            $metrics->getAverageDays()
-        );
-
-        return $this->update($analytic, $updateModel);
-    }
-
-    /**
-     * @param int $analyticId
      * @return void
-     * @throws InvalidArgumentException
      */
-    public function removeById(int $analyticId): void
+    public function removeByPlantId(int $plantId): void
     {
-        $analytic = $this->analyticRepository->find($analyticId);
-        if ($analytic !== null) {
+        $analytic = $this->analyticRepository->findOneByPlantId($plantId);
+        if ($analytic) {
             $this->analyticRepository->remove($analytic);
         }
     }
 
     /**
-     * @param Analytic $analytic
-     * @return void
-     * @throws InvalidArgumentException
+     * Внутренний метод для получения Entity, если он нужен другим сервисам
+     * @param int $plantId
+     * @return Analytic|null
      */
-    public function removeAnalytic(Analytic $analytic): void
+    public function getEntityByPlantId(int $plantId): ?Analytic
     {
-        $this->analyticRepository->remove($analytic);
+        return $this->analyticRepository->findOneByPlantId($plantId);
     }
 }
