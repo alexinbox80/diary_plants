@@ -20,6 +20,7 @@ service-test:
 
 event-test:
 	@echo "--- Running Event Tests ---"
+	$(PHPUNIT) tests/Unit/Domain/Event
 	$(PHPUNIT) tests/Unit/Domain/EventSubscriber
 
 cli-test:
@@ -45,3 +46,4 @@ infra-test:
 repo-test:
 	@echo "--- Running Integration Repository Tests ---"
 	$(PHPUNIT) tests/Integration/Infrastructure/Repository
+	$(PHPUNIT) tests/Integration/Service
