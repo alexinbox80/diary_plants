@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use DateTimeImmutable;
 use App\Domain\Entity\User;
 use InvalidArgumentException;
 use App\Domain\Model\User\UserModel;
@@ -11,6 +12,7 @@ use App\Domain\ValueObject\User\Phone;
 use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
+use App\Domain\ValueObject\User\RefreshToken;
 use App\Domain\Repository\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
@@ -116,8 +118,13 @@ class UserService
         $user
             ->setPhone(new Phone($createUserModel->phone))
             ->setTimeZone($createUserModel->timeZone)
-            ->setAvatarLink($createUserModel->avatarLink)
-            ->updateRefreshToken($createUserModel->refreshToken);
+            ->setAvatarLink($createUserModel->avatarLink);
+
+        if ($createUserModel->refreshToken) {
+            $user->updateRefreshToken(
+                new RefreshToken($createUserModel->refreshToken, new DateTimeImmutable('+30 days'))
+            );
+        }
 
         if ($createUserModel->isActive) $user->activate();
 
@@ -184,7 +191,6 @@ class UserService
                 $updateUserModel->firstName,
                 $updateUserModel->middleName))
             ->changeRole($updateUserModel->roles[0]->value)
-            ->updateRefreshToken($updateUserModel->refreshToken)
             ->setPhone(new Phone($updateUserModel->phone))
             ->setAvatarLink($updateUserModel->avatarLink)
             ->setTimeZone($updateUserModel->timeZone);
@@ -193,6 +199,10 @@ class UserService
             $user->activate();
         else
             $user->suspend();
+
+        $user->updateRefreshToken(
+            $updateUserModel->refreshToken ? new RefreshToken($updateUserModel->refreshToken, new DateTimeImmutable('+30 days')) : null
+        );
 
         $this->userRepository->update();
 

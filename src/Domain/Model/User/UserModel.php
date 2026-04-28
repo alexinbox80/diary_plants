@@ -24,7 +24,8 @@ class UserModel
         private readonly string $lastName,
         private readonly string $firstName,
         private readonly ?string $middleName = null,
-        private readonly ?string $refreshToken,
+        private readonly ?string $refreshToken = null,
+        private readonly ?DateTimeImmutable $expiresAt = null,
         private readonly ?string $phone = null,
         private readonly ?string $avatarLink = null,
         private readonly ?string $emailCode = null,
@@ -82,6 +83,11 @@ class UserModel
     public function getRefreshToken(): ?string
     {
         return $this->refreshToken;
+    }
+
+    public function getRefreshTokenExpiresAt(): ?DateTimeImmutable
+    {
+        return $this->expiresAt;
     }
 
     public function isEmailConfirmed(): bool
@@ -154,7 +160,8 @@ class UserModel
             $user->getName()->getLast(),
             $user->getName()->getFirst(),
             $user->getName()->getMiddle(),
-            $user->getRefreshToken(),
+            $user->getRefreshToken()?->getToken(),
+            $user->getRefreshToken()?->getExpiresAt(),
             $user->getPhone(),
             $user->getAvatarLink(),
             $user->getEmailCode(),
@@ -183,6 +190,7 @@ class UserModel
             'first_name' => 'Имя',
             'middle_name' => 'Отчество',
             'refresh_token' => 'Токен',
+            'refresh_token_expires_at' => 'Истечение токена',
             'phone' => 'Телефон',
             'email_code' => 'Код подтверждения почты',
             'phone_code' => 'Код телефона почты',
@@ -211,6 +219,7 @@ class UserModel
             'first_name' => $this->getFirstName(),
             'middle_name' => $this->getMiddleName(),
             'refresh_token' => $this->getRefreshToken(),
+            'refresh_token_expires_at' => $this->getRefreshTokenExpiresAt(),
             'phone' => $this->getPhone(),
             'avatar_link' => $this->getAvatarLink(),
             'email_code' => $this->getEmailCode(),

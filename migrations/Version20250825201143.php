@@ -201,6 +201,7 @@ final class Version20250825201143 extends AbstractMigration
                     password VARCHAR(255) NOT NULL,
                     roles JSON NOT NULL,
                     refresh_token VARCHAR(32) DEFAULT NULL,
+                    refresh_token_expires_at TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL,
                     is_active BOOLEAN DEFAULT true NOT NULL,
                     last_name VARCHAR(64) NOT NULL,
                     first_name VARCHAR(64) NOT NULL,

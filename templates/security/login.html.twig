@@ -1,0 +1,79 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Авторизация
+{% endblock %}
+
+{% block stylesheets %}
+    <!-- plugins:css -->
+    {# navbar и кнопки пагинации #}
+{#    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-line-icons/css/simple-line-icons.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('assets/vendors/flag-icon-css/css/flag-icons.min.css') }}">#}
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    {# шрифт иконок в меню #}
+{#    <link rel="stylesheet" href="{{ asset('assets/vendors/font-awesome/css/font-awesome.min.css') }}" />#}
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+{#    <link rel="stylesheet" href="{{ asset('assets/css/dashboard/style.css') }}">#}
+    <!-- End layout styles -->
+{% endblock %}
+
+{% block favicon %}
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {#  меню с языками и пользователем  #}
+{#    <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>#}
+{#    <!-- inject:js -->#}
+{#    #}{# сворачивание меню и добавление класса active при переходе #}
+{#    <script src="{{ asset('assets/js/misc.js') }}"></script>#}
+{#    <!-- endinject -->#}
+{#    #}{# chartist.js #}
+{#    <script src="{{ asset('assets/js/chartist.js') }}"></script>#}
+{#    <!-- Custom js for this page -->#}
+{#    <script src="{{ asset('assets/js/dashboard.js') }}"></script>#}
+{#    <!-- End custom js for this page -->#}
+{#    <!-- Sidebar menu full / short-->#}
+{#    <script type="module" defer src="{{ asset('assets/js/dashboard/menu/main.js') }}"></script>#}
+{#    <!-- End sidebar js for this page -->#}
+{% endblock %}
+
+{% block content %}
+{#    {% include 'components/dashboard/alert.html.twig' with {'flashes': app.flashes} %}#}
+    <div class="container-scroller">
+        {% block header %}{% endblock %}
+        {% block body %}
+            <form method="post">
+                {# Вывод ошибки, если она есть (например, от вашего UserChecker) #}
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="mb-3">
+                        Вы вошли как {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Выйти</a>
+                    </div>
+                {% endif %}
+
+                <h1 class="h3 mb-3 font-weight-normal">Пожалуйста, войдите</h1>
+
+                <label for="inputEmail">Email</label>
+                <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+
+                <label for="inputPassword">Пароль</label>
+                <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+                {# CSRF-защита (важно для form_login) #}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button class="btn btn-lg btn-primary" type="submit">
+                    Войти
+                </button>
+            </form>
+        {% endblock %}
+    </div>
+{% endblock %}

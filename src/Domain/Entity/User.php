@@ -9,6 +9,7 @@ use App\Domain\ValueObject\User\Phone;
 use App\Domain\Entity\Traits\CreatedAtTrait;
 use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
+use App\Domain\ValueObject\User\RefreshToken;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -47,9 +48,9 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     #[ORM\Column(type: 'json', length: 1024, nullable: false)]
     private array $roles = [];
 
-    //рефреш токен
-    #[ORM\Column(name: 'refresh_token', type: 'string', length: 32, nullable: true)]
-    private ?string $refreshToken = null;
+    //рефреш токен, дата и время истечения рефреш токена
+    #[ORM\Embedded(class: RefreshToken::class, columnPrefix: false)]
+    private ?RefreshToken $refreshToken = null;
 
     //флаг блокировки пользователя
     #[ORM\Column(name: 'is_active', type: 'boolean', options: ['default' => true])]
@@ -183,9 +184,9 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this;
     }
 
-    public function updateRefreshToken(?string $token): self
+    public function updateRefreshToken(?RefreshToken $refreshToken): self
     {
-        $this->refreshToken = $token;
+        $this->refreshToken = $refreshToken;
 
         return $this;
     }
@@ -208,7 +209,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
     public function getUserIdentifier(): string
     {
-        return $this->email;
+        return (string) $this->email;
     }
 
     public function getId(): int
@@ -240,9 +241,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        //$roles[] = RoleEnum::ROLE_USER->value;
-//        $roles[] = 'ROLE_USER';
+        //$roles[] = UserRole::ROLE_USER->value;
 
         return array_unique($roles);
     }
@@ -273,7 +272,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         }
     }
 
-    public function getRefreshToken(): ?string
+    public function getRefreshToken(): ?RefreshToken
     {
         return $this->refreshToken;
     }

@@ -50,6 +50,8 @@ class UserServiceTest extends TestCase
     #[Test]
     public function testCreateSuccess(): void
     {
+        $validToken = str_repeat('a', 32);
+
         $model = new CreateUserModel(
             groupId: 1,
             email: 'test@example.com',
@@ -62,7 +64,7 @@ class UserServiceTest extends TestCase
             lastName: 'Иванов',
             firstName: 'Иван',
             middleName: 'Иванович',
-            refreshToken: 'token123',
+            refreshToken: $validToken,
             phone: '+79991234567',
             avatarLink: null,
             emailCode: null,
@@ -94,6 +96,8 @@ class UserServiceTest extends TestCase
     public function testUpdateTogglesActivation(): void
     {
         $userEntity = $this->createMock(User::class);
+        $validToken = bin2hex(random_bytes(16));
+
         $model = new UpdateUserModel(
             groupId: 1,
             email: 'test@example.com',
@@ -106,7 +110,7 @@ class UserServiceTest extends TestCase
             lastName: 'Ivanov',
             firstName: 'Ivan',
             middleName: null,
-            refreshToken: 'new_token',
+            refreshToken: $validToken,
             phone: '1234567890',
             avatarLink: 'path/to/avatar.jpg'
         );

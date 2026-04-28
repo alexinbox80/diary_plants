@@ -3,7 +3,6 @@
 namespace Unit\Infrastructure\Repository;
 
 use DateTimeImmutable;
-
 use App\Domain\Entity\User;
 use App\Domain\Entity\Group;
 use PHPUnit\Framework\TestCase;
@@ -15,6 +14,7 @@ use App\Domain\Model\Group\GroupModel;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\Attributes\CoversClass;
+use App\Domain\ValueObject\User\RefreshToken;
 use App\Infrastructure\Repository\UserRepository;
 use App\Infrastructure\Repository\UserRepositoryDecorator;
 use App\Infrastructure\Repository\GroupRepositoryDecorator;
@@ -91,6 +91,11 @@ class UserRepositoryDecoratorTest extends TestCase
      */
     private function createUserMock(int $id): MockObject
     {
+        $refreshToken = new RefreshToken(
+            str_repeat('s', 32), // строка из 32 символов
+            new DateTimeImmutable('+30 days')
+        );
+
         $user = $this->getMockBuilder(UserStub::class)
             ->disableOriginalConstructor()
             ->onlyMethods([
@@ -114,7 +119,7 @@ class UserRepositoryDecoratorTest extends TestCase
         $user->method('getRoles')->willReturn(['ROLE_USER']);
         $user->method('isActive')->willReturn(true);
         $user->method('getPassword')->willReturn('hashed_password'); // ИСПРАВЛЕНИЕ
-        $user->method('getRefreshToken')->willReturn('token_abc');
+        $user->method('getRefreshToken')->willReturn($refreshToken);
         $user->method('getAvatarLink')->willReturn('/avatars/1.jpg');
         $user->method('getTimeZone')->willReturn('Europe/Moscow');
         $user->method('getGroup')->willReturn($this->createMock(Group::class));
@@ -138,7 +143,7 @@ abstract class UserStub extends User
     public function getEmail(): Email { return new Email('a@a.ru'); }
     public function getName(): Name { return new Name('a', 'b'); }
     public function getPassword(): string { return ''; }
-    public function getRefreshToken(): ?string { return null; }
+    public function getRefreshToken(): ?RefreshToken { return null; }
     public function getPhone(): ?Phone { return null; }
     public function getGroup(): Group { return Assert::createMock(Group::class); }
     public function getCreatedAt(): DateTimeImmutable { return new DateTimeImmutable(); }

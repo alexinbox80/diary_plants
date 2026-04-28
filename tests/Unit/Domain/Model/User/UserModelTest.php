@@ -12,6 +12,7 @@ use App\Domain\ValueObject\User\Name;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\ValueObject\User\Email;
 use App\Domain\ValueObject\User\Phone;
+use App\Domain\ValueObject\User\RefreshToken;
 
 class UserModelTest extends TestCase
 {
@@ -31,6 +32,9 @@ class UserModelTest extends TestCase
             'Иванович'
         );
 
+        $tokenExpiresAt = new DateTimeImmutable('2024-02-01 10:00:00', $tz);
+        $refreshTokenObject = new RefreshToken(str_repeat('a', 32), $tokenExpiresAt);
+
         // 2. Мокаем сущность User
         $groupEntity = $this->createMock(Group::class);
         $groupEntity->method('getId')->willReturn(1);
@@ -46,7 +50,7 @@ class UserModelTest extends TestCase
         $user->method('isPhoneConfirmed')->willReturn(false);
         $user->method('getTimeZone')->willReturn('Europe/Moscow');
         $user->method('getName')->willReturn($name);
-        $user->method('getRefreshToken')->willReturn('token123');
+        $user->method('getRefreshToken')->willReturn($refreshTokenObject);
         $user->method('getPhone')->willReturn($phoneObject);
         $user->method('getAvatarLink')->willReturn('https://avatar.com');
         $user->method('getEmailCode')->willReturn('1234');

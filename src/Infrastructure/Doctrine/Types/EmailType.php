@@ -20,6 +20,10 @@ class EmailType extends StringType
             return null;
         }
 
+        if (is_string($value)) {
+            return $value;
+        }
+
         WebmozartAssert::isInstanceOf($value, Email::class);
 
         return $value->toString();

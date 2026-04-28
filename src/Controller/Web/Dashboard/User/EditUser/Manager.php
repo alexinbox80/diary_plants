@@ -32,7 +32,7 @@ class Manager
             $user->getName()->getLast(),
             $user->getName()->getFirst(),
             $user->getName()->getMiddle(),
-            $user->getRefreshToken(),
+            $user->getRefreshToken()->getToken(),
             $user->getPhone(),
             $user->getAvatarLink(),
             $user->getEmailCode(),
