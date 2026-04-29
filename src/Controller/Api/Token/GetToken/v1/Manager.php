@@ -20,8 +20,10 @@ class Manager
      */
     public function getToken(Request $request): string
     {
-        $user = $request->getUser();
-        $password = $request->getPassword();
+        $data = $request->toArray();
+
+        $user = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
 
         if (!$user || !$password) {
             throw new UnauthorizedException();

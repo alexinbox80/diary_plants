@@ -2,6 +2,7 @@
 
 namespace App\Application\Security;
 
+use Random\RandomException;
 use App\Domain\Service\UserService;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -17,9 +18,14 @@ class AuthService
     ) {
     }
 
-    public function isCredentialsValid(string $login, string $password): bool
+    /**
+     * @param string $email
+     * @param string $password
+     * @return bool
+     */
+    public function isCredentialsValid(string $email, string $password): bool
     {
-        $user = $this->userService->findUserByLogin($login);
+        $user = $this->userService->findUserByEmail($email);
         if ($user === null) {
             return false;
         }
@@ -28,18 +34,18 @@ class AuthService
     }
 
     /**
-     * @param string $login
+     * @param string $email
      * @return string
      * @throws JWTEncodeFailureException
-     * @throws \Random\RandomException
+     * @throws RandomException
      */
-    public function getToken(string $login): string
+    public function getToken(string $email): string
     {
-        $user = $this->userService->findUserByLogin($login);
-        $refreshToken = $this->userService->updateUserRefreshToken($login);
+        $user = $this->userService->findUserByEmail($email);
+        $refreshToken = $this->userService->updateUserRefreshToken($email);
 
         $tokenData = [
-            'username' => $login,
+            'email' => $email,
             'roles' => $user?->getRoles() ?? [],
             'exp' => time() + $this->tokenTTL,
             'refresh_token' => $refreshToken,

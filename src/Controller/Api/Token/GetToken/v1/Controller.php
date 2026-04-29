@@ -25,6 +25,6 @@ class Controller
     {
         $data =  ['token' => $this->manager->getToken($request)];
 
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return new JsonResponse($data, Response::HTTP_OK, [], false);
     }
 }

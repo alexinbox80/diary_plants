@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Random\RandomException;
 use App\Domain\Entity\User;
 use App\Domain\Model\User\UserModel;
-use App\Domain\Model\Group\GroupModel;
 use App\Domain\Repository\UserRepositoryInterface;
 
 
@@ -14,6 +14,25 @@ class UserRepositoryDecorator implements UserRepositoryInterface
         private readonly UserRepository $userRepository,
         private readonly GroupRepositoryDecorator $groupRepository
     ) {
+    }
+
+    /**
+     * @param User $user
+     * @return string
+     * @throws RandomException
+     */
+    public function updateUserRefreshToken(User $user): string
+    {
+        return $this->userRepository->updateUserRefreshToken($user);
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function clearUserRefreshToken(User $user): void
+    {
+        $this->userRepository->clearUserRefreshToken($user);
     }
 
     /**
@@ -97,6 +116,24 @@ class UserRepositoryDecorator implements UserRepositoryInterface
             fn (User $user) => $this->toModel($user),
             $users
         );
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findUserByEmail(string $email): ?User
+    {
+        return $this->userRepository->findUserByEmail($email);
+    }
+
+    /**
+     * @param string $refreshToken
+     * @return User|null
+     */
+    public function findUserByRefreshToken(string $refreshToken): ?User
+    {
+        return $this->userRepository->findUserByRefreshToken($refreshToken);
     }
 
     /**

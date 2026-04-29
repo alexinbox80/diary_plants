@@ -19,7 +19,9 @@ final class RefreshToken
 
     public function __construct(?string $token, ?DateTimeImmutable $expiresAt)
     {
-        Assert::length($token, 32, 'Refresh token must be exactly 32 characters.');
+        if (null !== $token) {
+            Assert::minLength($token, 20, 'Token is too short');
+        }
 
         $this->token = $token;
         $this->expiresAt = $expiresAt;

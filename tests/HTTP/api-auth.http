@@ -1,0 +1,19 @@
+###
+POST {{base_url}}/api/v1/get-token
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "mail@mail.ru",
+    "password": "12345678"
+}
+
+###
+POST {{base_url}}/api/v1/refresh-token
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+###
+POST {{base_url}}/api/v1/get-token
+Authorization: Basic mail@mail.ru 12345678

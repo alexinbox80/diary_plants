@@ -22,8 +22,8 @@ class Controller extends AbstractController
     )]
     public function __invoke(Request $request): JsonResponse
     {
-        $data =  ['token' => $this->manager->refreshToken($this->getUser())];
+        $data = ['token' => $this->manager->refreshToken($this->getUser())];
 
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return new JsonResponse($data, Response::HTTP_OK, [], false);
     }
 }

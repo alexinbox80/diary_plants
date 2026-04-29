@@ -7,12 +7,16 @@ use App\Domain\Model\User\UserModel;
 
 interface UserRepositoryInterface
 {
+    public function updateUserRefreshToken(User $user): string;
+    public function clearUserRefreshToken(User $user): void;
     public function getUsersPaginated(int $page, int $perPage): array;
     public function find(int $userId): ?User;
     public function findModel(int $userId): ?UserModel;
     public function findAll(): array;
     public function findAllByGroupId(?int $groupId = null): array;
     public function findUsersByEmail(string $email): array;
+    public function findUserByEmail(string $email): ?User;
+    public function findUserByRefreshToken(string $refreshToken): ?User;
     public function create(User $user): int;
     public function update(): void;
     public function remove(User $user): void;

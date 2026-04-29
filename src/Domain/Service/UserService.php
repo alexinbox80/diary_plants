@@ -14,9 +14,11 @@ use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
 use App\Domain\ValueObject\User\RefreshToken;
 use App\Domain\Repository\UserRepositoryInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -28,7 +30,71 @@ class UserService
         private readonly GroupService $groupService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly FileService $fileService,
+        private readonly JWTEncoderInterface $jwtEncoder,
     ) {
+    }
+
+    /**
+     * @param string $email
+     * @return string
+     */
+    public function updateUserRefreshToken(string $email): string
+    {
+        $user = $this->findUserByEmail($email);
+
+        if ($user !== null) {
+            $refreshToken = $this->userRepository->updateUserRefreshToken($user);
+        }
+
+        return $refreshToken;
+    }
+
+    /**
+     * @param string $email
+     * @return void
+     */
+    public function clearUserRefreshToken(string $email): void
+    {
+        $user = $this->findUserByEmail($email);
+
+        if ($user !== null) {
+            $this->userRepository->clearUserRefreshToken($user);
+        }
+    }
+
+    /**
+     * @param string $token
+     * @return User|null
+     * @throws JWTDecodeFailureException
+     */
+    public function findUserByRefreshToken(string $token): ?User
+    {
+        try {
+            $payload = $this->jwtEncoder->decode($token);
+        } catch (\Exception $e) {
+            // Если токен невалиден или просрочен
+            return null;
+        }
+
+        $refreshToken = $payload['refresh_token'] ?? null;
+        if (!$refreshToken) {
+            return null;
+        }
+
+        $user =  $this->userRepository->findUserByRefreshToken($refreshToken);
+
+        if (null === $user) {
+            return null;
+        }
+
+        $refreshTokenVO = $user->getRefreshToken();
+
+        if (null === $refreshTokenVO || $refreshTokenVO->isExpired()) {
+            $user->updateRefreshToken(new RefreshToken(null, null));
+            return null;
+        }
+
+        return $user;
     }
 
     /**
@@ -71,6 +137,15 @@ class UserService
     public function findUsersByEmail(string $email): array
     {
         return $this->userRepository->findUsersByEmail($email);
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findUserByEmail(string $email): ?User
+    {
+        return $this->userRepository->findUserByEmail($email);
     }
 
     /**
