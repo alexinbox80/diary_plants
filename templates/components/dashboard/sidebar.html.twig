@@ -8,13 +8,18 @@
         </li>
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
+                {% if app.user.avatarLink is not empty %}
+                    {% set src = 'uploads/' ~ app.user.getAvatarLink %}
+                {% else %}
+                    {% set src = 'assets/images/dashboard/user/user_21980.png' %}
+                {% endif %}
                 <div class="profile-image">
-                    <img class="img-xs rounded-circle" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="profile image">
+                    <img class="img-xs rounded-circle" src="{{ asset(src) }}" alt="profile image">
                     <div class="dot-indicator bg-success"></div>
                 </div>
                 <div class="text-wrapper">
-                    <p class="profile-name">Henry Klein</p>
-                    <p class="designation">Administrator</p>
+                    <p class="profile-name">{{ app.user.getShortName }}</p>
+                    <p class="designation">{{ app.user.getRoles|readable_role }}</p>
                 </div>
                 <div class="icon-container">
                     <i class="icon-bubbles"></i>

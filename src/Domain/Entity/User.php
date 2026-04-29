@@ -233,6 +233,11 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         return $this->name;
     }
 
+    public function getShortName(): string
+    {
+        return $this->name->getFirst() . ' ' . $this->name->getLast();
+    }
+
     public function getPassword(): string
     {
         return $this->password;

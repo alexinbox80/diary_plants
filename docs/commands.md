@@ -31,6 +31,8 @@ php bin/console doctrine:cache:clear-metadata --env=prod
 
 #show route lists \
 php bin/console debug:router
+php bin/console debug:router dashboard.plants.index
+php bin/console debug:firewall main
 
 #drop all tables in database \
 php bin/console doctrine:schema:drop --full-database --force

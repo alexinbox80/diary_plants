@@ -5,20 +5,7 @@
 {% endblock %}
 
 {% block stylesheets %}
-    <!-- plugins:css -->
-    {# navbar и кнопки пагинации #}
-{#    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-line-icons/css/simple-line-icons.css') }}">#}
-{#    <link rel="stylesheet" href="{{ asset('assets/vendors/flag-icon-css/css/flag-icons.min.css') }}">#}
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    {# шрифт иконок в меню #}
-{#    <link rel="stylesheet" href="{{ asset('assets/vendors/font-awesome/css/font-awesome.min.css') }}" />#}
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
-{#    <link rel="stylesheet" href="{{ asset('assets/css/dashboard/style.css') }}">#}
-    <!-- End layout styles -->
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard/style.css') }}">
 {% endblock %}
 
 {% block favicon %}
@@ -26,54 +13,86 @@
 {% endblock %}
 
 {% block javascripts %}
-    {#  меню с языками и пользователем  #}
-{#    <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>#}
-{#    <!-- inject:js -->#}
-{#    #}{# сворачивание меню и добавление класса active при переходе #}
-{#    <script src="{{ asset('assets/js/misc.js') }}"></script>#}
-{#    <!-- endinject -->#}
-{#    #}{# chartist.js #}
-{#    <script src="{{ asset('assets/js/chartist.js') }}"></script>#}
-{#    <!-- Custom js for this page -->#}
-{#    <script src="{{ asset('assets/js/dashboard.js') }}"></script>#}
-{#    <!-- End custom js for this page -->#}
-{#    <!-- Sidebar menu full / short-->#}
-{#    <script type="module" defer src="{{ asset('assets/js/dashboard/menu/main.js') }}"></script>#}
-{#    <!-- End sidebar js for this page -->#}
 {% endblock %}
 
 {% block content %}
-{#    {% include 'components/dashboard/alert.html.twig' with {'flashes': app.flashes} %}#}
     <div class="container-scroller">
-        {% block header %}{% endblock %}
-        {% block body %}
-            <form method="post">
-                {# Вывод ошибки, если она есть (например, от вашего UserChecker) #}
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="content-wrapper d-flex align-items-center auth">
+                <div class="row flex-grow">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auth-form-light text-left p-5 shadow-sm bg-white rounded">
 
-                {% if app.user %}
-                    <div class="mb-3">
-                        Вы вошли как {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Выйти</a>
+                            <div class="brand-logo text-center mb-4">
+                                <h2 class="text-success font-weight-bold">DASHBOARD</h2>
+                            </div>
+
+                            <h4 class="font-weight-light mb-4">Войдите, чтобы продолжить.</h4>
+
+                            <form method="post" class="pt-3">
+                                {% if error %}
+                                    <div class="alert alert-danger p-2 small">
+                                        <i class="mdi mdi-alert-circle-outline"></i>
+                                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                                    </div>
+                                {% endif %}
+
+                                {# Если пользователь уже залогинен #}
+                                {% if app.user %}
+                                    <div class="alert alert-info small">
+                                        Вы вошли как <strong>{{ app.user.userIdentifier }}</strong>.
+                                        <a href="{{ path('dashboard.logout') }}" class="alert-link text-decoration-none">Выйти?</a>
+                                    </div>
+                                {% endif %}
+
+                                <div class="form-group mb-3">
+                                    <label for="inputEmail" class="small text-muted">Электронная почта</label>
+                                    <input type="email"
+                                           value="{{ last_username }}"
+                                           name="_username"
+                                           id="inputEmail"
+                                           class="form-control form-control-lg border-success"
+                                           placeholder="email@example.com"
+                                           autocomplete="email"
+                                           required
+                                           autofocus>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label for="inputPassword" class="small text-muted">Пароль</label>
+                                    <input type="password"
+                                           name="_password"
+                                           id="inputPassword"
+                                           class="form-control form-control-lg border-success"
+                                           placeholder="********"
+                                           autocomplete="current-password"
+                                           required>
+                                </div>
+
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                                <div class="mt-3">
+                                    <button class="btn btn-block btn-success btn-lg font-weight-medium auth-form-btn w-100" type="submit">
+                                        ВОЙТИ
+                                    </button>
+                                </div>
+
+                                <div class="my-2 d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <label class="form-check-label text-muted">
+                                            <input type="checkbox" name="_remember_me" class="form-check-input">
+                                            Запомнить меня
+                                            <i class="input-helper-login"></i>
+                                        </label>
+                                    </div>
+                                    <a href="#" class="auth-link text-black small">Забыли пароль?</a>
+                                </div>
+                            </form>
+
+                        </div>
                     </div>
-                {% endif %}
-
-                <h1 class="h3 mb-3 font-weight-normal">Пожалуйста, войдите</h1>
-
-                <label for="inputEmail">Email</label>
-                <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-
-                <label for="inputPassword">Пароль</label>
-                <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
-                {# CSRF-защита (важно для form_login) #}
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <button class="btn btn-lg btn-primary" type="submit">
-                    Войти
-                </button>
-            </form>
-        {% endblock %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

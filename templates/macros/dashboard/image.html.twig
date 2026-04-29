@@ -1,8 +1,8 @@
 {% macro image(id, class, title, alt, src, single) %}
     {% import 'macros/dashboard/modal_image.html.twig' as modal_img %}
 
-    {% set src = 'uploads/' ~ src %}
     {% if src is not null %}
+        {% set src = 'uploads/' ~ src %}
         <a href="#" data-bs-toggle="modal" data-bs-target="#PreviewModalIm{{ id }}">
             <img src="{{ asset(src) }}" title="{{ title }}" alt="{{ alt }}"  class="img-fluid {{ class }}" style="cursor: pointer;">
         </a>

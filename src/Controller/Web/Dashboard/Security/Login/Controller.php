@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Web\Security\Login;
+namespace App\Controller\Web\Dashboard\Security\Login;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,7 +9,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class Controller extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login', methods: ['GET', 'POST'])]
+    #[Route(path: '/dashboard/login', name: 'dashboard.login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {

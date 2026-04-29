@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Web\Security\Logout;
+namespace App\Controller\Web\Dashboard\Security\Logout;
 
 use LogicException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Controller extends AbstractController
 {
-    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
+    #[Route('/dashboard/logout', name: 'dashboard.logout', methods: ['GET'])]
     public function logout(): void
     {
         // Этот код никогда не выполнится!
