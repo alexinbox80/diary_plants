@@ -53,3 +53,7 @@ services:
             $importers: !tagged_iterator app.entity_importer
             # Ваши строковые параметры из параметров приложения
             $csvSeparator: '%csvSeparator%'
+
+    App\Application\Security\AuthService:
+        arguments:
+            $tokenTTL: '%env(JWT_TTL_SEC)%'
