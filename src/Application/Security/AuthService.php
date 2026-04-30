@@ -45,7 +45,7 @@ class AuthService
         $refreshToken = $this->userService->updateUserRefreshToken($email);
 
         $tokenData = [
-            'email' => $email,
+            'username' => $email,
             'roles' => $user?->getRoles() ?? [],
             'exp' => time() + $this->tokenTTL,
             'refresh_token' => $refreshToken,

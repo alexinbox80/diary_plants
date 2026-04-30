@@ -14,11 +14,9 @@ use App\Domain\Model\User\CreateUserModel;
 use App\Domain\Model\User\UpdateUserModel;
 use App\Domain\ValueObject\User\RefreshToken;
 use App\Domain\Repository\UserRepositoryInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Controller\Web\Dashboard\User\EditUser\Input\EditUserDTO;
 use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -30,7 +28,6 @@ class UserService
         private readonly GroupService $groupService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly FileService $fileService,
-        private readonly JWTEncoderInterface $jwtEncoder,
     ) {
     }
 
@@ -63,24 +60,11 @@ class UserService
     }
 
     /**
-     * @param string $token
+     * @param string $refreshToken
      * @return User|null
-     * @throws JWTDecodeFailureException
      */
-    public function findUserByRefreshToken(string $token): ?User
+    public function findUserByRefreshToken(string $refreshToken): ?User
     {
-        try {
-            $payload = $this->jwtEncoder->decode($token);
-        } catch (\Exception $e) {
-            // Если токен невалиден или просрочен
-            return null;
-        }
-
-        $refreshToken = $payload['refresh_token'] ?? null;
-        if (!$refreshToken) {
-            return null;
-        }
-
         $user =  $this->userRepository->findUserByRefreshToken($refreshToken);
 
         if (null === $user) {
