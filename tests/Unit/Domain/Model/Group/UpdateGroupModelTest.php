@@ -45,7 +45,7 @@ class UpdateGroupModelTest extends KernelTestCase
 
         $this->assertCount(1, $errors);
         $this->assertEquals('title', $errors[0]->getPropertyPath());
-        $this->assertEquals('This value should not be blank.', $errors[0]->getMessage());
+        $this->assertEquals('Значение не должно быть пустым.', $errors[0]->getMessage());
     }
 
     /**
