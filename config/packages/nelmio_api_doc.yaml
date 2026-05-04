@@ -1,0 +1,22 @@
+nelmio_api_doc:
+    documentation:
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        tags:
+            -   name: Dashboard
+                description: 'Здесь находятся методы для работы с Еженедельником в панели управления: создание, удаление и просмотр поливов, вредителей, удобрений и стимуляторов.'
+            -   name: Auth
+                description: 'Методы авторизации и управления JWT токенами.'
+        info:
+            title: Plants diaries
+            description: This is an api for plants application!
+            version: 1.0.0
+    areas:
+        path_patterns: # an array of regexps (document only routes under /api, except /api/doc)
+            - ^/api(?!/doc$)
+#        host_patterns: # document only routes with a host of the form api.*
+#            - ^api\.

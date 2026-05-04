@@ -2,9 +2,11 @@
 
 namespace App\Application\Security;
 
+use Exception;
 use App\Domain\Service\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Exception\AccessDeniedException;
 use App\Controller\Exception\UnauthorizedException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -33,11 +35,16 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
     {
         $extractor = new AuthorizationHeaderTokenExtractor('Bearer', 'Authorization');
         $token = $extractor->extract($request);
-        if ($token === null) {
+        if (false === $token || null === $token) {
             throw new UnauthorizedException();
         }
 
-        $tokenData = $this->jwtEncoder->decode($token);
+        try {
+            $tokenData = $this->jwtEncoder->decode($token);
+        } catch (Exception $e) {
+            throw new AuthenticationException('Invalid JWT format');
+        }
+
         if (!isset($tokenData['username'])) {
             throw new UnauthorizedException();
         }
@@ -58,8 +65,11 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
         return null;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?JsonResponse
     {
-        throw new AccessDeniedException();
+        return new JsonResponse([
+            'message' => 'Invalid or missing token',
+            'details' => $exception->getMessageKey()
+        ], Response::HTTP_UNAUTHORIZED);
     }
 }
