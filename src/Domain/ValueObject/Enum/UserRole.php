@@ -86,4 +86,36 @@ enum UserRole: string
 
         return $result;
     }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this === self::ROLE_ADMIN;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManager(): bool
+    {
+        return $this === self::ROLE_MANAGER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUser(): bool
+    {
+        return $this === self::ROLE_USER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGuest(): bool
+    {
+        return $this === self::ROLE_GUEST;
+    }
 }

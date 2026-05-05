@@ -9,6 +9,7 @@ use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Usage\UsageModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\Model\Analytic\AnalyticModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Repotting\RepottingModel;
@@ -304,10 +305,11 @@ class PlantModel implements AttachableModelInterface
      * @param Plant $plant
      * @param array $attachmentModels
      * @param GroupModel|null $groupModel
-     * @param UsageModel[] $usageModels
-     * @param OffspringModel[] $offspringModels
-     * @param RepottingModel[] $repottingModels
-     * @return PlantModel
+     * @param array $usageModels
+     * @param array $offspringModels
+     * @param array $repottingModels
+     * @param AnalyticModel|null $analyticModel
+     * @return self
      */
     public static function fromEntity(
         Plant $plant,
@@ -419,9 +421,13 @@ class PlantModel implements AttachableModelInterface
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         $filtered = array_filter($this->getAttachment(), fn ($attachment) => $attachment->getMimeType() !== null);
         $imgGallery = array_map(fn ($attachment) => $attachment->toArray(), $filtered);

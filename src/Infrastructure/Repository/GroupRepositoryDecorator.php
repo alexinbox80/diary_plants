@@ -35,6 +35,19 @@ class GroupRepositoryDecorator implements GroupRepositoryInterface
     }
 
     /**
+     * @return GroupModel[]
+     */
+    public function getGroupsForForm(): array
+    {
+        $groups = $this->groupRepository->getgroupsForForm();
+
+        return array_map(
+            fn (Group $group): GroupModel => $this->toModel($group),
+            $groups
+        );
+    }
+
+    /**
      * @param int $groupId
      * @return Group|null
      */

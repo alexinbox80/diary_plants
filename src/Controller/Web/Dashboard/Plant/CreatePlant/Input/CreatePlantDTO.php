@@ -9,6 +9,9 @@ class CreatePlantDTO
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public int $groupId,
+        #[Assert\NotBlank]
         #[Assert\Length(min:2)]
         #[Assert\Length(max:255)]
         public ?string $title = null,

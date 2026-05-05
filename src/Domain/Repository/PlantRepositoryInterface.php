@@ -17,7 +17,7 @@ interface PlantRepositoryInterface
     public function find(int $plantId): ?Plant;
     public function findModel(int $plantId): ?PlantModel;
     public function findAll(): array;
-    public function findAllWithAttachments(): array;
+    public function findAllWithAttachments(?int $groupId = null): array;
     public function findPlantsByTitle(string $title): array;
     public function findPlantsByPrice(Price $price): array;
     public function findPlantByUUID(Oid $oid): ?PlantModel;

@@ -3,24 +3,35 @@
 namespace App\Controller\Web\Dashboard\Plant\EditPlant;
 
 use App\Domain\Entity\Plant;
-use App\Domain\Service\PlantService;
 use App\Controller\Form\PlantType;
-use Symfony\Component\Form\FormFactoryInterface;
+use App\Domain\Service\PlantService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Application\Security\Voter\GroupOwnershipVoter;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,
-        private readonly FormFactoryInterface $formFactory
+        private readonly FormFactoryInterface $formFactory,
+        private readonly TranslatorInterface $translator,
+        private readonly AuthorizationCheckerInterface $authChecker
     ) {
     }
 
     public function editFormData(Request $request, Plant $plant): array
     {
+        if (!$this->authChecker->isGranted(GroupOwnershipVoter::EDIT, $plant)) {
+            $message = $this->translator->trans('security.access_denied.edit');
+            throw new AccessDeniedException($message);
+        }
 
         $formData = new EditPlantDTO(
+            $plant->getGroup()->getId(),
             $plant->getTitle(),
             $plant->getRoom(),
             $plant->isShown(),
@@ -40,6 +51,8 @@ class Manager
             $plant->getComment()
         );
 
+        $groupId = $plant->getGroup()->getId();
+
         $form = $this->formFactory->create(PlantType::class, $formData);
         $form->handleRequest($request);
 
@@ -47,13 +60,18 @@ class Manager
             /** @var EditPlantDTO $editPlantDTO */
             $editPlantDTO = $form->getData();
 
+            if (!$editPlantDTO->groupId) {
+                $editPlantDTO->groupId = $groupId;
+            }
+
             $data = $request->request->all()['plant'] ?? [];
             $editPlantDTO->isShown = (bool) ($data['isShown'] ?? false);
             $editPlantDTO->isSold = (bool) ($data['isSold'] ?? false);
 
             $this->plantService->updateFromEditPlantDTO($plant, $editPlantDTO);
 
-            $request->getSession()->getFlashBag()->add('success', 'Растение успешно обновлено.');
+            $message = $this->translator->trans('plant.flash.updated', [], 'messages');
+            $request->getSession()->getFlashBag()->add('success', $message);
             return ['success' => true];
         }
 

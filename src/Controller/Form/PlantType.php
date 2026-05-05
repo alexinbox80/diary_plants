@@ -2,22 +2,43 @@
 
 namespace App\Controller\Form;
 
-use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
-use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
+use DateTimeImmutable;
+use App\Domain\Service\GroupService;
 use App\Domain\Model\Plant\PlantModel;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
+use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
 class PlantType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $labels = PlantModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('title', TextType::class, [
@@ -38,6 +59,7 @@ class PlantType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => true,
                 'format' => 'yyyy-MM-dd',
+                'data' => $options['is_new'] ? new DateTimeImmutable() : $builder->getData()->purchaseDate,
             ])
             ->add('vaccinationDate', DateType::class, [
                 'label' => $labels['vaccination_date'],
@@ -113,7 +135,7 @@ class PlantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditPlantDTO::class,
-            'empty_data' => new CreatePlantDTO(),
+            'empty_data' => new CreatePlantDTO(2),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

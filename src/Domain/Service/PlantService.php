@@ -79,10 +79,8 @@ class PlantService
     /**
      * @return PlantModel[]
      */
-    public function findAllByGroupId(): array
+    public function findAllByGroupId(?int $groupId = null): array
     {
-        $groupId = 2;
-
         return $this->plantRepository->findAllWithAttachments($groupId);
     }
 
@@ -130,10 +128,8 @@ class PlantService
      * @return array
      * @throws InvalidArgumentException
      */
-    public function getPlantsPaginatedByGroupId(int $page, int $perPage): array
+    public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
     {
-        $groupId = 2;
-
         return $this->plantRepository->getPlantsPaginatedByGroupId($page, $perPage, $groupId);
     }
 
@@ -145,7 +141,6 @@ class PlantService
     /**
      * @param CreatePlantModel $createPlantModel
      * @return PlantModel
-     * @throws InvalidArgumentException
      */
     public function create(CreatePlantModel $createPlantModel): PlantModel
     {
@@ -187,17 +182,18 @@ class PlantService
     /**
      * @param CreatePlantDTO $dto
      * @return PlantModel
+     * @throws InvalidArgumentException
      */
     public function createFromCreatePlantDTO(CreatePlantDTO $dto): PlantModel
     {
         $model = $this->modelFactory->makeModel(
             CreatePlantModel::class,
-            2,
+            $dto->groupId,
             $dto->title,
             $dto->room,
             $dto->isShown,
             $dto->description,
-            $dto->plantingDate,
+            $dto->purchaseDate,
             $dto->vaccinationDate,
             $dto->plantingDate,
             $dto->seller,
@@ -260,18 +256,19 @@ class PlantService
      * @param Plant $plant
      * @param EditPlantDTO $dto
      * @return void
+     * @throws InvalidArgumentException
      */
     public function updateFromEditPlantDTO(Plant $plant, EditPlantDTO $dto): void
     {
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdatePlantModel::class,
-            2,
+            $dto->groupId,
             $dto->title,
             $dto->room,
             $dto->isShown,
             $dto->description,
-            $dto->plantingDate,
+            $dto->purchaseDate,
             $dto->vaccinationDate,
             $dto->plantingDate,
             $dto->seller,
@@ -293,7 +290,6 @@ class PlantService
     /**
      * @param int $plantId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $plantId): void
     {
@@ -313,17 +309,17 @@ class PlantService
     }
 
     /**
-     * @param int $id
+     * @param Plant $plant
      * @return void
      * @throws InvalidArgumentException
      */
-    public function deleteWithQrCode(int $id): void
+    public function deleteWithQrCode(Plant $plant): void
     {
-        $plant = $this->find($id);
+        //$plant = $this->find($id);
 
-        if (!$plant) {
-            throw new \InvalidArgumentException("Plant with ID {$id} not found");
-        }
+//        if (!$plant) {
+//            throw new \InvalidArgumentException("Plant with ID {$id} not found");
+//        }
 
         // Удаляем файл
         $this->removeOldQrCodeFile($plant);

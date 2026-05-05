@@ -36,6 +36,21 @@ class GroupRepository extends AbstractRepository
     }
 
     /**
+     * @return Group[]
+     */
+    public function getGroupsForForm(): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('g')
+            ->from(Group::class, 'g')
+            ->orderBy('g.title', 'ASC');
+
+        return  $qb->getQuery()->getResult();
+    }
+
+
+    /**
      * @param int $groupId
      * @return Group|null
      */

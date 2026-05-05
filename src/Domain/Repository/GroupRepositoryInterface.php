@@ -8,6 +8,7 @@ use App\Domain\Model\Group\GroupModel;
 interface GroupRepositoryInterface
 {
     public function getGroupsPaginated(int $page, int $perPage): array;
+    public function getGroupsForForm(): array;
     public function find(int $groupId): ?Group;
     public function findModel(int $groupId): ?GroupModel;
     public function findAll(): array;

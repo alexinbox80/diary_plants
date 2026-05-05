@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
@@ -24,7 +25,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'plant__oid__ind', columns: ['oid'])]
 #[ORM\UniqueConstraint(name: 'plant__oid__uniq', columns: ['oid'], options: ['where' => '(deleted_at IS NULL)'])]
-class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Plant implements EntityInterface, GroupOwnedInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -236,7 +237,7 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
         return $this->comment;
     }
 
-    public function setComment(string $comment): self
+    public function setComment(?string $comment = null): self
     {
         $this->comment = $comment;
 
@@ -298,5 +299,10 @@ class Plant implements EntityInterface, AttachableInterface, HasMetaTimestampsIn
     public function getAnalytic(): ?Analytic
     {
         return $this->analytic;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

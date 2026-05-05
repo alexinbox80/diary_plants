@@ -2,10 +2,10 @@
 
 namespace App\Controller\Web\Dashboard\Plant\DeletePlant;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class Controller extends AbstractController

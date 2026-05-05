@@ -29,6 +29,22 @@ class GroupService
     }
 
     /**
+     * @return GroupModel[]
+     */
+    public function getChoicesForFormChoiceType(): array
+    {
+        // Получаем список выбора: [title => id]
+        $choices = [];
+        $groupModels = $this->groupRepository->getGroupsForForm();
+        foreach ($groupModels as $group) {
+            $label = sprintf('%s :: %d', $group->getTitle(), $group->getId());
+            $choices[$label] = $group->getId();
+        }
+
+        return $choices;
+    }
+
+    /**
      * @param int|null $groupId
      * @return GroupModel[]
      */
