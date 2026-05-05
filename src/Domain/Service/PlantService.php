@@ -6,7 +6,6 @@ use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\ValueObject\Plant\LifeCycle;
 use App\Domain\ValueObject\Plant\SalesInfo;
 use App\Domain\Model\Plant\CreatePlantModel;
@@ -31,7 +30,7 @@ class PlantService
 
     public function getPlantsForDiary(int $groupID): array
     {
-        return $this->plantRepository->getPlantsForDiary($groupID, false);
+        return $this->plantRepository->getPlantsForDiary($groupID);
     }
 
     /**
@@ -115,7 +114,6 @@ class PlantService
      * @param int $page
      * @param int $perPage
      * @return array
-     * @throws InvalidArgumentException
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
@@ -125,8 +123,8 @@ class PlantService
     /**
      * @param int $page
      * @param int $perPage
+     * @param int|null $groupId
      * @return array
-     * @throws InvalidArgumentException
      */
     public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
     {
@@ -184,7 +182,6 @@ class PlantService
     /**
      * @param CreatePlantDTO $dto
      * @return PlantModel
-     * @throws InvalidArgumentException
      */
     public function createFromCreatePlantDTO(CreatePlantDTO $dto): PlantModel
     {
@@ -217,7 +214,6 @@ class PlantService
      * @param Plant $plant
      * @param UpdatePlantModel $updatePlantModel
      * @return PlantModel
-     * @throws InvalidArgumentException
      */
     public function update(Plant $plant, UpdatePlantModel $updatePlantModel): PlantModel
     {
@@ -258,7 +254,6 @@ class PlantService
      * @param Plant $plant
      * @param EditPlantDTO $dto
      * @return void
-     * @throws InvalidArgumentException
      */
     public function updateFromEditPlantDTO(Plant $plant, EditPlantDTO $dto): void
     {
@@ -313,7 +308,6 @@ class PlantService
     /**
      * @param Plant $plant
      * @return void
-     * @throws InvalidArgumentException
      */
     public function deleteWithQrCode(Plant $plant): void
     {
