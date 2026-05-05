@@ -1,0 +1,29 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Страница не найдена
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard/style.css') }}">
+{% endblock %}
+
+{% block favicon %}
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-scroller">
+        {% block header %}{% endblock %}
+        {% block body %}
+            <div class="error-container">
+                <h1>Ошибка 403</h1>
+                <p>Упс! Похоже, у вас недостаточно прав для этого действия.</p>
+                <a href="#">Вернуться на главную</a>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

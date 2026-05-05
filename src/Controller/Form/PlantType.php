@@ -135,7 +135,7 @@ class PlantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditPlantDTO::class,
-            'empty_data' => new CreatePlantDTO(2),
+            'empty_data' => new CreatePlantDTO(),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

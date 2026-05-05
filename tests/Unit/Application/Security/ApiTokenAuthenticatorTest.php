@@ -8,10 +8,11 @@ use App\Domain\Service\UserService;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Application\Security\ApiTokenAuthenticator;
 use App\Controller\Exception\AccessDeniedException;
 use App\Controller\Exception\UnauthorizedException;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
@@ -103,12 +104,18 @@ class ApiTokenAuthenticatorTest extends TestCase
     }
 
     #[Test]
-    public function testOnAuthenticationFailureThrowsException(): void
+    public function testOnAuthenticationFailureReturnsJsonResponse(): void
     {
-        $this->expectException(AccessDeniedException::class);
-        $this->authenticator->onAuthenticationFailure(
+        $response = $this->authenticator->onAuthenticationFailure(
             new Request(),
-            new AuthenticationException()
+            new AuthenticationException('Custom error message')
         );
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('message', $data);
+        $this->assertEquals('Invalid or missing token', $data['message']);
     }
 }

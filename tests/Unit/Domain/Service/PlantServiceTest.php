@@ -3,6 +3,7 @@
 namespace Unit\Domain\Service;
 
 use DateTimeImmutable;
+use ReflectionProperty;
 use App\Domain\Entity\Group;
 use App\Domain\Entity\Plant;
 use PHPUnit\Framework\TestCase;
@@ -17,6 +18,7 @@ use App\Domain\Model\Plant\UpdatePlantModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use App\Domain\Model\Plant\CreatePlantModel;
 use PHPUnit\Framework\Attributes\CoversClass;
+use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Repository\PlantRepositoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -81,7 +83,7 @@ class PlantServiceTest extends TestCase
         $this->repository->expects($this->once())
             ->method('create')
             ->with($this->callback(function (Plant $plant) {
-                $reflection = new \ReflectionProperty(Plant::class, 'id');
+                $reflection = new ReflectionProperty(Plant::class, 'id');
                 $reflection->setAccessible(true);
                 $reflection->setValue($plant, 1); // Даем объекту ID вручную
                 return true;
@@ -121,9 +123,9 @@ class PlantServiceTest extends TestCase
             room: 'Test',
             isShown: false, // Теперь тест проверит вызов hide()
             description: 'Test',
-            purchaseDate: new \DateTimeImmutable(),
+            purchaseDate: new DateTimeImmutable(),
             vaccinationDate: null,
-            plantingDate: new \DateTimeImmutable(),
+            plantingDate: new DateTimeImmutable(),
             seller: 'Test',
             nursery: 'Test',
             price: null,
@@ -166,7 +168,7 @@ class PlantServiceTest extends TestCase
         $qrCodeLink = 'path/to/qr.png';
 
         // Настраиваем получение ссылки на QR-код из VO идентификатора
-        $identifier = $this->createMock(\App\Domain\ValueObject\Plant\PlantIdentifier::class);
+        $identifier = $this->createMock(PlantIdentifier::class);
         $identifier->method('getQrCodeLink')->willReturn($qrCodeLink);
         $plant->method('getPlantIdentifier')->willReturn($identifier);
 
@@ -182,7 +184,7 @@ class PlantServiceTest extends TestCase
             ->method('remove')
             ->with($plant);
 
-        $this->service->deleteWithQrCode($plantId);
+        $this->service->deleteWithQrCode($plant);
     }
 
     #[Test]
@@ -194,9 +196,9 @@ class PlantServiceTest extends TestCase
             room: 'Kitchen',
             isShown: true,
             description: 'Desc',
-            purchaseDate: new \DateTimeImmutable(),
+            purchaseDate: new DateTimeImmutable(),
             vaccinationDate: null,
-            plantingDate: new \DateTimeImmutable(),
+            plantingDate: new DateTimeImmutable(),
             seller: 'Shop',
             nursery: 'Nursery',
             price: null,
@@ -209,7 +211,7 @@ class PlantServiceTest extends TestCase
             comment: 'Comment'
         );
 
-        $group = $this->createMock(\App\Domain\Entity\Group::class);
+        $group = $this->createMock(Group::class);
         $group->method('getId')->willReturn(2);
         $this->groupService->method('find')->with(2)->willReturn($group);
 
@@ -220,9 +222,9 @@ class PlantServiceTest extends TestCase
 
         $this->repository->expects($this->once())
             ->method('create')
-            ->with($this->callback(function (\App\Domain\Entity\Plant $plant) {
+            ->with($this->callback(function (Plant $plant) {
                 // Устанавливаем ID через Reflection, чтобы processFileForQrCode не упал на проверке Assert
-                $reflection = new \ReflectionProperty(\App\Domain\Entity\Plant::class, 'id');
+                $reflection = new ReflectionProperty(Plant::class, 'id');
                 $reflection->setAccessible(true);
                 $reflection->setValue($plant, 777);
                 return true;

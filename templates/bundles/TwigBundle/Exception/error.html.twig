@@ -1,0 +1,49 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Произошла ошибка
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard/style.css') }}">
+{% endblock %}
+
+{% block favicon %}
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-scroller">
+        {% block header %}{% endblock %}
+        {% block body %}
+            <div class="error-container" style="text-align: center; margin-top: 50px;">
+                {# Используем переменную status_code, которую мы передали в Subscriber #}
+                <h1>Упс! Ошибка {{ status_code|default('неизвестна') }}</h1>
+
+                <p>
+                    На сервере произошла непредвиденная ситуация.
+                    Мы уже получили уведомление об этом и занимаемся решением проблемы.
+                </p>
+
+                <div class="actions" style="margin-top: 20px;">
+                    <a href="#" class="btn btn-primary">
+                        Вернуться на главную
+                    </a>
+                    <button onclick="location.reload()" class="btn btn-secondary">
+                        Попробовать снова
+                    </button>
+                </div>
+
+                {# В режиме отладки (dev) можно выводить детали, но в prod это должно быть скрыто логикой Subscriber #}
+                {% if app.debug %}
+                    <div style="text-align: left; background: #f8f9fa; padding: 15px; margin-top: 30px; border-radius: 4px;">
+                        <small>Debug info: {{ status_text|default('No message') }}</small>
+                    </div>
+                {% endif %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

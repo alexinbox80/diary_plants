@@ -176,6 +176,8 @@ class PlantService
 
         $this->processFileForQrCode($plant);
 
+        //ToDo: необходимо создать сущность Analytic или проверять на существование при обращении к сущности?
+
         return $this->plantRepository->toModel($plant);
     }
 
@@ -344,6 +346,9 @@ class PlantService
         $plant->changePlantIdentifier(
             $plant->getPlantIdentifier()->withQrCodeLink($link)
         );
+
+        //иначе не сохраняет qr code link
+        $this->plantRepository->update();
     }
 
     /**
