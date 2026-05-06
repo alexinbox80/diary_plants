@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\EventSubscriber;
 
+use Throwable;
 use Twig\Environment;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,11 +10,16 @@ use App\Domain\Exception\UserNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Controller\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use App\Controller\Exception\HttpCompliantExceptionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException as SecurityAccessDeniedException;
 
 final class ExceptionSubscriber implements EventSubscriberInterface
 {
+    private const DEFAULT_PROPERTY = 'error';
+
     public function __construct(
         private Environment $twig
     ) {
@@ -21,71 +27,86 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        // Слушаем событие исключения
-//        return [KernelEvents::EXCEPTION => ['onKernelException', 10]];
-        return [];
+        return [KernelEvents::EXCEPTION => ['onKernelException', 10]];
     }
 
     public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
+        $request = $event->getRequest();
 
-        // Превращаем доменную ошибку в HTTP-код
-        $code = $this->mapExceptionToCode($exception);
+        // 1. Определяем HTTP статус-код
+        $statusCode = $this->mapExceptionToCode($exception);
 
-        // Выбираем формат (JSON или HTML) и отправляем ответ в $event->setResponse()
-        $this->handleResponse($event, $code);
+        // 2. Проверяем, нужно ли отдавать JSON (для API или заголовка Accept: application/json)
+        $isJsonRequest = $request->getContentTypeFormat() === 'json'
+            || str_contains($request->getPathInfo(), '/api')
+            || $request->headers->get('Accept') === 'application/json';
+
+        if ($isJsonRequest) {
+            $response = $this->createJsonResponse($exception, $statusCode);
+        } else {
+            $response = $this->createHtmlResponse($exception, $statusCode);
+        }
+
+        $event->setResponse($response);
     }
 
-    private function mapExceptionToCode(\Throwable $exception): int
+    private function mapExceptionToCode(Throwable $exception): int
     {
         return match (true) {
-            // Доменные исключения (ваша бизнес-логика)
-            $exception instanceof UserNotFoundException => 404,
-            $exception instanceof AccessDeniedException => 403,
-
-            // Ошибки самого Symfony (например, из контроллеров)
+            $exception instanceof HttpCompliantExceptionInterface => $exception->getHttpCode(),
+            $exception instanceof ValidationFailedException => Response::HTTP_BAD_REQUEST,
+            $exception instanceof UserNotFoundException => Response::HTTP_NOT_FOUND,
+            $exception instanceof AccessDeniedException,
+            $exception instanceof SecurityAccessDeniedException => Response::HTTP_FORBIDDEN,
             $exception instanceof HttpExceptionInterface => $exception->getStatusCode(),
-
-            // Все остальное — это критическая ошибка сервера
-            default => 500,
+            default => Response::HTTP_INTERNAL_SERVER_ERROR,
         };
     }
 
-    private function handleResponse(ExceptionEvent $event, int $statusCode): void
+    private function createJsonResponse(Throwable $exception, int $statusCode): JsonResponse
     {
-        $request = $event->getRequest();
-        $exception = $event->getThrowable();
-
-        // 1. Проверяем, что хочет клиент: JSON или HTML?
-        if ($request->getContentTypeFormat() === 'json' || str_contains($request->getPathInfo(), '/api')) {
-
-            $response = new JsonResponse([
-                'status' => 'error',
-                'code'   => $statusCode,
-                'message' => $exception->getMessage(), // В проде лучше скрывать детали для 500 ошибки
-            ], $statusCode);
-
-        } else {
-
-            // 2. Иначе готовим HTML через Twig
-            // Пытаемся найти шаблон под конкретный код (error404.html.twig)
-            $template = sprintf('bundles/TwigBundle/Exception/error%s.html.twig', $statusCode);
-
-            if (!$this->twig->getLoader()->exists($template)) {
-                $template = 'bundles/TwigBundle/Exception/error.html.twig';
+        // Обработка ошибок валидации (из Listener)
+        if ($exception instanceof ValidationFailedException) {
+            $errors = [];
+            foreach ($exception->getViolations() as $violation) {
+                $property = $violation->getPropertyPath() ?: self::DEFAULT_PROPERTY;
+                $errors[$property] = $violation->getMessage();
             }
+            return new JsonResponse(['errors' => $errors], $statusCode);
+        }
 
+        // Данные из кастомного интерфейса или обычное сообщение
+        $message = ($exception instanceof HttpCompliantExceptionInterface)
+            ? $exception->getHttpResponseBody()
+            : $exception->getMessage();
+
+        return new JsonResponse([
+            'status' => 'error',
+            'code' => $statusCode,
+            'message' => $message
+        ], $statusCode);
+    }
+
+    private function createHtmlResponse(Throwable $exception, int $statusCode): Response
+    {
+        $template = sprintf('bundles/TwigBundle/Exception/error%s.html.twig', $statusCode);
+
+        if (!$this->twig->getLoader()->exists($template)) {
+            $template = 'bundles/TwigBundle/Exception/error.html.twig';
+        }
+
+        try {
             $content = $this->twig->render($template, [
                 'status_code' => $statusCode,
                 'exception'   => $exception,
             ]);
-
-            $response = new Response($content, $statusCode);
+        } catch (Throwable) {
+            // Если Twig сломался, отдаем простой текст, чтобы не было бесконечного цикла 500 ошибки
+            $content = '<h1>Error ' . $statusCode . '</h1><p>' . $exception->getMessage() . '</p>';
         }
 
-        // 3. Передаем готовый ответ в событие.
-        // После этого Symfony прекратит поиск других обработчиков и отправит этот Response пользователю.
-        $event->setResponse($response);
+        return new Response($content, $statusCode);
     }
 }
