@@ -2,6 +2,8 @@
 
 namespace Unit\Infrastructure\EventSubscriber;
 
+use Exception;
+use RuntimeException;
 use Twig\Environment;
 use PHPUnit\Framework\TestCase;
 use Twig\Loader\LoaderInterface;
@@ -9,6 +11,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use App\Infrastructure\EventSubscriber\ExceptionSubscriber;
@@ -45,7 +48,7 @@ class ExceptionSubscriberTest extends TestCase
 
         // 3. Проверка
         $response = $event->getResponse();
-        $this->assertInstanceOf(\Symfony\Component\HttpFoundation\JsonResponse::class, $response);
+        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(403, $response->getStatusCode());
 
         $data = json_decode($response->getContent(), true);
@@ -57,7 +60,7 @@ class ExceptionSubscriberTest extends TestCase
     public function testOnKernelExceptionReturnsHtmlResponseForBrowser(): void
     {
         // 1. Подготовка (обычный запрос, имитируем наличие шаблона)
-        $exception = new \Exception('Standard error');
+        $exception = new Exception('Standard error');
         $request = Request::create('/');
 
         $loader = $this->createMock(LoaderInterface::class);
@@ -94,7 +97,7 @@ class ExceptionSubscriberTest extends TestCase
             $this->createMock(HttpKernelInterface::class),
             $request,
             HttpKernelInterface::MAIN_REQUEST,
-            new \RuntimeException('Boom')
+            new RuntimeException('Boom')
         );
 
         $this->subscriber->onKernelException($event);
