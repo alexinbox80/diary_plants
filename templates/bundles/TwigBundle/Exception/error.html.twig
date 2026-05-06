@@ -46,21 +46,15 @@
 
                                     {# В режиме отладки (dev) можно выводить детали, но в prod это должно быть скрыто логикой в обработчике #}
                                     {% if app.debug %}
-                                        <div class="mt-4 p-3 bg-light border rounded text-start">
-                                            <p class="mb-0 small text-secondary">
-                                                <strong class="text-dark">Debug info:</strong>
-                                                <code class="ms-1">{{ status_text|default('No message') }}</code>
-                                                <code class="ms-1">
-                                                    {% if exception %}
-                                                        {{ exception.message }}
-                                                        <br>
-                                                        <span class="text-danger">File:</span> {{ exception.file }}
-                                                        <span class="text-danger">Line:</span> {{ exception.line }}
-                                                    {% else %}
-                                                        {{ status_text|default('No message available') }}
-                                                    {% endif %}
+                                        <div class="mt-4 p-3 bg-light border-start border-4 border-warning rounded text-start">
+                                            <div class="fw-bold mb-1 text-dark">Developer Inspection:</div>
+                                            <pre class="mb-0 small" style="white-space: pre-wrap;">
+                                                <code>
+                                                    Route:  {{ app.request.attributes.get('_route') }}
+                                                    Code:   {{ status_code|default('500') }}
+                                                    Error:  {{ exception.message|default(status_text|default('No message')) }}
                                                 </code>
-                                            </p>
+                                            </pre>
                                         </div>
                                     {% endif %}
 
