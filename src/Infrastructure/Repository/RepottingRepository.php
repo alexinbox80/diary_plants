@@ -18,6 +18,8 @@ class RepottingRepository extends AbstractRepository
         return $queryBuilder->select('r', 'p', 'g')
             ->from(Repotting::class, 'r')
             ->leftJoin('r.plant', 'p')
+            ->leftJoin('p.analytic', 'a')
+            ->addSelect('a')
             ->leftJoin('r.group', 'g')
             ->orderBy('r.updatedAt', 'DESC');
     }

@@ -53,6 +53,8 @@ class OffspringRepository extends AbstractRepository
             ->select('o', 'p', 'g')
             ->from(Offspring::class, 'o')
             ->leftJoin('o.plant', 'p')
+            ->leftJoin('p.analytic', 'a')
+            ->addSelect('a')
             ->leftJoin('o.group', 'g')
             ->orderBy('o.updatedAt', 'DESC');
     }

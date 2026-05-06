@@ -26,6 +26,8 @@ class UsageRepository extends AbstractRepository
             ->from(Usage::class, 'u')
             ->leftJoin('u.group', 'g')
             ->leftJoin('u.plant', 'p')
+            ->leftJoin('p.analytic', 'a')
+            ->addSelect('a')
             ->orderBy('u.updatedAt', 'DESC');
     }
 
