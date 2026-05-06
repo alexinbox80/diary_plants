@@ -19,30 +19,56 @@
     <div class="container-scroller">
         {% block header %}{% endblock %}
         {% block body %}
-            <div class="error-container" style="text-align: center; margin-top: 50px;">
-                {# Используем переменную status_code, которую мы передали в Subscriber #}
-                <h1>Упс! Ошибка {{ status_code|default('неизвестна') }}</h1>
+            <div class="container-scroller">
+                <div class="container-fluid page-body-wrapper full-page-wrapper">
+                    <div class="content-wrapper d-flex align-items-center auth">
+                        <div class="row flex-grow">
+                            <div class="col-lg-4 mx-auto">
+                                <div class="auth-form-light text-left p-5 shadow-sm bg-white rounded error-container">
 
-                <p>
-                    На сервере произошла непредвиденная ситуация.
-                    Мы уже получили уведомление об этом и занимаемся решением проблемы.
-                </p>
+                                    <div class="brand-logo text-center mb-4">
+                                        <h1 class="text-success font-weight-bold">Упс! Ошибка {{ status_code|default('неизвестна') }}</h1>
+                                    </div>
 
-                <div class="actions" style="margin-top: 20px;">
-                    <a href="#" class="btn btn-primary">
-                        Вернуться на главную
-                    </a>
-                    <button onclick="location.reload()" class="btn btn-secondary">
-                        Попробовать снова
-                    </button>
-                </div>
+                                    <p class="font-weight-light mb-4">
+                                        На сервере произошла непредвиденная ситуация.
+                                        Мы уже получили уведомление об этом и занимаемся решением проблемы.
+                                    </p>
 
-                {# В режиме отладки (dev) можно выводить детали, но в prod это должно быть скрыто логикой Subscriber #}
-                {% if app.debug %}
-                    <div style="text-align: left; background: #f8f9fa; padding: 15px; margin-top: 30px; border-radius: 4px;">
-                        <small>Debug info: {{ status_text|default('No message') }}</small>
+                                    <div class="actions mt-4 d-flex justify-content-between align-items-center">
+                                        <a href="/" class="auth-link text-dark small">
+                                            <i class="bi bi-arrow-left"></i> Вернуться на главную
+                                        </a>
+                                        <a href="javascript:void(0)" onclick="location.reload()" class="auth-link text-dark small">
+                                            Попробовать снова <i class="bi bi-arrow-clockwise"></i>
+                                        </a>
+                                    </div>
+
+                                    {# В режиме отладки (dev) можно выводить детали, но в prod это должно быть скрыто логикой в обработчике #}
+                                    {% if app.debug %}
+                                        <div class="mt-4 p-3 bg-light border rounded text-start">
+                                            <p class="mb-0 small text-secondary">
+                                                <strong class="text-dark">Debug info:</strong>
+                                                <code class="ms-1">{{ status_text|default('No message') }}</code>
+                                                <code class="ms-1">
+                                                    {% if exception %}
+                                                        {{ exception.message }}
+                                                        <br>
+                                                        <span class="text-danger">File:</span> {{ exception.file }}
+                                                        <span class="text-danger">Line:</span> {{ exception.line }}
+                                                    {% else %}
+                                                        {{ status_text|default('No message available') }}
+                                                    {% endif %}
+                                                </code>
+                                            </p>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
+                </div>
             </div>
         {% endblock %}
     </div>

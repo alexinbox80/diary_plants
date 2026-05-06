@@ -30,6 +30,7 @@
         <li class="nav-item nav-category">
             <span class="nav-link">Панель</span>
         </li>
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MANAGER') %}
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.plants' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.plants_paginated.index') }}">
                 <span class="menu-title">Растения</span>
@@ -96,6 +97,8 @@
                 <i class="fas fa-images menu-icon"></i>
             </a>
         </li>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.users' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.users_paginated.index') }}">
                 <span class="menu-title">Пользователи</span>
@@ -189,6 +192,7 @@
                 <i class="icon-folder-alt menu-icon"></i>
             </a>
         </li>
+        {% endif %}
     </ul>
 </nav>
 <!-- partial -->

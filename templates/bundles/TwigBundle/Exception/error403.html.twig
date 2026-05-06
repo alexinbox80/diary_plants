@@ -17,13 +17,23 @@
 
 {% block content %}
     <div class="container-scroller">
-        {% block header %}{% endblock %}
-        {% block body %}
-            <div class="error-container">
-                <h1>Ошибка 403</h1>
-                <p>Упс! Похоже, у вас недостаточно прав для этого действия.</p>
-                <a href="{{ path('dashboard.login') }}">Авторизоваться</a>
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="content-wrapper d-flex align-items-center auth">
+                <div class="row flex-grow">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auth-form-light text-left p-5 shadow-sm bg-white rounded error-container">
+
+                            <div class="brand-logo text-center mb-4">
+                                <h1 class="text-success font-weight-bold">Ошибка 403</h1>
+                            </div>
+
+                            <p class="font-weight-light mb-4">Упс! Похоже, у вас недостаточно прав для этого действия.</p>
+                            <a href="{{ path('dashboard.login') }}" class="auth-link text-black small">Авторизоваться</a>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endblock %}
+        </div>
     </div>
 {% endblock %}
