@@ -10,6 +10,7 @@ use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\ValueObject\Offspring\Phenology;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\ValueObject\Offspring\FruitMetrics;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
@@ -19,7 +20,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'offspring__plant_id__ind', columns: ['plant_id'])]
 #[ORM\Index(name: 'offspring__group_id__ind', columns: ['group_id'])]
-class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Offspring implements EntityInterface, AttachableInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -91,6 +92,10 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
 
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
 
         return $this;
@@ -98,6 +103,10 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
 
     public function moveToPlant(Plant $plant): self
     {
+        if ($this->plant->getId() === $plant->getId()) {
+            return $this;
+        }
+
         $this->plant = $plant;
 
         return $this;
@@ -143,5 +152,10 @@ class Offspring implements EntityInterface, AttachableInterface, HasMetaTimestam
     public function getLoadedAttachments(): array
     {
         return $this->loadedAttachments;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

@@ -9,6 +9,7 @@ use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\ValueObject\Analytic\IntervalMetrics;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
@@ -22,7 +23,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
     columns: ['plant_id'],
     options: ['where' => '(deleted_at IS NULL)']
 )]
-class Analytic implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Analytic implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -94,5 +95,21 @@ class Analytic implements EntityInterface, HasMetaTimestampsInterface, SoftDelet
     public function getWateringMetrics(): IntervalMetrics
     {
         return $this->wateringMetrics;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
+    }
+
+    public function moveToGroup(Group $group): self
+    {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
+        $this->group = $group;
+
+        return $this;
     }
 }

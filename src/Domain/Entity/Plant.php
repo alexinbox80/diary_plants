@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Entity\Interfaces\AttachableInterface;
-use App\Domain\Entity\Interfaces\GroupOwnedInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface; //для того чтобы Voter мог работать с любой сущностью, изменять groupId в связанных сущностях
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
@@ -138,7 +138,31 @@ class Plant implements EntityInterface, GroupOwnedInterface, AttachableInterface
 
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
+
+        $this->analytic?->moveToGroup($group);
+
+        foreach ($this->usages as $usage) {
+            $usage->moveToGroup($group);
+        }
+
+        foreach ($this->offsprings as $offspring) {
+            $offspring->moveToGroup($group);
+        }
+
+        foreach ($this->repottings as $repotting) {
+            $repotting->moveToGroup($group);
+        }
+
+        foreach ($this->loadedAttachments as $attachment) {
+            if ($attachment instanceof GroupOwnedInterface) {
+                $attachment->moveToGroup($group);
+            }
+        }
 
         return $this;
     }

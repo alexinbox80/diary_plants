@@ -12,6 +12,7 @@ use App\Domain\Entity\Traits\UpdatedAtTrait;
 use App\Domain\ValueObject\User\RefreshToken;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
@@ -26,7 +27,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\UniqueConstraint(name: 'user__email__uniq', columns: ['email'], options: ['where' => '(deleted_at IS NULL)'])]
 #[ORM\UniqueConstraint(name: 'user__phone__uniq', columns: ['phone'], options: ['where' => '(deleted_at IS NULL)'])]
 #[ORM\UniqueConstraint(name: 'user__refresh_token__uniq', columns: ['refresh_token'], options: ['where' => '(deleted_at IS NULL)'])]
-class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface, UserInterface, PasswordAuthenticatedUserInterface
+class User implements EntityInterface, HasMetaTimestampsInterface, GroupOwnedInterface, SoftDeletableInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -101,11 +102,16 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
         array $roles = [],
     )
     {
-        $this->group = $group;
+        $this->setGroupValidate($group);
         $this->email = $email;
         $this->password = $password;
         $this->name = $name;
         $this->roles = $roles;
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     public function changeName(Name $name): self
@@ -128,6 +134,10 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
 
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
 
         return $this;
@@ -312,5 +322,10 @@ class User implements EntityInterface, HasMetaTimestampsInterface, SoftDeletable
     public function isPhoneConfirmed(): bool
     {
         return $this->phoneConfirmed;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

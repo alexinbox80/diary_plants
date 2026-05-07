@@ -9,6 +9,7 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\ValueObject\Repotting\RepottingDetails;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
@@ -18,7 +19,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'repotting__plant_id__ind', columns: ['plant_id'])]
 #[ORM\Index(name: 'repotting__group_id__ind', columns: ['group_id'])]
-class Repotting implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Repotting implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -62,12 +63,23 @@ class Repotting implements EntityInterface, HasMetaTimestampsInterface, SoftDele
         DateTimeImmutable $repottedAt,
         RepottingDetails $details
     ): void {
-        $this->moveToGroup($group);
-        $this->moveToPlant($plant);
+        $this->setGroupValidate($group);
+        $this->setPlantValidate($plant);
         $this->setRepottedAtValidate($repottedAt);
         $this->setRepottingDetailsValidate($details);
 
     }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
+    }
+
+    private function setPlantValidate(Plant $plant): void
+    {
+        $this->plant = $plant;
+    }
+
 
     private function setRepottedAtValidate(DateTimeImmutable $repottedAt): void
     {
@@ -160,6 +172,10 @@ class Repotting implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
 
         return $this;
@@ -167,8 +183,17 @@ class Repotting implements EntityInterface, HasMetaTimestampsInterface, SoftDele
 
     public function moveToPlant(Plant $plant): self
     {
+        if ($this->plant->getId() === $plant->getId()) {
+            return $this;
+        }
+
         $this->plant = $plant;
 
         return $this;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

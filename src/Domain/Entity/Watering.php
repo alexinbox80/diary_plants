@@ -70,8 +70,18 @@ class Watering implements EntityInterface, AttachableInterface, HasMetaTimestamp
 
     private function setFields(Group $group, Marker $marker, WateringDetails $details): void
     {
-        $this->group = $group;
+        $this->setGroupValidate($group);
+        $this->setMarkerValidate($marker);
         $this->details = $details;
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
+    }
+
+    private function setMarkerValidate(Marker $marker): void
+    {
         $this->marker = $marker;
     }
 

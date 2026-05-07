@@ -65,4 +65,17 @@ class FileService
     {
         return $this->localFileStorage->removeUploadedFile($file);
     }
+
+    /**
+     * @param string $oldPath
+     * @param int $newGroupId
+     * @return string
+     */
+    public function moveAttachmentQrFiles(string $oldPath, int $newGroupId): string
+    {
+        [$root, $type, $groupId, $plantId, $filename] = explode('/', $oldPath);
+        $newPath = "{$root}/{$type}/{$newGroupId}/{$plantId}/{$filename}";
+
+        return $this->localFileStorage->move($oldPath, $newPath);
+    }
 }

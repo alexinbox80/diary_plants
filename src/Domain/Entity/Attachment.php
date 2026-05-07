@@ -16,7 +16,7 @@
  *                           └── id/
  *                               └── UUIDv4.jpg
  *
- * */
+ */
 
 namespace App\Domain\Entity;
 
@@ -27,6 +27,7 @@ use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\ValueObject\Attachment\FileInfo;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\ValueObject\Attachment\DisplaySettings;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
@@ -38,7 +39,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'attachment__attachable__ind', columns: ['attachable_type', 'attachable_id'])]
 #[ORM\Index(name: 'attachment__group_id__ind', columns: ['group_id'])]
-class Attachment implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Attachment implements EntityInterface, AttachableInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -70,15 +71,24 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
         DisplaySettings $displaySettings,
     )
     {
-        $this->group = $group;
+        $this->setGroupValidate($group);
         $this->displaySettings = $displaySettings;
 
         $this->fileInfo = new FileInfo();
         $this->target = new AttachableReference();
     }
 
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
+    }
+
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
 
         return $this;
@@ -130,5 +140,10 @@ class Attachment implements EntityInterface, AttachableInterface, HasMetaTimesta
     public function getTarget(): AttachableReference
     {
         return $this->target;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

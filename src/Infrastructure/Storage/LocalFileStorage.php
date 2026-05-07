@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Storage;
 
+use RuntimeException;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
@@ -142,5 +143,39 @@ class LocalFileStorage
         $result->saveToFile($fullPath);
 
         return $path . $fileName;
+    }
+
+    /**
+     * Перемещает файл или директорию из одного места в другое внутри хранилища
+     *
+     * @param string $oldRelativePath Относительный путь (например, 'qr-code/1/10/uuid.png')
+     * @param string $newRelativePath Новый относительный путь (например, 'qr-code/2/10/uuid.png')
+     * @return string Возвращает новый относительный путь
+     */
+    public function move(string $oldRelativePath, string $newRelativePath): string
+    {
+        $oldFullPath = $this->uploadDirectory . '/' . ltrim($oldRelativePath, '/');
+        $newFullPath = $this->uploadDirectory . '/' . ltrim($newRelativePath, '/');
+
+        if (!file_exists($oldFullPath)) {
+            throw new RuntimeException(sprintf('Source path does not exist: %s', $oldFullPath));
+        }
+
+        // Получаем директорию, в которой должен лежать файл/папка по новому пути
+        $newDirectory = dirname($newFullPath);
+
+        // Создаем структуру папок, если её нет
+        if (!is_dir($newDirectory)) {
+            if (!@mkdir($newDirectory, 0755, true) && !is_dir($newDirectory)) {
+                throw new RuntimeException(sprintf('Failed to create directory: %s', $newDirectory));
+            }
+        }
+
+        // Перемещаем
+        if (!@rename($oldFullPath, $newFullPath)) {
+            throw new RuntimeException(sprintf('Failed to move from %s to %s', $oldFullPath, $newFullPath));
+        }
+
+        return $newRelativePath;
     }
 }

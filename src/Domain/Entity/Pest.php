@@ -54,7 +54,17 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
     {
         parent::__construct($title, $volume, $details);
 
+        $this->setGroupValidate($group);
+        $this->setMarkerValidate($marker);
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
         $this->group = $group;
+    }
+
+    private function setMarkerValidate(Marker $marker): void
+    {
         $this->marker = $marker;
     }
 

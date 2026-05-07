@@ -54,8 +54,13 @@ class Fertilizer extends Preparation implements EntityInterface, AttachableInter
     {
         parent::__construct($title, $volume, $details);
 
-        $this->group = $group;
+        $this->setGroupValidate($group);
         $this->marker = $marker;
+    }
+
+    private function setGroupValidate(Group $group): void
+    {
+        $this->group = $group;
     }
 
     public function getId(): int

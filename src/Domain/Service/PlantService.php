@@ -11,7 +11,9 @@ use App\Domain\ValueObject\Plant\SalesInfo;
 use App\Domain\Model\Plant\CreatePlantModel;
 use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\ValueObject\Plant\PurchaseInfo;
+use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
@@ -219,6 +221,10 @@ class PlantService
     {
         $group = $this->groupService->find($updatePlantModel->groupId);
 
+        //ToDo
+//        $attachments = $this->plantRepository->findEntitiesByAttachable($plant->getId(), AttachableType::PLANT);
+//        $plant->setLoadedAttachments($attachments);
+
         $plant->moveToGroup($group)
             ->setTitle($updatePlantModel->title)
             ->setRoom($updatePlantModel->room)
@@ -244,6 +250,17 @@ class PlantService
             $plant->show();
         else
             $plant->hide();
+
+        $oldPath = $plant->getPlantIdentifier()->getQrCodeLink();
+
+        // Вызываем сервис, который переименует папку/файл на диске (переносим в новый каталог groupId)
+        $newPath = $this->fileService->moveAttachmentQrFiles($oldPath, $updatePlantModel->groupId);
+        $plant->changePlantIdentifier(
+            new PlantIdentifier(
+                $plant->getPlantIdentifier()->getOid(),
+                $newPath
+            )
+        );
 
         $this->plantRepository->update();
 

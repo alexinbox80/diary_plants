@@ -10,6 +10,7 @@ use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\ValueObject\Usage\AttachableReference;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
@@ -24,7 +25,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
     columns: ['group_id', 'plant_id', 'use_date', 'usable_type', 'usable_id'],
     options: ['where' => '(deleted_at IS NULL)']
 )]
-class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Usage implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -152,6 +153,10 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
 
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
 
         return $this;
@@ -165,5 +170,10 @@ class Usage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletabl
     public function getLoadedAttachment(): ?object
     {
         return $this->loadedAttachment;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

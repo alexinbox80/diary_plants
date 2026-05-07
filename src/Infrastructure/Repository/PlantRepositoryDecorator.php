@@ -2,9 +2,10 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use App\Domain\Entity\Plant;
 use App\Domain\Entity\Usage;
-use App\Domain\Model\Analytic\AnalyticModel;
+use InvalidArgumentException;
 use App\Domain\ValueObject\OId;
 use App\Domain\Entity\Offspring;
 use App\Domain\Entity\Repotting;
@@ -13,6 +14,7 @@ use App\Domain\Entity\Attachment;
 use Doctrine\ORM\PersistentCollection;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Model\Analytic\AnalyticModel;
 use App\Domain\Model\Repotting\RepottingModel;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Attachment\AttachmentModel;
@@ -40,14 +42,14 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
      * @param int $perPage
      * @return array
      * @return array{plantsModel: plantModel[], pagination: array}
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
         $plantsPaginated = $this->plantRepository->getPlantsPaginatedWithAttachments($page, $perPage);
 
         if (!is_array($plantsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for plants');
+            throw new InvalidArgumentException('Expected array for plants');
         }
 
         $plantsModel = array_map(
@@ -74,7 +76,7 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
         $plantsPaginated = $this->plantRepository->getPlantsPaginatedByGroupIdWithAttachments($page, $perPage, $groupId);
 
         if (!is_array($plantsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for plants');
+            throw new InvalidArgumentException('Expected array for plants');
         }
 
         $plantsModel = array_map(
