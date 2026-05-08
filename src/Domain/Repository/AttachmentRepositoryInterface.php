@@ -2,13 +2,14 @@
 
 namespace App\Domain\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
-use DateTimeImmutable;
 
 interface AttachmentRepositoryInterface
 {
     public function findByAttachable(string $attachableType, int $attachableId): array;
+    public function findEntitiesByAttachable(string $attachableType, int $attachableId): array;
     public function findByAttachableWithDeleted(string $attachableType, int $attachableId): array;
     public function findOneByAttachable(string $attachableType, int $attachableId, int $attachmentId): ?Attachment;
     public function deleteByAttachable(string $attachableType, int $attachableId, int $attachmentId): void;

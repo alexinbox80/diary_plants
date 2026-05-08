@@ -3,12 +3,15 @@
 namespace App\Infrastructure\Storage;
 
 use RuntimeException;
+use InvalidArgumentException;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Builder\BuilderInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class LocalFileStorage
 {
@@ -28,7 +31,7 @@ class LocalFileStorage
     public function getFilesInDirectory(string $directory): array
     {
         if (!is_dir($directory)) {
-            throw new \InvalidArgumentException("Directory does not exist: {$directory}");
+            throw new InvalidArgumentException("Directory does not exist: {$directory}");
         }
 
         $files = [];
@@ -62,7 +65,7 @@ class LocalFileStorage
 
         if (!is_dir($directory)) {
             if (!@mkdir($directory, 0755, true) && !is_dir($directory)) {
-                throw new \RuntimeException(sprintf(
+                throw new RuntimeException(sprintf(
                     'Failed to create directory: %s. Check permissions and the existence of the parent directory.',
                     $directory
                 ));
@@ -94,13 +97,13 @@ class LocalFileStorage
             if (unlink($file)) {
                 return true;
             } else {
-                throw new \RuntimeException(sprintf(
+                throw new RuntimeException(sprintf(
                     'Failed to delete file: %s. Check permissions and file existence.',
                     $file
                 ));
             }
         } else {
-            throw new \RuntimeException(sprintf(
+            throw new RuntimeException(sprintf(
                 'Failed to delete file: %s.',
                 $file
             ));
@@ -119,7 +122,7 @@ class LocalFileStorage
 
         if (!is_dir($directory)) {
             if (!@mkdir($directory, 0755, true) && !is_dir($directory)) {
-                throw new \RuntimeException(sprintf(
+                throw new RuntimeException(sprintf(
                     'Failed to create directory: %s. Check permissions and the existence of the parent directory.',
                     $directory
                 ));
@@ -154,28 +157,74 @@ class LocalFileStorage
      */
     public function move(string $oldRelativePath, string $newRelativePath): string
     {
+        $filesystem = new Filesystem();
+
         $oldFullPath = $this->uploadDirectory . '/' . ltrim($oldRelativePath, '/');
         $newFullPath = $this->uploadDirectory . '/' . ltrim($newRelativePath, '/');
 
-        if (!file_exists($oldFullPath)) {
+        if (!$filesystem->exists($oldFullPath)) {
             throw new RuntimeException(sprintf('Source path does not exist: %s', $oldFullPath));
         }
 
-        // Получаем директорию, в которой должен лежать файл/папка по новому пути
-        $newDirectory = dirname($newFullPath);
+        try {
+            // 1. Создаем целевую директорию (mkdir -p)
+            // dirname($newFullPath) автоматически вычислит путь к папке
+            $filesystem->mkdir(dirname($newFullPath));
 
-        // Создаем структуру папок, если её нет
-        if (!is_dir($newDirectory)) {
-            if (!@mkdir($newDirectory, 0755, true) && !is_dir($newDirectory)) {
-                throw new RuntimeException(sprintf('Failed to create directory: %s', $newDirectory));
-            }
-        }
+            // 2. Перемещаем файл или директорию
+            // rename() в Symfony Filesystem работает атомарно и заменяет существующий файл, если нужно
+            $filesystem->rename($oldFullPath, $newFullPath, true);
 
-        // Перемещаем
-        if (!@rename($oldFullPath, $newFullPath)) {
-            throw new RuntimeException(sprintf('Failed to move from %s to %s', $oldFullPath, $newFullPath));
+            // 3. Удаляем старую директорию, если она пуста
+            $oldDirectory = dirname($oldFullPath);
+
+            // Важный нюанс: если вы переместили ПОСЛЕДНИЙ файл из папки,
+            // имеет смысл удалить пустую папку, чтобы не плодить мусор.
+            $this->removeEmptyDirectoriesUp($oldDirectory);
+
+        } catch (IOExceptionInterface $exception) {
+            throw new RuntimeException(sprintf('Error occurred while moving file: %s', $exception->getMessage()));
         }
 
         return $newRelativePath;
+    }
+
+    /**
+     * Рекурсивно удаляет пустые директории вверх по дереву
+     * до базовой директории загрузок.
+     *
+     * @param string $dir
+     * @return void
+     */
+    private function removeEmptyDirectoriesUp(string $dir): void
+    {
+        $filesystem = new Filesystem();
+
+        // Очищаем путь от лишних слешей и приводим к каноничному виду
+        $dir = realpath($dir);
+        $baseDir = realpath($this->uploadDirectory);
+
+        // Условие: пока путь является директорией, он пуст и мы не вышли за пределы базовой папки
+        while (
+            $dir &&
+            $dir !== $baseDir &&
+            is_dir($dir) &&
+            $this->isDirEmpty($dir)
+        ) {
+            $filesystem->remove($dir);
+
+            // Поднимаемся на уровень выше
+            $dir = dirname($dir);
+        }
+    }
+
+    /**
+     * @param string $dir
+     * @return bool
+     */
+    private function isDirEmpty(string $dir): bool
+    {
+        if (!is_dir($dir)) return false;
+        return (count(scandir($dir)) <= 2); // . и ..
     }
 }

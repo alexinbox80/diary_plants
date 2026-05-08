@@ -2,10 +2,12 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Entity\Analytic;
 use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\OId;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Domain\ValueObject\Plant\LifeCycle;
 use App\Domain\ValueObject\Plant\SalesInfo;
 use App\Domain\Model\Plant\CreatePlantModel;
@@ -13,6 +15,8 @@ use App\Domain\Model\Plant\UpdatePlantModel;
 use App\Domain\ValueObject\Plant\PurchaseInfo;
 use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\Repository\AnalyticRepositoryInterface;
+use App\Domain\Repository\AttachmentRepositoryInterface;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
@@ -21,12 +25,15 @@ use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 class PlantService
 {
     public function __construct(
+        private readonly EntityManagerInterface $entityManager,
         private readonly string $webURL,
         private readonly PlantRepositoryInterface $plantRepository,
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
         private readonly FileService $fileService,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly AttachmentRepositoryInterface $attachmentRepository,
+        private readonly AnalyticRepositoryInterface $analyticRepository,
     ) {
     }
 
@@ -144,41 +151,47 @@ class PlantService
      */
     public function create(CreatePlantModel $createPlantModel): PlantModel
     {
-        $group = $this->groupService->find($createPlantModel->groupId);
+        return $this->entityManager->wrapInTransaction(function() use ($createPlantModel) {
+            $group = $this->groupService->find($createPlantModel->groupId);
 
-        $plant = new Plant(
-            $group,
-            $createPlantModel->title,
-            $createPlantModel->room
-        );
+            $plant = new Plant(
+                $group,
+                $createPlantModel->title,
+                $createPlantModel->room
+            );
 
-        $plant->changeLifeCycle(new LifeCycle(
-            $createPlantModel->plantingDate,
-            $createPlantModel->vaccinationDate,
-            $createPlantModel->soil,
-        ))->changePurchaseInfo(new PurchaseInfo(
-            $createPlantModel->price,
-            $createPlantModel->shippingCost,
-            $createPlantModel->packagingCost,
-            $createPlantModel->seller,
-            $createPlantModel->nursery,
-            $createPlantModel->purchaseDate
-        ))->changeSalesInfo(new SalesInfo(
-            $createPlantModel->sellingDate,
-            $createPlantModel->sellingPrice,
-            $createPlantModel->isSold
-        ))->setComment($createPlantModel->comment)
-            ->setDescription($createPlantModel->description);
+            $plant->changeLifeCycle(new LifeCycle(
+                $createPlantModel->plantingDate,
+                $createPlantModel->vaccinationDate,
+                $createPlantModel->soil,
+            ))->changePurchaseInfo(new PurchaseInfo(
+                $createPlantModel->price,
+                $createPlantModel->shippingCost,
+                $createPlantModel->packagingCost,
+                $createPlantModel->seller,
+                $createPlantModel->nursery,
+                $createPlantModel->purchaseDate
+            ))->changeSalesInfo(new SalesInfo(
+                $createPlantModel->sellingDate,
+                $createPlantModel->sellingPrice,
+                $createPlantModel->isSold
+            ))->setComment($createPlantModel->comment)
+                ->setDescription($createPlantModel->description);
 
-        $plant->show();
+            $plant->show();
 
-        $this->plantRepository->create($plant);
+            $this->plantRepository->create($plant);
 
-        $this->processFileForQrCode($plant);
+            $this->processFileForQrCode($plant);
 
-        //ToDo: необходимо создать сущность Analytic или проверять на существование при обращении к сущности?
+            $analytic = new Analytic(
+                $plant,
+                $group
+            );
+            $this->analyticRepository->create($analytic);
 
-        return $this->plantRepository->toModel($plant);
+            return $this->plantRepository->toModel($plant);
+        });
     }
 
     /**
@@ -221,9 +234,8 @@ class PlantService
     {
         $group = $this->groupService->find($updatePlantModel->groupId);
 
-        //ToDo
-//        $attachments = $this->plantRepository->findEntitiesByAttachable($plant->getId(), AttachableType::PLANT);
-//        $plant->setLoadedAttachments($attachments);
+        $attachments = $this->attachmentRepository->findEntitiesByAttachable(AttachableType::PLANT->value, $plant->getId());
+        $plant->setLoadedAttachments($attachments);
 
         $plant->moveToGroup($group)
             ->setTitle($updatePlantModel->title)

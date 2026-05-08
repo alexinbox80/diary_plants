@@ -27,12 +27,20 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
      */
     public function findByAttachable(string $attachableType, int $attachableId): array
     {
-        $attachments = $this->attachmentRepository->findByAttachable($attachableType, $attachableId);
+        $attachments = $this->findEntitiesByAttachable($attachableType, $attachableId);
 
         return array_map(
             fn (Attachment $attachment) => $this->toModel($attachment),
             $attachments
         );
+    }
+
+    /**
+     * @return Attachment[]
+     */
+    public function findEntitiesByAttachable(string $attachableType, int $attachableId): array
+    {
+        return $this->attachmentRepository->findByAttachable($attachableType, $attachableId);
     }
 
     /**
