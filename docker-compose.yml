@@ -12,6 +12,10 @@ services:
             - '9000:9000'
         volumes:
             - ./:/app
+            - /app/var/cache
+            - /app/var/log
+            - /app/var/sessions
+            - ./docker/php-fpm/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini:ro
         working_dir: /app
         networks:
             - net

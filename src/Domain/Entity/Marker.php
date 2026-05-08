@@ -10,6 +10,7 @@ use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
@@ -28,7 +29,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     columns: ['letter', 'group_id'],
     options: ['where' => '(deleted_at IS NULL)']
 )]
-class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Marker implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -235,5 +236,37 @@ class Marker implements EntityInterface, HasMetaTimestampsInterface, SoftDeletab
     public function getStimulants(): Collection
     {
         return $this->stimulants;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
+    }
+
+    public function moveToGroup(Group $group): self
+    {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
+        $this->group = $group;
+
+        foreach ($this->stimulants as $stimulant) {
+            $stimulant->moveToGroup($group);
+        }
+
+        foreach ($this->fertilizers as $fertilizer) {
+            $fertilizer->moveToGroup($group);
+        }
+
+        foreach ($this->pests as $pest) {
+            $pest->moveToGroup($group);
+        }
+
+        foreach ($this->waterings as $watering) {
+            $watering->moveToGroup($group);
+        }
+
+        return $this;
     }
 }

@@ -1,5 +1,7 @@
 FROM php:8.4-fpm-alpine
 
+USER root
+
 # Install dev dependencies
 RUN apk update \
     && apk upgrade --available \
@@ -41,12 +43,24 @@ RUN docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) \
     pcntl \
     pdo_pgsql \
     sockets \
-    zip
+    zip \
+    opcache
 
 RUN pecl channel-update pecl.php.net \
+    && (pecl list | grep -q redis || pecl install -o -f redis) \
+    && (pecl list | grep -q redis || pecl install -o -f event) \
     && pecl install -o -f \
-        redis \
-        event \
     && rm -rf /tmp/pear \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini \
     && echo "extension=event.so" > /usr/local/etc/php/conf.d/event.ini
+
+RUN apk add --no-cache $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+WORKDIR /app
+
+RUN mkdir -p var/cache var/log var/sessions \
+    && chown -R www-data:www-data var
+
+USER www-data

@@ -9,6 +9,9 @@ PHP_CONT    = dplants_php-fpm
 EXEC_PHP    = $(DOCKER_BIN) exec -it -u www-data $(PHP_CONT)
 PHP_CONSOLE = php bin/console
 
+test-cover:
+	$(DOCKER_BIN) exec -e XDEBUG_MODE=coverage -it -u www-data $(PHP_CONT) vendor/bin/phpunit --coverage-text
+
 convert:
 	$(PHP_CONSOLE) database:convert:csv
 	$(PHP_CONSOLE) app:stats:init-watering

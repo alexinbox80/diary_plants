@@ -159,6 +159,8 @@ class Usage implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsIn
 
         $this->group = $group;
 
+        $this->plant->moveToGroup($group);
+
         return $this;
     }
 

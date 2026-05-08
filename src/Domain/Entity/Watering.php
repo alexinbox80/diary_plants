@@ -10,6 +10,7 @@ use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\ValueObject\Watering\WateringDetails;
 use App\Domain\Entity\Interfaces\AttachableInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
@@ -23,7 +24,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
     columns: ['group_id', 'marker_id'],
     options: ['where' => '(deleted_at IS NULL)']
 )]
-class Watering implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Watering implements EntityInterface, AttachableInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -87,7 +88,13 @@ class Watering implements EntityInterface, AttachableInterface, HasMetaTimestamp
 
     public function moveToGroup(Group $group): self
     {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
         $this->group = $group;
+
+        $this->marker->moveToGroup($group);
 
         return $this;
     }
@@ -136,5 +143,10 @@ class Watering implements EntityInterface, AttachableInterface, HasMetaTimestamp
     public function getGroup(): Group
     {
         return $this->group;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
     }
 }

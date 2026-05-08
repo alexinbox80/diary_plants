@@ -178,6 +178,8 @@ class Repotting implements EntityInterface, GroupOwnedInterface, HasMetaTimestam
 
         $this->group = $group;
 
+        $this->plant->moveToGroup($group);
+
         return $this;
     }
 

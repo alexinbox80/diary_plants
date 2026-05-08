@@ -83,3 +83,9 @@ php bin/console --env=test doctrine:migrations:migrate --no-interaction
 
 #Check test environment
 php bin/console debug:dotenv --env=test | grep DATABASE_URL
+
+#messure speed
+curl -o /dev/null -s -w 'Total: %{time_total}s\n' http://localhost:8080/dashboard/plant/
+
+#docker build
+docker compose up --build -d 

@@ -98,6 +98,12 @@ class Offspring implements EntityInterface, AttachableInterface, GroupOwnedInter
 
         $this->group = $group;
 
+        foreach ($this->loadedAttachments as $attachment) {
+            if ($attachment instanceof GroupOwnedInterface) {
+                $attachment->moveToGroup($group);
+            }
+        }
+
         return $this;
     }
 

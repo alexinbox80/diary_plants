@@ -8,6 +8,7 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\AttachableInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\ValueObject\Preparation\PreparationVolume;
@@ -24,7 +25,7 @@ use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
     columns: ['group_id', 'marker_id'],
     options: ['where' => '(deleted_at IS NULL)']
 )]
-class Pest extends Preparation implements EntityInterface, AttachableInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+class Pest extends Preparation implements EntityInterface, AttachableInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -97,5 +98,23 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
 
         $this->group = $group;
         $this->marker = $marker;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->group->getId();
+    }
+
+    public function moveToGroup(Group $group): self
+    {
+        if ($this->getGroupId() === $group->getId()) {
+            return $this;
+        }
+
+        $this->group = $group;
+
+        $this->marker->moveToGroup($group);
+
+        return $this;
     }
 }
