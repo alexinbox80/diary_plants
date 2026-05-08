@@ -5,6 +5,7 @@ namespace App\Application\Security\Voter;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\Entity\Interfaces\GroupOwnedInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -21,7 +22,7 @@ class GroupOwnershipVoter extends Voter
             && $subject instanceof GroupOwnedInterface;
     }
 
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) return false;

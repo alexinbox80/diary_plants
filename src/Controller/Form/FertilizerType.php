@@ -2,8 +2,11 @@
 
 namespace App\Controller\Form;
 
+use App\Domain\Service\GroupService;
 use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
@@ -17,6 +20,8 @@ use App\Controller\Web\Dashboard\Fertilizer\CreateFertilizer\Input\CreateFertili
 class FertilizerType extends AbstractType
 {
     public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
         private readonly MarkerService $markerService,
     ) {
     }
@@ -25,6 +30,15 @@ class FertilizerType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = FertilizerModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('markerId', ChoiceType::class, [

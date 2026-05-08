@@ -2,8 +2,11 @@
 
 namespace App\Controller\Form;
 
+use App\Domain\Service\GroupService;
 use Symfony\Component\Form\AbstractType;
 use App\Domain\Model\Marker\MarkerModel;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,10 +17,25 @@ use App\Controller\Web\Dashboard\Marker\CreateMarker\Input\CreateMarkerDTO;
 
 class MarkerType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $groupId = $options['group_id'] ?? null;
         $labels = MarkerModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('letter', TextType::class, [

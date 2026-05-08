@@ -2,8 +2,11 @@
 
 namespace App\Controller\Form;
 
+use App\Domain\Service\GroupService;
 use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Domain\Model\Stimulant\StimulantModel;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
@@ -17,6 +20,8 @@ use App\Controller\Web\Dashboard\Stimulant\CreateStimulant\Input\CreateStimulant
 class StimulantType extends AbstractType
 {
     public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
         private readonly MarkerService $markerService,
     ) {
     }
@@ -25,6 +30,15 @@ class StimulantType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = StimulantModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('markerId', ChoiceType::class, [

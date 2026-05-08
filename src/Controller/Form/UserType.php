@@ -7,6 +7,7 @@ use App\Domain\Service\GroupService;
 use Symfony\Component\Form\AbstractType;
 use App\Domain\ValueObject\Enum\UserRole;
 use App\Domain\ValueObject\Enum\Timezone;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -20,6 +21,7 @@ use App\Controller\Web\Dashboard\User\CreateUser\Input\CreateUserDTO;
 class UserType extends AbstractType
 {
     public function __construct(
+        private readonly Security $security,
         private readonly GroupService $groupService,
     ) {
     }
@@ -28,6 +30,15 @@ class UserType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = UserModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('avatarFile', FileType::class, [

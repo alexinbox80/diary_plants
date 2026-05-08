@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use Exception;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
@@ -155,7 +156,7 @@ class UsageService
     /**
      * @param array $createUsagesDTO
      * @return null|array
-     * @throws \DateMalformedStringException
+     * @throws Exception
      */
     public function createUsages(array $createUsagesDTO): ?array
     {

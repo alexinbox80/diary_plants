@@ -3,7 +3,10 @@
 namespace App\Controller\Form;
 
 use DateTimeImmutable;
+use App\Domain\Service\GroupService;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Domain\Model\Attachment\AttachmentModel;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,9 +22,25 @@ use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 
 class ImageType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $labels = AttachmentModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
+
         $builder
             ->add('isShown', CheckboxType::class, [
                 'label' => $labels['is_shown_label'],

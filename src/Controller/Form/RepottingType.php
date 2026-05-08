@@ -3,8 +3,11 @@
 namespace App\Controller\Form;
 
 use DateTimeImmutable;
+use App\Domain\Service\GroupService;
 use App\Domain\Service\PlantService;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Domain\Model\Repotting\RepottingModel;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\ValueObject\Enum\Repotting\PotMaterial;
@@ -20,6 +23,8 @@ use App\Controller\Web\Dashboard\Repotting\CreateRepotting\Input\CreateRepotting
 class RepottingType extends AbstractType
 {
     public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
         private readonly PlantService $plantService,
     ) {
     }
@@ -28,6 +33,15 @@ class RepottingType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = RepottingModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('plantId', ChoiceType::class, [

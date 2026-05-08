@@ -4,8 +4,11 @@ namespace App\Controller\Form;
 
 use App\Domain\Model\Watering\WateringModel;
 
+use App\Domain\Service\GroupService;
 use App\Domain\Service\MarkerService;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\ValueObject\Enum\Watering\WaterType;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
@@ -20,6 +23,8 @@ use App\Controller\Web\Dashboard\Watering\CreateWatering\Input\CreateWateringDTO
 class WateringType extends AbstractType
 {
     public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
         private readonly MarkerService $markerService,
     ) {
     }
@@ -28,6 +33,15 @@ class WateringType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = WateringModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('markerId', ChoiceType::class, [

@@ -2,8 +2,11 @@
 
 namespace App\Controller\Form;
 
+use App\Domain\Service\GroupService;
 use App\Domain\Service\PlantService;
 use Symfony\Component\Form\AbstractType;
+use App\Domain\ValueObject\Enum\UserRole;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Domain\Model\Offspring\OffspringModel;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +20,8 @@ use App\Controller\Web\Dashboard\Offspring\CreateOffspring\Input\CreateOffspring
 class OffspringType extends AbstractType
 {
     public function __construct(
+        private readonly Security $security,
+        private readonly GroupService $groupService,
         private readonly PlantService $plantService,
     ) {
     }
@@ -25,6 +30,15 @@ class OffspringType extends AbstractType
     {
         $groupId = $options['group_id'] ?? null;
         $labels = OffspringModel::getTableHeaderRu();
+
+        if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
+            $builder->add('groupId', ChoiceType::class, [
+                'label' => $labels['group_id'],
+                'required' => true,
+                'choices' => $this->groupService->getChoicesForFormChoiceType(),
+                'placeholder' => 'Выберите группу'
+            ]);
+        }
 
         $builder
             ->add('plantId', ChoiceType::class, [

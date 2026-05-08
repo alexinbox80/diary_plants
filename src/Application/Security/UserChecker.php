@@ -5,6 +5,7 @@ namespace App\Application\Security;
 use App\Domain\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 
 class UserChecker implements UserCheckerInterface
@@ -26,7 +27,7 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    public function checkPostAuth(UserInterface $user): void
+    public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void
     {
         // Проверки после успешного ввода пароля (например, истечение срока действия пароля)
         if (!$user instanceof User) {
