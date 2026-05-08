@@ -13,7 +13,7 @@ use App\Controller\Web\Dashboard\Plant\EditPlant\Input\EditPlantDTO;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,

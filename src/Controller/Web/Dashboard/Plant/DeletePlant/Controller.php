@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
-class Controller extends AbstractController
+final class Controller extends AbstractController
 {
     public function __construct(
         private readonly Manager $manager

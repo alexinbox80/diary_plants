@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
+use RuntimeException;
+use InvalidArgumentException;
 use App\Domain\Entity\Plant;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\ValueObject\OId;
@@ -69,7 +72,7 @@ class PlantRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Plant[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
@@ -85,7 +88,7 @@ class PlantRepository extends AbstractRepository
      * @param int $perPage
      * @param int|null $groupId
      * @return Plant[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
     {
@@ -108,18 +111,18 @@ class PlantRepository extends AbstractRepository
      * @param int $perPage
      * @return Plant[]
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPlantsPaginatedWithAttachments(int $page, int $perPage): array
     {
         $result = $this->getPlantsPaginated($page, $perPage);
 
         if (!isset($result['items'])) {
-            throw new \RuntimeException('Pagination result is missing "items".');
+            throw new RuntimeException('Pagination result is missing "items".');
         }
 
         if (!is_array($result['items'])) {
-            throw new \InvalidArgumentException('"items" must be an array.');
+            throw new InvalidArgumentException('"items" must be an array.');
         }
 
         $this->loadAttachmentsForPlants($result['items']);
@@ -133,18 +136,18 @@ class PlantRepository extends AbstractRepository
      * @param int|null $groupId
      * @return Plant[]
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPlantsPaginatedByGroupIdWithAttachments(int $page, int $perPage, ?int $groupId = null): array
     {
         $result = $this->getPlantsPaginatedByGroupId($page, $perPage, $groupId);
 
         if (!isset($result['items'])) {
-            throw new \RuntimeException('Pagination result is missing "items".');
+            throw new RuntimeException('Pagination result is missing "items".');
         }
 
         if (!is_array($result['items'])) {
-            throw new \InvalidArgumentException('"items" must be an array.');
+            throw new InvalidArgumentException('"items" must be an array.');
         }
 
         $this->loadAttachmentsForPlants($result['items']);

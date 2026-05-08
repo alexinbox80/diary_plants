@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Domain\Entity\Repotting;
 use App\Domain\Model\Repotting\RepottingModel;
 use App\Domain\Repository\RepottingRepositoryInterface;
@@ -18,14 +20,40 @@ class RepottingRepositoryDecorator implements RepottingRepositoryInterface
 
     /**
      * @return RepottingModel[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getRepottingsPaginated(int $page, int $perPage): array
     {
         $repottingsPaginated = $this->repottingRepository->getRepottingsPaginated($page, $perPage);
 
         if (!is_array($repottingsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for Repottings');
+            throw new InvalidArgumentException('Expected array for Repottings');
+        }
+
+        $repottingsModel = array_map(
+            fn (Repotting $repotting): RepottingModel => $this->toModel($repotting, true),
+            $repottingsPaginated['items']
+        );
+
+        return [
+            'repottingsModel' => $repottingsModel,
+            'pagination' => $repottingsPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return array{plantsModel: repottingModel[], pagination: array}
+     * @throws Exception
+     */
+    public function getRepottingsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $repottingsPaginated = $this->repottingRepository->getRepottingsPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($repottingsPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Repottings');
         }
 
         $repottingsModel = array_map(
@@ -65,6 +93,20 @@ class RepottingRepositoryDecorator implements RepottingRepositoryInterface
     public function findAll(): array
     {
         $repottings = $this->repottingRepository->findAll();
+
+        return array_map(
+            fn (Repotting $repotting): RepottingModel => $this->toModel($repotting, true),
+            $repottings
+        );
+    }
+
+    /**
+     * @param ?int $groupId
+     * @return RepottingModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $repottings = $this->repottingRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Repotting $repotting): RepottingModel => $this->toModel($repotting, true),

@@ -9,14 +9,13 @@ use App\Application\Security\Voter\GroupOwnershipVoter;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,
         private readonly TranslatorInterface $translator,
         private readonly AuthorizationCheckerInterface $authChecker
     ) {
-
     }
 
     public function deleteData(int $id, Request $request): array

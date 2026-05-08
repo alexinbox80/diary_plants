@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Repotting;
@@ -26,13 +27,37 @@ class RepottingRepository extends AbstractRepository
 
     /**
      * @return Repotting[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getRepottingsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return Repotting[]
+     *
+     * @throws Exception
+     */
+    public function getRepottingsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('r.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -58,6 +83,24 @@ class RepottingRepository extends AbstractRepository
         return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param ?int $groupId
+     * @return Repotting[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder;
+
+        if ($groupId !== null) {
+            $qb->where('r.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return  $qb->getQuery()->getResult();
     }
 
     /**

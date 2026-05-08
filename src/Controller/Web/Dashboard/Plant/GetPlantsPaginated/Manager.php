@@ -7,7 +7,7 @@ use App\Domain\Model\Plant\PlantModel;
 use App\Domain\ValueObject\Enum\Timezone;
 use App\Application\Security\AccessContext;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,

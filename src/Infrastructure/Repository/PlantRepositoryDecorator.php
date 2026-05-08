@@ -67,9 +67,8 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @param int|null $groupId
-     * @return array
      * @return array{plantsModel: plantModel[], pagination: array}
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
     {

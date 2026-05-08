@@ -2,12 +2,13 @@
 
 namespace App\Domain\Model\Repotting;
 
-use App\Domain\ValueObject\Enum\Repotting\PotMaterial;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Entity\Repotting;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\ValueObject\Enum\Timezone;
+use App\Domain\ValueObject\Enum\Repotting\PotMaterial;
 use App\Domain\ValueObject\Enum\Repotting\RepottingType;
 
 class RepottingModel
@@ -130,9 +131,13 @@ class RepottingModel
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Controller\Web\Dashboard\Plant\CreatePlant\Input\CreatePlantDTO;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly PlantService $plantService,

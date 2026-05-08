@@ -122,7 +122,7 @@ class PlantService
     /**
      * @param int $page
      * @param int $perPage
-     * @return array
+     * @return PlantModel[]
      */
     public function getPlantsPaginated(int $page, int $perPage): array
     {
@@ -133,7 +133,7 @@ class PlantService
      * @param int $page
      * @param int $perPage
      * @param int|null $groupId
-     * @return array
+     * @return PlantModel[]
      */
     public function getPlantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
     {

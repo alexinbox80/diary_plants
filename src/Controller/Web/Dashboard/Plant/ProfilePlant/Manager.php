@@ -15,8 +15,8 @@ class Manager
     }
 
     /**
+     * @param string $uuid
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getPlantProfile(string $uuid): array
     {

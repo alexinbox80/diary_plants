@@ -43,6 +43,15 @@ class RepottingService
     }
 
     /**
+     * @param ?int $groupId
+     * @return RepottingModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->repottingRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param DateTimeImmutable $repottedAt
      * @return RepottingModel[]
      */
@@ -58,6 +67,17 @@ class RepottingService
     public function getRepottingsPaginated(int $page, int $perPage): array
     {
         return $this->repottingRepository->getRepottingsPaginated($page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return RepottingModel[]
+     */
+    public function getRepottingsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->repottingRepository->getRepottingsPaginatedByGroupId($page, $perPage, $groupId);
     }
 
     /**
@@ -91,12 +111,13 @@ class RepottingService
     /**
      * @param CreateRepottingDTO $dto
      * @return RepottingModel
+     * @throws InvalidArgumentException
      */
     public function createFromCreateRepottingDTO(CreateRepottingDTO $dto): RepottingModel
     {
         $model = $this->modelFactory->makeModel(
             CreateRepottingModel::class,
-            2,
+            $dto->groupId,
             $dto->plantId,
             $dto->repottedAt,
             $dto->type,
@@ -112,7 +133,6 @@ class RepottingService
      * @param Repotting $repotting
      * @param UpdateRepottingModel $updateRepottingModel
      * @return RepottingModel
-     * @throws InvalidArgumentException
      */
     public function update(Repotting $repotting, UpdateRepottingModel $updateRepottingModel): RepottingModel
     {
@@ -146,7 +166,7 @@ class RepottingService
     {
         $model = $this->modelFactory->makeModel(
             UpdateRepottingModel::class,
-            2,
+            $dto->groupId,
             $dto->plantId,
             $dto->repottedAt,
             $dto->type,
