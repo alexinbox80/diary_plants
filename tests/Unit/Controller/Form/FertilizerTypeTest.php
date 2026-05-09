@@ -2,25 +2,37 @@
 
 namespace Unit\Controller\Form;
 
+use App\Domain\Service\GroupService;
 use App\Domain\Service\MarkerService;
+use PHPUnit\Framework\Attributes\Test;
 use App\Controller\Form\FertilizerType;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Form\PreloadedExtension;
 use App\Controller\Web\Dashboard\Fertilizer\EditFertilizer\Input\EditFertilizerDTO;
 
+#[CoversClass(FertilizerType::class)]
 class FertilizerTypeTest extends TypeTestCase
 {
     private MockObject|MarkerService $markerService;
+    private MockObject|GroupService $groupService;
+    private MockObject|Security $security;
 
     protected function setUp(): void
     {
-        // 1. Создаем мок сервиса
+        // Создаем все необходимые моки
         $this->markerService = $this->createMock(MarkerService::class);
+        $this->groupService = $this->createMock(GroupService::class);
+        $this->security = $this->createMock(Security::class);
 
-        // Настраиваем мок, чтобы он возвращал тестовый список вариантов для ChoiceType
+        // Настраиваем моки, чтобы форма могла построиться без ошибок
         $this->markerService->method('getChoicesForChoiceType')
             ->willReturn(['Label 1' => 1, 'Label 2' => 2]);
+
+        $this->groupService->method('getChoicesForFormChoiceType')
+            ->willReturn(['Group 1' => 1]);
 
         parent::setUp();
     }
@@ -30,13 +42,18 @@ class FertilizerTypeTest extends TypeTestCase
      */
     protected function getExtensions(): array
     {
-        $type = new FertilizerType($this->markerService);
+        $type = new FertilizerType(
+            $this->security,
+            $this->groupService,
+            $this->markerService
+        );
 
         return [
             new PreloadedExtension([$type], []),
         ];
     }
 
+    #[Test]
     public function testSubmitValidData(): void
     {
         // 2. Входные данные, которые «пришли» из браузера

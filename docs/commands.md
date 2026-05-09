@@ -89,3 +89,13 @@ curl -o /dev/null -s -w 'Total: %{time_total}s\n' http://localhost:8080/dashboar
 
 #docker build
 docker compose up --build -d 
+
+#show prev version from old commit
+bash-3.2$ git show HEAD~3:composer.lock | grep -A 2 '"name": "phpunit/phpunit"'
+"name": "phpunit/phpunit",
+"version": "12.3.5",
+"source": {
+bash-3.2$ cat composer.lock | grep -A 2 '"name": "phpunit/phpunit"';
+"name": "phpunit/phpunit",
+"version": "12.5.24",
+"source": {

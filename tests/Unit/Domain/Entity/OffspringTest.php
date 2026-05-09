@@ -6,21 +6,29 @@ use App\Domain\Entity\Plant;
 use App\Domain\Entity\Group;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Entity\Offspring;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\ValueObject\Offspring\Phenology;
 use App\Domain\ValueObject\Offspring\FruitMetrics;
 
+#[CoversClass(Offspring::class)]
 class OffspringTest extends TestCase
 {
-    private function createGroupMock(): Group
+    private function createGroupMock(int $id = 0): Group
     {
-        return $this->createMock(Group::class);
+        $mock = $this->createMock(Group::class);
+        $mock->method('getId')->willReturn($id);
+        return $mock;
     }
 
-    private function createPlantMock(): Plant
+    private function createPlantMock(int $id = 0): Plant
     {
-        return $this->createMock(Plant::class);
+        $mock = $this->createMock(Plant::class);
+        $mock->method('getId')->willReturn($id);
+        return $mock;
     }
 
+    #[Test]
     public function testConstructorInitializesCorrectly(): void
     {
         $group = $this->createGroupMock();
@@ -37,6 +45,7 @@ class OffspringTest extends TestCase
         $this->assertNull($offspring->getComment());
     }
 
+    #[Test]
     public function testRecordResultUpdatesData(): void
     {
         $offspring = new Offspring($this->createGroupMock(), $this->createPlantMock());
@@ -53,20 +62,26 @@ class OffspringTest extends TestCase
         $this->assertEquals($comment, $offspring->getComment());
     }
 
+    #[Test]
     public function testMoveMethods(): void
     {
-        $offspring = new Offspring($this->createGroupMock(), $this->createPlantMock());
+        // Создаем объекты с разными ID
+        $initialGroup = $this->createGroupMock(1);
+        $initialPlant = $this->createPlantMock(10);
 
-        $newGroup = $this->createGroupMock();
-        $newPlant = $this->createPlantMock();
+        $offspring = new Offspring($initialGroup, $initialPlant);
+
+        $newGroup = $this->createGroupMock(2); // ID другой, проверка в сущности пройдет
+        $newPlant = $this->createPlantMock(20);
 
         $offspring->moveToGroup($newGroup);
         $offspring->moveToPlant($newPlant);
 
-        $this->assertSame($newGroup, $offspring->getGroup());
-        $this->assertSame($newPlant, $offspring->getPlant());
+        $this->assertSame($newGroup, $offspring->getGroup(), 'Группа должна измениться');
+        $this->assertSame($newPlant, $offspring->getPlant(), 'Растение должно измениться');
     }
 
+    #[Test]
     public function testGetIdThrowsExceptionWhenNull(): void
     {
         $offspring = new Offspring($this->createGroupMock(), $this->createPlantMock());
@@ -77,6 +92,7 @@ class OffspringTest extends TestCase
         $offspring->getId();
     }
 
+    #[Test]
     public function testAttachmentsManagement(): void
     {
         $offspring = new Offspring($this->createGroupMock(), $this->createPlantMock());

@@ -2,17 +2,24 @@
 
 namespace Unit\Domain\Entity;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use App\Domain\Entity\Plant;
 use App\Domain\Entity\Group;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\ValueObject\Usage\AttachableReference;
 
+#[CoversClass(Usage::class)]
 class UsageTest extends TestCase
 {
-    private function createGroupMock(): Group
+    private function createGroupMock(int $id = 0): Group
     {
-        return $this->createMock(Group::class);
+        $mock = $this->createMock(Group::class);
+        $mock->method('getId')->willReturn($id);
+        return $mock;
     }
 
     private function createPlantMock(): Plant
@@ -25,12 +32,13 @@ class UsageTest extends TestCase
         return $this->createMock(AttachableReference::class);
     }
 
+    #[Test]
     public function testConstructorInitializesCorrectly(): void
     {
         $group = $this->createGroupMock();
         $plant = $this->createPlantMock();
         $target = $this->createTargetMock();
-        $date = new \DateTimeImmutable('2024-01-01');
+        $date = new DateTimeImmutable('2024-01-01');
         $comment = 'Обработка от клеща';
 
         $usage = new Usage($group, $date, $plant, $target, $comment);
@@ -42,11 +50,12 @@ class UsageTest extends TestCase
         $this->assertEquals($comment, $usage->getComment());
     }
 
+    #[Test]
     public function testChangeFieldsUpdatesData(): void
     {
         $usage = new Usage(
             $this->createGroupMock(),
-            new \DateTimeImmutable(),
+            new DateTimeImmutable(),
             $this->createPlantMock(),
             $this->createTargetMock()
         );
@@ -54,7 +63,7 @@ class UsageTest extends TestCase
         $newGroup = $this->createGroupMock();
         $newPlant = $this->createPlantMock();
         $newTarget = $this->createTargetMock();
-        $newDate = new \DateTimeImmutable('tomorrow');
+        $newDate = new DateTimeImmutable('tomorrow');
         $newComment = 'New comment';
 
         $usage->changeFields($newGroup, $newDate, $newPlant, $newTarget, $newComment);
@@ -66,31 +75,39 @@ class UsageTest extends TestCase
         $this->assertEquals($newComment, $usage->getComment());
     }
 
+    #[Test]
     public function testMoveToGroup(): void
     {
+        // Создаем исходную группу с ID 1
+        $oldGroup = $this->createGroupMock(1);
+
         $usage = new Usage(
-            $this->createGroupMock(),
-            new \DateTimeImmutable(),
+            $oldGroup,
+            new DateTimeImmutable(),
             $this->createPlantMock(),
             $this->createTargetMock()
         );
 
-        $newGroup = $this->createGroupMock();
+        // Создаем новую группу с ID 2
+        $newGroup = $this->createGroupMock(2);
+
         $usage->moveToGroup($newGroup);
 
-        $this->assertSame($newGroup, $usage->getGroup());
+        // Теперь проверка (1 === 2) вернет false, и группа обновится
+        $this->assertSame($newGroup, $usage->getGroup(), 'Группа в Usage должна обновиться');
     }
 
+    #[Test]
     public function testGetIdThrowsExceptionWhenNull(): void
     {
         $usage = new Usage(
             $this->createGroupMock(),
-            new \DateTimeImmutable(),
+            new DateTimeImmutable(),
             $this->createPlantMock(),
             $this->createTargetMock()
         );
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Id of Entity App\Domain\Entity\Usage is null.');
 
         $usage->getId();

@@ -2,6 +2,7 @@
 
 namespace Unit\Application\Doctrine;
 
+use ReflectionClass;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -26,7 +27,7 @@ class SoftDeletedFilterTest extends TestCase
     {
         // Мокаем ClassMetadata
         $targetEntity = $this->createMock(ClassMetadata::class);
-        $reflClass = $this->createMock(\ReflectionClass::class);
+        $reflClass = $this->createMock(ReflectionClass::class);
 
         // Настраиваем: сущность РЕАЛИЗУЕТ интерфейс
         $reflClass->method('implementsInterface')
@@ -44,7 +45,7 @@ class SoftDeletedFilterTest extends TestCase
     public function testAddFilterConstraintWhenEntityIsNotSoftDeletable(): void
     {
         $targetEntity = $this->createMock(ClassMetadata::class);
-        $reflClass = $this->createMock(\ReflectionClass::class);
+        $reflClass = $this->createMock(ReflectionClass::class);
 
         // Настраиваем: сущность НЕ реализует интерфейс
         $reflClass->method('implementsInterface')

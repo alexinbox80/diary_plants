@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use ReflectionProperty;
 use App\Domain\Entity\Group;
 use App\Domain\Entity\Plant;
+use App\Domain\ValueObject\OId;
 use PHPUnit\Framework\TestCase;
 use App\Domain\ValueObject\Price;
 use App\Domain\Service\FileService;
@@ -14,12 +15,15 @@ use App\Domain\Service\ModelFactory;
 use App\Domain\Service\PlantService;
 use App\Domain\Model\Plant\PlantModel;
 use PHPUnit\Framework\Attributes\Test;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Domain\Model\Plant\UpdatePlantModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use App\Domain\Model\Plant\CreatePlantModel;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Repository\PlantRepositoryInterface;
+use App\Domain\Repository\AnalyticRepositoryInterface;
+use App\Domain\Repository\AttachmentRepositoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[CoversClass(PlantService::class)]
@@ -33,18 +37,28 @@ class PlantServiceTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->repository = $this->createMock(PlantRepositoryInterface::class);
         $this->groupService = $this->createMock(GroupService::class);
         $this->fileService = $this->createMock(FileService::class);
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $this->attachmentRepository = $this->createMock(AttachmentRepositoryInterface::class);
+        $this->analyticRepository = $this->createMock(AnalyticRepositoryInterface::class);
+
+        // Настройка транзакции: заставляем мок выполнить переданный в него код
+        $this->entityManager->method('wrapInTransaction')
+            ->willReturnCallback(fn($callback) => $callback());
 
         $this->service = new PlantService(
-            'https://test.com',
+            $this->entityManager, // 1. Энтити менеджер
+            'https://test.com',   // 2. URL
             $this->repository,
             $this->createMock(ModelFactory::class),
             $this->groupService,
             $this->fileService,
-            $this->urlGenerator
+            $this->urlGenerator,
+            $this->attachmentRepository,
+            $this->analyticRepository
         );
     }
 
@@ -117,31 +131,41 @@ class PlantServiceTest extends TestCase
     #[Test]
     public function testUpdatePlantTogglesVisibility(): void
     {
+        // 1. Подготовка модели обновления (isShown = false)
         $updateModel = new UpdatePlantModel(
             groupId: 2,
-            title: 'Test',
-            room: 'Test',
-            isShown: false, // Теперь тест проверит вызов hide()
-            description: 'Test',
+            title: 'Test Plant',
+            room: 'Living Room',
+            isShown: false,
+            description: 'Updated description',
             purchaseDate: new DateTimeImmutable(),
             vaccinationDate: null,
             plantingDate: new DateTimeImmutable(),
-            seller: 'Test',
-            nursery: 'Test',
+            seller: 'Test Seller',
+            nursery: 'Test Nursery',
             price: null,
             shippingCost: null,
             packagingCost: null,
-            soil: 'Test',
+            soil: 'Universal',
             isSold: false,
             sellingDate: null,
             sellingPrice: null,
-            comment: 'Test'
+            comment: 'No comment'
         );
 
+        // 2. Создание мока сущности Plant и её зависимостей
         $plant = $this->createMock(Plant::class);
-        $this->groupService->method('find')->willReturn($this->createMock(Group::class));
+        $plantId = 42;
+        $plant->method('getId')->willReturn($plantId);
 
-        // Настраиваем Fluent Interface (чтобы методы возвращали сам объект $plant)
+        // Имитируем PlantIdentifier, чтобы getQrCodeLink() не вернул null
+        $identifier = $this->createMock(PlantIdentifier::class);
+        $identifier->method('getQrCodeLink')->willReturn('path/to/old_qr.png');
+        $identifier->method('getOid')->willReturn(OId::next());
+        $plant->method('getPlantIdentifier')->willReturn($identifier);
+
+        // 3. Настройка Fluent Interface для всех сеттеров в сервисе
+        // Все методы, которые в сущности делают "return $this", должны возвращать мок $plant
         $plant->method('moveToGroup')->willReturn($plant);
         $plant->method('setTitle')->willReturn($plant);
         $plant->method('setRoom')->willReturn($plant);
@@ -150,14 +174,39 @@ class PlantServiceTest extends TestCase
         $plant->method('changeSalesInfo')->willReturn($plant);
         $plant->method('setComment')->willReturn($plant);
         $plant->method('setDescription')->willReturn($plant);
+        $plant->method('setLoadedAttachments');
+        $plant->method('changePlantIdentifier')->willReturn($plant);
 
-        // 2. Проверяем, что вызвался hide(), так как в модели isShown = false
+        // 4. Настройка внешних сервисов
+        $this->groupService->method('find')
+            ->with(2)
+            ->willReturn($this->createMock(Group::class));
+
+        $this->attachmentRepository->method('findEntitiesByAttachable')
+            ->willReturn([]);
+
+        // Имитируем успешный перенос файла
+        $this->fileService->method('moveAttachmentQrFiles')
+            ->with('path/to/old_qr.png', 2)
+            ->willReturn('path/to/new_qr.png');
+
+        // Настраиваем финальный возврат модели
+        $plantModel = $this->createMock(PlantModel::class);
+        $this->repository->method('toModel')->with($plant)->willReturn($plantModel);
+
+        // 5. Ожидания (Asserts)
+        // Проверяем, что из-за isShown=false был вызван hide(), а не show()
         $plant->expects($this->once())->method('hide');
         $plant->expects($this->never())->method('show');
 
+        // Проверяем, что репозиторий вызвал обновление
         $this->repository->expects($this->once())->method('update');
 
-        $this->service->update($plant, $updateModel);
+        // 6. Запуск
+        $result = $this->service->update($plant, $updateModel);
+
+        // Проверка результата
+        $this->assertSame($plantModel, $result);
     }
 
     #[Test]

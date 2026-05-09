@@ -5,10 +5,13 @@ namespace Unit\Domain\Entity;
 use App\Domain\Entity\Group;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Entity\Attachment;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\ValueObject\Attachment\FileInfo;
 use App\Domain\ValueObject\Attachment\DisplaySettings;
 use App\Domain\ValueObject\Attachment\AttachableReference;
 
+#[CoversClass(Attachment::class)]
 class AttachmentTest extends TestCase
 {
     private function createDisplaySettings(): DisplaySettings
@@ -17,6 +20,7 @@ class AttachmentTest extends TestCase
         return new DisplaySettings('Photo', 'Desc', 'Alt text', true);
     }
 
+    #[Test]
     public function testConstructorInitializesCorrectly(): void
     {
         $group = $this->createMock(Group::class);
@@ -32,6 +36,7 @@ class AttachmentTest extends TestCase
         $this->assertInstanceOf(AttachableReference::class, $attachment->getTarget());
     }
 
+    #[Test]
     public function testUpdateMethods(): void
     {
         $group = $this->createMock(Group::class);
@@ -53,16 +58,23 @@ class AttachmentTest extends TestCase
         $this->assertSame($target, $attachment->getTarget());
     }
 
+    #[Test]
     public function testMoveToGroup(): void
     {
         $oldGroup = $this->createMock(Group::class);
+        $oldGroup->method('getId')->willReturn(1); // ID старой группы
+
         $newGroup = $this->createMock(Group::class);
+        $newGroup->method('getId')->willReturn(2); // ID новой группы (другой!)
+
         $attachment = new Attachment($oldGroup, $this->createDisplaySettings());
 
         $attachment->moveToGroup($newGroup);
-        $this->assertSame($newGroup, $attachment->getGroup());
+
+        $this->assertSame($newGroup, $attachment->getGroup(), 'Группа должна обновиться, так как ID разные');
     }
 
+    #[Test]
     public function testGetIdThrowsExceptionWhenNull(): void
     {
         $attachment = new Attachment(

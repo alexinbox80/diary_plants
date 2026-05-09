@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Application\Security;
+namespace Unit\Application\Security;
 
 use App\Domain\Entity\User;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Service\UserService;
 use PHPUnit\Framework\Attributes\Test;
+use App\Application\Security\AuthService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[CoversClass(AuthServiceTest::class)]
+#[CoversClass(AuthService::class)]
 class AuthServiceTest extends TestCase
 {
     private UserService $userService;

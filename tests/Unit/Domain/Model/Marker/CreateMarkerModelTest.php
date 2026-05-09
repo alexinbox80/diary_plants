@@ -49,7 +49,7 @@ class CreateMarkerModelTest extends KernelTestCase
         $errors = $this->validator->validate($model);
         $this->assertGreaterThan(0, count($errors));
         $this->assertEquals('letter', $errors[0]->getPropertyPath());
-        $this->assertEquals('Letter must be exactly one character long.', $errors[0]->getMessage());
+        $this->assertEquals('__Letter must be exactly one character long.', $errors[0]->getMessage());
     }
 
     /**
