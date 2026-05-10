@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
+use InvalidArgumentException;
 use App\Domain\Entity\Offspring;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Offspring\OffspringModel;
@@ -20,14 +22,43 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return OffspringModel[]
+     * @throws Exception
      */
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
         $offspringsPaginated = $this->offspringRepository->getOffspringsPaginatedWithAttachments($page, $perPage);
 
         if (!is_array($offspringsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for plants');
+            throw new InvalidArgumentException('Expected array for plants');
+        }
+
+        $offspringsModel = array_map(
+            fn (Offspring $offspring): OffspringModel => $this->toModel($offspring, true),
+            $offspringsPaginated['items']
+        );
+
+        return [
+            'offspringsModel' => $offspringsModel,
+            'pagination' => $offspringsPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return array{offspringesModel: offspringModel[], pagination: array}
+     * @throws Exception
+     */
+    public function getOffspringsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $offspringsPaginated = $this->offspringRepository->getOffspringsPaginatedByGroupIdWithAttachments($page, $perPage, $groupId);
+
+        if (!is_array($offspringsPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for offsprings');
         }
 
         $offspringsModel = array_map(
@@ -75,11 +106,12 @@ class OffspringRepositoryDecorator implements OffspringRepositoryInterface
     }
 
     /**
+     * @param int|null $groupId
      * @return OffspringModel[]
      */
-    public function findAllWithAttachments(): array
+    public function findAllWithAttachments(?int $groupId = null): array
     {
-        $offsprings = $this->offspringRepository->findAllWithAttachments();
+        $offsprings = $this->offspringRepository->findAllWithAttachments($groupId);
 
         return array_map(
             fn (Offspring $offspring): OffspringModel => $this->toModel($offspring, true),

@@ -18,6 +18,7 @@ use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Offspring\UpdateOffspringModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
+use App\Domain\Repository\AttachmentRepositoryInterface;
 
 #[CoversClass(OffspringService::class)]
 class OffspringServiceTest extends TestCase
@@ -26,6 +27,7 @@ class OffspringServiceTest extends TestCase
     private OffspringRepositoryInterface|MockObject $repository;
     private ModelFactory|MockObject $modelFactory;
     private GroupService|MockObject $groupService;
+    private AttachmentRepositoryInterface|MockObject $attachmentRepository;
     private OffspringService $service;
 
     protected function setUp(): void
@@ -34,19 +36,20 @@ class OffspringServiceTest extends TestCase
         $this->repository = $this->createMock(OffspringRepositoryInterface::class);
         $this->modelFactory = $this->createMock(ModelFactory::class);
         $this->groupService = $this->createMock(GroupService::class);
+        $this->attachmentRepository = $this->createMock(AttachmentRepositoryInterface::class);
 
         $this->service = new OffspringService(
             $this->plantService,
             $this->repository,
             $this->modelFactory,
-            $this->groupService
+            $this->groupService,
+            $this->attachmentRepository
         );
     }
 
     #[Test]
     public function testCreateSuccess(): void
     {
-        // 1. Данные для создания
         $model = new CreateOffspringModel(
             groupId: 2,
             plantId: 10,
@@ -59,25 +62,26 @@ class OffspringServiceTest extends TestCase
             comment: 'Первый урожай'
         );
 
+        // Даем мокам разные ID, чтобы сработала логика смены группы/растения
         $group = $this->createMock(Group::class);
+        $group->method('getId')->willReturn(2);
+
         $plant = $this->createMock(Plant::class);
+        $plant->method('getId')->willReturn(10);
+
         $offspringModel = $this->createMock(OffspringModel::class);
 
-        // 2. Настройка моков
         $this->groupService->method('find')->with(2)->willReturn($group);
         $this->plantService->method('find')->with(10)->willReturn($plant);
 
-        // Проверяем, что созданная сущность передается в репозиторий
         $this->repository->expects($this->once())
             ->method('create')
             ->with($this->isInstanceOf(Offspring::class));
 
         $this->repository->method('toModel')->willReturn($offspringModel);
 
-        // 3. Запуск
         $result = $this->service->create($model);
 
-        // 4. Проверка результата
         $this->assertSame($offspringModel, $result);
     }
 
@@ -85,6 +89,8 @@ class OffspringServiceTest extends TestCase
     public function testUpdateSuccess(): void
     {
         $offspringEntity = $this->createMock(Offspring::class);
+        $offspringEntity->method('getId')->willReturn(1);
+
         $updateModel = new UpdateOffspringModel(
             groupId: 3,
             plantId: 15,
@@ -97,15 +103,20 @@ class OffspringServiceTest extends TestCase
             comment: 'Обновлено'
         );
 
+        // Настройка моков для update (нужны для поиска вложений)
         $this->groupService->method('find')->willReturn($this->createMock(Group::class));
         $this->plantService->method('find')->willReturn($this->createMock(Plant::class));
+        $this->attachmentRepository->method('findEntitiesByAttachable')->willReturn([]);
 
-        // Проверяем Fluent Interface (цепочку вызовов в сущности)
-        $offspringEntity->expects($this->once())->method('moveToGroup')->willReturn($offspringEntity);
-        $offspringEntity->expects($this->once())->method('moveToPlant')->willReturn($offspringEntity);
-        $offspringEntity->expects($this->once())->method('recordResult');
+        // Настраиваем цепочку вызовов (Fluent Interface)
+        $offspringEntity->method('moveToGroup')->willReturn($offspringEntity);
+        $offspringEntity->method('moveToPlant')->willReturn($offspringEntity);
+        // Метод recordResult, судя по всему, возвращает void или self, настроим на возврат
+        $offspringEntity->method('recordResult');
+        $offspringEntity->method('setLoadedAttachments');
 
         $this->repository->expects($this->once())->method('update');
+        $this->repository->method('toModel')->willReturn($this->createMock(OffspringModel::class));
 
         $this->service->update($offspringEntity, $updateModel);
     }

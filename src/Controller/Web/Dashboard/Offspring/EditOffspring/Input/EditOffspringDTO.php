@@ -10,6 +10,9 @@ class EditOffspringDTO
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public int $groupId,
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public int $plantId,
         #[Assert\Type(type: ['null', DateTimeImmutable::class])]
         public ?DateTimeImmutable $fruitingDate = null,

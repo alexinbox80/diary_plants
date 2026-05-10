@@ -30,8 +30,10 @@ final class Manager
             throw new AccessDeniedException($message);
         }
 
+        $groupId = $repotting->getGroup()->getId();
+
         $formData = new EditRepottingDTO(
-            $repotting->getGroup()->getId(),
+            $groupId,
             $repotting->getPlant()->getId(),
             $repotting->getRepottedAt(),
             $repotting->getDetails()->getType()->value,
@@ -40,9 +42,7 @@ final class Manager
             $repotting->getComment()
         );
 
-        $groupId = $repotting->getGroup()->getId();
-
-        $form = $this->formFactory->create(RepottingType::class, $formData, ['group_id' => 2]);
+        $form = $this->formFactory->create(RepottingType::class, $formData, ['group_id' => $groupId]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

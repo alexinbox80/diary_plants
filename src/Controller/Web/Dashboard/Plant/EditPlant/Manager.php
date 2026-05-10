@@ -30,8 +30,10 @@ final class Manager
             throw new AccessDeniedException($message);
         }
 
+        $groupId = $plant->getGroup()->getId();
+
         $formData = new EditPlantDTO(
-            $plant->getGroup()->getId(),
+            $groupId,
             $plant->getTitle(),
             $plant->getRoom(),
             $plant->isShown(),
@@ -50,8 +52,6 @@ final class Manager
             $plant->getSalesInfo()->getSellingPrice(),
             $plant->getComment()
         );
-
-        $groupId = $plant->getGroup()->getId();
 
         $form = $this->formFactory->create(PlantType::class, $formData);
         $form->handleRequest($request);

@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CreateOffspringDTO
 {
     public function __construct(
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public ?int $groupId = null,
         #[Assert\NotBlank]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
         public int $plantId,

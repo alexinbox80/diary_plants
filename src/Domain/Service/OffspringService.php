@@ -3,13 +3,14 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Offspring;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Offspring\OffspringModel;
 use App\Domain\ValueObject\Offspring\Phenology;
 use App\Domain\ValueObject\Offspring\FruitMetrics;
 use App\Domain\Model\Offspring\CreateOffspringModel;
 use App\Domain\Model\Offspring\UpdateOffspringModel;
 use App\Domain\Repository\OffspringRepositoryInterface;
+use App\Domain\Repository\AttachmentRepositoryInterface;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use App\Controller\Web\Dashboard\Offspring\EditOffspring\Input\EditOffspringDTO;
 use App\Controller\Web\Dashboard\Offspring\CreateOffspring\Input\CreateOffspringDTO;
 
@@ -20,6 +21,7 @@ class OffspringService
         private readonly OffspringRepositoryInterface $offspringRepository,
         private readonly ModelFactory $modelFactory,
         private readonly GroupService $groupService,
+        private readonly AttachmentRepositoryInterface $attachmentRepository,
     ) {
     }
 
@@ -47,6 +49,14 @@ class OffspringService
     public function findAll(): array
     {
         return $this->offspringRepository->findAll();
+    }
+
+    /**
+     * @return OffspringModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->offspringRepository->findAllWithAttachments($groupId);
     }
 
     /**
@@ -95,9 +105,20 @@ class OffspringService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return OffspringModel[]
+     */
+
+    public function getOffspringsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->offspringRepository->getOffspringsPaginatedByGroupId($page, $perPage, $groupId);
+    }
+
+    /**
      * @param CreateOffspringModel $createOffspringModel
      * @return OffspringModel
-     * @throws InvalidArgumentException
      */
     public function create(CreateOffspringModel $createOffspringModel): OffspringModel
     {
@@ -131,13 +152,12 @@ class OffspringService
     /**
      * @param CreateOffspringDTO $dto
      * @return OffspringModel
-     * @throws InvalidArgumentException
      */
     public function createFromCreateOffspringDTO(CreateOffspringDTO $dto): OffspringModel
     {
         $model = $this->modelFactory->makeModel(
             CreateOffspringModel::class,
-            2,
+            $dto->groupId,
             $dto->plantId,
             $dto->fruitingDate,
             $dto->floweringDate,
@@ -155,12 +175,14 @@ class OffspringService
      * @param Offspring $offspring
      * @param UpdateOffspringModel $updateOffspringModel
      * @return OffspringModel
-     * @throws InvalidArgumentException
      */
     public function update(Offspring $offspring, UpdateOffspringModel $updateOffspringModel): OffspringModel
     {
         $group = $this->groupService->find($updateOffspringModel->groupId);
         $plant = $this->plantService->find($updateOffspringModel->plantId);
+
+        $attachments = $this->attachmentRepository->findEntitiesByAttachable(AttachableType::OFFSPRING->value, $offspring->getId());
+        $offspring->setLoadedAttachments($attachments);
 
         $offspring
             ->moveToGroup($group)
@@ -194,7 +216,7 @@ class OffspringService
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdateOffspringModel::class,
-            2,
+            $dto->groupId,
             $dto->plantId,
             $dto->fruitingDate,
             $dto->floweringDate,
@@ -212,7 +234,6 @@ class OffspringService
     /**
      * @param int $offspringId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $offspringId): void
     {
@@ -225,7 +246,6 @@ class OffspringService
     /**
      * @param Offspring $offspring
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeOffspring(Offspring $offspring): void
     {

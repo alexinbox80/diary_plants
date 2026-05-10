@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
+use RuntimeException;
+use InvalidArgumentException;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Offspring;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,7 +66,7 @@ class OffspringRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getOffspringsPaginated(int $page, int $perPage): array
     {
@@ -78,23 +81,71 @@ class OffspringRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Offspring[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getOffspringsPaginatedWithAttachments(int $page, int $perPage): array
     {
         $result = $this->getOffspringsPaginated($page, $perPage);
 
         if (!isset($result['items'])) {
-            throw new \RuntimeException('Pagination result is missing "items".');
+            throw new RuntimeException('Pagination result is missing "items".');
         }
 
         if (!is_array($result['items'])) {
-            throw new \InvalidArgumentException('"items" must be an array.');
+            throw new InvalidArgumentException('"items" must be an array.');
         }
 
         $this->loadAttachmentsForOffsprings($result['items']);
 
         return $result;
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return Offspring[]
+     *
+     * @throws Exception
+     */
+    public function getOffspringsPaginatedByGroupIdWithAttachments(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $result = $this->getOffspringsPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!isset($result['items'])) {
+            throw new RuntimeException('Pagination result is missing "items".');
+        }
+
+        if (!is_array($result['items'])) {
+            throw new InvalidArgumentException('"items" must be an array.');
+        }
+
+        $this->loadAttachmentsForOffsprings($result['items']);
+
+        return $result;
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return Offspring[]
+     * @throws Exception
+     */
+    public function getOffspringsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('o.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**
@@ -121,11 +172,30 @@ class OffspringRepository extends AbstractRepository
     }
 
     /**
+     * @param int|null $groupId
      * @return Offspring[]
      */
-    public function findAllWithAttachments(): array
+    public function findAllByGroupId(?int $groupId = null): array
     {
-        $offsprings = $this->findAll();
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder;
+
+        if ($groupId !== null) {
+            $qb->where('o.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return Offspring[]
+     */
+    public function findAllWithAttachments(?int $groupId = null): array
+    {
+        $offsprings = $this->findAllByGroupId($groupId);
 
         $this->loadAttachmentsForOffsprings($offsprings);
 

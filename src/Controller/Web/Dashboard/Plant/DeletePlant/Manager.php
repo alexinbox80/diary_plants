@@ -4,9 +4,10 @@ namespace App\Controller\Web\Dashboard\Plant\DeletePlant;
 
 use App\Domain\Service\PlantService;
 use Symfony\Component\HttpFoundation\Request;
+use App\Domain\Exception\AccessDeniedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Application\Security\Voter\GroupOwnershipVoter;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class Manager

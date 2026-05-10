@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Domain\Entity\Offspring;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class OffspringModel implements AttachableModelInterface
@@ -154,9 +155,13 @@ class OffspringModel implements AttachableModelInterface
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         $filtered = array_filter($this->getAttachment(), fn ($attachment) => $attachment->getMimeType() !== null);
         $imgGallery = array_map(fn ($attachment) => $attachment->toArray(), $filtered);

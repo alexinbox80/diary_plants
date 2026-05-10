@@ -38,6 +38,8 @@ class OffspringType extends AbstractType
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
                 'placeholder' => 'Выберите группу'
             ]);
+
+            $groupId = null;
         }
 
         $builder
@@ -88,7 +90,7 @@ class OffspringType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditOffspringDTO::class,
-            'empty_data' => new CreateOffspringDTO(1),
+            'empty_data' => new CreateOffspringDTO(null, 1),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
