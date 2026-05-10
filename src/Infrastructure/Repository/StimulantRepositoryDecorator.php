@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Domain\Entity\Stimulant;
 use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
@@ -38,7 +39,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
         $stimulantsPaginated = $this->stimulantRepository->getStimulantsPaginated($page, $perPage);
 
         if (!is_array($stimulantsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for stimulants');
+            throw new InvalidArgumentException('Expected array for stimulants');
         }
 
         $stimulantsModel = array_map(

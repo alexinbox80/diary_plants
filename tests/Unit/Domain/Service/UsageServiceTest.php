@@ -21,6 +21,8 @@ use App\Domain\Model\Usage\UpdateUsageModel;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\Repository\UsageRepositoryInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
+use App\Domain\ValueObject\Usage\AttachableReference;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Controller\Web\Dashboard\Usage\EditUsage\Input\EditUsageDTO;
 
@@ -110,28 +112,35 @@ class UsageServiceTest extends TestCase
     public function testUpdateSuccess(): void
     {
         $usageEntity = $this->createMock(Usage::class);
-        $useDate = new DateTimeImmutable('2024-06-01');
 
-        $model = new \App\Domain\Model\Usage\UpdateUsageModel(
-            groupId: 2,
-            plantId: 10,
-            useDate: $useDate,
-            usableId: 50,
-            usableType: AttachableType::WATERING->value,
-            comment: 'Updated comment'
+        // --- Добавлено: настройка Target для избежания TypeError ---
+        $target = $this->createMock(AttachableReference::class);
+        $target->method('getUsableType')->willReturn(AttachableType::WATERING);
+        $target->method('getUsableId')->willReturn(50);
+        $usageEntity->method('getTarget')->willReturn($target);
+
+        // Настраиваем репозиторий на возврат объекта (связь 1-к-1)
+        $this->repository->method('findEntitiesByAttachable')
+            ->willReturn($this->createMock(GroupOwnedInterface::class));
+        // ----------------------------------------------------------
+
+        $useDate = new DateTimeImmutable('2024-06-01');
+        $model = new UpdateUsageModel(
+            groupId: 2, plantId: 10, useDate: $useDate,
+            usableId: 50, usableType: AttachableType::WATERING->value, comment: 'Upd'
         );
 
         $this->groupService->method('find')->willReturn($this->createMock(Group::class));
         $this->plantService->method('find')->willReturn($this->createMock(Plant::class));
 
-        // Проверяем вызов бизнес-логики в сущности
+        $usageEntity->method('moveToGroup')->willReturn($usageEntity);
+        $usageEntity->method('setLoadedAttachment');
         $usageEntity->expects($this->once())->method('changeFields');
 
         $this->repository->expects($this->once())->method('update');
         $this->repository->method('toModel')->willReturn($this->createMock(UsageModel::class));
 
         $result = $this->service->update($usageEntity, $model);
-
         $this->assertInstanceOf(UsageModel::class, $result);
     }
 
@@ -170,7 +179,19 @@ class UsageServiceTest extends TestCase
     public function testUpdateFromEditUsageDTOUsesModelFactory(): void
     {
         $usageEntity = $this->createMock(Usage::class);
-        $useDate = new \DateTimeImmutable('2024-05-10');
+        $useDate = new DateTimeImmutable('2024-05-10');
+
+        // --- ДОБАВЬТЕ ЭТОТ БЛОК ---
+        // 1. Настраиваем Target, чтобы getUsableType не возвращал null
+        $target = $this->createMock(AttachableReference::class);
+        $target->method('getUsableType')->willReturn(AttachableType::WATERING);
+        $target->method('getUsableId')->willReturn(50);
+        $usageEntity->method('getTarget')->willReturn($target);
+
+        // 2. Настраиваем репозиторий для вызова findEntitiesByAttachable
+        $this->repository->method('findEntitiesByAttachable')
+            ->willReturn($this->createMock(GroupOwnedInterface::class));
+        // ---------------------------
 
         $dto = new EditUsageDTO(
             groupId: 2,
@@ -181,7 +202,6 @@ class UsageServiceTest extends TestCase
             comment: 'DTO Comment'
         );
 
-        // 1. Создаем РЕАЛЬНЫЙ объект модели вместо мока
         $model = new UpdateUsageModel(
             groupId: 2,
             plantId: 10,
@@ -191,21 +211,19 @@ class UsageServiceTest extends TestCase
             comment: 'DTO Comment'
         );
 
-        // 2. Настраиваем фабрику, чтобы она вернула наш реальный объект
         $this->modelFactory->expects($this->once())
             ->method('makeModel')
             ->willReturn($model);
 
-        // Настраиваем остальные зависимости для корректной работы метода update()
-        $group = $this->createMock(Group::class);
-        $plant = $this->createMock(Plant::class);
-        $this->groupService->method('find')->with(2)->willReturn($group);
-        $this->plantService->method('find')->with(10)->willReturn($plant);
+        // Настраиваем остальные зависимости для внутреннего вызова update()
+        $this->groupService->method('find')->willReturn($this->createMock(Group::class));
+        $this->plantService->method('find')->willReturn($this->createMock(Plant::class));
+        $this->repository->method('toModel')->willReturn($this->createMock(UsageModel::class));
 
-        $usageModel = $this->createMock(UsageModel::class);
-        $this->repository->method('toModel')->willReturn($usageModel);
+        // Настраиваем Fluent Interface для сущности
+        $usageEntity->method('moveToGroup')->willReturn($usageEntity);
+        $usageEntity->method('setLoadedAttachment');
 
-        // Выполнение
         $this->service->updateFromEditUsageDTO($usageEntity, $dto);
     }
 }

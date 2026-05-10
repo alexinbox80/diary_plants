@@ -92,13 +92,11 @@ class Usage implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsIn
     }
 
     private function setCommonFields(
-        Group $group,
         DateTimeImmutable $useDate,
         Plant $plant,
         ?string $comment = null,
     ): void
     {
-        $this->setGroupValidate($group);
         $this->setUseDateValidate($useDate);
         $this->setPlantValidate($plant);
         $this->setCommentValidate($comment);
@@ -133,20 +131,20 @@ class Usage implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsIn
         AttachableReference $target,
         ?string $comment = null
     ) {
-        $this->setCommonFields($group, $useDate, $plant, $comment);
+        $this->setGroupValidate($group);
+        $this->setCommonFields($useDate, $plant, $comment);
 
         $this->target = $target;
     }
 
     public function changeFields(
-        Group $group,
         DateTimeImmutable $useDate,
         Plant $plant,
         AttachableReference $target,
         ?string $comment = null,
     ):void
     {
-        $this->setCommonFields($group, $useDate, $plant, $comment);
+        $this->setCommonFields($useDate, $plant, $comment);
 
         $this->target = $target;
     }
@@ -160,6 +158,8 @@ class Usage implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsIn
         $this->group = $group;
 
         $this->plant->moveToGroup($group);
+
+        $this->getLoadedAttachment()?->moveToGroup($group);
 
         return $this;
     }

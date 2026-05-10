@@ -8,6 +8,7 @@ use App\Domain\Entity\Plant;
 use App\Domain\Entity\Group;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use App\Domain\Entity\Attachment;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\ValueObject\Usage\AttachableReference;
@@ -60,15 +61,13 @@ class UsageTest extends TestCase
             $this->createTargetMock()
         );
 
-        $newGroup = $this->createGroupMock();
         $newPlant = $this->createPlantMock();
         $newTarget = $this->createTargetMock();
         $newDate = new DateTimeImmutable('tomorrow');
         $newComment = 'New comment';
 
-        $usage->changeFields($newGroup, $newDate, $newPlant, $newTarget, $newComment);
+        $usage->changeFields($newDate, $newPlant, $newTarget, $newComment);
 
-        $this->assertSame($newGroup, $usage->getGroup());
         $this->assertSame($newPlant, $usage->getPlant());
         $this->assertSame($newTarget, $usage->getTarget());
         $this->assertSame($newDate, $usage->getUseDate());
@@ -78,9 +77,10 @@ class UsageTest extends TestCase
     #[Test]
     public function testMoveToGroup(): void
     {
-        // Создаем исходную группу с ID 1
+        // 1. Создаем исходную группу
         $oldGroup = $this->createGroupMock(1);
 
+        // 2. Создаем Usage
         $usage = new Usage(
             $oldGroup,
             new DateTimeImmutable(),
@@ -88,12 +88,18 @@ class UsageTest extends TestCase
             $this->createTargetMock()
         );
 
-        // Создаем новую группу с ID 2
+        // 3. Создаем мок вложения и передаем его в Usage
+        $attachmentMock = $this->createMock(Attachment::class);
+
+        // Если в Usage есть метод setLoadedAttachment:
+        $usage->setLoadedAttachment($attachmentMock);
+
+        // 4. Создаем новую группу
         $newGroup = $this->createGroupMock(2);
 
+        // 5. Теперь moveToGroup не упадет на null
         $usage->moveToGroup($newGroup);
 
-        // Теперь проверка (1 === 2) вернет false, и группа обновится
         $this->assertSame($newGroup, $usage->getGroup(), 'Группа в Usage должна обновиться');
     }
 

@@ -40,6 +40,8 @@ class UsageType extends AbstractType
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
                 'placeholder' => 'Выберите группу'
             ]);
+
+            $groupId = null;
         }
 
         $builder

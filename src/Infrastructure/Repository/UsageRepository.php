@@ -2,17 +2,17 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
+use RuntimeException;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use App\Domain\Entity\Plant;
+use InvalidArgumentException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
-/**
- * @method Usage|null findOneBy(array $criteria, array $orderBy = null)
- */
 class UsageRepository extends AbstractRepository
 {
     /**
@@ -258,7 +258,7 @@ class UsageRepository extends AbstractRepository
 
     /**
      * @return Usage[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUsagesPaginated(int $page, int $perPage): array
     {
@@ -274,8 +274,56 @@ class UsageRepository extends AbstractRepository
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
      * @return Usage[]
-     * @throws \Exception
+     * @throws Exception
+     */
+    public function getUsagesPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('u.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return Usage[]
+     *
+     * @throws Exception
+     */
+    public function getUsagesPaginatedByGroupIdWithAttachments(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $result = $this->getUsagesPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!isset($result['items'])) {
+            throw new RuntimeException('Pagination result is missing "items".');
+        }
+
+        if (!is_array($result['items'])) {
+            throw new InvalidArgumentException('"items" must be an array.');
+        }
+
+        $this->preloadTargets($result['items']);
+
+        return $result;
+    }
+
+    /**
+     * @return Usage[]
+     * @throws Exception
      */
     public function getUsages(int $year, int $month, int $groupId): array
     {
@@ -348,6 +396,37 @@ class UsageRepository extends AbstractRepository
     public function findAllWithTargets(): array
     {
         $usages = $this->findAll();
+
+        $this->preloadTargets($usages);
+
+        return $usages;
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return Usage[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder;
+
+        if ($groupId !== null) {
+            $qb->where('u.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return  $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return Usage[]
+     */
+    public function findAllWithAttachments(?int $groupId = null): array
+    {
+        $usages = $this->findAllByGroupId($groupId);
 
         $this->preloadTargets($usages);
 

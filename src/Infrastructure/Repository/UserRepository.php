@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use Random\RandomException;
 use App\Domain\Entity\User;
@@ -27,7 +28,7 @@ class UserRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return User[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUsersPaginated(int $page, int $perPage): array
     {

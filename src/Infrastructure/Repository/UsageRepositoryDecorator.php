@@ -2,8 +2,10 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use App\Domain\Entity\Usage;
+use InvalidArgumentException;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\Repository\PestRepositoryInterface;
 use App\Domain\Repository\UsageRepositoryInterface;
@@ -44,6 +46,18 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
         );
     }
 
+    /**
+     * @param AttachableType $attachableType
+     * @param int $attachableId
+     * @return object
+     */
+    public function findEntitiesByAttachable(AttachableType $attachableType, int $attachableId): object
+    {
+        return $this->attachableResolver->resolve(
+            $attachableType,
+            $attachableId
+        );
+    }
 
     /**
      * @param string $usableType
@@ -106,14 +120,14 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return UsageModel[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUsagesPaginated(int $page, int $perPage): array
     {
         $usagesPaginated = $this->usageRepository->getUsagesPaginated($page, $perPage);
 
         if (!is_array($usagesPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for usages');
+            throw new InvalidArgumentException('Expected array for usages');
         }
 
         $usagesModel = array_map(
@@ -132,7 +146,7 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
      * @param int $month
      * @param int $groupId
      * @return UsageModel[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUsages(int $year, int $month, int $groupId): array
     {
@@ -142,6 +156,32 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
             fn (Usage $usage): UsageModel => $this->toModel($usage, true),
             $usages
         );
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return array{usagesModel: usageModel[], pagination: array}
+     * @throws Exception
+    */
+    public function getUsagesPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $usagesPaginated = $this->usageRepository->getUsagesPaginatedByGroupIdWithAttachments($page, $perPage, $groupId);
+
+        if (!is_array($usagesPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for usages');
+        }
+
+        $usagesModel = array_map(
+            fn (Usage $usage): UsageModel => $this->toModel($usage, true),
+            $usagesPaginated['items']
+        );
+
+        return [
+            'usagesModel' => $usagesModel,
+            'pagination' => $usagesPaginated['pagination']
+        ];
     }
 
     /**
@@ -192,6 +232,20 @@ class UsageRepositoryDecorator implements UsageRepositoryInterface
     public function findAll(): array
     {
         $usages = $this->usageRepository->findAll();
+
+        return array_map(
+            fn (Usage $usage): UsageModel => $this->toModel($usage, true),
+            $usages
+        );
+    }
+
+    /**
+     * @param null|int $groupId
+     * @return UsageModel[]
+     */
+    public function findAllWithAttachments(?int $groupId = null): array
+    {
+        $usages = $this->usageRepository->findAllWithAttachments($groupId);
 
         return array_map(
             fn (Usage $usage): UsageModel => $this->toModel($usage, true),

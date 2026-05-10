@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Domain\Entity\Usage;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
@@ -131,9 +132,13 @@ class UsageModel
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

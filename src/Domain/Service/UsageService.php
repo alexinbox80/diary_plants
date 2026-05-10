@@ -49,6 +49,15 @@ class UsageService
     }
 
     /**
+     * @param int|null $groupId
+     * @return UsageModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->usageRepository->findAllWithAttachments($groupId);
+    }
+
+    /**
      * @param PlantModel $plantModel
      * @param string $usableType
      * @return UsageModel[]
@@ -86,6 +95,17 @@ class UsageService
     public function getUsagesPaginated(int $page, int $perPage): array
     {
         return $this->usageRepository->getUsagesPaginated($page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return UsageModel[]
+     */
+    public function getUsagesPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->usageRepository->getUsagesPaginatedByGroupId($page, $perPage, $groupId);
     }
 
     /**
@@ -223,7 +243,7 @@ class UsageService
     {
         $model = $this->modelFactory->makeModel(
             CreateUsageModel::class,
-            2,
+            $dto->groupId,
             $dto->plantId,
             $dto->useDate,
             $dto->usableId,
@@ -245,13 +265,21 @@ class UsageService
         $group = $this->groupService->find($updateUsageModel->groupId);
         $plant = $this->plantService->find($updateUsageModel->plantId);
 
-        $usage->changeFields(
-            $group,
-            $updateUsageModel->useDate,
-            $plant,
-            new AttachableReference(
-                $updateUsageModel->usableId,
-                AttachableType::tryFrom($updateUsageModel->usableType)
+        //ToDo: уникальность????
+        $attachment = $this->usageRepository->findEntitiesByAttachable(
+            $usage->getTarget()->getUsableType(),
+            $usage->getTarget()->getUsableId()
+        );
+        $usage->setLoadedAttachment($attachment);
+
+        $usage
+            ->moveToGroup($group)
+            ->changeFields(
+                $updateUsageModel->useDate,
+                $plant,
+                new AttachableReference(
+                    $updateUsageModel->usableId,
+                    AttachableType::tryFrom($updateUsageModel->usableType)
             ),
             $updateUsageModel->comment
         );
@@ -269,7 +297,7 @@ class UsageService
     {
         $model = $this->modelFactory->makeModel(
             UpdateUsageModel::class,
-            2,
+            $dto->groupId,
             $dto->plantId,
             $dto->useDate,
             $dto->usableId,
