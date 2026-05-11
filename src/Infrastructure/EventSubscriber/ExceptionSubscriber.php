@@ -21,7 +21,8 @@ final class ExceptionSubscriber implements EventSubscriberInterface
     private const DEFAULT_PROPERTY = 'error';
 
     public function __construct(
-        private Environment $twig
+        private Environment $twig,
+        private readonly bool $debug
     ) {
     }
 
@@ -67,7 +68,6 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
     private function createJsonResponse(Throwable $exception, int $statusCode): JsonResponse
     {
-        // Обработка ошибок валидации (из Listener)
         if ($exception instanceof ValidationFailedException) {
             $errors = [];
             foreach ($exception->getViolations() as $violation) {
@@ -77,20 +77,30 @@ final class ExceptionSubscriber implements EventSubscriberInterface
             return new JsonResponse(['errors' => $errors], $statusCode);
         }
 
-        // Данные из кастомного интерфейса или обычное сообщение
-        $message = ($exception instanceof HttpCompliantExceptionInterface)
-            ? $exception->getHttpResponseBody()
-            : $exception->getMessage();
-
-        return new JsonResponse([
+        $data = [
             'status' => 'error',
             'code' => $statusCode,
-            'message' => $message
-        ], $statusCode);
+            'message' => ($exception instanceof HttpCompliantExceptionInterface)
+                ? $exception->getHttpResponseBody()
+                : $exception->getMessage()
+        ];
+
+        // Добавляем детализацию ТОЛЬКО в режиме debug (dev)
+        if ($this->debug) {
+            $data['debug'] = [
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'class' => get_class($exception),
+                'trace' => array_slice($exception->getTrace(), 0, 10), // берем первые 10 шагов
+            ];
+        }
+
+        return new JsonResponse($data, $statusCode);
     }
 
     private function createHtmlResponse(Throwable $exception, int $statusCode): Response
     {
+        // Определяем шаблон для конкретного кода (404, 500 и т.д.) или дефолтный
         $template = sprintf('bundles/TwigBundle/Exception/error%s.html.twig', $statusCode);
 
         if (!$this->twig->getLoader()->exists($template)) {
@@ -100,11 +110,16 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         try {
             $content = $this->twig->render($template, [
                 'status_code' => $statusCode,
+                'message'     => $exception->getMessage(),
                 'exception'   => $exception,
             ]);
-        } catch (Throwable) {
-            // Если Twig сломался, отдаем простой текст, чтобы не было бесконечного цикла 500 ошибки
-            $content = '<h1>Error ' . $statusCode . '</h1><p>' . $exception->getMessage() . '</p>';
+        } catch (Throwable $e) {
+            // Запасной вариант, если Twig упал (показываем детали только в debug)
+            $content = "<h1>Error $statusCode</h1><p>{$exception->getMessage()}</p>";
+            if ($this->debug) {
+                $content .= "<hr><p>Critical: Twig failed to render error page.</p>";
+                $content .= "<p>Original error in <b>{$exception->getFile()}</b> on line <b>{$exception->getLine()}</b></p>";
+            }
         }
 
         return new Response($content, $statusCode);

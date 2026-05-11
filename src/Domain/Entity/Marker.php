@@ -251,22 +251,6 @@ class Marker implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsI
 
         $this->group = $group;
 
-        foreach ($this->stimulants as $stimulant) {
-            $stimulant->moveToGroup($group);
-        }
-
-        foreach ($this->fertilizers as $fertilizer) {
-            $fertilizer->moveToGroup($group);
-        }
-
-        foreach ($this->pests as $pest) {
-            $pest->moveToGroup($group);
-        }
-
-        foreach ($this->waterings as $watering) {
-            $watering->moveToGroup($group);
-        }
-
         return $this;
     }
 }

@@ -57,3 +57,8 @@ services:
     App\Application\Security\AuthService:
         arguments:
             $tokenTTL: '%env(JWT_TTL_SEC)%'
+
+    App\Infrastructure\EventSubscriber\ExceptionSubscriber:
+        arguments:
+            $debug: '%kernel.debug%'
+

@@ -87,7 +87,8 @@ class Plant implements EntityInterface, GroupOwnedInterface, AttachableInterface
     private array $loadedAttachments = [];
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'plants')]
+    //#[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'plants')]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'plants')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 

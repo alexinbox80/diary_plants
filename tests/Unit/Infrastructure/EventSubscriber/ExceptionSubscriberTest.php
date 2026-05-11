@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use App\Infrastructure\EventSubscriber\ExceptionSubscriber;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException as SecurityAccessDeniedException;
 
 #[CoversClass(ExceptionSubscriber::class)]
 class ExceptionSubscriberTest extends TestCase
@@ -26,15 +25,17 @@ class ExceptionSubscriberTest extends TestCase
     protected function setUp(): void
     {
         $this->twig = $this->createMock(Environment::class);
-        $this->subscriber = new ExceptionSubscriber($this->twig);
+        $this->subscriber = new ExceptionSubscriber($this->twig, true);
     }
 
     #[Test]
     public function testOnKernelExceptionReturnsJsonResponseForApi(): void
     {
-        // 1. Подготовка (создаем событие с исключением доступа и путем /api)
-        $exception = new SecurityAccessDeniedException('Forbidden message');
-        $request = Request::create('/api/data');
+        // 1. Подготовка: создаем исключение и имитируем API запрос
+        // Используем RuntimeException, чтобы получить статус 500 по умолчанию
+        $exception = new RuntimeException('Database connection failed');
+        $request = Request::create('/api/v1/plants');
+        $request->headers->set('Accept', 'application/json');
 
         $event = new ExceptionEvent(
             $this->createMock(HttpKernelInterface::class),
@@ -43,17 +44,31 @@ class ExceptionSubscriberTest extends TestCase
             $exception
         );
 
-        // 2. Действие
+        // 2. Действие: вызываем обработчик
         $this->subscriber->onKernelException($event);
 
-        // 3. Проверка
+        // 3. Проверка ответа
         $response = $event->getResponse();
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
 
+        // Проверка структуры JSON
         $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayHasKey('status', $data);
         $this->assertEquals('error', $data['status']);
-        $this->assertEquals('Forbidden message', $data['message']);
+
+        $this->assertArrayHasKey('message', $data);
+        $this->assertEquals('Database connection failed', $data['message']);
+
+        // Проверка детализации (так как в setUp мы передали debug = true)
+        $this->assertArrayHasKey('debug', $data, 'В режиме debug должен присутствовать ключ debug');
+        $this->assertArrayHasKey('file', $data['debug']);
+        $this->assertArrayHasKey('line', $data['debug']);
+        $this->assertArrayHasKey('trace', $data['debug']);
+
+        // Проверяем, что в trace действительно массив (стек вызовов)
+        $this->assertIsArray($data['debug']['trace']);
     }
 
     #[Test]
@@ -85,7 +100,7 @@ class ExceptionSubscriberTest extends TestCase
         // 3. Проверка
         $response = $event->getResponse();
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
         $this->assertEquals('<html>Error Page</html>', $response->getContent());
     }
 
@@ -102,6 +117,6 @@ class ExceptionSubscriberTest extends TestCase
 
         $this->subscriber->onKernelException($event);
 
-        $this->assertEquals(500, $event->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $event->getResponse()->getStatusCode());
     }
 }

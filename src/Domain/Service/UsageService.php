@@ -27,7 +27,7 @@ class UsageService
         private readonly GroupService $groupService,
         private readonly UsageRepositoryInterface $usageRepository,
         private readonly ModelFactory $modelFactory,
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -209,7 +209,7 @@ class UsageService
 
             $model = $this->modelFactory->makeModel(
                 CreateUsageModel::class,
-                $groupId, // groupId
+                $groupId,
                 $createUsageDTO->plantId,
                 $date,
                 $createUsageDTO->usableId,
@@ -265,7 +265,6 @@ class UsageService
         $group = $this->groupService->find($updateUsageModel->groupId);
         $plant = $this->plantService->find($updateUsageModel->plantId);
 
-        //ToDo: уникальность????
         $attachment = $this->usageRepository->findEntitiesByAttachable(
             $usage->getTarget()->getUsableType(),
             $usage->getTarget()->getUsableId()
@@ -280,9 +279,43 @@ class UsageService
                 new AttachableReference(
                     $updateUsageModel->usableId,
                     AttachableType::tryFrom($updateUsageModel->usableType)
-            ),
-            $updateUsageModel->comment
-        );
+                ),
+                $updateUsageModel->comment
+            );
+
+//        // Отладка очереди изменений Doctrine
+//        $uow = $this->entityManager->getUnitOfWork();
+//
+//// 2. Doctrine вычисляет изменения (обязательно перед чтением очереди)
+//        $uow->computeChangeSets();
+//
+//// 3. Получаем список сущностей, которые пойдут в UPDATE
+//        $scheduledUpdates = $uow->getScheduledEntityUpdates();
+//
+//        foreach ($scheduledUpdates as $entity) {
+//            // Ищем именно наши препараты (стимуляторы/удобрения)
+//            if (method_exists($entity, 'getMarker') && method_exists($entity, 'getGroup')) {
+//                $changeSet = $uow->getEntityChangeSet($entity);
+//
+//                // По умолчанию старое ID — это текущее (если группа не менялась)
+//                $oldGroupId = $entity->getGroup()->getId();
+//
+//                // Если поле 'group' было изменено, достаем старое значение из ChangeSet
+//                if (isset($changeSet['group'])) {
+//                    // [0] - старое значение (объект Group), [1] - новое значение
+//                    $oldGroup = $changeSet['group'][0];
+//                    $oldGroupId = $oldGroup ? $oldGroup->getId() : null;
+//                }
+//
+//                dump([
+//                    'EntityClass' => get_class($entity),
+//                    'ID' => $entity->getId(),
+//                    'OldGroupId' => $oldGroupId, // Было в базе
+//                    'NewGroupId' => $entity->getGroup()->getId(),
+//                    'MarkerId' => $entity->getMarker()->getId(),
+//                ]);
+//            }
+//        }
 
         $this->usageRepository->update();
 

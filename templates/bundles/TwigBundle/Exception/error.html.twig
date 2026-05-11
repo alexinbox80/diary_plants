@@ -53,11 +53,12 @@
                                                     Route:  {{ app.request.attributes.get('_route') }}
                                                     Code:   {{ status_code|default('500') }}
                                                     Error:  {{ exception.message|default(status_text|default('No message')) }}
+                                                    <strong>File:</strong>   {{ exception.file }}
+                                                    <strong>Line:</strong>   {{ exception.line }}
                                                 </code>
                                             </pre>
                                         </div>
                                     {% endif %}
-
                                 </div>
                             </div>
                         </div>

@@ -114,7 +114,7 @@ class Stimulant extends Preparation implements EntityInterface, AttachableInterf
 
         $this->group = $group;
 
-        //$this->marker->moveToGroup($group);
+        $this->marker->moveToGroup($group);
 
         return $this;
     }

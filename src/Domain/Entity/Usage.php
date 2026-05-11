@@ -53,7 +53,8 @@ class Usage implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsIn
     private Plant $plant;
 
     //идентификатор связанной сущности group
-    #[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'usages')]
+    //#[ORM\ManyToOne(targetEntity: Group::class, cascade: ['all'], inversedBy: 'usages')]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'usages')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false)]
     private Group $group;
 
