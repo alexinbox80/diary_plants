@@ -85,22 +85,22 @@ class PlantType extends AbstractType
             ->add('price', TextType::class, [
                 'label' => $labels['price'],
                 'required' => false,
-                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+                'attr' => ['title' => 'form.plant.field.price'],
             ])
             ->add('shippingCost', TextType::class, [
                 'label' => $labels['shipping_cost'],
                 'required' => false,
-                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+                'attr' => ['title' => 'form.plant.field.price'],
             ])
             ->add('packagingCost', TextType::class, [
                 'label' => $labels['packaging_cost'],
                 'required' => false,
-                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+                'attr' => ['title' => 'form.plant.field.price'],
             ])
             ->add('isShown', CheckboxType::class, [
                 'label' => $labels['is_shown'],
                 'required' => false,
-                'attr' => ['title' => 'Отображать растение на сайте'],
+                'attr' => ['title' => 'form.plant.field.is_shown'],
             ])
             ->add('soil', TextType::class, [
                 'label' => $labels['soil'],
@@ -109,7 +109,7 @@ class PlantType extends AbstractType
             ->add('isSold', CheckboxType::class, [
                 'label' => $labels['is_sold'],
                 'required' => false,
-                'attr' => ['title' => 'Растение продано'],
+                'attr' => ['title' => 'form.plant.field.is_sold'],
             ])
             ->add('sellingDate', DateType::class, [
                 'label' => $labels['selling_date'],
@@ -121,7 +121,7 @@ class PlantType extends AbstractType
             ->add('sellingPrice', TextType::class, [
                 'label' => $labels['selling_price'],
                 'required' => false,
-                'attr' => ['title' => 'Формат: "100.00 RUB"'],
+                'attr' => ['title' => 'form.plant.field.price'],
             ])
             ->add('comment', TextareaType::class, [
                 'label' => $labels['comment'],

@@ -33,7 +33,7 @@
                         {% for key, label in plant.profile_header %}
                             <div class="profile-row">
                                 <div class="profile-label">
-                                    {{ label }}
+                                    {{ label|trans }}
                                 </div>
                                 <div class="profile-value">
                                     {% set value = plant.profile_body[key] %}

@@ -33,7 +33,7 @@
                             <thead>
                                 {% for key, title in array.table_header %}
                                     <th class="font-weight-bold sortable" data-column="{{ key }}">
-                                        {{ title }}
+                                        {{ title|trans }}
                                         <span class="sort-arrow desc"></span>
                                     </th>
                                 {% endfor %}

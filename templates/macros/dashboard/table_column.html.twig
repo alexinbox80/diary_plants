@@ -8,7 +8,7 @@
             <li class="dropdown-item d-flex align-items-center">
                 <input class="form-check-input me-2" type="checkbox" value="" id="flexCheck{{ key|capitalize }}" data-column="{{ key }}">
                 <label class="form-check-label mb-0" for="flexCheck{{ key|capitalize }}">
-                    {{ title }}
+                    {{ title|trans }}
                 </label>
             </li>
             {% endfor %}

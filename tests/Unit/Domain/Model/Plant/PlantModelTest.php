@@ -115,6 +115,6 @@ class PlantModelTest extends TestCase
         foreach ($expectedKeys as $key) {
             $this->assertArrayHasKey($key, $headers);
         }
-        $this->assertEquals('Название', $headers['title']);
+        $this->assertEquals('table.plant.header.title', $headers['title']);
     }
 }

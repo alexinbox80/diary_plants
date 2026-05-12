@@ -10,7 +10,7 @@ EXEC_PHP    = $(DOCKER_BIN) exec -it -u www-data $(PHP_CONT)
 PHP_CONSOLE = php bin/console
 
 phpstan:
-	vendor/bin/phpstan analyse src --level=6 --memory-limit=1G
+	vendor/bin/phpstan analyse src --level=9 --memory-limit=1G
 
 test-cover:
 	$(DOCKER_BIN) exec -e XDEBUG_MODE=coverage -it -u www-data $(PHP_CONT) vendor/bin/phpunit --coverage-text
