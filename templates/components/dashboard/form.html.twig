@@ -4,7 +4,7 @@
             {{ form_start(form) }}
             {{ form_errors(form) }}
             {% for child in form %}
-                {% if child.vars.name not in ['emailConfirmed', 'phoneConfirmed', 'isActive', 'isShown', 'isSold', 'submit', '_token'] %}
+                {% if child.vars.name not in ['color', 'emailConfirmed', 'phoneConfirmed', 'isActive', 'isShown', 'isSold', 'submit', '_token'] %}
                     <div class="form-group mb-3">
                         {{ form_label(child) }}
                         {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
@@ -14,6 +14,15 @@
                     </div>
                 {% endif %}
             {% endfor %}
+            {% if form.color is defined %}
+                <div class="d-flex align-items-center mb-3">
+                    {{ form_label(form.color) }}
+                    {{ form_widget(form.color) }}
+                    <div class="form-error">
+                        {{ form_errors(form.color) }}
+                    </div>
+                </div>
+            {% endif %}
             {% if form.isSold is defined %}
                 <div class="form-check form-check-flat form-check-success">
                     <label class="form-check-label">

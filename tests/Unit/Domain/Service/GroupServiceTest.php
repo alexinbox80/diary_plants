@@ -13,19 +13,48 @@ use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Group\UpdateGroupModel;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\Repository\GroupRepositoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[CoversClass(GroupService::class)]
 class GroupServiceTest extends TestCase
 {
     private GroupRepositoryInterface|MockObject $repository;
     private ModelFactory|MockObject $modelFactory;
+    private TranslatorInterface|MockObject $translator; // Добавляем свойство
     private GroupService $service;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(GroupRepositoryInterface::class);
         $this->modelFactory = $this->createMock(ModelFactory::class);
-        $this->service = new GroupService($this->repository, $this->modelFactory);
+        $this->translator = $this->createMock(TranslatorInterface::class); // Создаем мок
+
+        // Теперь передаем 3 аргумента в конструктор
+        $this->service = new GroupService(
+            $this->repository,
+            $this->modelFactory,
+            $this->translator
+        );
+    }
+
+    #[Test]
+    public function testGetChoicesForFormChoiceType(): void
+    {
+        $group = $this->createMock(GroupModel::class);
+        $group->method('getTitle')->willReturn('Тестовая');
+        $group->method('getId')->willReturn(77);
+
+        $this->repository->method('getGroupsForForm')->willReturn([$group]);
+
+        // Настраиваем имитацию перевода: проверяем, что в транслятор уходит нужный ключ и параметры
+        $this->translator->expects($this->once())
+            ->method('trans')
+            ->with('group.label.format', ['%title%' => 'Тестовая', '%id%' => 77])
+            ->willReturn('Тестовая :: 77');
+
+        $result = $this->service->getChoicesForFormChoiceType();
+
+        $this->assertSame(['Тестовая :: 77' => 77], $result);
     }
 
     #[Test]

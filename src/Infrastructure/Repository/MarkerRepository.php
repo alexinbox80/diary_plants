@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use App\Domain\Entity\Marker;
 use Doctrine\ORM\QueryBuilder;
 
@@ -21,8 +22,10 @@ class MarkerRepository extends AbstractRepository
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return Marker[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getMarkersPaginated(int $page, int $perPage): array
     {
@@ -34,9 +37,32 @@ class MarkerRepository extends AbstractRepository
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param ?int $groupId
+     * @return Marker[]
+     * @throws Exception
+     */
+    public function getMarkersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('m.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
      * @param int|null $groupId
      * @param string|null $type
-     * @return array
+     * @return Marker[]
      */
     public function getMarkersForForm(?int $groupId = null, ?string $type = null): array
     {
@@ -106,6 +132,25 @@ class MarkerRepository extends AbstractRepository
         return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Marker[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('m')
+            ->from(Marker::class, 'm')
+            ->orderBy('m.letter', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('m.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

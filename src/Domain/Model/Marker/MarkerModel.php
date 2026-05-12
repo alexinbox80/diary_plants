@@ -6,6 +6,7 @@ use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Entity\Marker;
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 class MarkerModel
@@ -98,23 +99,27 @@ class MarkerModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'icon_tag' => 'Маркер',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'letter' => 'Обозначение',
-            'color' => 'Цвет',
-            'type' => 'Тип обозначения',
-            'description' => 'Описание',
-            'color_description' => 'Описание цвета',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.marker.header.id',
+            'icon_tag' => 'table.marker.header.icon_tag',
+            'group_id' => 'table.marker.header.group_id',
+            'group_title' => 'table.marker.header.group_title',
+            'letter' => 'table.marker.header.letter',
+            'color' => 'table.marker.header.color',
+            'type' => 'table.marker.header.type',
+            'description' => 'table.marker.header.description',
+            'color_description' => 'table.marker.header.color_description',
+            'created_at' => 'table.marker.header.created_at',
+            'updated_at' => 'table.marker.header.updated_at'
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

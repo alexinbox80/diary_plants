@@ -83,7 +83,7 @@ class MarkerModelTest extends TestCase
     public function testGetTableHeaderRu(): void
     {
         $headers = MarkerModel::getTableHeaderRu();
-        $this->assertEquals('Обозначение', $headers['letter']);
-        $this->assertEquals('Тип обозначения', $headers['type']);
+        $this->assertEquals('table.marker.header.letter', $headers['letter']);
+        $this->assertEquals('table.marker.header.type', $headers['type']);
     }
 }

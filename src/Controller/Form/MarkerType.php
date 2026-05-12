@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use App\Controller\Web\Dashboard\Marker\EditMarker\Input\EditMarkerDTO;
 use App\Controller\Web\Dashboard\Marker\CreateMarker\Input\CreateMarkerDTO;
@@ -25,7 +26,6 @@ class MarkerType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $groupId = $options['group_id'] ?? null;
         $labels = MarkerModel::getTableHeaderRu();
 
         if ($this->security->isGranted(UserRole::ROLE_ADMIN->value)) {
@@ -33,7 +33,8 @@ class MarkerType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.marker.field.placeholder',
+                'choice_translation_domain' => false
             ]);
         }
 
@@ -42,15 +43,16 @@ class MarkerType extends AbstractType
                 'label' => $labels['letter'],
                 'required' => false,
             ])
-            ->add('color', TextType::class, [
+            ->add('color', ColorType::class, [
                 'label' => $labels['color'],
-                'required' => false,
+                'attr' => ['class' => 'marker-color'],
             ])
             ->add('type', ChoiceType::class, [
                 'label' => $labels['type'],
                 'required' => true,
                 'choices' => AttachableType::asSelectArray(),
-                'placeholder' => 'Выберите тип обозначения',
+                'placeholder' => 'form.marker.field.placeholder',
+                'choice_translation_domain' => false
             ])
             ->add('description', TextType::class, [
                 'label' => $labels['description'],
@@ -67,12 +69,11 @@ class MarkerType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditMarkerDTO::class,
-            'empty_data' => new CreateMarkerDTO(2, '', '', '', '', ''),
+            'empty_data' => new CreateMarkerDTO(0, '', '', '', '', ''),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
-            'csrf_token_id' => 'unique_form_identifier',
-            'group_id' => null,
+            'csrf_token_id' => 'unique_form_identifier'
         ]);
     }
 }

@@ -81,14 +81,12 @@ class Marker implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsI
     private Collection $stimulants;
 
     private function setCommonFields(
-        Group $group,
         string $letter,
         string $color,
         AttachableType $type,
         ?string $description = null,
         ?string $colorDescription = null
     ): void {
-        $this->setGroupValidate($group);
         $this->setLetterValidate($letter);
         $this->setColorValidate($color);
         $this->setDescriptionValidate($description);
@@ -161,7 +159,8 @@ class Marker implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsI
         ?string $colorDescription = null
     )
     {
-        $this->setCommonFields($group, $letter, $color, $type, $description, $colorDescription);
+        $this->setGroupValidate($group);
+        $this->setCommonFields($letter, $color, $type, $description, $colorDescription);
 
         $this->waterings = new ArrayCollection();
         $this->fertilizers = new ArrayCollection();
@@ -170,7 +169,6 @@ class Marker implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsI
     }
 
     public function changeFields(
-        Group $group,
         string $letter,
         string $color,
         AttachableType $type,
@@ -178,7 +176,7 @@ class Marker implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsI
         ?string $colorDescription = null
     ): void
     {
-        $this->setCommonFields($group, $letter, $color, $type, $description, $colorDescription);
+        $this->setCommonFields($letter, $color, $type, $description, $colorDescription);
     }
 
     public function getId(): int

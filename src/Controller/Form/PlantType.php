@@ -35,7 +35,8 @@ class PlantType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.plant.field.placeholder',
+                'choice_translation_domain' => false
             ]);
         }
 

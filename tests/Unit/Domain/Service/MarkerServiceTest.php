@@ -84,7 +84,9 @@ class MarkerServiceTest extends TestCase
     #[Test]
     public function testUpdateSuccess(): void
     {
+        // 1. Создаем мок сущности Marker
         $markerEntity = $this->createMock(Marker::class);
+
         $updateModel = new UpdateMarkerModel(
             groupId: 2,
             letter: 'S',
@@ -95,9 +97,27 @@ class MarkerServiceTest extends TestCase
         );
 
         $group = $this->createMock(Group::class);
-        $this->groupService->method('find')->willReturn($group);
 
-        $markerEntity->expects($this->once())->method('changeFields');
+        // 2. Настраиваем GroupService, чтобы он нашел группу
+        $this->groupService->method('find')->with(2)->willReturn($group);
+
+        // 3. ВАЖНО:moveToGroup должен вернуть $markerEntity, чтобы цепочка ->changeFields() сработала
+        $markerEntity->expects($this->once())
+            ->method('moveToGroup')
+            ->with($group)
+            ->willReturn($markerEntity);
+
+        // 4. Теперь проверяем вызов changeFields
+        $markerEntity->expects($this->once())
+            ->method('changeFields')
+            ->with(
+                $updateModel->letter,
+                $updateModel->color,
+                $this->isInstanceOf(AttachableType::class), // Так как там Enum::From()
+                $updateModel->description,
+                $updateModel->colorDescription
+            );
+
         $this->repository->expects($this->once())->method('update');
 
         $this->service->update($markerEntity, $updateModel);

@@ -71,7 +71,7 @@ class UsageEventSubscriber implements EventSubscriberInterface
         $diff = $newUsageDate->diff($lastUsageDate);
         $daysPassed = (float) $diff->days;
 
-        // 3. Инкрементальный расчет среднего:Mn+1 = Mn + (Value - Mn) / (N + 1)
+        // 3. Инкрементальный расчет среднего: Mn+1 = Mn + (Value - Mn) / (N + 1)
         $newCount = $currentCount + 1;
         $newAverage = $this->calculator->calculateNewAverage(
             $currentAverage,

@@ -28,7 +28,8 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::EXCEPTION => ['onKernelException', 10]];
+        //return [KernelEvents::EXCEPTION => ['onKernelException', 10]];
+        return [];
     }
 
     public function onKernelException(ExceptionEvent $event): void

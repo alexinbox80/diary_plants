@@ -3,6 +3,7 @@
 namespace App\Domain\ValueObject\Enum\Usage;
 
 use App\Domain\Entity\Pest;
+use InvalidArgumentException;
 use App\Domain\Entity\Watering;
 use App\Domain\Entity\Stimulant;
 use App\Domain\Entity\Fertilizer;
@@ -36,7 +37,7 @@ enum AttachableType: string
             Stimulant::class => self::STIMULANT,
             Pest::class => self::PEST,
             Watering::class => self::WATERING,
-            default => self::tryFrom($className) ?? throw new \InvalidArgumentException("Unknown class: $className"),
+            default => self::tryFrom($className) ?? throw new InvalidArgumentException("Unknown class: $className"),
         };
     }
 

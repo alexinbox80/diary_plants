@@ -8,6 +8,7 @@ use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Group\CreateGroupModel;
 use App\Domain\Model\Group\UpdateGroupModel;
 use App\Domain\Repository\GroupRepositoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Controller\Web\Dashboard\Group\EditGroup\Input\EditGroupDTO;
 use App\Controller\Web\Dashboard\Group\CreateGroup\Input\CreateGroupDTO;
 
@@ -16,6 +17,7 @@ class GroupService
     public function __construct(
         private readonly GroupRepositoryInterface $groupRepository,
         private readonly ModelFactory $modelFactory,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -36,8 +38,13 @@ class GroupService
         // Получаем список выбора: [title => id]
         $choices = [];
         $groupModels = $this->groupRepository->getGroupsForForm();
+
         foreach ($groupModels as $group) {
-            $label = sprintf('%s :: %d', $group->getTitle(), $group->getId());
+            $label = $this->translator->trans('group.label.format', [
+                '%title%' => $group->getTitle(),
+                '%id%'    => $group->getId(),
+            ]);
+
             $choices[$label] = $group->getId();
         }
 

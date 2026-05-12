@@ -3,7 +3,6 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\Marker;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Marker\UpdateMarkerModel;
@@ -60,11 +59,20 @@ class MarkerService
     }
 
     /**
-     * @return Marker[]
+     * @return MarkerModel[]
      */
     public function findAll(): array
     {
         return $this->markerRepository->findAll();
+    }
+
+    /**
+     * @param int|null $groupId
+     * @return MarkerModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->markerRepository->findAllByGroupId($groupId);
     }
 
     /**
@@ -86,8 +94,9 @@ class MarkerService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return MarkerModel[]
-     * @throws InvalidArgumentException
      */
     public function getMarkerPaginated(int $page, int $perPage): array
     {
@@ -95,9 +104,19 @@ class MarkerService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return MarkerModel[]
+     */
+    public function getMarkersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->markerRepository->getMarkersPaginatedByGroupId($page, $perPage, $groupId);
+    }
+
+    /**
      * @param CreateMarkerModel $createMarkerModel
      * @return MarkerModel
-     * @throws InvalidArgumentException
      */
     public function create(CreateMarkerModel $createMarkerModel): MarkerModel
     {
@@ -106,7 +125,7 @@ class MarkerService
         $marker = new Marker(
             $group,
             $createMarkerModel->letter,
-            $createMarkerModel->color,
+            mb_strtoupper($createMarkerModel->color),
             AttachableType::From($createMarkerModel->type),
             $createMarkerModel->description,
             $createMarkerModel->colorDescription
@@ -125,7 +144,7 @@ class MarkerService
     {
         $model = $this->modelFactory->makeModel(
             CreateMarkerModel::class,
-            2,
+            $dto->groupId,
             $dto->letter,
             $dto->color,
             $dto->type,
@@ -140,20 +159,20 @@ class MarkerService
      * @param Marker $marker
      * @param UpdateMarkerModel $updateMarkerModel
      * @return MarkerModel
-     * @throws InvalidArgumentException
      */
     public function update(Marker $marker, UpdateMarkerModel $updateMarkerModel): MarkerModel
     {
         $group = $this->groupService->find($updateMarkerModel->groupId);
 
-        $marker->changeFields(
-            $group,
-            $updateMarkerModel->letter,
-            $updateMarkerModel->color,
-            AttachableType::From($updateMarkerModel->type),
-            $updateMarkerModel->description,
-            $updateMarkerModel->colorDescription
-        );
+        $marker
+            ->moveToGroup($group)
+            ->changeFields(
+                $updateMarkerModel->letter,
+                mb_strtoupper($updateMarkerModel->color),
+                AttachableType::From($updateMarkerModel->type),
+                $updateMarkerModel->description,
+                $updateMarkerModel->colorDescription
+            );
 
         $this->markerRepository->update();
 
@@ -169,7 +188,7 @@ class MarkerService
     {
         $model = $this->modelFactory->makeModel(
             UpdateMarkerModel::class,
-            2,
+            $dto->groupId,
             $dto->letter,
             $dto->color,
             $dto->type,
@@ -183,7 +202,6 @@ class MarkerService
     /**
      * @param int $markerId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $markerId): void
     {
@@ -196,7 +214,6 @@ class MarkerService
     /**
      * @param Marker $marker
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeMarker(Marker $marker): void
     {

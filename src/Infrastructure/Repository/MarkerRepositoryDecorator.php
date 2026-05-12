@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
+use InvalidArgumentException;
 use App\Domain\Entity\Marker;
 use App\Domain\Model\Marker\MarkerModel;
 use App\Domain\Repository\MarkerRepositoryInterface;
@@ -15,15 +17,43 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return MarkerModel[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getMarkersPaginated(int $page, int $perPage): array
     {
         $markersPaginated = $this->markerRepository->getMarkersPaginated($page, $perPage);
 
         if (!is_array($markersPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for Markers');
+            throw new InvalidArgumentException('Expected array for Markers');
+        }
+
+        $markersModel = array_map(
+            fn (Marker $marker): MarkerModel => $this->toModel($marker, true),
+            $markersPaginated['items']
+        );
+
+        return [
+            'markersModel' => $markersModel,
+            'pagination' => $markersPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return MarkerModel[]
+     * @throws Exception
+     */
+    public function getMarkersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $markersPaginated = $this->markerRepository->getMarkersPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($markersPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Markers');
         }
 
         $markersModel = array_map(
@@ -99,6 +129,19 @@ class MarkerRepositoryDecorator implements MarkerRepositoryInterface
     public function findAll(): array
     {
         $markers = $this->markerRepository->findAll();
+
+        return array_map(
+            fn (Marker $marker): MarkerModel => $this->toModel($marker, true),
+            $markers
+        );
+    }
+
+    /**
+     * @return MarkerModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $markers = $this->markerRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Marker $marker): MarkerModel => $this->toModel($marker, true),

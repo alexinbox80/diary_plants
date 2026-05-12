@@ -1,3 +1,7 @@
+group:
+    label:
+        format: '%title% :: %id%'
+
 security:
     access_denied:
         edit: 'У вас нет прав для редактирования записи.'
@@ -27,6 +31,12 @@ usage:
         created: 'Использование успешно создано.'
         updated: 'Использование успешно обновлено.'
         deleted: 'Использование успешно удалено.'
+
+marker:
+    flash:
+        created: 'Сокращение успешно создано.'
+        updated: 'Сокращение успешно обновлено.'
+        deleted: 'Сокращение успешно удалено.'
 
 table:
     plant:
@@ -62,11 +72,29 @@ table:
             offsprings: 'Плоды'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
+    marker:
+        header:
+            id: '#'
+            icon_tag: 'Маркер'
+            group_id: 'Идентификатор группы'
+            group_title: 'Группа'
+            letter: 'Обозначение'
+            color: 'Цвет'
+            type: 'Тип обозначения'
+            description: 'Описание'
+            color_description: 'Описание цвета'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
 
 form:
     plant:
         field:
+            placeholder: 'Выберите группу'
             price: 'Формат: "100.00 RUB"'
             is_shown: 'Отображать растение на сайте'
             is_sold: 'Растение продано'
 
+    marker:
+        field:
+            placeholder: 'Выберите группу'
+            label_type: 'Выберите тип обозначения'
