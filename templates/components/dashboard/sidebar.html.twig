@@ -28,72 +28,72 @@
             </a>
         </li>
         <li class="nav-item nav-category">
-            <span class="nav-link">Панель</span>
+            <span class="nav-link">{{ 'menu.panel'|trans }}</span>
         </li>
         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MANAGER') %}
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.plants' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.plants_paginated.index') }}">
-                <span class="menu-title">Растения</span>
+                <span class="menu-title">{{ 'menu.plants'|trans }}</span>
                 <i class="fa-brands fa-pagelines menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.repottings' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.repottings_paginated.index') }}">
-                <span class="menu-title">Пересадка растений</span>
+                <span class="menu-title">{{ 'menu.repottings'|trans }}</span>
                 <i class="fas fa-seedling menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.offsprings' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.offsprings_paginated.index') }}">
-                <span class="menu-title">Плоды</span>
+                <span class="menu-title">{{ 'menu.offsprings'|trans }}</span>
                 <i class="far fa-lemon menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.diaries' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.diaries.index') }}">
-                <span class="menu-title">Еженедельник</span>
+                <span class="menu-title">{{ 'menu.diaries'|trans }}</span>
                 <i class="fas fa-book menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.usages' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.usages_paginated.index') }}">
-                <span class="menu-title">Использование</span>
+                <span class="menu-title">{{ 'menu.usages'|trans }}</span>
                 <i class="fas fa-book-medical menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.markers' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.markers_paginated.index') }}">
-                <span class="menu-title">Сокращения</span>
+                <span class="menu-title">{{ 'menu.markers'|trans }}</span>
                 <i class="fas fa-tag menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.pests' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.pests_paginated.index') }}">
-                <span class="menu-title">Вредители</span>
+                <span class="menu-title">{{ 'menu.pests'|trans }}</span>
                 <i class="fas fa-bug menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.stimulants' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.stimulants_paginated.index') }}">
-                <span class="menu-title">Стимуляторы</span>
+                <span class="menu-title">{{ 'menu.stimulants'|trans }}</span>
                 <i class="fas fa-flask-vial menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.fertilizers' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.fertilizers_paginated.index') }}">
-                <span class="menu-title">Удобрения</span>
+                <span class="menu-title">{{ 'menu.fertalizers'|trans }}</span>
                 <i class="fas fa-sack-xmark menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.waterings' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.waterings_paginated.index') }}">
-                <span class="menu-title">Поливы</span>
+                <span class="menu-title">{{ 'menu.waterings'|trans }}</span>
                 <i class="fas fa-hand-holding-water menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.images' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.images_paginated.index') }}">
-                <span class="menu-title">Галерея</span>
+                <span class="menu-title">{{ 'menu.images'|trans }}</span>
                 <i class="fas fa-images menu-icon"></i>
             </a>
         </li>
@@ -101,13 +101,13 @@
         {% if is_granted('ROLE_ADMIN') %}
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.users' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.users_paginated.index') }}">
-                <span class="menu-title">Пользователи</span>
+                <span class="menu-title">{{ 'menu.users'|trans }}</span>
                 <i class="fas fa-users menu-icon"></i>
             </a>
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.groups' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.groups_paginated.index') }}">
-                <span class="menu-title">Группы</span>
+                <span class="menu-title">{{ 'menu.groups'|trans }}</span>
                 <i class="fas fa-user-friends menu-icon"></i>
             </a>
         </li>

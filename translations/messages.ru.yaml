@@ -1,3 +1,20 @@
+menu:
+    panel: 'Панель'
+    plants: 'Растения'
+    repottings: 'Пересадка растений'
+    offsprings: 'Плоды'
+    diaries: 'Еженедельник'
+    usages: 'Использование'
+    markers: 'Сокращения'
+    pests: 'Вредители'
+    stimulants: 'Стимуляторы'
+    fertalizers: 'Удобрения'
+    waterings: 'Поливы'
+    images: 'Галерея'
+    users: 'Пользователи'
+    groups: 'Группы'
+
+
 group:
     label:
         format: '%title% :: %id%'
