@@ -1,0 +1,147 @@
+menu:
+    panel: 'Dashboard'
+    plants: 'Plants'
+    repottings: 'Repottings'
+    offsprings: 'Offsprings'
+    diaries: 'Diaries'
+    usages: 'Usages'
+    markers: 'Markers'
+    pests: 'Pests'
+    stimulants: 'Stimulants'
+    fertalizers: 'Fertilizers'
+    waterings: 'Waterings'
+    images: 'Gallery'
+    users: 'Users'
+    groups: 'Groups'
+
+group:
+    label:
+        format: '%title% :: %id%'
+
+security:
+    access_denied:
+        edit: 'You do not have permission to edit this record.'
+        delete: 'You do not have permission to delete this record.'
+        not_auth: 'Access denied: user is not authorized.'
+        create: 'You do not have permission to create a new record.'
+
+plant:
+    flash:
+        created: 'Plant successfully created.'
+        updated: 'Plant successfully updated.'
+        deleted: 'Plant successfully deleted.'
+
+repotting:
+    flash:
+        created: 'Repotting successfully created.'
+        updated: 'Repotting successfully updated.'
+        deleted: 'Repotting successfully deleted.'
+
+offspring:
+    flash:
+        created: 'Offspring successfully created.'
+        updated: 'Offspring successfully updated.'
+        deleted: 'Offspring successfully deleted.'
+
+usage:
+    flash:
+        created: 'Usage successfully created.'
+        updated: 'Usage successfully updated.'
+        deleted: 'Usage successfully deleted.'
+
+marker:
+    flash:
+        created: 'Marker successfully created.'
+        updated: 'Marker successfully updated.'
+        deleted: 'Marker successfully deleted.'
+    label:
+        format: '%letter% (%description%)'
+
+pest:
+    flash:
+        created: 'Pest successfully created.'
+        updated: 'Pest successfully updated.'
+        deleted: 'Pest successfully deleted.'
+
+table:
+    plant:
+        header:
+            id: '#'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            oid: 'Universal Identifier'
+            img_gallery: 'Image'
+            title: 'Title'
+            room: 'Room'
+            is_shown: 'Show'
+            description: 'Description'
+            img_qr_code_link: 'QR Code'
+            purchase_date: 'Purchase Date'
+            vaccination_date: 'Vaccination Date'
+            planting_date: 'Planting Date'
+            seller: 'Seller'
+            nursery: 'Nursery'
+            price: 'Cost'
+            shipping_cost: 'Shipping Cost'
+            packaging_cost: 'Packaging Cost'
+            soil: 'Soil'
+            is_sold: 'Sold'
+            selling_date: 'Selling Date'
+            selling_price: 'Selling Price'
+            comment: 'Comment'
+            usage_watering: 'Watering'
+            usage_fertilizer: 'Fertilizing'
+            usage_pest: 'Pest Treatment'
+            usage_stimulant: 'Stimulant Treatment'
+            repottings: 'Repottings'
+            offsprings: 'Offsprings'
+            created_at: 'Created At'
+            updated_at: 'Updated At'
+    marker:
+        header:
+            id: '#'
+            icon_tag: 'Marker'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            letter: 'Symbol'
+            color: 'Color'
+            type: 'Symbol Type'
+            description: 'Description'
+            color_description: 'Color Description'
+            created_at: 'Created At'
+            updated_at: 'Updated At'
+    pest:
+        header:
+            id: '#'
+            icon_tag: 'Marker'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            marker_id: 'Marker ID'
+            marker_letter: 'Symbol'
+            marker_color: 'Color'
+            title: 'Title'
+            amount: 'Amount'
+            application_rate: 'Application Rate'
+            manufacturer: 'Manufacturer'
+            description: 'Description'
+            comment: 'Comment'
+            created_at: 'Created At'
+            updated_at: 'Updated At'
+
+form:
+    plant:
+        field:
+            placeholder: 'Select group'
+            price: 'Format: "100.00 RUB"'
+            is_shown: 'Display plant on site'
+            is_sold: 'Plant is sold'
+
+    marker:
+        field:
+            placeholder: 'Select group'
+            label_type: 'Select symbol type'
+
+    pest:
+        field:
+            placeholder: 'Select group'
+            marker_placeholder: 'Select marker'
