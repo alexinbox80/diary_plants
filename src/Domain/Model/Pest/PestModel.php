@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Domain\Entity\Pest;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class PestModel implements AttachableModelInterface
@@ -121,27 +122,31 @@ class PestModel implements AttachableModelInterface
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'icon_tag' => 'Маркер',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'marker_id' => 'Идентификатор маркера',
-            'marker_letter' => 'Обозначение',
-            'marker_color' => 'Цвет',
-            'title' => 'Заголовок',
-            'amount' => 'Количество',
-            'application_rate' => 'Норма расхода',
-            'manufacturer' => 'Изготовитель',
-            'description' => 'Описание',
-            'comment' => 'Комментарий',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.pest.header.id',
+            'icon_tag' => 'table.pest.header.icon_tag',
+            'group_id' => 'table.pest.header.group_id',
+            'group_title' => 'table.pest.header.group_title',
+            'marker_id' => 'table.pest.header.marker_id',
+            'marker_letter' => 'table.pest.header.marker_letter',
+            'marker_color' => 'table.pest.header.marker_color',
+            'title' => 'table.pest.header.title',
+            'amount' => 'table.pest.header.amount',
+            'application_rate' => 'table.pest.header.application_rate',
+            'manufacturer' => 'table.pest.header.manufacturer',
+            'description' => 'table.pest.header.description',
+            'comment' => 'table.pest.header.comment',
+            'created_at' => 'table.pest.header.created_at',
+            'updated_at' => 'table.pest.header.updated_at'
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

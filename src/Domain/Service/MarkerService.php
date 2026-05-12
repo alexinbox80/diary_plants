@@ -8,6 +8,7 @@ use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Marker\UpdateMarkerModel;
 use App\Domain\Repository\MarkerRepositoryInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Controller\Web\Dashboard\Marker\EditMarker\Input\EditMarkerDTO;
 use App\Controller\Web\Dashboard\Marker\CreateMarker\Input\CreateMarkerDTO;
 
@@ -17,6 +18,7 @@ class MarkerService
         private readonly GroupService $groupService,
         private readonly MarkerRepositoryInterface $markerRepository,
         private readonly ModelFactory $modelFactory,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -32,7 +34,11 @@ class MarkerService
         $markerModels = $this->markerRepository->getMarkersForForm($groupId, $type);
 
         foreach ($markerModels as $marker) {
-            $label = sprintf('%s (%s)', $marker->getLetter(), $marker->getDescription());
+            $label = $this->translator->trans('marker.label.format', [
+                '%letter%' => $marker->getLetter(),
+                '%description%' => $marker->getDescription(),
+            ]);
+
             $choices[$label] = $marker->getId();
         }
 

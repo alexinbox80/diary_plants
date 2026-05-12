@@ -87,7 +87,6 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
     }
 
     public function changeFieldsWithMarker(
-        Group $group,
         Marker $marker,
         string $title,
         PreparationVolume $volume,
@@ -96,7 +95,6 @@ class Pest extends Preparation implements EntityInterface, AttachableInterface, 
     {
         parent::changeFields($title, $volume, $details);
 
-        $this->group = $group;
         $this->marker = $marker;
     }
 

@@ -91,6 +91,6 @@ class PestModelTest extends TestCase
     {
         $headers = PestModel::getTableHeaderRu();
         $this->assertArrayHasKey('marker_letter', $headers);
-        $this->assertEquals('Количество', $headers['amount']);
+        $this->assertEquals('table.pest.header.amount', $headers['amount']);
     }
 }

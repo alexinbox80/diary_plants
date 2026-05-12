@@ -16,6 +16,7 @@ use App\Domain\Model\Marker\CreateMarkerModel;
 use App\Domain\Model\Marker\UpdateMarkerModel;
 use App\Domain\Repository\MarkerRepositoryInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[CoversClass(MarkerService::class)]
 class MarkerServiceTest extends TestCase
@@ -23,6 +24,8 @@ class MarkerServiceTest extends TestCase
     private GroupService|MockObject $groupService;
     private MarkerRepositoryInterface|MockObject $repository;
     private ModelFactory|MockObject $modelFactory;
+
+    private TranslatorInterface|MockObject $translator;
     private MarkerService $service;
 
     protected function setUp(): void
@@ -30,7 +33,15 @@ class MarkerServiceTest extends TestCase
         $this->groupService = $this->createMock(GroupService::class);
         $this->repository = $this->createMock(MarkerRepositoryInterface::class);
         $this->modelFactory = $this->createMock(ModelFactory::class);
-        $this->service = new MarkerService($this->groupService, $this->repository, $this->modelFactory);
+        $this->translator = $this->createMock(TranslatorInterface::class);
+
+        // Передаем все 4 зависимости
+        $this->service = new MarkerService(
+            $this->groupService,
+            $this->repository,
+            $this->modelFactory,
+            $this->translator
+        );
     }
 
     #[Test]
@@ -45,9 +56,18 @@ class MarkerServiceTest extends TestCase
             ->method('getMarkersForForm')
             ->willReturn([$marker1]);
 
+        // Настраиваем ожидание вызова транслятора
+        $this->translator->expects($this->once())
+            ->method('trans')
+            ->with('marker.label.format', [
+                '%letter%' => 'W',
+                '%description%' => 'Watering'
+            ])
+            ->willReturn('W (Watering)'); // Что вернет транслятор в тесте
+
         $result = $this->service->getChoicesForChoiceType();
 
-        // Проверяем формат "Буква (Описание) => ID"
+        // Теперь проверка пройдет, так как мок вернет нужную строку
         $this->assertSame(['W (Watering)' => 1], $result);
     }
 

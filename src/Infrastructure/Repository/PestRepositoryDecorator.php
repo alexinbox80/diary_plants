@@ -2,8 +2,10 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use App\Domain\Entity\Pest;
+use InvalidArgumentException;
 use App\Domain\Model\Pest\PestModel;
 use App\Domain\Repository\PestRepositoryInterface;
 
@@ -34,14 +36,40 @@ class PestRepositoryDecorator implements PestRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return PestModel[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPestsPaginated(int $page, int $perPage): array
     {
         $pestsPaginated = $this->pestRepository->getPestsPaginated($page, $perPage);
 
         if (!is_array($pestsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for pests');
+            throw new InvalidArgumentException('Expected array for pests');
+        }
+
+        $pestsModel = array_map(
+            fn (Pest $pest): PestModel => $this->toModel($pest, true),
+            $pestsPaginated['items']
+        );
+
+        return [
+            'pestsModel' => $pestsModel,
+            'pagination' => $pestsPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return PestModel[]
+     * @throws Exception
+     */
+    public function getPestsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $pestsPaginated = $this->pestRepository->getPestsPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($pestsPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Pests');
         }
 
         $pestsModel = array_map(
@@ -81,6 +109,19 @@ class PestRepositoryDecorator implements PestRepositoryInterface
     public function findAll(): array
     {
         $pests = $this->pestRepository->findAll();
+
+        return array_map(
+            fn (Pest $pest): PestModel => $this->toModel($pest, true),
+            $pests
+        );
+    }
+
+    /**
+     * @return PestModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $pests = $this->pestRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Pest $pest): PestModel => $this->toModel($pest, true),

@@ -25,8 +25,8 @@ final class Manager
         $plantsModel = $this->plantService->findAllByGroupId($groupId);
 
         $timezone = $this->accessContext->getTimezone();
-
         $tableHeader = PlantModel::getTableHeaderRu();
+
         $tableBody = array_map(
             static fn (PlantModel $model): array => $model->toArray(Timezone::tryFrom($timezone)),
             $plantsModel

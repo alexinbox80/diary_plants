@@ -5,6 +5,7 @@ namespace Unit\Domain\Entity;
 use App\Domain\Entity\Pest;
 use App\Domain\Entity\Group;
 use App\Domain\Entity\Marker;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use App\Domain\ValueObject\Preparation\PreparationVolume;
 use App\Domain\ValueObject\Preparation\PreparationDetails;
@@ -42,17 +43,20 @@ class PestTest extends TestCase
         $marker = $this->createMock(Marker::class);
         $pest = new Pest($group, $marker, 'Старое название', $this->createVolume());
 
-        $newGroup = $this->createMock(Group::class);
         $newMarker = $this->createMock(Marker::class);
-        $newVolume = new PreparationVolume(2.0, 'гr');
+        $newVolume = new PreparationVolume(2.0, 'г');
         $newDetails = new PreparationDetails('Новая формула');
 
-        $pest->changeFieldsWithMarker($newGroup, $newMarker, 'Новое название', $newVolume, $newDetails);
+        // Убираем $newGroup из аргументов, так как метод его не принимает
+        $pest->changeFieldsWithMarker($newMarker, 'Новое название', $newVolume, $newDetails);
 
-        $this->assertSame($newGroup, $pest->getGroup());
+        // Проверяем результат
         $this->assertSame($newMarker, $pest->getMarker());
         $this->assertEquals('Новое название', $pest->getTitle());
         $this->assertSame($newVolume, $pest->getVolume());
+
+        // Группа должна остаться старой, так как метод её не меняет
+        $this->assertSame($group, $pest->getGroup());
     }
 
     public function testGetIdThrowsExceptionWhenNull(): void
@@ -64,7 +68,7 @@ class PestTest extends TestCase
             $this->createVolume()
         );
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Id of Entity App\Domain\Entity\Pest is null.');
 
         $pest->getId();

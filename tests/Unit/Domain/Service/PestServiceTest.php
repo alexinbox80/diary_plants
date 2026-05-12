@@ -17,6 +17,8 @@ use App\Domain\Model\Pest\UpdatePestModel;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\Repository\PestRepositoryInterface;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
 
 #[CoversClass(PestService::class)]
 class PestServiceTest extends TestCase
@@ -49,8 +51,8 @@ class PestServiceTest extends TestCase
             groupId: 1,
             markerId: 5,
             title: 'Анти-Тля',
-            amount: 100,
-            applicationRate: 2,
+            amount: 100.0,
+            applicationRate: '2 ml/l',
             manufacturer: 'BioDefense',
             description: 'Концентрат',
             comment: 'Опасно для пчел'
@@ -82,19 +84,37 @@ class PestServiceTest extends TestCase
             groupId: 2,
             markerId: 8,
             title: 'Новый Состав',
-            amount: 250,
-            applicationRate: 5,
+            amount: 250.0,
+            applicationRate: '5 ml/l',
             manufacturer: 'GardenSafe',
             description: 'Улучшенная формула',
             comment: 'Хранить в тени'
         );
 
-        $this->groupService->method('find')->willReturn($this->createMock(Group::class));
-        $this->markerService->method('find')->willReturn($this->createMock(Marker::class));
+        $group = $this->createMock(Group::class);
+        $marker = $this->createMock(Marker::class);
+
+        $this->groupService->method('find')->with(2)->willReturn($group);
+        $this->markerService->method('find')->with(8)->willReturn($marker);
+
+        // Имитируем цепочку вызовов: moveToGroup должен вернуть сам объект $pestEntity
+        $pestEntity->expects($this->once())
+            ->method('moveToGroup')
+            ->with($group)
+            ->willReturn($pestEntity);
 
         // Проверяем вызов бизнес-логики в сущности
-        $pestEntity->expects($this->once())->method('changeFieldsWithMarker');
+        $pestEntity->expects($this->once())
+            ->method('changeFieldsWithMarker')
+            ->with(
+                $marker,
+                $updateModel->title,
+                $this->isInstanceOf(PreparationVolume::class),
+                $this->isInstanceOf(PreparationDetails::class)
+            );
+
         $this->repository->expects($this->once())->method('update');
+        $this->repository->method('toModel')->willReturn($this->createMock(PestModel::class));
 
         $this->service->update($pestEntity, $updateModel);
     }
@@ -105,8 +125,15 @@ class PestServiceTest extends TestCase
         $id = 77;
         $pest = $this->createMock(Pest::class);
 
-        $this->repository->method('find')->with($id)->willReturn($pest);
-        $this->repository->expects($this->once())->method('remove')->with($pest);
+        // Важно: репозиторий должен возвращать Pest, а не Marker
+        $this->repository->expects($this->once())
+            ->method('find')
+            ->with($id)
+            ->willReturn($pest);
+
+        $this->repository->expects($this->once())
+            ->method('remove')
+            ->with($pest);
 
         $this->service->removeById($id);
     }

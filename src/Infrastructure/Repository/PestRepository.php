@@ -2,8 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Pest;
+use Exception;
 use DateTimeImmutable;
+use App\Domain\Entity\Pest;
 use Doctrine\ORM\QueryBuilder;
 
 class PestRepository extends AbstractRepository
@@ -39,13 +40,36 @@ class PestRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Pest[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPestsPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param ?int $groupId
+     * @return Pest[]
+     * @throws Exception
+     */
+    public function getPestsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('p.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -71,6 +95,25 @@ class PestRepository extends AbstractRepository
         return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Pest[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('p')
+            ->from(Pest::class, 'p')
+            ->orderBy('p.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('p.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

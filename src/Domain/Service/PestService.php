@@ -5,7 +5,6 @@ namespace App\Domain\Service;
 use DateTimeImmutable;
 use App\Domain\Entity\Pest;
 use App\Domain\Model\Pest\PestModel;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Pest\CreatePestModel;
 use App\Domain\Model\Pest\UpdatePestModel;
 use App\Domain\Repository\PestRepositoryInterface;
@@ -51,6 +50,15 @@ class PestService
     }
 
     /**
+     * @param int|null $groupId
+     * @return PestModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->pestRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param string $title
      * @return PestModel[]
      */
@@ -78,8 +86,9 @@ class PestService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return PestModel[]
-     * @throws InvalidArgumentException
      */
     public function getPestsPaginated(int $page, int $perPage): array
     {
@@ -87,9 +96,19 @@ class PestService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return PestModel[]
+     */
+    public function getPestsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->pestRepository->getPestsPaginatedByGroupId($page, $perPage, $groupId);
+    }
+
+    /**
      * @param CreatePestModel $createPestModel
      * @return PestModel
-     * @throws InvalidArgumentException
      */
     public function create(CreatePestModel $createPestModel): PestModel
     {
@@ -124,7 +143,7 @@ class PestService
     {
         $model = $this->modelFactory->makeModel(
             CreatePestModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->title,
             $dto->amount,
@@ -141,15 +160,15 @@ class PestService
      * @param Pest $pest
      * @param UpdatePestModel $updatePestModel
      * @return PestModel
-     * @throws InvalidArgumentException
      */
     public function update(Pest $pest, UpdatePestModel $updatePestModel): PestModel
     {
         $group = $this->groupService->find($updatePestModel->groupId);
         $marker = $this->markerService->find($updatePestModel->markerId);
 
-        $pest->changeFieldsWithMarker(
-            $group,
+        $pest
+            ->moveToGroup($group)
+            ->changeFieldsWithMarker(
             $marker,
             $updatePestModel->title,
             new PreparationVolume(
@@ -177,7 +196,7 @@ class PestService
     {
         $model = $this->modelFactory->makeModel(
             UpdatePestModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->title,
             $dto->amount,
@@ -193,7 +212,6 @@ class PestService
     /**
      * @param int $pestId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $pestId): void
     {
@@ -206,7 +224,6 @@ class PestService
     /**
      * @param Pest $pest
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removePest(Pest $pest): void
     {

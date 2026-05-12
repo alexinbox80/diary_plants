@@ -36,8 +36,11 @@ class PestType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.pest.field.placeholder',
+                'choice_translation_domain' => false
             ]);
+
+            $groupId = null;
         }
 
         $builder
@@ -45,7 +48,8 @@ class PestType extends AbstractType
                 'label' => $labels['marker_id'],
                 'required' => true,
                 'choices' => $this->markerService->getChoicesForChoiceType($groupId, AttachableType::PEST->value),
-                'placeholder' => 'Выберите сокращение',
+                'placeholder' => 'form.pest.field.marker_placeholder',
+                'choice_translation_domain' => false
             ])
             ->add('title', TextType::class, [
                 'label' => $labels['title'],
@@ -78,7 +82,7 @@ class PestType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditPestDTO::class,
-            'empty_data' => new CreatePestDTO(2, 2, '', 2, '', ''),
+            'empty_data' => new CreatePestDTO(0, 0, '', 0, '', ''),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

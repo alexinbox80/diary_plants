@@ -37,6 +37,14 @@ marker:
         created: 'Сокращение успешно создано.'
         updated: 'Сокращение успешно обновлено.'
         deleted: 'Сокращение успешно удалено.'
+    label:
+        format: '%letter% (%description%)'
+
+pest:
+    flash:
+        created: 'Вредитель успешно создан.'
+        updated: 'Вредитель успешно обновлен.'
+        deleted: 'Вредитель успешно удален.'
 
 table:
     plant:
@@ -85,6 +93,23 @@ table:
             color_description: 'Описание цвета'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
+    pest:
+        header:
+            id: '#'
+            icon_tag: 'Маркер'
+            group_id: 'Идентификатор группы'
+            group_title: 'Группа'
+            marker_id: 'Идентификатор маркера'
+            marker_letter: 'Обозначение'
+            marker_color: 'Цвет'
+            title: 'Заголовок'
+            amount: 'Количество'
+            application_rate: 'Норма расхода'
+            manufacturer: 'Изготовитель'
+            description: 'Описание'
+            comment: 'Комментарий'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
 
 form:
     plant:
@@ -98,3 +123,8 @@ form:
         field:
             placeholder: 'Выберите группу'
             label_type: 'Выберите тип обозначения'
+
+    pest:
+        field:
+            placeholder: 'Выберите группу'
+            marker_placeholder: 'Выберите сокращение'
