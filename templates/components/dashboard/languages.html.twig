@@ -1,25 +1,43 @@
 <li class="nav-item dropdown language-dropdown d-none d-sm-flex align-items-center">
+    {# Шапка выпадающего списка: подстраивается под текущий активный язык #}
     <a class="nav-link d-flex align-items-center dropdown-toggle" id="LanguageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-        <div class="d-inline-flex">
-            <i class="flag-icon flag-icon-ru"></i>
-        </div>
-        <span class="profile-text font-weight-normal">Русский</span>
+        {% if app.request.locale == 'en' %}
+            <div class="d-inline-flex me-1">
+                <i class="flag-icon flag-icon-us"></i>
+            </div>
+            <span class="profile-text font-weight-normal">English</span>
+        {% endif %}
+        {% if app.request.locale == 'ru' %}
+            <div class="d-inline-flex me-1">
+                <i class="flag-icon flag-icon-ru"></i>
+            </div>
+            <span class="profile-text font-weight-normal">Русский</span>
+        {% endif %}
     </a>
-    <div class="dropdown-menu dropdown-menu-left navbar-dropdown py-2" aria-labelledby="LanguageDropdown">
-        <a class="dropdown-item">
-            <i class="flag-icon flag-icon-us"></i> Английский </a>
-        <a class="dropdown-item">
-            <i class="flag-icon flag-icon-fr"></i> Французский </a>
-        <a class="dropdown-item">
-            <i class="flag-icon flag-icon-ae"></i> Арабский </a>
-        <a class="dropdown-item">
-            <i class="flag-icon flag-icon-ru"></i> Русский </a>
-    </div>
-{#    <div class="language-switcher">#}
-{#        <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'ru'})) }}"#}
-{#           class="{% if app.request.locale == 'ru' %}active{% endif %}">RU</a>#}
 
-{#        <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': 'en'})) }}"#}
-{#           class="{% if app.request.locale == 'en' %}active{% endif %}">EN</a>#}
-{#    </div>#}
+    <div class="dropdown-menu dropdown-menu-left navbar-dropdown py-2" aria-labelledby="LanguageDropdown">
+        {# Английский язык (активный) #}
+        <a class="dropdown-item d-flex align-items-center {% if app.request.locale == 'en' %}active{% endif %}"
+           href="{{ path('app.switch.language', {'locale': 'en'}) }}">
+            <i class="flag-icon flag-icon-us me-2"></i> Английский
+        </a>
+
+        {# Французский язык (не используется)
+        <a class="dropdown-item d-flex align-items-center">
+            <i class="flag-icon flag-icon-fr me-2"></i> Французский
+        </a>
+        #}
+
+        {# Арабский язык (не используется)
+        <a class="dropdown-item d-flex align-items-center">
+            <i class="flag-icon flag-icon-ae me-2"></i> Арабский
+        </a>
+        #}
+
+        {# Русский язык (активный) #}
+        <a class="dropdown-item d-flex align-items-center {% if app.request.locale == 'ru' %}active{% endif %}"
+           href="{{ path('app.switch.language', {'locale': 'ru'}) }}">
+            <i class="flag-icon flag-icon-ru me-2"></i> Русский
+        </a>
+    </div>
 </li>

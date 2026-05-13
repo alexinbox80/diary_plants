@@ -9,8 +9,8 @@ app_web:
         exclude: '../src/Controller/Api/'
 
     type: attribute
-#    prefix: /{_locale}
-#    requirements:
-#        _locale: '%app.supported_locales%'
-#    defaults:
-#        _locale: '%locale%'
+    prefix: /{_locale}
+    requirements:
+        _locale: '%app.supported_locales%'
+    defaults:
+        _locale: '%locale%'

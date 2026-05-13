@@ -58,7 +58,7 @@ class GetDiariesControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         // 4. Выполнение запроса
-        $client->request('GET', '/dashboard/diaries/2024/03');
+        $client->request('GET', '/ru/dashboard/diaries/2024/03');
 
         // 5. Проверки (Ассерты)
         $this->assertResponseIsSuccessful();
@@ -66,7 +66,7 @@ class GetDiariesControllerTest extends WebTestCase
         // Проверяем сессию (если ваш контроллер пишет в нее _previous_route)
         $session = $client->getRequest()->getSession();
         if ($session->has('_previous_route')) {
-            $this->assertEquals('/dashboard/diaries/2024/03', $session->get('_previous_route'));
+            $this->assertEquals('/ru/dashboard/diaries/2024/03', $session->get('_previous_route'));
         }
 
         // Проверка наличия заголовка в DOM

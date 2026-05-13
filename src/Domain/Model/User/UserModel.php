@@ -219,7 +219,7 @@ class UserModel
             'first_name' => $this->getFirstName(),
             'middle_name' => $this->getMiddleName(),
             'refresh_token' => $this->getRefreshToken(),
-            'refresh_token_expires_at' => $this->getRefreshTokenExpiresAt(),
+            'refresh_token_expires_at' =>  $this->getRefreshTokenExpiresAt()?->setTimezone($timezone)?->format('d.m.Y H:i:s'),
             'phone' => $this->getPhone(),
             'avatar_link' => $this->getAvatarLink(),
             'email_code' => $this->getEmailCode(),

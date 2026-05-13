@@ -14,6 +14,18 @@ menu:
     users: 'Пользователи'
     groups: 'Группы'
 
+page:
+    login:
+        title: 'Авторизация'
+        header_form: 'Войдите, чтобы продолжить.'
+        enter_as: 'Вы вошли как'
+        enter_as_exit_label: 'Выйти?'
+        authenticate_button_text: 'Авторизация'
+        email: 'Электронная почта'
+        password: 'Пароль'
+        button_sign_in_label: 'Войти'
+        checkbox_remember_me_label: 'Запомнить меня'
+        forgot_password_label: 'Забыли пароль?'
 
 group:
     label:

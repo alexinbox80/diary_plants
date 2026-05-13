@@ -41,13 +41,13 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/doc, roles: ROLE_ADMIN }
-        - { path: ^/dashboard/login, roles: PUBLIC_ACCESS }
-        - { path: ^/dashboard/logout, roles: PUBLIC_ACCESS }
+        - { path: ^/(%app.supported_locales%)/dashboard/login, roles: PUBLIC_ACCESS }
+        - { path: ^/(%app.supported_locales%)/dashboard/logout, roles: PUBLIC_ACCESS }
             # Сначала специфичные правила (Управление пользователями — только админу)
-#            - { path: ^/dashboard/users, roles: ROLE_ADMIN }
+#            - { path: ^/(%app.supported_locales%)/dashboard/users, roles: ROLE_ADMIN }
 
             # Затем общее правило для всего дашборда
-        - { path: ^/dashboard, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/(%app.supported_locales%)/dashboard, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

@@ -1,7 +1,7 @@
 {% extends 'layout/base.html.twig' %}
 
 {% block title %}
-    Авторизация
+    {{ 'page.login.title'|trans }}
 {% endblock %}
 
 {% block stylesheets %}
@@ -27,7 +27,7 @@
                                 <h2 class="text-success font-weight-bold">DASHBOARD</h2>
                             </div>
 
-                            <h4 class="font-weight-light mb-4">Войдите, чтобы продолжить.</h4>
+                            <h4 class="font-weight-light mb-4">{{ 'page.login.header_form'|trans }}</h4>
 
                             <form method="post" class="pt-3">
                                 {% if error %}
@@ -40,13 +40,13 @@
                                 {# Если пользователь уже залогинен #}
                                 {% if app.user %}
                                     <div class="alert alert-info small">
-                                        Вы вошли как <strong>{{ app.user.userIdentifier }}</strong>.
-                                        <a href="{{ path('dashboard.logout') }}" class="alert-link text-decoration-none">Выйти?</a>
+                                        {{ 'page.login.enter_as'|trans }} <strong>{{ app.user.userIdentifier }}</strong>.
+                                        <a href="{{ path('dashboard.logout') }}" class="alert-link text-decoration-none">{{ 'page.login.enter_as_exit_label'|trans }}</a>
                                     </div>
                                 {% endif %}
 
                                 <div class="form-group mb-3">
-                                    <label for="inputEmail" class="small text-muted">Электронная почта</label>
+                                    <label for="inputEmail" class="small text-muted">{{ 'page.login.email'|trans }}</label>
                                     <input type="email"
                                            value="{{ last_username }}"
                                            name="_username"
@@ -59,7 +59,7 @@
                                 </div>
 
                                 <div class="form-group mb-4">
-                                    <label for="inputPassword" class="small text-muted">Пароль</label>
+                                    <label for="inputPassword" class="small text-muted">{{ 'page.login.password'|trans }}</label>
                                     <input type="password"
                                            name="_password"
                                            id="inputPassword"
@@ -73,7 +73,7 @@
 
                                 <div class="mt-3">
                                     <button class="btn btn-block btn-success btn-lg font-weight-medium auth-form-btn w-100" type="submit">
-                                        ВОЙТИ
+                                        {{ 'page.login.button_sign_in_label'|trans }}
                                     </button>
                                 </div>
 
@@ -81,11 +81,11 @@
                                     <div class="form-check">
                                         <label class="form-check-label text-muted">
                                             <input type="checkbox" name="_remember_me" class="form-check-input">
-                                            Запомнить меня
+                                            {{ 'page.login.checkbox_remember_me_label'|trans }}
                                             <i class="input-helper-login"></i>
                                         </label>
                                     </div>
-                                    <a href="#" class="auth-link text-black small">Забыли пароль?</a>
+                                    <a href="#" class="auth-link text-black small">{{ 'page.login.forgot_password_label'|trans }}</a>
                                 </div>
                             </form>
 

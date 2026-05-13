@@ -14,6 +14,19 @@ menu:
     users: 'Users'
     groups: 'Groups'
 
+page:
+    login:
+        title: 'Sign In'
+        header_form: 'Sign in to continue.'
+        enter_as: 'You are signed in as'
+        enter_as_exit_label: 'Sign out?'
+        authenticate_button_text: 'Authentication'
+        email: 'Email address'
+        password: 'Password'
+        button_sign_in_label: 'Sign In'
+        checkbox_remember_me_label: 'Remember me'
+        forgot_password_label: 'Forgot password?'
+
 group:
     label:
         format: '%title% :: %id%'
