@@ -2,8 +2,10 @@ export default class DeleteModel {
     /**
      * Класс для управления модели через модальное окном подтверждения удаления
      * @param {string} routeDelete - Базовый маршрут для удаления (например, 'dashboard.offspring.delete')
+     * @param locale
      */
-    constructor(routeDelete) {
+    constructor(routeDelete, locale) {
+        this.locale = locale;
         this.routeDelete = routeDelete;
         this.modal = document.getElementById('confirmDeleteModal');
         this.titleSpan = document.getElementById('deleteItemTitle');
@@ -24,10 +26,14 @@ export default class DeleteModel {
      * @returns {string}
      */
     generateBaseUrl() {
-        // В Twig мы не можем использовать path() напрямую, поэтому ожидаем, что URL будет передан или сгенерирован
-        // Здесь можно использовать заглушку, но лучше передавать baseRoute извне
-        // Пример: /dashboard/offspring/__ID__/delete
-        return this.routeDelete.replace(/^([a-z]+\.[a-z]+)\.delete$/i, '/$1/__ID__/delete').replace(/\./g, '/');
+        // 1. Очищаем имя роута, превращая его в технический путь (например: dashboard.offspring -> dashboard/offspring)
+        const technicalPath = this.routeDelete
+            .replace(/^([a-z]+\.[a-z]+)\.delete$/i, '$1')
+            .replace(/\./g, '/');
+
+        // 2. Строим URL с учетом переданной локали.
+        // Результат будет: /ru/dashboard/offspring/__ID__/delete
+        return `/${this.locale}/${technicalPath}/__ID__/delete`;
     }
 
     /**

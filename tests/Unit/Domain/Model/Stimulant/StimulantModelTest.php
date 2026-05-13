@@ -84,6 +84,6 @@ class StimulantModelTest extends TestCase
     {
         $headers = StimulantModel::getTableHeaderRu();
         $this->assertArrayHasKey('application_rate', $headers);
-        $this->assertEquals('Норма расхода', $headers['application_rate']);
+        $this->assertEquals('table.stimulant.header.application_rate', $headers['application_rate']);
     }
 }

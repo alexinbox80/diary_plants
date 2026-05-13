@@ -57,7 +57,6 @@ class Manager
 
             $this->pestService->updateFromEditPestDTO($pest, $editPestDTO);
 
-
             $message = $this->translator->trans('pest.flash.updated', [], 'messages');
             $request->getSession()->getFlashBag()->add('success', $message);
             return ['success' => true];

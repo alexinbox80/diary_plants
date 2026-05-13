@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use App\Domain\Entity\Stimulant;
@@ -32,7 +33,10 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return StimulantModel[]
+     * @throws Exception
      */
     public function getStimulantsPaginated(int $page, int $perPage): array
     {
@@ -40,6 +44,32 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
 
         if (!is_array($stimulantsPaginated['items'])) {
             throw new InvalidArgumentException('Expected array for stimulants');
+        }
+
+        $stimulantsModel = array_map(
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant, true),
+            $stimulantsPaginated['items']
+        );
+
+        return [
+            'stimulantsModel' => $stimulantsModel,
+            'pagination' => $stimulantsPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return StimulantModel[]
+     * @throws Exception
+     */
+    public function getStimulantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $stimulantsPaginated = $this->stimulantRepository->getStimulantsPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($stimulantsPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Stimulants');
         }
 
         $stimulantsModel = array_map(
@@ -79,6 +109,19 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     public function findAll(): array
     {
         $stimulants = $this->stimulantRepository->findAll();
+
+        return array_map(
+            fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant, true),
+            $stimulants
+        );
+    }
+
+    /**
+     * @return StimulantModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $stimulants = $this->stimulantRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Stimulant $stimulant): StimulantModel => $this->toModel($stimulant, true),

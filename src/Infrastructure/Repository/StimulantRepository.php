@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Stimulant;
@@ -37,7 +38,7 @@ class StimulantRepository extends AbstractRepository
 
     /**
      * @return Stimulant[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getStimulantsPaginated(int $page, int $perPage): array
     {
@@ -69,6 +70,48 @@ class StimulantRepository extends AbstractRepository
         return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Stimulant[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('s')
+            ->from(Stimulant::class, 's')
+            ->orderBy('s.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('s.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param ?int $groupId
+     * @return Stimulant[]
+     * @throws Exception
+     */
+    public function getStimulantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('s.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
 
     /**

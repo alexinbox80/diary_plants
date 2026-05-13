@@ -36,8 +36,11 @@ class StimulantType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.stimulant.field.placeholder',
+                'choice_translation_domain' => false
             ]);
+
+            $groupId = null;
         }
 
         $builder
@@ -45,7 +48,8 @@ class StimulantType extends AbstractType
                 'label' => $labels['marker_id'],
                 'required' => true,
                 'choices' => $this->markerService->getChoicesForChoiceType($groupId, AttachableType::STIMULANT->value),
-                'placeholder' => 'Выберите сокращение',
+                'placeholder' => 'form.stimulant.field.marker_placeholder',
+                'choice_translation_domain' => false
             ])
             ->add('title', TextType::class, [
                 'label' => $labels['title'],
@@ -78,7 +82,7 @@ class StimulantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditStimulantDTO::class,
-            'empty_data' => new CreateStimulantDTO(2, 2, '', 2, '', ''),
+            'empty_data' => new CreateStimulantDTO(0, 0, '', 0, '', ''),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

@@ -51,6 +51,15 @@ class StimulantService
     }
 
     /**
+     * @param int|null $groupId
+     * @return StimulantModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->stimulantRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param string $title
      * @return StimulantModel[]
      */
@@ -78,8 +87,9 @@ class StimulantService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return StimulantModel[]
-     * @throws InvalidArgumentException
      */
     public function getStimulantsPaginated(int $page, int $perPage): array
     {
@@ -87,9 +97,19 @@ class StimulantService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return StimulantModel[]
+     */
+    public function getStimulantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->stimulantRepository->getStimulantsPaginatedByGroupId($page, $perPage, $groupId);
+    }
+
+    /**
      * @param CreateStimulantModel $createStimulantModel
      * @return StimulantModel
-     * @throws InvalidArgumentException
      */
     public function create(CreateStimulantModel $createStimulantModel): StimulantModel
     {
@@ -124,7 +144,7 @@ class StimulantService
     {
         $model = $this->modelFactory->makeModel(
             CreateStimulantModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->title,
             $dto->amount,
@@ -141,15 +161,15 @@ class StimulantService
      * @param Stimulant $stimulant
      * @param UpdateStimulantModel $updateStimulantModel
      * @return StimulantModel
-     * @throws InvalidArgumentException
      */
     public function update(Stimulant $stimulant, UpdateStimulantModel $updateStimulantModel): StimulantModel
     {
         $group = $this->groupService->find($updateStimulantModel->groupId);
         $marker = $this->markerService->find($updateStimulantModel->markerId);
 
-        $stimulant->changeFieldsWithMarker(
-            $group,
+        $stimulant
+            ->moveToGroup($group)
+            ->changeFieldsWithMarker(
             $marker,
             $updateStimulantModel->title,
             new PreparationVolume(
@@ -177,7 +197,7 @@ class StimulantService
     {
         $model = $this->modelFactory->makeModel(
             UpdateStimulantModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->title,
             $dto->amount,
@@ -193,7 +213,6 @@ class StimulantService
     /**
      * @param int $stimulantId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $stimulantId): void
     {
@@ -206,7 +225,6 @@ class StimulantService
     /**
      * @param Stimulant $stimulant
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeStimulant(Stimulant $stimulant): void
     {

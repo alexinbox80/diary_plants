@@ -26,7 +26,7 @@
         import DeleteModel from '{{ asset('assets/js/dashboard/model/DeleteModel.js') }}';
 
         document.addEventListener('DOMContentLoaded', function () {
-            new DeleteModel('{{ route_delete }}');
+            new DeleteModel('{{ route_delete }}', '{{ app.request.locale }}');
         });
     </script>
 {% endmacro %}

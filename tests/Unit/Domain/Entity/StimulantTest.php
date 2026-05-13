@@ -42,14 +42,12 @@ class StimulantTest extends TestCase
         $marker = $this->createMock(Marker::class);
         $stimulant = new Stimulant($group, $marker, 'Эпин', $this->createVolume());
 
-        $newGroup = $this->createMock(Group::class);
         $newMarker = $this->createMock(Marker::class);
         $newVolume = new PreparationVolume(1.0, 'гr');
         $newDetails = new PreparationDetails('Антистрессовый препарат');
 
-        $stimulant->changeFieldsWithMarker($newGroup, $newMarker, 'Циркон', $newVolume, $newDetails);
+        $stimulant->changeFieldsWithMarker($newMarker, 'Циркон', $newVolume, $newDetails);
 
-        $this->assertSame($newGroup, $stimulant->getGroup());
         $this->assertSame($newMarker, $stimulant->getMarker());
         $this->assertEquals('Циркон', $stimulant->getTitle());
         $this->assertSame($newVolume, $stimulant->getVolume());

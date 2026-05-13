@@ -88,7 +88,6 @@ class Stimulant extends Preparation implements EntityInterface, AttachableInterf
     }
 
     public function changeFieldsWithMarker(
-        Group $group,
         Marker $marker,
         string $title,
         PreparationVolume $volume,
@@ -97,7 +96,6 @@ class Stimulant extends Preparation implements EntityInterface, AttachableInterf
     {
         parent::changeFields($title, $volume, $details);
 
-        $this->group = $group;
         $this->marker = $marker;
     }
 

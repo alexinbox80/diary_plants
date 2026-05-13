@@ -17,6 +17,8 @@ use App\Domain\Model\Stimulant\StimulantModel;
 use App\Domain\Model\Stimulant\CreateStimulantModel;
 use App\Domain\Model\Stimulant\UpdateStimulantModel;
 use App\Domain\Repository\StimulantRepositoryInterface;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
 
 #[CoversClass(StimulantService::class)]
 class StimulantServiceTest extends TestCase
@@ -78,7 +80,9 @@ class StimulantServiceTest extends TestCase
     #[Test]
     public function testUpdateSuccess(): void
     {
+        // 1. Создаем мок сущности Stimulant
         $stimulantEntity = $this->createMock(Stimulant::class);
+
         $updateModel = new UpdateStimulantModel(
             groupId: 2,
             markerId: 20,
@@ -90,14 +94,37 @@ class StimulantServiceTest extends TestCase
             comment: 'Полив'
         );
 
-        $this->groupService->method('find')->willReturn($this->createMock(Group::class));
-        $this->markerService->method('find')->willReturn($this->createMock(Marker::class));
+        $group = $this->createMock(Group::class);
+        $marker = $this->createMock(Marker::class);
+        $stimulantModel = $this->createMock(StimulantModel::class);
 
-        // Проверяем вызов бизнес-логики в сущности
-        $stimulantEntity->expects($this->once())->method('changeFieldsWithMarker');
+        // 2. Настраиваем зависимости на возврат созданных моков по конкретным ID
+        $this->groupService->method('find')->with(2)->willReturn($group);
+        $this->markerService->method('find')->with(20)->willReturn($marker);
+
+        // 3. Имитируем Fluent Interface: moveToGroup должен вернуть сам объект $stimulantEntity
+        $stimulantEntity->expects($this->once())
+            ->method('moveToGroup')
+            ->with($group)
+            ->willReturn($stimulantEntity);
+
+        // 4. Проверяем вызов бизнес-логики в сущности с учетом создаваемых Value Objects
+        $stimulantEntity->expects($this->once())
+            ->method('changeFieldsWithMarker')
+            ->with(
+                $marker,
+                $updateModel->title,
+                $this->isInstanceOf(PreparationVolume::class),
+                $this->isInstanceOf(PreparationDetails::class)
+            );
+
+        // 5. Настраиваем репозиторий
         $this->repository->expects($this->once())->method('update');
+        $this->repository->method('toModel')->with($stimulantEntity)->willReturn($stimulantModel);
 
-        $this->service->update($stimulantEntity, $updateModel);
+        $result = $this->service->update($stimulantEntity, $updateModel);
+
+        $this->assertSame($stimulantModel, $result);
     }
 
     #[Test]

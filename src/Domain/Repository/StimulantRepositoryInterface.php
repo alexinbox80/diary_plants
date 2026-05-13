@@ -10,9 +10,11 @@ interface StimulantRepositoryInterface
 {
     public function getStimulantsForDairy(int $groupId): array;
     public function getStimulantsPaginated(int $page, int $perPage): array;
+    public function getStimulantsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array;
     public function find(int $stimulantId): ?Stimulant;
     public function findModel(int $stimulantId): ?StimulantModel;
     public function findAll(): array;
+    public function findAllByGroupId(?int $groupId = null): array;
     public function findStimulantsByTitle(string $title): array;
     public function findStimulantsByManufacturer(string $manufacturer): array;
     public function findStimulantsByUseDate(DateTimeImmutable $date): array;
