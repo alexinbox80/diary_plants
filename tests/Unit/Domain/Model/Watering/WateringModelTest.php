@@ -78,7 +78,7 @@ class WateringModelTest extends TestCase
     public function testGetTableHeaderRu(): void
     {
         $headers = WateringModel::getTableHeaderRu();
-        $this->assertEquals('Тип полива', $headers['water_type']);
+        $this->assertEquals('table.watering.header.water_type', $headers['water_type']);
         $this->assertArrayHasKey('marker_letter', $headers);
     }
 }

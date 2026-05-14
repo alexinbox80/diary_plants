@@ -39,7 +39,7 @@
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.repottings' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.repottings_paginated.index') }}">
-                <span class="menu-title">{{ 'menu.repottings'|trans }}</span>
+                <span class="menu-title">{{ 'menu.repotting'|trans }}</span>
                 <i class="fas fa-seedling menu-icon"></i>
             </a>
         </li>
@@ -87,7 +87,7 @@
         </li>
         <li class="nav-item {% if app.request.attributes.get('_route') starts with 'dashboard.waterings' %}active{% endif %}">
             <a class="nav-link" href="{{ path('dashboard.waterings_paginated.index') }}">
-                <span class="menu-title">{{ 'menu.waterings'|trans }}</span>
+                <span class="menu-title">{{ 'menu.watering'|trans }}</span>
                 <i class="fas fa-hand-holding-water menu-icon"></i>
             </a>
         </li>

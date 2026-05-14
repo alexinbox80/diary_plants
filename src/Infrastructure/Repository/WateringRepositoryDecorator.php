@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Domain\Entity\Watering;
 use App\Domain\Model\Watering\WateringModel;
 use App\Domain\Repository\WateringRepositoryInterface;
@@ -31,7 +33,10 @@ class WateringRepositoryDecorator implements WateringRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return WateringModel[]
+     * @throws Exception
      */
     public function getWateringsPaginated(int $page, int $perPage): array
     {
@@ -39,6 +44,32 @@ class WateringRepositoryDecorator implements WateringRepositoryInterface
 
         if (!is_array($wateringsPaginated['items'])) {
             throw new \InvalidArgumentException('Expected array for fertilizers');
+        }
+
+        $wateringsModel = array_map(
+            fn (Watering $watering): WateringModel => $this->toModel($watering, true),
+            $wateringsPaginated['items']
+        );
+
+        return [
+            'wateringsModel' => $wateringsModel,
+            'pagination' => $wateringsPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return WateringModel[]
+     * @throws Exception
+     */
+    public function getWateringsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $wateringsPaginated = $this->wateringRepository->getWateringsPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($wateringsPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Waterings');
         }
 
         $wateringsModel = array_map(
@@ -78,6 +109,19 @@ class WateringRepositoryDecorator implements WateringRepositoryInterface
     public function findAll(): array
     {
         $waterings = $this->wateringRepository->findAll();
+
+        return array_map(
+            fn (Watering $watering): WateringModel => $this->toModel($watering, true),
+            $waterings
+        );
+    }
+
+    /**
+     * @return WateringModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $waterings = $this->wateringRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Watering $watering): WateringModel => $this->toModel($watering, true),

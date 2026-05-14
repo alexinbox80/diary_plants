@@ -16,7 +16,6 @@ final class Manager
         private readonly TranslatorInterface $translator,
         private readonly AuthorizationCheckerInterface $authChecker
     ) {
-
     }
 
     public function deleteData(int $id, Request $request): array

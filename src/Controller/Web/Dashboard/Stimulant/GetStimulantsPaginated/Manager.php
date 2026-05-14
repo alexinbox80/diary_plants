@@ -2,6 +2,7 @@
 
 namespace App\Controller\Web\Dashboard\Stimulant\GetStimulantsPaginated;
 
+use InvalidArgumentException;
 use App\Domain\Service\StimulantService;
 use App\Domain\ValueObject\Enum\Timezone;
 use App\Application\Security\AccessContext;
@@ -19,7 +20,7 @@ final class Manager
      * @param int $page
      * @param int $perPage
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getStimulantsPaginated(int $page, int $perPage): array
     {

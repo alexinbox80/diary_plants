@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\Model\Watering\CreateWateringModel;
 use App\Domain\Model\Watering\UpdateWateringModel;
 use App\Domain\ValueObject\Enum\Watering\WaterType;
+use App\Domain\ValueObject\Watering\WateringDetails;
 use App\Domain\Repository\WateringRepositoryInterface;
 use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 
@@ -75,7 +76,9 @@ class WateringServiceTest extends TestCase
     #[Test]
     public function testUpdateSuccess(): void
     {
+        // 1. Создаем мок сущности Watering
         $wateringEntity = $this->createMock(Watering::class);
+
         $model = new UpdateWateringModel(
             groupId: 2,
             markerId: 10,
@@ -87,19 +90,36 @@ class WateringServiceTest extends TestCase
             comment: 'Updated comment'
         );
 
-        $this->groupService->method('find')->willReturn($this->createMock(Group::class));
-        $this->markerService->method('find')->willReturn($this->createMock(Marker::class));
+        $group = $this->createMock(Group::class);
+        $marker = $this->createMock(Marker::class);
 
-        // Настройка Fluent Interface для сущности
-        $wateringEntity->method('updateFields')->willReturn($wateringEntity);
+        $this->groupService->method('find')->with(2)->willReturn($group);
+        $this->markerService->method('find')->with(10)->willReturn($marker);
+
+        // 2. Настройка Fluent Interface для moveToGroup и changeFields
+        $wateringEntity->method('moveToGroup')->with($group)->willReturn($wateringEntity);
+        $wateringEntity->method('changeFields')->willReturn($wateringEntity);
+
+        // Настройка обычных сеттеров (они возвращают $this/self)
         $wateringEntity->method('setDescription')->willReturn($wateringEntity);
+        $wateringEntity->method('setComment')->willReturn($wateringEntity);
 
-        // Проверяем вызовы
-        $wateringEntity->expects($this->once())->method('updateFields');
+        // 3. Проверяем, что сервис вызовет правильные методы бизнес-логики в сущности
+        $wateringEntity->expects($this->once())->method('moveToGroup')->with($group);
+        $wateringEntity->expects($this->once())
+            ->method('changeFields')
+            ->with(
+                $marker,
+                $this->isInstanceOf(WateringDetails::class)
+            );
+
+        $wateringEntity->expects($this->once())->method('setDescription')->with('Updated desc');
         $wateringEntity->expects($this->once())->method('setComment')->with('Updated comment');
 
+        // 4. Ожидания репозитория
         $this->repository->expects($this->once())->method('update');
 
+        // 5. Выполнение
         $this->service->update($wateringEntity, $model);
     }
 

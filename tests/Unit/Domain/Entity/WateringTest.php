@@ -51,18 +51,34 @@ class WateringTest extends TestCase
 
     public function testUpdateFields(): void
     {
+        // 1. Создаем моки групп с РАЗНЫМИ ID
+        $group = $this->createGroupMock();
+        $group->method('getId')->willReturn(1);
+
+        $newGroup = $this->createGroupMock();
+        $newGroup->method('getId')->willReturn(2);
+
+        // 2. Создаем мок маркера и настраиваем ожидания для moveToGroup
+        $marker = $this->createMarkerMock();
+        $marker->expects($this->once())
+            ->method('moveToGroup')
+            ->with($newGroup)
+            ->willReturn($marker); // Возвращает сам себя (Fluent Interface)
+
         $watering = new Watering(
-            $this->createGroupMock(),
-            $this->createMarkerMock(),
+            $group,
+            $marker,
             $this->createDetails()
         );
 
-        $newGroup = $this->createGroupMock();
         $newMarker = $this->createMarkerMock();
         $newDetails = new WateringDetails(1000, WaterType::RAIN, WateringMethod::BOTTOM);
 
-        $watering->updateFields($newGroup, $newMarker, $newDetails);
+        // 3. Выполняем операции обновления
+        $watering->moveToGroup($newGroup);
+        $watering->changeFields($newMarker, $newDetails);
 
+        // 4. Проверяем результаты
         $this->assertSame($newGroup, $watering->getGroup());
         $this->assertSame($newMarker, $watering->getMarker());
         $this->assertSame($newDetails, $watering->getDetails());

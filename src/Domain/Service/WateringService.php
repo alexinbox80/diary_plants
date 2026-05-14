@@ -4,7 +4,6 @@ namespace App\Domain\Service;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Watering;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Watering\WateringModel;
 use App\Domain\Model\Watering\CreateWateringModel;
 use App\Domain\Model\Watering\UpdateWateringModel;
@@ -52,6 +51,15 @@ class WateringService
     }
 
     /**
+     * @param int|null $groupId
+     * @return WateringModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->wateringRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param string $type
      * @return WateringModel[]
      */
@@ -79,8 +87,9 @@ class WateringService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return WateringModel[]
-     * @throws InvalidArgumentException
      */
     public function getWateringsPaginated(int $page, int $perPage): array
     {
@@ -88,9 +97,19 @@ class WateringService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return WateringModel[]
+     */
+    public function getWateringsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->wateringRepository->getWateringsPaginatedByGroupId($page, $perPage, $groupId);
+    }
+
+    /**
      * @param CreateWateringModel $createWateringModel
      * @return WateringModel
-     * @throws InvalidArgumentException
      */
     public function create(CreateWateringModel $createWateringModel): WateringModel
     {
@@ -125,7 +144,7 @@ class WateringService
     {
         $model = $this->modelFactory->makeModel(
             CreateWateringModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->amount,
             $dto->waterType,
@@ -142,22 +161,23 @@ class WateringService
      * @param Watering $watering
      * @param UpdateWateringModel $updateWateringModel
      * @return WateringModel
-     * @throws InvalidArgumentException
      */
     public function update(Watering $watering, UpdateWateringModel $updateWateringModel): WateringModel
     {
         $group = $this->groupService->find($updateWateringModel->groupId);
         $marker = $this->markerService->find($updateWateringModel->markerId);
 
-        $watering->updateFields(
-            $group,
-            $marker,
-            new WateringDetails(
-                $updateWateringModel->amount,
-                WaterType::from($updateWateringModel->waterType),
-                WateringMethod::from($updateWateringModel->wateringMethod),
-                $updateWateringModel->temperature,
-            ))
+        $watering
+            ->moveToGroup($group)
+            ->changeFields(
+                $marker,
+                new WateringDetails(
+                    $updateWateringModel->amount,
+                    WaterType::from($updateWateringModel->waterType),
+                    WateringMethod::from($updateWateringModel->wateringMethod),
+                    $updateWateringModel->temperature,
+                )
+            )
             ->setDescription($updateWateringModel->description)
             ->setComment($updateWateringModel->comment);
 
@@ -175,7 +195,7 @@ class WateringService
     {
         $model = $this->modelFactory->makeModel(
             UpdateWateringModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->amount,
             $dto->waterType,
@@ -191,7 +211,6 @@ class WateringService
     /**
      * @param int $wateringId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $wateringId): void
     {
@@ -204,7 +223,6 @@ class WateringService
     /**
      * @param Watering $watering
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeWatering(Watering $watering): void
     {

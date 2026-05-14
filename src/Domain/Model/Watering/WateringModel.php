@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Domain\Entity\Watering;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\ValueObject\Enum\Watering\WaterType;
 use App\Domain\ValueObject\Enum\Watering\WateringMethod;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
@@ -123,27 +124,31 @@ class WateringModel implements AttachableModelInterface
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'icon_tag' => 'Маркер',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'marker_id' => 'Идентификатор сокращения',
-            'marker_letter' => 'Обозначение',
-            'marker_color' => 'Цвет',
-            'amount' => 'Количество',
-            'water_type' => 'Тип полива',
-            'watering_method' => 'Метод полива',
-            'temperature' => 'Температура',
-            'description' => 'Описание',
-            'comment' => 'Комментарий',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.watering.header.id',
+            'icon_tag' => 'table.watering.header.icon_tag',
+            'group_id' => 'table.watering.header.group_id',
+            'group_title' => 'table.watering.header.group_title',
+            'marker_id' => 'table.watering.header.marker_id',
+            'marker_letter' => 'table.watering.header.marker_letter',
+            'marker_color' => 'table.watering.header.marker_color',
+            'amount' => 'table.watering.header.amount',
+            'water_type' => 'table.watering.header.water_type',
+            'watering_method' => 'table.watering.header.watering_method',
+            'temperature' => 'table.watering.header.temperature',
+            'description' => 'table.watering.header.description',
+            'comment' => 'table.watering.header.comment',
+            'created_at' => 'table.watering.header.created_at',
+            'updated_at' => 'table.watering.header.created_at',
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

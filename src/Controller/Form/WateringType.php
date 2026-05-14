@@ -39,8 +39,11 @@ class WateringType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.watering.field.placeholder',
+                'choice_translation_domain' => false
             ]);
+
+            $groupId = null;
         }
 
         $builder
@@ -48,7 +51,8 @@ class WateringType extends AbstractType
                 'label' => $labels['marker_id'],
                 'required' => true,
                 'choices' => $this->markerService->getChoicesForChoiceType($groupId, AttachableType::WATERING->value),
-                'placeholder' => 'Выберите сокращение',
+                'placeholder' => 'form.watering.field.marker_placeholder',
+                'choice_translation_domain' => false
             ])
             ->add('amount', TextType::class, [
                 'label' => $labels['amount'],
@@ -58,13 +62,15 @@ class WateringType extends AbstractType
                 'label' => $labels['water_type'],
                 'required' => true,
                 'choices' => WaterType::asSelectArray(),
-                'placeholder' => 'Выберите сокращение',
+                'placeholder' => 'form.watering.field.water_type_placeholder',
+                'choice_translation_domain' => false
             ])
             ->add('wateringMethod', ChoiceType::class, [
                 'label' => $labels['watering_method'],
                 'required' => true,
                 'choices' => WateringMethod::asSelectArray(),
-                'placeholder' => 'Выберите сокращение',
+                'placeholder' => 'form.watering.field.watering_method_placeholder',
+                'choice_translation_domain' => false
             ])
             ->add('temperature', TextType::class, [
                 'label' => $labels['temperature'],
@@ -85,7 +91,7 @@ class WateringType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditWateringDTO::class,
-            'empty_data' => new CreateWateringDTO(2, 2, 0, '', '', 0),
+            'empty_data' => new CreateWateringDTO(0, 0, 0, '', '', 0),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

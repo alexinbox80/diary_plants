@@ -59,21 +59,19 @@ class Watering implements EntityInterface, AttachableInterface, GroupOwnedInterf
 
     public function __construct(Group $group, Marker $marker, WateringDetails $details)
     {
-        $this->setFields($group, $marker, $details);
-    }
-
-    public function updateFields(Group $group, Marker $marker, WateringDetails $details): self
-    {
-        $this->setFields($group, $marker, $details);
-
-        return $this;
-    }
-
-    private function setFields(Group $group, Marker $marker, WateringDetails $details): void
-    {
+        $this->changeFields($marker, $details);
         $this->setGroupValidate($group);
+    }
+
+    public function changeFields(
+        Marker $marker,
+        WateringDetails $details
+    ): self
+    {
         $this->setMarkerValidate($marker);
         $this->details = $details;
+
+        return $this;
     }
 
     private function setGroupValidate(Group $group): void
