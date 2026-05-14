@@ -7,7 +7,7 @@ use App\Domain\ValueObject\Enum\Timezone;
 use App\Application\Security\AccessContext;
 use App\Domain\Model\Stimulant\StimulantModel;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly StimulantService $stimulantService,

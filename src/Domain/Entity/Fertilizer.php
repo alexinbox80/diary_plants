@@ -82,7 +82,6 @@ class Fertilizer extends Preparation implements EntityInterface, AttachableInter
     }
 
     public function changeFieldsWithMarker(
-        Group $group,
         Marker $marker,
         string $title,
         PreparationVolume $volume,
@@ -91,7 +90,6 @@ class Fertilizer extends Preparation implements EntityInterface, AttachableInter
     {
         parent::changeFields($title, $volume, $details);
 
-        $this->group = $group;
         $this->marker = $marker;
     }
 

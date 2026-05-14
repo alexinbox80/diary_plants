@@ -100,6 +100,6 @@ class FertilizerModelTest extends TestCase
     {
         $headers = FertilizerModel::getTableHeaderRu();
         $this->assertArrayHasKey('application_rate', $headers);
-        $this->assertEquals('Норма расхода', $headers['application_rate']);
+        $this->assertEquals('table.fertilizer.header.application_rate', $headers['application_rate']);
     }
 }

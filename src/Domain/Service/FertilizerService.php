@@ -4,7 +4,6 @@ namespace App\Domain\Service;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
-use Psr\Cache\InvalidArgumentException;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Fertilizer\UpdateFertilizerModel;
@@ -51,6 +50,15 @@ class FertilizerService
     }
 
     /**
+     * @param int|null $groupId
+     * @return FertilizerModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->fertilizerRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param string $title
      * @return FertilizerModel[]
      */
@@ -78,8 +86,9 @@ class FertilizerService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return FertilizerModel[]
-     * @throws InvalidArgumentException
      */
     public function getFertilizersPaginated(int $page, int $perPage): array
     {
@@ -87,9 +96,19 @@ class FertilizerService
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return FertilizerModel[]
+     */
+    public function getFertilizersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->fertilizerRepository->getFertilizersPaginatedByGroupId($page, $perPage, $groupId);
+    }
+
+    /**
      * @param CreateFertilizerModel $createFertilizerModel
      * @return FertilizerModel
-     * @throws InvalidArgumentException
      */
     public function create(CreateFertilizerModel $createFertilizerModel): FertilizerModel
     {
@@ -124,7 +143,7 @@ class FertilizerService
     {
         $model = $this->modelFactory->makeModel(
             CreateFertilizerModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->title,
             $dto->amount,
@@ -141,15 +160,15 @@ class FertilizerService
      * @param Fertilizer $fertilizer
      * @param UpdateFertilizerModel $updateFertilizerModel
      * @return FertilizerModel
-     * @throws InvalidArgumentException
      */
     public function update(Fertilizer $fertilizer, UpdateFertilizerModel $updateFertilizerModel): FertilizerModel
     {
         $group = $this->groupService->find($updateFertilizerModel->groupId);
         $marker = $this->markerService->find($updateFertilizerModel->markerId);
 
-        $fertilizer->changeFieldsWithMarker(
-            $group,
+        $fertilizer
+            ->moveToGroup($group)
+            ->changeFieldsWithMarker(
             $marker,
             $updateFertilizerModel->title,
             new PreparationVolume(
@@ -177,7 +196,7 @@ class FertilizerService
     {
         $model = $this->modelFactory->makeModel(
             UpdateFertilizerModel::class,
-            2,
+            $dto->groupId,
             $dto->markerId,
             $dto->title,
             $dto->amount,
@@ -193,7 +212,6 @@ class FertilizerService
     /**
      * @param int $fertilizerId
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeById(int $fertilizerId): void
     {
@@ -206,7 +224,6 @@ class FertilizerService
     /**
      * @param Fertilizer $fertilizer
      * @return void
-     * @throws InvalidArgumentException
      */
     public function removeFertilizer(Fertilizer $fertilizer): void
     {

@@ -3,12 +3,15 @@
 namespace App\Controller\Web\Dashboard\Fertilizer\GetFertilizers;
 
 use App\Domain\Service\FertilizerService;
+use App\Application\Security\AccessContext;
 use App\Domain\Model\Fertilizer\FertilizerModel;
+use App\Domain\ValueObject\Enum\Timezone;
 
-class Manager
+final class Manager
 {
     public function __construct(
-        private readonly FertilizerService $fertilizerService
+        private readonly FertilizerService $fertilizerService,
+        private readonly AccessContext $accessContext
     ) {
     }
 
@@ -18,10 +21,15 @@ class Manager
      */
     public function getFertilizers(): array
     {
-        $fertilizersModel = $this->fertilizerService->findAll();
+        $groupId = $this->accessContext->getTargetGroupId();
+
+        $fertilizersModel = $this->fertilizerService->findAllByGroupId($groupId);
+
+        $timezone = $this->accessContext->getTimezone();
         $tableHeader = FertilizerModel::getTableHeaderRu();
+
         $tableBody = array_map(
-            static fn (FertilizerModel $model): array => $model->toArray(),
+            static fn (FertilizerModel $model): array => $model->toArray(Timezone::tryFrom($timezone)),
             $fertilizersModel
         );
 

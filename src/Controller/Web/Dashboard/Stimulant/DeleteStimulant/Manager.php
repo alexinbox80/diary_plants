@@ -9,7 +9,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Application\Security\Voter\GroupOwnershipVoter;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly StimulantService $stimulantService,

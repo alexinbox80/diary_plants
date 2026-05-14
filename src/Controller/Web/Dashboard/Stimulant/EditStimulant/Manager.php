@@ -13,7 +13,7 @@ use App\Application\Security\Voter\GroupOwnershipVoter;
 use App\Controller\Web\Dashboard\Stimulant\EditStimulant\Input\EditStimulantDTO;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly StimulantService $stimulantService,

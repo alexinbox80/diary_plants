@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
@@ -31,14 +33,43 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
      * @return FertilizerModel[]
+     * @throws Exception
      */
     public function getFertilizersPaginated(int $page, int $perPage): array
     {
         $fertilizersPaginated = $this->fertilizerRepository->getFertilizersPaginated($page, $perPage);
 
         if (!is_array($fertilizersPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for fertilizers');
+            throw new InvalidArgumentException('Expected array for fertilizers');
+        }
+
+        $fertilizersModel = array_map(
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer, true),
+            $fertilizersPaginated['items']
+        );
+
+        return [
+            'fertilizersModel' => $fertilizersModel,
+            'pagination' => $fertilizersPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return FertilizerModel[]
+     * @throws Exception
+     */
+    public function getFertilizersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $fertilizersPaginated = $this->fertilizerRepository->getFertilizersPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($fertilizersPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Fertilizers');
         }
 
         $fertilizersModel = array_map(
@@ -78,6 +109,20 @@ class FertilizerRepositoryDecorator implements FertilizerRepositoryInterface
     public function findAll(): array
     {
         $fertilizers = $this->fertilizerRepository->findAll();
+
+        return array_map(
+            fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer, true),
+            $fertilizers
+        );
+    }
+
+    /**
+     * @param ?int $groupId
+     * @return FertilizerModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $fertilizers = $this->fertilizerRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Fertilizer $fertilizer): FertilizerModel => $this->toModel($fertilizer, true),

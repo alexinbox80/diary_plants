@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Fertilizer;
@@ -37,13 +38,36 @@ class FertilizerRepository extends AbstractRepository
 
     /**
      * @return Fertilizer[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getFertilizersPaginated(int $page, int $perPage): array
     {
         $queryBuilder = $this->getBaseQueryBuilder()
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage);
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param ?int $groupId
+     * @return Fertilizer[]
+     * @throws Exception
+     */
+    public function getFertilizersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('f.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
 
         return $this->getPaginatedResults($queryBuilder, $page, $perPage);
     }
@@ -69,6 +93,26 @@ class FertilizerRepository extends AbstractRepository
         return $this->getBaseQueryBuilder()
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param ?int $groupId
+     * @return Fertilizer[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('f')
+            ->from(Fertilizer::class, 'f')
+            ->orderBy('f.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('f.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

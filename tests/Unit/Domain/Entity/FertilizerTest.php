@@ -43,14 +43,12 @@ class FertilizerTest extends TestCase
         $marker = $this->createMock(Marker::class);
         $fertilizer = new Fertilizer($group, $marker, 'Old Title', $this->createVolume());
 
-        $newGroup = $this->createMock(Group::class);
         $newMarker = $this->createMock(Marker::class);
         $newVolume = new PreparationVolume(1.0, 'll');
         $newDetails = new PreparationDetails('New Formula');
 
-        $fertilizer->changeFieldsWithMarker($newGroup, $newMarker, 'New Title', $newVolume, $newDetails);
+        $fertilizer->changeFieldsWithMarker($newMarker, 'New Title', $newVolume, $newDetails);
 
-        $this->assertSame($newGroup, $fertilizer->getGroup());
         $this->assertSame($newMarker, $fertilizer->getMarker());
         $this->assertEquals('New Title', $fertilizer->getTitle());
         $this->assertSame($newVolume, $fertilizer->getVolume());

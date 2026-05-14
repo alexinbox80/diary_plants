@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use App\Domain\Entity\Fertilizer;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Marker\MarkerModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 
 class FertilizerModel implements AttachableModelInterface
@@ -121,27 +122,31 @@ class FertilizerModel implements AttachableModelInterface
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'icon_tag' => 'Маркер',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'marker_id' => 'Идентификатор маркера',
-            'marker_letter' => 'Обозначение',
-            'marker_color' => 'Цвет',
-            'title' => 'Заголовок',
-            'amount' => 'Количество',
-            'application_rate' => 'Норма расхода',
-            'manufacturer' => 'Изготовитель',
-            'description' => 'Описание',
-            'comment' => 'Комментарий',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.fertilizer.header.id',
+            'icon_tag' => 'table.fertilizer.header.icon_tag',
+            'group_id' => 'table.fertilizer.header.group_id',
+            'group_title' => 'table.fertilizer.header.group_title',
+            'marker_id' => 'table.fertilizer.header.marker_id',
+            'marker_letter' => 'table.fertilizer.header.marker_letter',
+            'marker_color' => 'table.fertilizer.header.marker_color',
+            'title' => 'table.fertilizer.header.title',
+            'amount' => 'table.fertilizer.header.amount',
+            'application_rate' => 'table.fertilizer.header.application_rate',
+            'manufacturer' => 'table.fertilizer.header.manufacturer',
+            'description' => 'table.fertilizer.header.description',
+            'comment' => 'table.fertilizer.header.comment',
+            'created_at' => 'table.fertilizer.header.created_at',
+            'updated_at' => 'table.fertilizer.header.updated_at'
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

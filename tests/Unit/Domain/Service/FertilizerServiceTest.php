@@ -17,6 +17,8 @@ use App\Domain\Model\Fertilizer\FertilizerModel;
 use App\Domain\Model\Fertilizer\CreateFertilizerModel;
 use App\Domain\Model\Fertilizer\UpdateFertilizerModel;
 use App\Domain\Repository\FertilizerRepositoryInterface;
+use App\Domain\ValueObject\Preparation\PreparationVolume;
+use App\Domain\ValueObject\Preparation\PreparationDetails;
 
 #[CoversClass(FertilizerService::class)]
 class FertilizerServiceTest extends TestCase
@@ -83,7 +85,7 @@ class FertilizerServiceTest extends TestCase
     #[Test]
     public function testUpdateSuccess(): void
     {
-        // 1. Подготовка
+        // 1. Подготовка мока сущности
         $fertilizer = $this->createMock(Fertilizer::class);
         $updateModel = new UpdateFertilizerModel(
             groupId: 2,
@@ -100,15 +102,29 @@ class FertilizerServiceTest extends TestCase
         $marker = $this->createMock(Marker::class);
         $fertilizerModel = $this->createMock(FertilizerModel::class);
 
-        // 2. Ожидания
+        // 2. Настройка ожиданий для зависимых сервисов
         $this->groupService->method('find')->with(2)->willReturn($group);
         $this->markerService->method('find')->with(20)->willReturn($marker);
 
-        // Проверяем, что в сущности вызывается метод обновления полей
-        $fertilizer->expects($this->once())->method('changeFieldsWithMarker');
+        // 3. Имитируем Fluent Interface: метод moveToGroup должен вернуть сам мок удобрения
+        $fertilizer->expects($this->once())
+            ->method('moveToGroup')
+            ->with($group)
+            ->willReturn($fertilizer);
 
+        // 4. Проверяем вызов бизнес-логики в сущности с проверкой типов создаваемых Value Objects
+        $fertilizer->expects($this->once())
+            ->method('changeFieldsWithMarker')
+            ->with(
+                $marker,
+                $updateModel->title,
+                $this->isInstanceOf(PreparationVolume::class),
+                $this->isInstanceOf(PreparationDetails::class)
+            );
+
+        // 5. Ожидания репозитория
         $this->repository->expects($this->once())->method('update');
-        $this->repository->method('toModel')->willReturn($fertilizerModel);
+        $this->repository->method('toModel')->with($fertilizer)->willReturn($fertilizerModel);
 
         // 3. Выполнение
         $result = $this->service->update($fertilizer, $updateModel);
