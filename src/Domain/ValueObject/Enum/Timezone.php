@@ -39,38 +39,35 @@ enum Timezone: string
     case LosAngeles = 'America/Los_Angeles';
     case SaoPaulo = 'America/Sao_Paulo';
 
-    /**
-     * Возвращает человекочитаемое название города
-     */
-    public function label(): string
+    public function labelKey(): string
     {
         return match($this) {
-            self::Utc => 'UTC',
-            self::Kaliningrad => 'Калининград',
-            self::Moscow => 'Москва',
-            self::Kiev => 'Киев',
-            self::Minsk => 'Минск',
-            self::Yekaterinburg => 'Екатеринбург',
-            self::Omsk => 'Омск',
-            self::Novosibirsk => 'Новосибирск',
-            self::Krasnoyarsk => 'Красноярск',
-            self::Irkutsk => 'Иркутск',
-            self::Yakutsk => 'Якутск',
-            self::Vladivostok => 'Владивосток',
-            self::Magadan => 'Магадан',
-            self::Kamchatka => 'Камчатка',
-            self::NewYork => 'Нью-Йорк',
-            self::Chicago => 'Чикаго',
-            self::Denver => 'Денвер',
-            self::LosAngeles => 'Лос-Анджелес',
-            self::SaoPaulo => 'Сан-Пауло',
-            self::Sydney => 'Сидней',
-            self::Tokyo => 'Токио',
-            self::Shanghai => 'Шанхай',
-            self::Dubai => 'Дубай',
-            self::London => 'Лондон',
-            self::Paris => 'Париж',
-            self::Berlin => 'Берлин',
+            self::Utc => 'timezone.utc',
+            self::Kaliningrad => 'timezone.kaliningrad',
+            self::Moscow => 'timezone.moscow',
+            self::Kiev => 'timezone.kiev',
+            self::Minsk => 'timezone.minsk',
+            self::Yekaterinburg => 'timezone.yekaterinburg',
+            self::Omsk => 'timezone.omsk',
+            self::Novosibirsk => 'timezone.novosibirsk',
+            self::Krasnoyarsk => 'timezone.krasnoyarsk',
+            self::Irkutsk => 'timezone.irkutsk',
+            self::Yakutsk => 'timezone.yakutsk',
+            self::Vladivostok => 'timezone.vladivostok',
+            self::Magadan => 'timezone.magadan',
+            self::Kamchatka => 'timezone.kamchatka',
+            self::London => 'timezone.london',
+            self::Paris => 'timezone.paris',
+            self::Berlin => 'timezone.berlin',
+            self::Dubai => 'timezone.dubai',
+            self::Shanghai => 'timezone.shanghai',
+            self::Tokyo => 'timezone.tokyo',
+            self::Sydney => 'timezone.sydney',
+            self::NewYork => 'timezone.new_york',
+            self::Chicago => 'timezone.chicago',
+            self::Denver => 'timezone.denver',
+            self::LosAngeles => 'timezone.los_angeles',
+            self::SaoPaulo => 'timezone.sao_paulo',
         };
     }
 
@@ -81,7 +78,8 @@ enum Timezone: string
     {
         $choices = [];
         foreach (self::cases() as $case) {
-            $choices[$case->label()] = $case->value;
+            //$choices[$case->label()] = $case->value;
+            $choices[$case->labelKey()] = $case->value;
         }
         return $choices;
     }

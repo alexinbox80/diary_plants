@@ -37,7 +37,7 @@ class UserRoleExtensionTest extends TestCase
         // Если UserRole::getLabel статический, убедитесь, что он доступен в тесте
         $result = $this->extension->formatRole('ROLE_ADMIN');
 
-        $this->assertEquals(UserRole::getLabel('ROLE_ADMIN'), $result);
+        $this->assertEquals(UserRole::getLabelKey('ROLE_ADMIN'), $result);
     }
 
     /**
@@ -50,7 +50,7 @@ class UserRoleExtensionTest extends TestCase
         $result = $this->extension->formatRole($roles);
 
         // Должна взяться первая роль из массива
-        $this->assertEquals(UserRole::getLabel('ROLE_USER'), $result);
+        $this->assertEquals(UserRole::getLabelKey('ROLE_USER'), $result);
     }
 
     /**
@@ -63,7 +63,7 @@ class UserRoleExtensionTest extends TestCase
 
         // В коде ($roles[0] ?? '') вернет пустую строку.
         // Проверяем, что getLabel корректно это обработает.
-        $this->assertEquals(UserRole::getLabel(''), $result);
+        $this->assertEquals(UserRole::getLabelKey(''), $result);
     }
 }
 

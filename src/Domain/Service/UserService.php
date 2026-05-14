@@ -115,6 +115,15 @@ class UserService
     }
 
     /**
+     * @param int|null $groupId
+     * @return UserModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->userRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param string $email
      * @return UserModel[]
      */
@@ -137,10 +146,21 @@ class UserService
      * @param int $perPage
      * @return array
      * @throws InvalidArgumentException
- */
+    */
     public function getUsersPaginated(int $page, int $perPage): array
     {
         return $this->userRepository->getUsersPaginated($page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return UserModel[]
+     */
+    public function getUsersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->userRepository->getUsersPaginatedByGroupId($page, $perPage, $groupId);
     }
 
     /**
@@ -201,7 +221,7 @@ class UserService
         // Проверяем уникальность email
         $existingUser = $this->userRepository->findUsersByEmail($dto->email);
         if ($existingUser) {
-            throw new \InvalidArgumentException('Пользователь с таким email уже существует.');
+            throw new InvalidArgumentException('Пользователь с таким email уже существует.');
         }
 
         $this->processFileForDTO($dto);

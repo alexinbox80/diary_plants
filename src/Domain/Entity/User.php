@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity;
 
+use InvalidArgumentException;
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\ValueObject\User\Name;
 use App\Domain\ValueObject\User\Email;
@@ -125,7 +126,7 @@ class User implements EntityInterface, HasMetaTimestampsInterface, GroupOwnedInt
     public function upgradePassword(string $hashedPassword): self
     {
         if (empty($hashedPassword)) {
-            throw new \InvalidArgumentException('The password hash cannot be empty.');
+            throw new InvalidArgumentException('The password hash cannot be empty.');
         }
         $this->password = $hashedPassword;
 

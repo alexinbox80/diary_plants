@@ -18,6 +18,6 @@ class UserRoleExtension extends AbstractExtension
     public function formatRole(array|string $roles): string
     {
         $role = is_array($roles) ? ($roles[0] ?? '') : $roles;
-        return UserRole::getLabel($role);
+        return UserRole::getLabelKey($role);
     }
 }

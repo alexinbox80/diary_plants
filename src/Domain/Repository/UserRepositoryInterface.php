@@ -10,6 +10,7 @@ interface UserRepositoryInterface
     public function updateUserRefreshToken(User $user): string;
     public function clearUserRefreshToken(User $user): void;
     public function getUsersPaginated(int $page, int $perPage): array;
+    public function getUsersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array;
     public function find(int $userId): ?User;
     public function findModel(int $userId): ?UserModel;
     public function findAll(): array;

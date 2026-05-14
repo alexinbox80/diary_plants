@@ -77,7 +77,7 @@ class UserModelTest extends TestCase
     public function testGetTableHeaderRu(): void
     {
         $headers = UserModel::getTableHeaderRu();
-        $this->assertEquals('Электронная почта', $headers['email']);
-        $this->assertEquals('Фамилия', $headers['last_name']);
+        $this->assertEquals('table.user.header.email', $headers['email']);
+        $this->assertEquals('table.user.header.last_name', $headers['last_name']);
     }
 }

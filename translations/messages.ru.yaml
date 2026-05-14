@@ -14,6 +14,41 @@ menu:
     users: 'Пользователи'
     groups: 'Группы'
 
+timezone:
+    utc: 'UTC'
+    kaliningrad: 'Калининград'
+    moscow: 'Москва'
+    kiev: 'Киев'
+    minsk: 'Минск'
+    yekaterinburg: 'Екатеринбург'
+    omsk: 'Омск'
+    novosibirsk: 'Новосибирск'
+    krasnoyarsk: 'Красноярск'
+    irkutsk: 'Иркутск'
+    yakutsk: 'Якутск'
+    vladivostok: 'Владивосток'
+    magadan: 'Магадан'
+    kamchatka: 'Камчатка'
+    london: 'Лондон'
+    paris: 'Париж'
+    berlin: 'Берлин'
+    dubai: 'Дубай'
+    shanghai: 'Шанхай'
+    tokyo: 'Токио'
+    sydney: 'Сидней'
+    new_york: 'Нью-Йорк'
+    chicago: 'Чикаго'
+    denver: 'Денвер'
+    los_angeles: 'Лос-Анджелес'
+    sao_paulo: 'Сан-Паулу'
+
+user_role:
+    user: 'Пользователь'
+    admin: 'Администратор'
+    manager: 'Менеджер'
+    guest: 'Гость'
+    unknown: 'Неизвестно'
+
 page:
     login:
         title: 'Авторизация'
@@ -98,6 +133,11 @@ image:
         created: 'Изображение успешно сохранено.'
         updated: 'Изображение успешно обновлено.'
         deleted: 'Изображение успешно удалено.'
+user:
+    flash:
+        created: 'Пользователь успешно создан.'
+        updated: 'Пользователь успешно обновлен.'
+        deleted: 'Пользователь успешно удален.'
 
 table:
     plant:
@@ -232,6 +272,29 @@ table:
             attachable_type: 'Тип сущности'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
+    user:
+        header:
+            id: '#'
+            group_id: 'Идентификатор группы'
+            group_title: 'Название группы'
+            img_tag: 'Аватар'
+            avatar_link: 'Ссылка на аватар'
+            email: 'Электронная почта'
+            roles: 'Роль пользователя'
+            is_active: 'Пользователь активен'
+            email_confirmed: 'Почта подтверждена'
+            phone_confirmed: 'Телефон подтвержден'
+            time_zone: 'Часовой пояс'
+            last_name: 'Фамилия'
+            first_name: 'Имя'
+            middle_name: 'Отчество'
+            refresh_token: 'Токен'
+            refresh_token_expires_at: 'Истечение токена'
+            phone: 'Телефон'
+            email_code: 'Код подтверждения почты'
+            phone_code: 'Код телефона почты'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
 
 form:
     plant:
@@ -275,3 +338,12 @@ form:
             image_file_label: 'Изображение'
             attachable_type_label: 'Выбери тип изображения'
 
+    user:
+        field:
+            avatar_image_label: 'Аватар'
+            placeholder: 'Выберите группу'
+            password_label: 'Пароль'
+            is_active_label: 'Пользователь активен'
+            email_label: 'Электронная почта подтверждена'
+            phone_is_comfirmed_label: 'Телефон подтвержден'
+            timezone_label: 'Выберите часовой пояс'

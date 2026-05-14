@@ -175,33 +175,37 @@ class UserModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Название группы',
-            'img_tag' => 'Аватар',
-            'avatar_link' => 'Ссылка на аватар',
-            'email' => 'Электронная почта',
-            'roles' => 'Роль пользователя',
-            'is_active' => 'Пользователь активен',
-            'email_confirmed' => 'Почта подтверждена',
-            'phone_confirmed' => 'Телефон подтвержден',
-            'time_zone' => 'Часовой пояс',
-            'last_name' => 'Фамилия',
-            'first_name' => 'Имя',
-            'middle_name' => 'Отчество',
-            'refresh_token' => 'Токен',
-            'refresh_token_expires_at' => 'Истечение токена',
-            'phone' => 'Телефон',
-            'email_code' => 'Код подтверждения почты',
-            'phone_code' => 'Код телефона почты',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.user.header.id',
+            'group_id' => 'table.user.header.group_id',
+            'group_title' => 'table.user.header.group_title',
+            'img_tag' => 'table.user.header.img_tag',
+            'avatar_link' => 'table.user.header.avatar_link',
+            'email' => 'table.user.header.email',
+            'roles' => 'table.user.header.roles',
+            'is_active' => 'table.user.header.is_active',
+            'email_confirmed' => 'table.user.header.email_confirmed',
+            'phone_confirmed' => 'table.user.header.phone_confirmed',
+            'time_zone' => 'table.user.header.time_zone',
+            'last_name' => 'table.user.header.last_name',
+            'first_name' => 'table.user.header.first_name',
+            'middle_name' => 'table.user.header.middle_name',
+            'refresh_token' => 'table.user.header.refresh_token',
+            'refresh_token_expires_at' => 'table.user.header.refresh_token_expires_at',
+            'phone' => 'table.user.header.phone',
+            'email_code' => 'table.user.header.email_code',
+            'phone_code' => 'table.user.header.phone_code',
+            'created_at' => 'table.user.header.created_at',
+            'updated_at' => 'table.user.header.updated_at'
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),
@@ -210,11 +214,11 @@ class UserModel
             'img_tag' => (!empty($this->getAvatarLink())) ? $this->getAvatarLink() : null,
             'email' => $this->getEmail(),
             'password' => $this->getPassword(),
-            'roles' => UserRole::getLabel(UserRole::toString($this->getRoles()) ?? ''),
+            'roles' => UserRole::getLabelKey(UserRole::toString($this->getRoles()) ?? ''),
             'is_active' => $this->isActive() ? 'Да' : 'Нет',
             'email_confirmed' => $this->isEmailConfirmed() ? 'Да' : 'Нет',
             'phone_confirmed' => $this->isPhoneConfirmed() ? 'Да' : 'Нет',
-            'time_zone' => Timezone::from($this->getTimeZone())->label(),
+            'time_zone' => Timezone::from($this->getTimeZone())->labelKey(),
             'last_name' => $this->getLastName(),
             'first_name' => $this->getFirstName(),
             'middle_name' => $this->getMiddleName(),

@@ -2,6 +2,8 @@
 
 namespace App\Domain\ValueObject\Enum;
 
+use InvalidArgumentException;
+
 enum UserRole: string
 {
     case ROLE_USER = 'ROLE_USER';
@@ -16,23 +18,28 @@ enum UserRole: string
 
     public static function getChoices(): array
     {
-        return [
-            'Пользователь' => self::ROLE_USER->value,
-            'Администратор' => self::ROLE_ADMIN->value,
-            'Менеджер' => self::ROLE_MANAGER->value,
-            'Гость' => self::ROLE_GUEST->value,
-        ];
+        $choices = [];
+        foreach (self::cases() as $case) {
+            $choices[$case->labelKey()] = $case->value;
+        }
+        return $choices;
     }
 
-    public static function getLabel(string $value): string
+    public function labelKey(): string
     {
-        return match ($value) {
-            self::ROLE_USER->value => 'Пользователь',
-            self::ROLE_ADMIN->value => 'Администратор',
-            self::ROLE_MANAGER->value => 'Менеджер',
-            self::ROLE_GUEST->value => 'Гость',
-            default => 'Неизвестно',
+        return match ($this) {
+            self::ROLE_USER => 'user_role.user',
+            self::ROLE_ADMIN => 'user_role.admin',
+            self::ROLE_MANAGER => 'user_role.manager',
+            self::ROLE_GUEST => 'user_role.guest',
         };
+    }
+
+    public static function getLabelKey(string $value): string
+    {
+        $case = self::tryFrom($value);
+
+        return $case ? $case->labelKey() : 'user_role.unknown';
     }
 
     /**
@@ -56,7 +63,7 @@ enum UserRole: string
             } elseif (is_string($role)) {
                 $strings[] = $role;
             } else {
-                throw new \InvalidArgumentException('Role must be a string or instance of UserRole');
+                throw new InvalidArgumentException('Role must be a string or instance of UserRole');
             }
         }
 

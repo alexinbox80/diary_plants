@@ -36,13 +36,14 @@ class UserType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.user.field.placeholder',
+                'choice_translation_domain' => false
             ]);
         }
 
         $builder
             ->add('avatarFile', FileType::class, [
-                'label' => 'Аватар',
+                'label' => 'form.user.field.avatar_image_label',
                 'mapped' => true,
                 'required' => false,
             ])
@@ -50,45 +51,38 @@ class UserType extends AbstractType
                 'label' => $labels['avatar_link'],
                 'disabled' => true,
             ])
-            ->add('groupId', ChoiceType::class, [
-                'label' => $labels['group_id'],
-                'required' => true,
-                'choices' => $this->groupService->getChoicesForChoiceType($groupId),
-                'placeholder' => 'Выберите группу',
-            ])
             ->add('email', TextType::class, [
                 'label' => $labels['email'],
-                'required' => false,
+                'disabled' => !$options['is_new'],
             ])
             ->add('password', PasswordType::class, [
-                'label' => $labels['password'] ?? 'Пароль',
+                'label' => $labels['password'] ?? 'form.user.field.password_label',
                 'required' => false,
             ])
             ->add('roles', ChoiceType::class, [
                 'label' => $labels['roles'],
                 'choices' => UserRole::getChoices(),
-                //'multiple' => false,
             ])
             ->add('isActive', CheckboxType::class, [
                 'label' => $labels['is_active'],
                 'required' => false,
-                'attr' => ['title' => 'Пользователь активен'],
+                'attr' => ['title' => 'form.user.field.is_active_label'],
             ])
             ->add('emailConfirmed', CheckboxType::class, [
                 'label' => $labels['email_confirmed'],
                 'required' => false,
-                'attr' => ['title' => 'Электронная почта подтверждена'],
+                'attr' => ['title' => 'form.user.field.email_label'],
             ])
             ->add('phoneConfirmed', CheckboxType::class, [
                 'label' => $labels['phone_confirmed'],
                 'required' => false,
-                'attr' => ['title' => 'Телефон подтвержден'],
+                'attr' => ['title' => 'form.user.field.phone_is_comfirmed_label'],
             ])
             ->add('timeZone', ChoiceType::class, [
                 'label' => $labels['time_zone'],
                 'required' => false,
                 'choices' => Timezone::getChoices(),
-                'placeholder' => 'Выберите часовой пояс',
+                'placeholder' => 'form.user.field.timezone_label',
             ])
             ->add('lastName', TextType::class, [
                 'label' => $labels['last_name'],
@@ -124,7 +118,7 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EditUserDTO::class,
             'empty_data' => new CreateUserDTO(
-                2,
+                0,
                 '',
                 '',
                 '',

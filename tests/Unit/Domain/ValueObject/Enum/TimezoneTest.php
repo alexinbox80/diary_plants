@@ -2,6 +2,8 @@
 
 namespace Unit\Domain\ValueObject\Enum;
 
+use Exception;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 use App\Domain\ValueObject\Enum\Timezone;
 
@@ -9,10 +11,10 @@ class TimezoneTest extends TestCase
 {
     public function testLabelReturnsCorrectRussianName(): void
     {
-        $this->assertEquals('Москва', Timezone::Moscow->label());
-        $this->assertEquals('Нью-Йорк', Timezone::NewYork->label());
-        $this->assertEquals('UTC', Timezone::Utc->label());
-        $this->assertEquals('Камчатка', Timezone::Kamchatka->label());
+        $this->assertEquals('timezone.moscow', Timezone::Moscow->labelKey());
+        $this->assertEquals('timezone.new_york', Timezone::NewYork->labelKey());
+        $this->assertEquals('timezone.utc', Timezone::Utc->labelKey());
+        $this->assertEquals('timezone.kamchatka', Timezone::Kamchatka->labelKey());
     }
 
     public function testGetChoicesContainsAllLabelsAndValues(): void
@@ -23,18 +25,18 @@ class TimezoneTest extends TestCase
         $this->assertCount(26, $choices);
 
         // Проверяем конкретные пары
-        $this->assertArrayHasKey('Лос-Анджелес', $choices);
-        $this->assertEquals('America/Los_Angeles', $choices['Лос-Анджелес']);
+        $this->assertArrayHasKey('timezone.los_angeles', $choices);
+        $this->assertEquals('America/Los_Angeles', $choices['timezone.los_angeles']);
 
-        $this->assertArrayHasKey('Токио', $choices);
-        $this->assertEquals('Asia/Tokyo', $choices['Токио']);
+        $this->assertArrayHasKey('timezone.tokyo', $choices);
+        $this->assertEquals('Asia/Tokyo', $choices['timezone.tokyo']);
     }
 
     public function testAllCasesHaveLabels(): void
     {
         foreach (Timezone::cases() as $case) {
             // Проверка, что match покрывает все кейсы и не возвращает пустую строку
-            $this->assertNotEmpty($case->label(), "Отсутствует label для временной зоны: {$case->value}");
+            $this->assertNotEmpty($case->labelKey(), "Отсутствует label для временной зоны: {$case->value}");
         }
     }
 
@@ -43,9 +45,9 @@ class TimezoneTest extends TestCase
         foreach (Timezone::cases() as $case) {
             // Если часовой пояс некорректен, конструктор DateTimeZone выбросит исключение
             try {
-                new \DateTimeZone($case->value);
+                new DateTimeZone($case->value);
                 $this->assertTrue(true);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->fail("Некорректный идентификатор временной зоны: {$case->value}");
             }
         }

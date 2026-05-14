@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Controller extends AbstractController
+final class Controller extends AbstractController
 {
     public function __construct(
         private readonly Manager $manager

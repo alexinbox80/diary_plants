@@ -2,13 +2,17 @@
 
 namespace App\Controller\Web\Dashboard\User\GetUsersPaginated;
 
+use InvalidArgumentException;
 use App\Domain\Service\UserService;
 use App\Domain\Model\User\UserModel;
+use App\Domain\ValueObject\Enum\Timezone;
+use App\Application\Security\AccessContext;
 
-class Manager
+final class Manager
 {
     public function __construct(
-        private readonly UserService $userService
+        private readonly UserService $userService,
+        private readonly AccessContext $accessContext
     ) {
     }
 
@@ -16,14 +20,18 @@ class Manager
      * @param int $page
      * @param int $perPage
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getUsersPaginated(int $page, int $perPage): array
     {
-        $usersModel = $this->userService->getUsersPaginated($page, $perPage);
+        $groupId = $this->accessContext->getTargetGroupId();
+        $usersModel = $this->userService->getUsersPaginatedByGroupId($page, $perPage, $groupId);
+
+        $timezone = $this->accessContext->getTimezone();
         $tableHeader = UserModel::getTableHeaderRu();
+
         $tableBody = array_map(
-            static fn (UserModel $model): array => $model->toArray(),
+            static fn (UserModel $model): array => $model->toArray(Timezone::tryFrom($timezone)),
             $usersModel['usersModel']
         );
 

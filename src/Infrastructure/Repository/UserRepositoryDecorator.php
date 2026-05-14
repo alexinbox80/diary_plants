@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
+use InvalidArgumentException;
 use Random\RandomException;
 use App\Domain\Entity\User;
 use App\Domain\Model\User\UserModel;
@@ -39,11 +41,37 @@ class UserRepositoryDecorator implements UserRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return array{usersModel: UserModel[], pagination: array}
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUsersPaginated(int $page, int $perPage): array
     {
         $usersPaginated = $this->userRepository->getUsersPaginated($page, $perPage);
+
+        $usersModel = array_map(
+            fn (User $user) => $this->toModel($user, true),
+            $usersPaginated['items']
+        );
+
+        return [
+            'usersModel' => $usersModel,
+            'pagination' => $usersPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return UserModel[]
+     * @throws Exception
+     */
+    public function getUsersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $usersPaginated = $this->userRepository->getUsersPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($usersPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Users');
+        }
 
         $usersModel = array_map(
             fn (User $user) => $this->toModel($user, true),

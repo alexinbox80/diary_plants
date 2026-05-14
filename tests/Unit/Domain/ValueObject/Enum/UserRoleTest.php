@@ -2,6 +2,7 @@
 
 namespace Unit\Domain\ValueObject\Enum;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use App\Domain\ValueObject\Enum\UserRole;
 
@@ -18,9 +19,9 @@ class UserRoleTest extends TestCase
 
     public function testGetLabelReturnsRussianTranslation(): void
     {
-        $this->assertEquals('Администратор', UserRole::getLabel('ROLE_ADMIN'));
-        $this->assertEquals('Пользователь', UserRole::getLabel('ROLE_USER'));
-        $this->assertEquals('Неизвестно', UserRole::getLabel('UNKNOWN'));
+        $this->assertEquals('user_role.admin', UserRole::getLabelKey('ROLE_ADMIN'));
+        $this->assertEquals('user_role.user', UserRole::getLabelKey('ROLE_USER'));
+        $this->assertEquals('user_role.unknown', UserRole::getLabelKey('UNKNOWN'));
     }
 
     public function testAllRolesToStringReturnsCommaSeparatedList(): void
@@ -43,7 +44,7 @@ class UserRoleTest extends TestCase
 
     public function testToStringThrowsExceptionOnInvalidType(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         UserRole::toString([123]);
     }
 
@@ -67,7 +68,7 @@ class UserRoleTest extends TestCase
     {
         $choices = UserRole::getChoices();
 
-        $this->assertArrayHasKey('Менеджер', $choices);
-        $this->assertEquals('ROLE_MANAGER', $choices['Менеджер']);
+        $this->assertArrayHasKey('user_role.manager', $choices);
+        $this->assertEquals('ROLE_MANAGER', $choices['user_role.manager']);
     }
 }

@@ -40,6 +40,29 @@ class UserRepository extends AbstractRepository
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param ?int $groupId
+     * @return User[]
+     * @throws Exception
+     */
+    public function getUsersPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('u.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
      * @param int $userId
      * @return User|null
      */
