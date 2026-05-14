@@ -93,6 +93,12 @@ watering:
         updated: 'Полив успешно обновлен.'
         deleted: 'Полив успешно удален.'
 
+image:
+    flash:
+        created: 'Изображение успешно сохранено.'
+        updated: 'Изображение успешно обновлено.'
+        deleted: 'Изображение успешно удалено.'
+
 table:
     plant:
         header:
@@ -208,6 +214,24 @@ table:
             comment: 'Комментарий'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
+    attachment:
+        header:
+            id: '#'
+            group_id: 'Идентификатор группы'
+            group_title: 'Название группы'
+            img_tag: 'Изображение'
+            is_shown_label: 'Опубликовать'
+            filename: 'Имя файла'
+            path: 'Путь к файлу'
+            mime_type: 'Тип файла'
+            alt: 'Альтернативный текст'
+            title: 'Название'
+            description: 'Описание'
+            file_date: 'Дата файла'
+            attachable_id: 'ID сущности'
+            attachable_type: 'Тип сущности'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
 
 form:
     plant:
@@ -243,3 +267,11 @@ form:
             marker_placeholder: 'Выберите сокращение'
             water_type_placeholder: 'Выберите сокращение'
             watering_method_placeholder: 'Выберите сокращение'
+
+    attachment:
+        field:
+            placeholder: 'Выберите группу'
+            is_shown_label: 'Отображать изображение на сайте'
+            image_file_label: 'Изображение'
+            attachable_type_label: 'Выбери тип изображения'
+

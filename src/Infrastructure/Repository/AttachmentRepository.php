@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Attachment;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
+use Exception;
 
 /**
  * @method Attachment|null findOneBy(array $criteria, array $orderBy = null)
@@ -90,6 +91,26 @@ class AttachmentRepository extends AbstractRepository
     }
 
     /**
+     * @return Attachment[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+
+        $qb = $queryBuilder->select('a')
+            ->from(Attachment::class, 'a')
+            ->orderBy('a.displaySettings.title', 'ASC');
+
+        if ($groupId !== null) {
+            $qb->where('s.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+    /**
      * Получить все вложения для определённой сущности, включая удалённые.
      *
      * @param class-string $attachableType Полное имя класса (например, App\Domain\Entity\Plant)
@@ -145,7 +166,7 @@ class AttachmentRepository extends AbstractRepository
      * @param int $page
      * @param int $perPage
      * @return Attachment[]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
@@ -161,13 +182,36 @@ class AttachmentRepository extends AbstractRepository
     }
 
     /**
+     * @param int $page
+     * @param int $perPage
+     * @param ?int $groupId
+     * @return Attachment[]
+     * @throws Exception
+     */
+    public function getAttachmentsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $queryBuilder = $this->getBaseQueryBuilder();
+
+        $qb = $queryBuilder
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        if ($groupId !== null) {
+            $qb->where('a.group = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $this->getPaginatedResults($queryBuilder, $page, $perPage);
+    }
+
+    /**
      * @param int $attachmentId
      * @return Attachment|null
      */
     public function find(int $attachmentId): ?Attachment
     {
         return $this->getBaseQueryBuilder()
-            ->andWhere('m.id = :id')
+            ->andWhere('a.id = :id')
             ->setParameter('id', $attachmentId)
             ->getQuery()
             ->getOneOrNullResult();

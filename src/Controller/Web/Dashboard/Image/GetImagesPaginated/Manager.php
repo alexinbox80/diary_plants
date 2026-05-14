@@ -2,13 +2,17 @@
 
 namespace App\Controller\Web\Dashboard\Image\GetImagesPaginated;
 
-use App\Domain\Model\Attachment\AttachmentModel;
+use InvalidArgumentException;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\Service\AttachmentService;
+use App\Application\Security\AccessContext;
+use App\Domain\Model\Attachment\AttachmentModel;
 
-class Manager
+final class Manager
 {
     public function __construct(
-        private readonly AttachmentService $attachmentService
+        private readonly AttachmentService $attachmentService,
+        private readonly AccessContext $accessContext
     ) {
     }
 
@@ -16,14 +20,18 @@ class Manager
      * @param int $page
      * @param int $perPage
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
-        $attachmentsModel = $this->attachmentService->getAttachmentsPaginated($page, $perPage);
+        $groupId = $this->accessContext->getTargetGroupId();
+        $attachmentsModel = $this->attachmentService->getAttachmentsPaginatedByGroupId($page, $perPage, $groupId);
+
+        $timezone = $this->accessContext->getTimezone();
         $tableHeader = AttachmentModel::getTableHeaderRu();
+
         $tableBody = array_map(
-            static fn (AttachmentModel $model): array => $model->toArray(),
+            static fn (AttachmentModel $model): array => $model->toArray(Timezone::tryFrom($timezone)),
             $attachmentsModel['attachmentsModel']
         );
 

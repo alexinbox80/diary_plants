@@ -117,6 +117,7 @@ class StimulantRepositoryDecorator implements StimulantRepositoryInterface
     }
 
     /**
+     * @param ?int $groupId
      * @return StimulantModel[]
      */
     public function findAllByGroupId(?int $groupId = null): array

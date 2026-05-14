@@ -2,11 +2,11 @@
 
 namespace App\Controller\Web\Dashboard\Image\EditImage\Input;
 
-use App\Domain\ValueObject\Enum\Attachment\AttachableType;
-use App\Domain\ValueObject\Enum\ImageMimeType;
 use DateTimeImmutable;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Domain\ValueObject\Enum\ImageMimeType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class EditImageDTO
@@ -39,6 +39,10 @@ class EditImageDTO
     }
 
     public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public int $groupId,
+
         #[Assert\Type('boolean')]
         public ?bool $isShown = false,
 

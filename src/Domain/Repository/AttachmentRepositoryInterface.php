@@ -14,9 +14,11 @@ interface AttachmentRepositoryInterface
     public function findOneByAttachable(string $attachableType, int $attachableId, int $attachmentId): ?Attachment;
     public function deleteByAttachable(string $attachableType, int $attachableId, int $attachmentId): void;
     public function getAttachmentsPaginated(int $page, int $perPage): array;
+    public function getAttachmentsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array;
     public function find(int $attachmentId): ?Attachment;
     public function findModel(int $attachmentId): ?AttachmentModel;
     public function findAll(): array;
+    public function findAllByGroupId(?int $groupId = null): array;
     public function findAllWithTargets(): array;
     public function findAttachmentsByTitle(string $title): array;
     public function findAttachmentsByFilename(string $filename): array;

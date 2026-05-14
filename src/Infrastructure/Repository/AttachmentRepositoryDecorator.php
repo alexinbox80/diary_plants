@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repository;
 
+use Exception;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Entity\Interfaces\AttachableInterface;
@@ -56,11 +58,23 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
         );
     }
 
+    /**
+     * @param string $attachableType
+     * @param int $attachableId
+     * @param int $attachmentId
+     * @return Attachment|null
+     */
     public function findOneByAttachable(string $attachableType, int $attachableId, int $attachmentId): ?Attachment
     {
         return $this->attachmentRepository->findOneByAttachable($attachableType, $attachableId, $attachmentId);
     }
 
+    /**
+     * @param string $attachableType
+     * @param int $attachableId
+     * @param int $attachmentId
+     * @return void
+     */
     public function deleteByAttachable(string $attachableType, int $attachableId, int $attachmentId): void
     {
         $this->attachmentRepository->deleteByAttachable($attachableType, $attachableId, $attachmentId);
@@ -70,14 +84,40 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
      * @param int $page
      * @param int $perPage
      * @return array{attachmentsModel: AttachmentModel[], pagination: array}
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
         $attachmentsPaginated = $this->attachmentRepository->getAttachmentsPaginated($page, $perPage);
 
         if (!is_array($attachmentsPaginated['items'])) {
-            throw new \InvalidArgumentException('Expected array for attachments');
+            throw new InvalidArgumentException('Expected array for attachments');
+        }
+
+        $attachmentsModel = array_map(
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),
+            $attachmentsPaginated['items']
+        );
+
+        return [
+            'attachmentsModel' => $attachmentsModel,
+            'pagination' => $attachmentsPaginated['pagination']
+        ];
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return AttachmentModel[]
+     * @throws Exception
+     */
+    public function getAttachmentsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        $attachmentsPaginated = $this->attachmentRepository->getAttachmentsPaginatedByGroupId($page, $perPage, $groupId);
+
+        if (!is_array($attachmentsPaginated['items'])) {
+            throw new InvalidArgumentException('Expected array for Attachments');
         }
 
         $attachmentsModel = array_map(
@@ -117,6 +157,20 @@ class AttachmentRepositoryDecorator implements AttachmentRepositoryInterface
     public function findAll(): array
     {
         $attachments = $this->attachmentRepository->findAll();
+
+        return array_map(
+            fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),
+            $attachments
+        );
+    }
+
+    /**
+     * @param ?int $groupId
+     * @return AttachmentModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        $attachments = $this->attachmentRepository->findAllByGroupId($groupId);
 
         return array_map(
             fn (Attachment $attachment): AttachmentModel => $this->toModel($attachment, true),

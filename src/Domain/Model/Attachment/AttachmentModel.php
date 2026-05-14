@@ -6,6 +6,7 @@ use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Entity\Attachment;
 use App\Domain\Model\Group\GroupModel;
+use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\Model\Interfaces\AttachableModelInterface;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 
@@ -145,28 +146,32 @@ class AttachmentModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Название группы',
-            'img_tag' => 'Изображение',
-            'is_shown_label' => 'Опубликовать',
-            'filename' => 'Имя файла',
-            'path' => 'Путь к файлу',
-            'mime_type' => 'Тип файла',
-            'alt' => 'Альтернативный текст',
-            'title' => 'Название',
-            'description' => 'Описание',
-            'file_date' => 'Дата файла',
-            'attachable_id' => 'ID сущности',
-            'attachable_type' => 'Тип сущности',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.attachment.header.id',
+            'group_id' => 'table.attachment.header.group_id',
+            'group_title' => 'table.attachment.header.group_title',
+            'img_tag' => 'table.attachment.header.img_tag',
+            'is_shown_label' => 'table.attachment.header.is_shown_label',
+            'filename' => 'table.attachment.header.filename',
+            'path' => 'table.attachment.header.path',
+            'mime_type' => 'table.attachment.header.mime_type',
+            'alt' => 'table.attachment.header.alt',
+            'title' => 'table.attachment.header.title',
+            'description' => 'table.attachment.header.description',
+            'file_date' => 'table.attachment.header.file_date',
+            'attachable_id' => 'table.attachment.header.attachable_id',
+            'attachable_type' => 'table.attachment.header.attachable_type',
+            'created_at' => 'table.attachment.header.created_at',
+            'updated_at' => 'table.attachment.header.updated_at'
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),

@@ -111,7 +111,7 @@ class AttachmentModelTest extends TestCase
 
         $this->assertIsArray($headers);
         $this->assertArrayHasKey('img_tag', $headers);
-        $this->assertEquals('Изображение', $headers['img_tag']);
+        $this->assertEquals('table.attachment.header.img_tag', $headers['img_tag']);
         $this->assertArrayHasKey('is_shown_label', $headers);
     }
 }

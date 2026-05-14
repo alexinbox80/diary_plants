@@ -40,6 +40,10 @@ class CreateImageDTO
     }
 
     public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid integer.')]
+        public int $groupId,
+
         #[Assert\Type('boolean')]
         public bool $isShown,
 

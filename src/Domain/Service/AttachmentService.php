@@ -45,6 +45,15 @@ class AttachmentService
     }
 
     /**
+     * @param int|null $groupId
+     * @return AttachmentModel[]
+     */
+    public function findAllByGroupId(?int $groupId = null): array
+    {
+        return $this->attachmentRepository->findAllByGroupId($groupId);
+    }
+
+    /**
      * @param string $title
      * @return AttachmentModel[]
      */
@@ -89,6 +98,17 @@ class AttachmentService
     public function getAttachmentsPaginated(int $page, int $perPage): array
     {
         return $this->attachmentRepository->getAttachmentsPaginated($page, $perPage);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param int|null $groupId
+     * @return AttachmentModel[]
+     */
+    public function getAttachmentsPaginatedByGroupId(int $page, int $perPage, ?int $groupId = null): array
+    {
+        return $this->attachmentRepository->getAttachmentsPaginatedByGroupId($page, $perPage, $groupId);
     }
 
     /**
@@ -138,7 +158,7 @@ class AttachmentService
 
         $model = $this->modelFactory->makeModel(
             CreateAttachmentModel::class,
-            2,
+            $dto->groupId,
             $dto->isShown,
             $dto->filename,
             $dto->path,
@@ -213,7 +233,7 @@ class AttachmentService
         // Создаём модель обновления
         $model = $this->modelFactory->makeModel(
             UpdateAttachmentModel::class,
-            2,
+            $dto->groupId,
             $dto->isShown,
             $dto->filename,
             $dto->path,

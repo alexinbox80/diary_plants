@@ -4,20 +4,26 @@ namespace App\Controller\Web\Dashboard\Image\CreateImage;
 
 use App\Controller\Form\ImageType;
 use App\Domain\Service\AttachmentService;
+use App\Application\Security\AccessContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly AttachmentService $attachmentService,
-        private readonly FormFactoryInterface $formFactory
+        private readonly FormFactoryInterface $formFactory,
+        private readonly TranslatorInterface $translator,
+        private readonly AccessContext $accessContext
     ) {
     }
 
     public function createFormData(Request $request): array
     {
+        $groupId = $this->accessContext->getTargetGroupId();
+
         $isNew = true;
 
         $form = $this->formFactory->create(ImageType::class, null, ['is_new' => $isNew]);
@@ -27,9 +33,14 @@ class Manager
             /** @var CreateImageDTO $createImageDTO */
             $createImageDTO = $form->getData();
 
+            if (!$createImageDTO->groupId) {
+                $createImageDTO->groupId = $groupId;
+            }
+
             $this->attachmentService->createFromCreateImageDTO($createImageDTO);
 
-            $request->getSession()->getFlashBag()->add('success', 'Изображение успешно сохранено.');
+            $message = $this->translator->trans('image.flash.created');
+            $request->getSession()->getFlashBag()->add('success', $message);
             return ['success' => true];
         }
 

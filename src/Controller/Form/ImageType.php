@@ -37,7 +37,8 @@ class ImageType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.attachment.field.placeholder',
+                'choice_translation_domain' => false
             ]);
         }
 
@@ -45,10 +46,10 @@ class ImageType extends AbstractType
             ->add('isShown', CheckboxType::class, [
                 'label' => $labels['is_shown_label'],
                 'required' => false,
-                'attr' => ['title' => 'Отображать изображение на сайте'],
+                'attr' => ['title' => 'form.attachment.field.is_shown_label'],
             ])
             ->add('imageFile', FileType::class, [
-                'label' => 'Изображение',
+                'label' => 'form.attachment.field.image_file_label',
                 'mapped' => true,
                 'required' => false,
             ])
@@ -91,7 +92,8 @@ class ImageType extends AbstractType
                 'label' => $labels['attachable_type'],
                 'required' => true,
                 'choices' => AttachableType::getChoices(),
-                'placeholder' => 'Выбери тип изображения',
+                'placeholder' => 'form.attachment.field.attachable_type_label',
+                'choice_translation_domain' => false
             ])
             ->setMethod($options['is_new'] ? 'POST' : 'PATCH');
     }
@@ -101,7 +103,7 @@ class ImageType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EditImageDTO::class,
             'empty_data' => fn() => new CreateImageDTO(
-                false, '', '', '', '', '', new DateTimeImmutable(), null, 0, '', null
+                0, false, '', '', '', '', '', new DateTimeImmutable(), null, 0, '', null
             ),
             'is_new' => false,
             'csrf_protection' => true,

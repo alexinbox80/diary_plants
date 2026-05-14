@@ -23,7 +23,6 @@ final class Manager
     public function getStimulants(): array
     {
         $groupId = $this->accessContext->getTargetGroupId();
-
         $stimulantsModel = $this->stimulantService->findAllByGroupId($groupId);
 
         $timezone = $this->accessContext->getTimezone();

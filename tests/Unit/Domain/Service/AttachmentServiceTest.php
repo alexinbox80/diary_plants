@@ -11,13 +11,16 @@ use App\Domain\Service\GroupService;
 use App\Domain\Service\ModelFactory;
 use App\Domain\Service\AttachmentService;
 use PHPUnit\Framework\MockObject\MockObject;
+use App\Domain\ValueObject\Attachment\FileInfo;
 use App\Domain\Model\Attachment\AttachmentModel;
 use App\Domain\Model\Attachment\CreateAttachmentModel;
 use App\Domain\Model\Attachment\UpdateAttachmentModel;
 use App\Domain\ValueObject\Attachment\DisplaySettings;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Domain\Repository\AttachmentRepositoryInterface;
 use App\Controller\Web\Dashboard\Image\EditImage\Input\EditImageDTO;
+use App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO;
 
 class AttachmentServiceTest extends TestCase
 {
@@ -82,13 +85,14 @@ class AttachmentServiceTest extends TestCase
         $uploadedFile = $this->createMock(UploadedFile::class);
         $uploadedFile->method('getMimeType')->willReturn('image/png');
 
-        // 1. Передаем пустые строки вместо null для строго типизированных полей
-        $dto = new \App\Controller\Web\Dashboard\Image\CreateImage\Input\CreateImageDTO(
+        // 1. Добавляем groupId: 2 первым аргументом
+        $dto = new CreateImageDTO(
+            groupId: 2,
             imageFile: $uploadedFile,
             isShown: true,
-            filename: '', // Исправлено: string вместо null
-            path: '',     // Исправлено: string вместо null
-            mimeType: '', // Исправлено: string вместо null
+            filename: '',
+            path: '',
+            mimeType: '',
             alt: 'Alt',
             title: 'Title',
             fileDate: new DateTimeImmutable(),
@@ -100,7 +104,7 @@ class AttachmentServiceTest extends TestCase
         // 2. Настройка FileService
         $this->fileService->method('getAttachmentsPath')->willReturn('/attachments/plant/55/');
 
-        $storedFile = $this->createMock(\Symfony\Component\HttpFoundation\File\File::class);
+        $storedFile = $this->createMock(File::class);
         $storedFile->method('getFilename')->willReturn('generated_name.png');
 
         $this->fileService->expects($this->once())
@@ -132,6 +136,8 @@ class AttachmentServiceTest extends TestCase
 
         // 5. Проверки
         $this->assertInstanceOf(AttachmentModel::class, $result);
+
+        // Эти ассерты пройдут, если метод createFromCreateImageDTO изменяет свойства внутри $dto
         $this->assertEquals('image/png', $dto->mimeType);
         $this->assertEquals('generated_name.png', $dto->filename);
     }
@@ -189,6 +195,7 @@ class AttachmentServiceTest extends TestCase
         $attachment->method('getDisplaySettings')->willReturn($this->createMock(DisplaySettings::class));
 
         $dto = new EditImageDTO(
+            groupId: 2,
             imageFile: $this->createMock(UploadedFile::class),
             isShown: true, title: 'T', filename: 'f.j', path: '/p/', mimeType: 'i/j',
             alt: 'a', fileDate: new DateTimeImmutable(), attachableId: 1,
@@ -225,7 +232,7 @@ class AttachmentServiceTest extends TestCase
     {
         $id = 123;
         $attachment = $this->createMock(Attachment::class);
-        $fileInfo = $this->createMock(\App\Domain\ValueObject\Attachment\FileInfo::class);
+        $fileInfo = $this->createMock(FileInfo::class);
 
         // Настраиваем данные файла, иначе removeOldFile ничего не сделает
         $fileInfo->method('getPath')->willReturn('/path/');
