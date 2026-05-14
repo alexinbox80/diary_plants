@@ -19,7 +19,7 @@
                 </div>
                 <div class="text-wrapper">
                     <p class="profile-name">{{ app.user.getShortName }}</p>
-                    <p class="designation">{{ app.user.getRoles|readable_role }}</p>
+                    <p class="designation">{{ app.user.getRoles|readable_role|trans }}</p>
                 </div>
                 <div class="icon-container">
                     <i class="icon-bubbles"></i>
