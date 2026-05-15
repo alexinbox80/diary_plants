@@ -56,7 +56,7 @@ class GroupModelTest extends TestCase
         $result = $model->toArray();
 
         $this->assertEquals(5, $result['id']);
-        $this->assertEquals('Нет', $result['is_active']); // bool -> string
+        $this->assertEquals(0, $result['is_active']); // bool -> string
         $this->assertEquals('Тропики', $result['title']);
         // Проверка конвертации таймзоны UTC 12:00 -> MSK 15:00
         $this->assertEquals('01.01.2024 15:00:00', $result['created_at']);
@@ -68,7 +68,7 @@ class GroupModelTest extends TestCase
 
         $this->assertIsArray($headers);
         $this->assertArrayHasKey('is_active', $headers);
-        $this->assertEquals('Группа активна', $headers['is_active']);
+        $this->assertEquals('table.group.header.is_active', $headers['is_active']);
     }
 }
 

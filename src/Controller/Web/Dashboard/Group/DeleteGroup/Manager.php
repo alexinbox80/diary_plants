@@ -4,11 +4,13 @@ namespace App\Controller\Web\Dashboard\Group\DeleteGroup;
 
 use App\Domain\Service\GroupService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly GroupService $groupService,
+        private readonly TranslatorInterface $translator,
     ) {
 
     }
@@ -17,7 +19,9 @@ class Manager
     {
         $this->groupService->removeById($id);
 
-        $request->getSession()->getFlashBag()->add('success', 'Группа успешно удалена.');
+        $message = $this->translator->trans('plant.flash.deleted', [], 'messages');
+        $request->getSession()->getFlashBag()->add('success', $message);
+
         return ['success' => true];
     }
 }

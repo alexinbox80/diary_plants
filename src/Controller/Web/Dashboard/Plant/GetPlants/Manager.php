@@ -2,6 +2,7 @@
 
 namespace App\Controller\Web\Dashboard\Plant\GetPlants;
 
+use InvalidArgumentException;
 use App\Domain\Service\PlantService;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\ValueObject\Enum\Timezone;
@@ -17,7 +18,7 @@ final class Manager
 
     /**
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getPlants(): array
     {

@@ -6,13 +6,15 @@ use App\Controller\Form\GroupType;
 use App\Domain\Service\GroupService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Controller\Web\Dashboard\Group\CreateGroup\Input\CreateGroupDTO;
 
-class Manager
+final class Manager
 {
     public function __construct(
         private readonly GroupService $groupService,
-        private readonly FormFactoryInterface $formFactory
+        private readonly FormFactoryInterface $formFactory,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -20,7 +22,7 @@ class Manager
     {
         $isNew = true;
 
-        $form = $this->formFactory->create(GroupType::class, null, ['is_new' => $isNew, 'group_id' => 2]);
+        $form = $this->formFactory->create(GroupType::class, null, ['is_new' => $isNew]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -29,7 +31,8 @@ class Manager
 
             $this->groupService->createFromCreateGroupDTO($createGroupDTO);
 
-            $request->getSession()->getFlashBag()->add('success', 'Группа успешно создана.');
+            $message = $this->translator->trans('group.flash.created');
+            $request->getSession()->getFlashBag()->add('success', $message);
             return ['success' => true];
         }
 

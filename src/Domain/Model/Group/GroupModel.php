@@ -5,6 +5,7 @@ namespace App\Domain\Model\Group;
 use DateTimeZone;
 use DateTimeImmutable;
 use App\Domain\Entity\Group;
+use App\Domain\ValueObject\Enum\Timezone;
 
 class GroupModel
 {
@@ -63,22 +64,26 @@ class GroupModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'title' => 'Заголовок',
-            'is_active' => 'Группа активна',
-            'description' => 'Описание',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.group.header.id',
+            'title' => 'table.group.header.title',
+            'is_active' => 'table.group.header.is_active',
+            'description' => 'table.group.header.description',
+            'created_at' => 'table.group.header.created_at',
+            'updated_at' => 'table.group.header.updated_at'
         ];
     }
 
-    public function toArray(): array
+    public function toArray(?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
 
         return [
             'id' => $this->getId(),
-            'is_active' => $this->isActive() ? 'Да' : 'Нет',
+            'is_active' => $this->isActive(),
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),

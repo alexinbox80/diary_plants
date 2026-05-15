@@ -16,14 +16,13 @@ class GroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $groupId = $options['group_id'] ?? null;
         $labels = GroupModel::getTableHeaderRu();
 
         $builder
             ->add('isActive', CheckboxType::class, [
                 'label' => $labels['is_active'],
                 'required' => false,
-                'attr' => ['title' => 'Отключить пользователя'],
+                'attr' => ['title' => 'form.group.field.is_active_label'],
             ])
             ->add('title', TextType::class, [
                 'label' => $labels['title'],
@@ -45,7 +44,6 @@ class GroupType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'unique_form_identifier',
-            'group_id' => null,
         ]);
     }
 }

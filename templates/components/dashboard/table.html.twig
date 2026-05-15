@@ -60,6 +60,8 @@
                                                                 item['alt'] ?? 'QR код',
                                                                 item[key] ~ '?t=' ~ 'now'|date('U'),
                                                                 'single') }}
+                                                        {% elseif key starts with 'is_' %}
+                                                            {{ item[key] ? 'twig.label.yes'|trans : 'twig.label.no'|trans }}
                                                         {% else %}
                                                             {{ item[key] }}
                                                         {% endif %}
