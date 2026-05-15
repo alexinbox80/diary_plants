@@ -39,7 +39,7 @@
                                 <div class="col-md-12 px-0">
                                     {% include 'components/dashboard/tabs.html.twig' with { 'diaries': diaries } %}
                                 </div>
-                                {{ select.select_month('top', prev, next) }}
+                                {{ select.select_month('bottom', prev, next) }}
                                 <div class="d-flex justify-content-end">
                                     {{ button.clear_save('bottom') }}
                                 </div>
