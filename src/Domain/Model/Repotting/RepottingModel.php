@@ -116,18 +116,18 @@ class RepottingModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'plant_id' => 'Идентификатор растения',
-            'plant_title' => 'Название растения',
-            'repotted_at' => 'Дата пересадки',
-            'type' => 'Тип пересадки',
-            'pot_material' => 'Материал горшка',
-            'pot_size' => 'Размер горшка',
-            'comment' => 'Комментарий',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.repotting.header.id',
+            'group_id' => 'table.repotting.header.group_id',
+            'group_title' => 'table.repotting.header.group_title',
+            'plant_id' => 'table.repotting.header.plant_id',
+            'plant_title' => 'table.repotting.header.plant_title',
+            'repotted_at' => 'table.repotting.header.repotted_at',
+            'type' => 'table.repotting.header.type',
+            'pot_material' => 'table.repotting.header.pot_material',
+            'pot_size' => 'table.repotting.header.pot_size',
+            'comment' => 'table.repotting.header.comment',
+            'created_at' => 'table.repotting.header.created_at',
+            'updated_at' => 'table.repotting.header.updated_at'
         ];
     }
 
@@ -146,8 +146,8 @@ class RepottingModel
             'plant_id' => $this->getPlantId(),
             'plant_title' => $this->getPlant()?->getTitle(),
             'repotted_at' => $this->getRepottedAt()->setTimezone($timezone)->format('d.m.Y'),
-            'type' => RepottingType::tryFrom($this->getType())?->getLabel(),
-            'pot_material' => PotMaterial::tryFrom($this->getPotMaterial())?->getLabel(),
+            'type' => RepottingType::tryFrom($this->getType())?->getLabelKey(),
+            'pot_material' => PotMaterial::tryFrom($this->getPotMaterial())?->getLabelKey(),
             'pot_size' => $this->getPotSize(),
             'comment' => $this->getComment(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),

@@ -20,7 +20,7 @@ enum RepottingType: string
     {
         $choices = [];
         foreach (self::cases() as $case) {
-            $choices[$case->getLabel()] = $case->value;
+            $choices[$case->getLabelKey()] = $case->value;
         }
         return $choices;
     }
@@ -28,17 +28,17 @@ enum RepottingType: string
     /**
      * Возвращает человекопонятное название на русском
      */
-    public function getLabel(): string
+    public function getLabelKey(): string
     {
         return match($this) {
-            self::POTTING_UP    => 'Перевалка',
-            self::REPOT_FULL    => 'Полная пересадка',
-            self::DIVISION      => 'Деление куста',
-            self::TOP_DRESSING  => 'Замена верхнего слоя',
-            self::PRICKING_OUT  => 'Пикировка',
-            self::PLANTING      => 'Посадка саженца',
-            self::ROOT_PRUNING  => 'Обрезка корней',
-            self::EMERGENCY     => 'Реанимационная пересадка',
+            self::POTTING_UP    => 'repot_type.potting_up',
+            self::REPOT_FULL    => 'repot_type.repot_full',
+            self::DIVISION      => 'repot_type.division',
+            self::TOP_DRESSING  => 'repot_type.top_dressing',
+            self::PRICKING_OUT  => 'repot_type.pricking_out',
+            self::PLANTING      => 'repot_type.planting',
+            self::ROOT_PRUNING  => 'repot_type.root_pruning',
+            self::EMERGENCY     => 'repot_type.emergency',
         };
     }
 

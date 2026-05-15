@@ -66,13 +66,13 @@ class RepottingModelTest extends TestCase
         $array = $model->toArray();
         $this->assertEquals('Succulents', $array['group_title']);
         $this->assertEquals('20.05.2024', $array['repotted_at']);
-        $this->assertEquals($type->getLabel(), $array['type']);
+        $this->assertEquals($type->getLabelKey(), $array['type']);
     }
 
     public function testGetTableHeaderRu(): void
     {
         $headers = RepottingModel::getTableHeaderRu();
         $this->assertArrayHasKey('repotted_at', $headers);
-        $this->assertEquals('Дата пересадки', $headers['repotted_at']);
+        $this->assertEquals('table.repotting.header.repotted_at', $headers['repotted_at']);
     }
 }

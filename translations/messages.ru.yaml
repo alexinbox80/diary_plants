@@ -54,6 +54,23 @@ user_role:
     guest: 'Гость'
     unknown: 'Неизвестно'
 
+repot_type:
+    potting_up: 'Перевалка'
+    repot_full: 'Полная пересадка'
+    division: 'Деление куста'
+    top_dressing: 'Замена верхнего слоя'
+    pricking_out: 'Пикировка'
+    planting: 'Посадка саженца'
+    root_pruning: 'Обрезка корней'
+    emergency: 'Реанимационная пересадка'
+
+pot_material:
+    plastic: 'Пластик'
+    ceramic: 'Керамика'
+    terracotta: 'Терракота (глина)'
+    textile: 'Текстильный мешок'
+    peat: 'Торфяной стаканчик'
+
 page:
     login:
         title: 'Авторизация'
@@ -180,6 +197,20 @@ table:
             usage_stimulant: 'Обработка стимуляторами'
             repottings: 'Пересадки'
             offsprings: 'Плоды'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
+    repotting:
+        header:
+            id: '#'
+            group_id: 'Идентификатор группы'
+            group_title: 'Группа'
+            plant_id: 'Идентификатор растения'
+            plant_title: 'Название растения'
+            repotted_at: 'Дата пересадки'
+            type: 'Тип пересадки'
+            pot_material: 'Материал горшка'
+            pot_size: 'Размер горшка'
+            comment: 'Комментарий'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
     marker:
@@ -322,10 +353,17 @@ form:
             is_shown: 'Отображать растение на сайте'
             is_sold: 'Растение продано'
 
+    repotting:
+        field:
+            placeholder: 'Выберите группу'
+            plant_title_label: 'Выберите растение'
+
     marker:
         field:
             placeholder: 'Выберите группу'
             label_type: 'Выберите тип обозначения'
+            reppoting_type_label: 'Выберите тип пересадки'
+            pot_material_label: 'Выберите материал горшка'
 
     pest:
         field:

@@ -9,9 +9,9 @@ class RepottingTypeTest extends TestCase
 {
     public function testGetLabelReturnsCorrectRussianTranslation(): void
     {
-        $this->assertEquals('Перевалка', RepottingType::POTTING_UP->getLabel());
-        $this->assertEquals('Реанимационная пересадка', RepottingType::EMERGENCY->getLabel());
-        $this->assertEquals('Пикировка', RepottingType::PRICKING_OUT->getLabel());
+        $this->assertEquals('repot_type.potting_up', RepottingType::POTTING_UP->getLabelKey());
+        $this->assertEquals('repot_type.emergency', RepottingType::EMERGENCY->getLabelKey());
+        $this->assertEquals('repot_type.pricking_out', RepottingType::PRICKING_OUT->getLabelKey());
     }
 
     public function testGetDescriptionReturnsCorrectInformation(): void
@@ -26,11 +26,11 @@ class RepottingTypeTest extends TestCase
         $choices = RepottingType::getChoices();
 
         // Проверяем наличие ключевых элементов
-        $this->assertArrayHasKey('Замена верхнего слоя', $choices);
-        $this->assertEquals('top_dressing', $choices['Замена верхнего слоя']);
+        $this->assertArrayHasKey('repot_type.top_dressing', $choices);
+        $this->assertEquals('top_dressing', $choices['repot_type.top_dressing']);
 
-        $this->assertArrayHasKey('Посадка саженца', $choices);
-        $this->assertEquals('planting', $choices['Посадка саженца']);
+        $this->assertArrayHasKey('repot_type.planting', $choices);
+        $this->assertEquals('planting', $choices['repot_type.planting']);
     }
 
     public function testValuesMethodReturnsAllKeys(): void
@@ -48,7 +48,7 @@ class RepottingTypeTest extends TestCase
     public function testAllCasesHaveLabelsAndDescriptions(): void
     {
         foreach (RepottingType::cases() as $case) {
-            $this->assertNotEmpty($case->getLabel(), "Label is missing for case: " . $case->value);
+            $this->assertNotEmpty($case->getLabelKey(), "Label is missing for case: " . $case->value);
             $this->assertNotEmpty($case->getDescription(), "Description is missing for case: " . $case->value);
         }
     }

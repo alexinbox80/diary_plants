@@ -39,7 +39,8 @@ class RepottingType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.repotting.field.placeholder',
+                'choice_translation_domain' => false
             ]);
 
             $groupId = null;
@@ -50,7 +51,8 @@ class RepottingType extends AbstractType
                 'label' => $labels['plant_title'],
                 'required' => true,
                 'choices' => $this->plantService->getChoicesForChoiceType($groupId),
-                'placeholder' => 'Выберите растение',
+                'placeholder' => 'form.repotting.field.plant_title_label',
+                'choice_translation_domain' => false
             ])
             ->add('repottedAt', DateType::class, [
                 'label' => $labels['repotted_at'],
@@ -63,12 +65,12 @@ class RepottingType extends AbstractType
             ->add('type', ChoiceType::class, [
                 'label' => $labels['type'],
                 'choices' => RepottingTypeChoices::getChoices(),
-                'placeholder' => 'Выберите тип пересадки'
+                'placeholder' => 'form.marker.field.reppoting_type_label'
             ])
             ->add('potMaterial', ChoiceType::class, [
                 'label' => $labels['pot_material'],
                 'choices' => PotMaterial::getChoices(),
-                'placeholder' => 'Выберите материал горшка'
+                'placeholder' => 'form.marker.field.pot_material_label'
             ])
             ->add('potSize', TextType::class, [
                 'label' => $labels['pot_size'],

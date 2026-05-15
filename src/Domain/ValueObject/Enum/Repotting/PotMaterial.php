@@ -14,7 +14,7 @@ enum PotMaterial: string
     {
         $choices = [];
         foreach (self::cases() as $case) {
-            $choices[$case->getLabel()] = $case->value;
+            $choices[$case->getLabelKey()] = $case->value;
         }
         return $choices;
     }
@@ -22,14 +22,14 @@ enum PotMaterial: string
     /**
      * Возвращает человекопонятное название материала на русском
      */
-    public function getLabel(): string
+    public function getLabelKey(): string
     {
         return match($this) {
-            self::PLASTIC    => 'Пластик',
-            self::CERAMIC    => 'Керамика',
-            self::TERRACOTTA => 'Терракота (глина)',
-            self::TEXTILE    => 'Текстильный мешок',
-            self::PEAT       => 'Торфяной стаканчик',
+            self::PLASTIC    => 'pot_material.plastic',
+            self::CERAMIC    => 'pot_material.ceramic',
+            self::TERRACOTTA => 'pot_material.terracotta',
+            self::TEXTILE    => 'pot_material.textile',
+            self::PEAT       => 'pot_material.peat',
         };
     }
 
