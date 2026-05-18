@@ -137,21 +137,21 @@ class OffspringModel implements AttachableModelInterface
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'plant_id' => 'Идентификатор растения',
-            'plant_title' => 'Растение',
-            'img_gallery' => 'Изображение',
-            'fruiting_date' => 'Дата сбора',
-            'flowering_date' => 'Дата цветения',
-            'mass' => 'Масса гр.',
-            'color' => 'Цвет',
-            'flavor' => 'Вкус',
-            'quantity' => 'Количество',
-            'comment' => 'Комментарий',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.offspring.header.id',
+            'group_id' => 'table.offspring.header.group_id',
+            'group_title' => 'table.offspring.header.group_title',
+            'plant_id' => 'table.offspring.header.plant_id',
+            'plant_title' => 'table.offspring.header.plant_title',
+            'img_gallery' => 'table.offspring.header.img_gallery',
+            'fruiting_date' => 'table.offspring.header.fruiting_date',
+            'flowering_date' => 'table.offspring.header.flowering_date',
+            'mass' => 'table.offspring.header.mass',
+            'color' => 'table.offspring.header.color',
+            'flavor' => 'table.offspring.header.flavor',
+            'quantity' => 'table.offspring.header.quantity',
+            'comment' => 'table.offspring.header.comment',
+            'created_at' => 'table.offspring.header.created_at',
+            'updated_at' => 'table.offspring.header.updated_at'
         ];
     }
 

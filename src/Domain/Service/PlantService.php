@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service;
 
-use App\Domain\Entity\Analytic;
 use App\Domain\Entity\Plant;
 use App\Domain\ValueObject\OId;
+use App\Domain\Entity\Analytic;
 use App\Domain\ValueObject\Price;
 use App\Domain\Model\Plant\PlantModel;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +16,7 @@ use App\Domain\ValueObject\Plant\PurchaseInfo;
 use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Repository\PlantRepositoryInterface;
 use App\Domain\Repository\AnalyticRepositoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Domain\Repository\AttachmentRepositoryInterface;
 use App\Domain\ValueObject\Enum\Attachment\AttachableType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -34,10 +35,11 @@ class PlantService
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly AttachmentRepositoryInterface $attachmentRepository,
         private readonly AnalyticRepositoryInterface $analyticRepository,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
-    public function getPlantsForDiary(int $groupID): array
+    public function getPlantsForDiary(?int $groupID = null): array
     {
         return $this->plantRepository->getPlantsForDiary($groupID);
     }
@@ -48,11 +50,16 @@ class PlantService
      */
     public function getChoicesForChoiceType(?int $groupId = null): array
     {
-        // Получаем список выбора: [title => id]
+        // Получаем список выбора: [title :: id => id]
         $choices = [];
         $plantModels = $this->plantRepository->getPlantsForForm($groupId);
         foreach ($plantModels as $plant) {
-            $choices[$plant->getTitle()] = $plant->getId();
+            $label = $this->translator->trans('plant.label.format', [
+                '%title%' => $plant->getTitle(),
+                '%id%'    => $plant->getId(),
+            ]);
+
+            $choices[$label] = $plant->getId();
         }
 
         return $choices;

@@ -87,7 +87,7 @@ class UsageModelTest extends TestCase
     public function testGetTableHeaderRu(): void
     {
         $headers = UsageModel::getTableHeaderRu();
-        $this->assertEquals('Дата использования', $headers['use_date']);
+        $this->assertEquals('table.usage.header.use_date', $headers['use_date']);
         $this->assertArrayHasKey('usable_name', $headers);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Web\Dashboard\Usage\GetUsages;
 
+use InvalidArgumentException;
 use App\Domain\Service\UsageService;
 use App\Domain\Model\Usage\UsageModel;
 use App\Domain\ValueObject\Enum\Timezone;
@@ -17,7 +18,7 @@ class Manager
 
     /**
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getUsages(): array
     {

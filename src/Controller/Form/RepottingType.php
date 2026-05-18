@@ -87,7 +87,7 @@ class RepottingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditRepottingDTO::class,
-            'empty_data' => new CreateRepottingDTO(2, 1, new DateTimeImmutable(), '', '', ''),
+            'empty_data' => new CreateRepottingDTO(0, 0, new DateTimeImmutable(), '', '', ''),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

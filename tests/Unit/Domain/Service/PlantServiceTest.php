@@ -23,6 +23,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use App\Domain\ValueObject\Plant\PlantIdentifier;
 use App\Domain\Repository\PlantRepositoryInterface;
 use App\Domain\Repository\AnalyticRepositoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Domain\Repository\AttachmentRepositoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -34,6 +35,7 @@ class PlantServiceTest extends TestCase
     private FileService|MockObject $fileService;
     private UrlGeneratorInterface|MockObject $urlGenerator;
     private PlantService $service;
+    private TranslatorInterface|MockObject $translator;
 
     protected function setUp(): void
     {
@@ -44,6 +46,7 @@ class PlantServiceTest extends TestCase
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $this->attachmentRepository = $this->createMock(AttachmentRepositoryInterface::class);
         $this->analyticRepository = $this->createMock(AnalyticRepositoryInterface::class);
+        $this->translator = $this->createMock(TranslatorInterface::class);
 
         // Настройка транзакции: заставляем мок выполнить переданный в него код
         $this->entityManager->method('wrapInTransaction')
@@ -58,7 +61,8 @@ class PlantServiceTest extends TestCase
             $this->fileService,
             $this->urlGenerator,
             $this->attachmentRepository,
-            $this->analyticRepository
+            $this->analyticRepository,
+            $this->translator
         );
     }
 
@@ -117,6 +121,12 @@ class PlantServiceTest extends TestCase
     #[Test]
     public function testGetChoicesForChoiceType(): void
     {
+        $this->translator->method('trans')
+            ->willReturnCallback(function (string $id, array $parameters) {
+                // Имитируем поведение перевода: возвращаем значение плейсхолдера %title%
+                return $parameters['%title%'] ?? '';
+            });
+
         $p1 = $this->createMock(PlantModel::class);
         $p1->method('getTitle')->willReturn('Aloe');
         $p1->method('getId')->willReturn(1);

@@ -99,6 +99,8 @@ security:
         not_auth: 'Доступ запрещен: пользователь не авторизован.'
         create: 'У вас нет прав для создания новой записи.'
 plant:
+    label:
+        format: '%title% :: %id%'
     flash:
         created: 'Растение успешно создано.'
         updated: 'Растение успешно обновлено.'
@@ -211,6 +213,37 @@ table:
             pot_material: 'Материал горшка'
             pot_size: 'Размер горшка'
             comment: 'Комментарий'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
+    offspring:
+        header:
+            id: '#'
+            group_id: 'Идентификатор группы'
+            group_title: 'Группа'
+            plant_id: 'Идентификатор растения'
+            plant_title: 'Растение'
+            img_gallery: 'Изображение'
+            fruiting_date: 'Дата сбора'
+            flowering_date: 'Дата цветения'
+            mass: 'Масса гр.'
+            color: 'Цвет'
+            flavor: 'Вкус'
+            quantity: 'Количество'
+            comment: 'Комментарий'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
+    usage:
+        header:
+            id: '#'
+            icon_tag: 'Маркер'
+            group_id: 'Идентификатор группы'
+            group_title: 'Группа'
+            use_date: 'Дата использования'
+            plant_id: 'Идентификатор растения'
+            plant_title: 'Растение'
+            usable_id: 'ID сущности'
+            usable_name: 'Тип сущности'
+            comment: 'Коментарии'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
     marker:
@@ -357,7 +390,14 @@ form:
         field:
             placeholder: 'Выберите группу'
             plant_title_label: 'Выберите растение'
-
+    offspring:
+        field:
+            placeholder: 'Выберите группу'
+            plant_title_label: 'Выберите растение'
+    usage:
+        field:
+            placeholder: 'Выберите группу'
+            plant_title_label: 'Выберите растение'
     marker:
         field:
             placeholder: 'Выберите группу'

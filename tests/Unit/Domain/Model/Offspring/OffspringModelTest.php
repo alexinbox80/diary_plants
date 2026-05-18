@@ -94,8 +94,8 @@ class OffspringModelTest extends TestCase
     {
         $headers = OffspringModel::getTableHeaderRu();
 
-        $this->assertEquals('Масса гр.', $headers['mass']);
-        $this->assertEquals('Дата сбора', $headers['fruiting_date']);
+        $this->assertEquals('table.offspring.header.mass', $headers['mass']);
+        $this->assertEquals('table.offspring.header.fruiting_date', $headers['fruiting_date']);
         $this->assertArrayHasKey('quantity', $headers);
     }
 }

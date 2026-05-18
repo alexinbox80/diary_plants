@@ -38,7 +38,8 @@ class UsageType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.usage.field.placeholder',
+                'choice_translation_domain' => false
             ]);
 
             $groupId = null;
@@ -49,7 +50,8 @@ class UsageType extends AbstractType
                 'label' => $labels['plant_id'],
                 'required' => true,
                 'choices' => $this->plantService->getChoicesForChoiceType($groupId),
-                'placeholder' => 'Выберите растение',
+                'placeholder' => 'form.repotting.usage.plant_title_label',
+                'choice_translation_domain' => false
             ])
             ->add('useDate', DateType::class, [
                 'label' => $labels['use_date'],
@@ -80,7 +82,7 @@ class UsageType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EditUsageDTO::class,
             'empty_data' => fn() => new CreateUsageDTO(
-                2, 2, new DateTimeImmutable(), 2, '', null
+                0, 0, new DateTimeImmutable(), 0, '', null
             ),
             'is_new' => false,
             'csrf_protection' => true,

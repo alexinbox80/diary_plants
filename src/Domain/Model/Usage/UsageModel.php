@@ -117,18 +117,18 @@ class UsageModel
     public static function getTableHeaderRu(): array
     {
         return [
-            'id' => '#',
-            'icon_tag' => 'Маркер',
-            'group_id' => 'Идентификатор группы',
-            'group_title' => 'Группа',
-            'use_date' => 'Дата использования',
-            'plant_id' => 'Идентификатор растения',
-            'plant_title' => 'Растение',
-            'usable_id' => 'ID сущности',
-            'usable_name' => 'Тип сущности',
-            'comment' => 'Коментарии',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления'
+            'id' => 'table.usage.header.id',
+            'icon_tag' => 'table.usage.header.icon_tag',
+            'group_id' => 'table.usage.header.group_id',
+            'group_title' => 'table.usage.header.group_title',
+            'use_date' => 'table.usage.header.use_date',
+            'plant_id' => 'table.usage.header.plant_id',
+            'plant_title' => 'table.usage.header.plant_title',
+            'usable_id' => 'table.usage.header.usable_id',
+            'usable_name' => 'table.usage.header.usable_name',
+            'comment' => 'table.usage.header.comment',
+            'created_at' => 'table.usage.header.created_at',
+            'updated_at' => 'table.usage.header.updated_at'
         ];
     }
 

@@ -26,7 +26,7 @@ final class Manager
 
         $isNew = true;
 
-        $form = $this->formFactory->create(RepottingType::class, null, ['is_new' => $isNew, 'group_id' => 2]);
+        $form = $this->formFactory->create(RepottingType::class, null, ['is_new' => $isNew, 'group_id' => $groupId]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -39,7 +39,7 @@ final class Manager
 
             $this->repottingService->createFromCreateRepottingDTO($createRepottingDTO);
 
-            $message = $this->translator->trans('plant.flash.created');
+            $message = $this->translator->trans('repotting.flash.created');
             $request->getSession()->getFlashBag()->add('success', $message);
             return ['success' => true];
         }

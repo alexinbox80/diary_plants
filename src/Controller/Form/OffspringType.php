@@ -36,7 +36,8 @@ class OffspringType extends AbstractType
                 'label' => $labels['group_id'],
                 'required' => true,
                 'choices' => $this->groupService->getChoicesForFormChoiceType(),
-                'placeholder' => 'Выберите группу'
+                'placeholder' => 'form.offspring.field.placeholder',
+                'choice_translation_domain' => false
             ]);
 
             $groupId = null;
@@ -47,7 +48,8 @@ class OffspringType extends AbstractType
                 'label' => $labels['plant_id'],
                 'required' => true,
                 'choices' => $this->plantService->getChoicesForChoiceType($groupId),
-                'placeholder' => 'Выберите растение',
+                'placeholder' => 'form.offspring.field.plant_title_label',
+                'choice_translation_domain' => false
             ])
             ->add('fruitingDate', DateType::class, [
                 'label' => $labels['fruiting_date'],
@@ -90,7 +92,7 @@ class OffspringType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => EditOffspringDTO::class,
-            'empty_data' => new CreateOffspringDTO(null, 1),
+            'empty_data' => new CreateOffspringDTO(0, 0),
             'is_new' => false,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',

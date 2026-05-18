@@ -4,6 +4,7 @@ namespace Unit\Controller\Web\Dashboard\Diary\GetDiaries;
 
 use PHPUnit\Framework\TestCase;
 use App\Domain\Service\DiaryService;
+use App\Application\Security\AccessContext;
 use App\Controller\Web\Dashboard\Diary\GetDiaries\Manager;
 
 
@@ -15,7 +16,14 @@ class ManagerTest extends TestCase
     protected function setUp(): void
     {
         $this->diaryService = $this->createMock(DiaryService::class);
-        $this->manager = new Manager($this->diaryService);
+        // 1. Создаем мок для контекста доступа
+        $accessContext = $this->createMock(AccessContext::class);
+
+        // 2. Передаем оба аргумента в конструктор
+        $this->manager = new Manager(
+            $this->diaryService,
+            $accessContext
+        );
     }
 
     public function testGetDiariesReturnsFormattedArray(): void

@@ -4,6 +4,7 @@ namespace App\Domain\Service;
 
 use DateTimeZone;
 use DateTimeImmutable;
+use App\Domain\ValueObject\Enum\Timezone;
 
 class DiaryService
 {
@@ -80,18 +81,27 @@ class DiaryService
         ];
     }
 
-    public function getDiaryBody(): array
+    /**
+     * @param int|null $groupId
+     * @return array
+     */
+    public function getDiaryBody(?int $groupId = null): array
     {
-        $plants = $this->plantService->getPlantsForDiary(2);
+        $plants = $this->plantService->getPlantsForDiary($groupId);
 
         return [
             'tableBody' => $plants
         ];
     }
 
-    public function getDiaryTitle(?int $year = null, ?int $month = null): array
+    public function getDiaryTitle(?int $year = null, ?int $month = null, ?Timezone $tz = null): array
     {
-        $timezone = new DateTimeZone('Europe/Moscow');
+        if (is_null($tz)) {
+            $timezone = new DateTimeZone('Europe/Moscow');
+        } else {
+            $timezone = new DateTimeZone($tz->value);
+        }
+
         $date = new DateTimeImmutable()->setTimezone($timezone);
 
         if ($month === null) {

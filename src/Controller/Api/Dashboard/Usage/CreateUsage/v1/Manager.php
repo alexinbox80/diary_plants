@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api\Dashboard\Usage\CreateUsage\v1;
 
+use Exception;
 use App\Domain\Service\UsageService;
 use App\Controller\Api\Dashboard\Usage\CreateUsage\v1\input\CreateUsageDTO;
 
@@ -15,7 +16,7 @@ class Manager
     /**
      * @param CreateUsageDTO[] $createUsagesDTO
      * @return array
-     * @throws \DateMalformedStringException
+     * @throws Exception
      */
     public function createUsages(array $createUsagesDTO): array
     {
