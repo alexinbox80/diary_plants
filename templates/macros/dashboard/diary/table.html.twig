@@ -15,6 +15,11 @@
             <th class="thead-tr-th align-middle text-center table-bordered border-black">
                 <span>Растение</span>
             </th>
+            {% if is_granted('ROLE_ADMIN') %}
+                <th class="thead-tr-th align-middle text-center table-bordered border-black">
+                    <span>Группа</span>
+                </th>
+            {% endif %}
         {% for key, day in diaries.table_header['tableHeader'] %}
             <th class="thead-tr-th align-middle text-center table-bordered border-black col-width
                             {{ class.day_class(day.name_day) }}
@@ -37,12 +42,19 @@
                         {{ plant.title }}
                     </a>
                 </td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td class="align-middle text-center">
+                        <span class="plant-group" title="{{ plant.groupId }}">
+                            {{ plant.groupTitle }}
+                        </span>
+                    </td>
+                {% endif %}
                 {% for key, day in diaries.table_header['tableHeader'] %}
                     <td
                         id="{{ cell_id.get_cell_id(type, plant.id, day.num_day) }}"
                         class="align-middle text-center
-                                    {{ class.day_class(day.name_day) }}
-                                    {{ (month == 'now'|date('n') and year == 'now'|date('Y')) ? current_class.current_day_class(current_day, day.num_day) : '' }}">
+                        {{ class.day_class(day.name_day) }}
+                        {{ (month == 'now'|date('n') and year == 'now'|date('Y')) ? current_class.current_day_class(current_day, day.num_day) : '' }}">
                     </td>
                 {% endfor %}
             </tr>

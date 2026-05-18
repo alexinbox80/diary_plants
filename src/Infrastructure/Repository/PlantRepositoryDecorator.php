@@ -122,9 +122,11 @@ class PlantRepositoryDecorator implements PlantRepositoryInterface
 
         return array_map(
             fn (Plant $plant): array => [
-                'id'=> $plant->getId(),
-                'title'=> $plant->getTitle(),
-                'oid'=> $plant->getPlantIdentifier()->getOid()->toString(),
+                'id' => $plant->getId(),
+                'title' => $plant->getTitle(),
+                'oid' => $plant->getPlantIdentifier()->getOid()->toString(),
+                'groupId' => $plant->getGroup()->getId(),
+                'groupTitle' => $plant->getGroup()->getTitle(),
             ],
             $plants
         );
