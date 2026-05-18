@@ -1,5 +1,10 @@
 {% macro header(first, last, total) %}
     {% apply spaceless %}
-        <p class="text-muted mb-sm-0">Показано с {{ first }} по {{ last }} из {{ total }} записей</p>
+        <p class="text-muted mb-sm-0">
+            {{ 'dashboard.navbar.pagination.show_label'|trans }} {{ first }}
+            {{ 'dashboard.navbar.pagination.show_to_label'|trans }} {{ last }}
+            {{ 'dashboard.navbar.pagination.show_of_label'|trans }} {{ total }}
+            {{ 'dashboard.navbar.pagination.show_entry_label'|trans }}
+        </p>
     {% endapply %}
 {% endmacro %}

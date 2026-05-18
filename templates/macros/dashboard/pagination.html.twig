@@ -5,9 +5,9 @@
         {% if total > 1 %}
             <nav class="ms-auto">
                 <ul class="pagination separated pagination-info mb-sm-0">
-                        <li class="page-item" title="Первая страница"><a href="{{ (url ~ 1 ~ per_page)|e }}" class="page-link"><i class="fas fa-angle-left"></i></a></li>
+                        <li class="page-item" title="{{ 'dashboard.navbar.pagination.first_page_label'|trans }}"><a href="{{ (url ~ 1 ~ per_page)|e }}" class="page-link"><i class="fas fa-angle-left"></i></a></li>
                     {% if current > 1 %}
-                        <li class="page-item" title="Предыдущая страница"><a class="page-link" href="{{ (url ~ (current - 1) ~ per_page)|e }}"><i class="fas fa-angles-left"></i></a></li>
+                        <li class="page-item" title="{{ 'dashboard.navbar.pagination.prev_page_label'|trans }}"><a class="page-link" href="{{ (url ~ (current - 1) ~ per_page)|e }}"><i class="fas fa-angles-left"></i></a></li>
                     {% endif %}
                     {% for i in 1..total %}
                         {% if 0 == (current - nearbyPagesLimit) - loop.index %}
@@ -31,9 +31,9 @@
                         <li class="page-item"><a class="page-link" href="{{ (url ~ total ~ per_page)|e }}">{{ total }}</a></li>
                     {% endif %}
                     {% if current < total %}
-                        <li class="page-item" title="Последующая страница"><a class="page-link" href="{{ (url ~ (current + 1) ~ per_page)|e }}"><i class="fas fa-angles-right"></i></a></li>
+                        <li class="page-item" title="{{ 'dashboard.navbar.pagination.next_page_label'|trans }}"><a class="page-link" href="{{ (url ~ (current + 1) ~ per_page)|e }}"><i class="fas fa-angles-right"></i></a></li>
                     {% endif %}
-                    <li class="page-item" title="Последняя страница"><a href="{{ (url ~ total ~ per_page)|e }}" class="page-link"><i class="fas fa-angle-right"></i></a></li>
+                    <li class="page-item" title="{{ 'dashboard.navbar.pagination.last_page_label'|trans }}"><a href="{{ (url ~ total ~ per_page)|e }}" class="page-link"><i class="fas fa-angle-right"></i></a></li>
                 </ul>
             </nav>
         {% endif %}

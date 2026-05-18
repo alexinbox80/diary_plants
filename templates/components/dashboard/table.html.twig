@@ -13,17 +13,17 @@
                     <h4 class="card-title mb-sm-0">{% if title is defined %} {{ title }} {% endif %}</h4>
                     {{ table_column.show(array.table_header) }}
                     {% if pagination is defined and pagination.count < 101 %}
-                        <a href="{{ path(route_index) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать все записи</a>
+                        <a href="{{ path(route_index) }}" class="text-dark ms-auto mb-3 mb-sm-0">{{ 'dashboard.navbar.table.route_index_label'|trans }}</a>
                     {% else %}
-                        <a href="{{ path(route_pagination) }}" class="text-dark ms-auto mb-3 mb-sm-0">Показать записи с пагинацией</a>
+                        <a href="{{ path(route_pagination) }}" class="text-dark ms-auto mb-3 mb-sm-0">{{ 'dashboard.navbar.table.route_pagination_label'|trans }}</a>
                     {% endif %}
                     <div class="ms-5 d-flex justify-content-end">
                         <div class="button">
                             {% if app.request.attributes.get('_route') starts with 'dashboard.plants' %}
-                                <span id="" class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#qrModal">Лист qr-кодов</span>
+                                <span id="" class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#qrModal">{{ 'dashboard.navbar.table.qr_code_list_label'|trans }}</span>
                                 {{ qrlist.modal_qrlist(array.table_body) }}
                             {% endif %}
-                            <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">Создать</a>
+                            <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">{{ 'dashboard.navbar.table.create_button_label'|trans }}</a>
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                                         <span class="sort-arrow desc"></span>
                                     </th>
                                 {% endfor %}
-                                <th class="font-weight-bold">Действия</th>
+                                <th class="font-weight-bold">{{ 'dashboard.navbar.table.action_label'|trans }}</th>
                             </thead>
                             <tbody>
                                 {% for row_number, item in array.table_body %}
@@ -47,7 +47,7 @@
                                                 <td data-column="{{ key }}" class="{% if key == 'img_tag' %}img_tag{% endif %}">
                                                     {% if item[key] is not null %}
                                                         {% if key == 'img_tag' %}
-                                                            {{ image_tag.image(row_number, 'table-image-thumb', item['title'] ?? 'Аватар', item['alt'] ?? 'Аватар', item[key], 'single') }}
+                                                            {{ image_tag.image(row_number, 'table-image-thumb', item['title'] ?? 'dashboard.navbar.table.avatar_label'|trans, item['alt'] ?? 'dashboard.navbar.table.avatar_label'|trans, item[key], 'single') }}
                                                         {% elseif key == 'icon_tag' %}
                                                             {{ icon_tag.marker(item.marker_color ?? item.color, item.marker_letter ?? item.letter) }}
                                                         {% elseif key == 'img_gallery' %}
@@ -56,8 +56,8 @@
                                                             {{ image_tag.image(
                                                                 row_number,
                                                                 'table-image-qr',
-                                                                item['title'] ?? 'QR код',
-                                                                item['alt'] ?? 'QR код',
+                                                                item['title'] ??  'dashboard.navbar.table.qr_code_label'|trans,
+                                                                item['alt'] ??  'dashboard.navbar.table.qr_code_label'|trans,
                                                                 item[key] ~ '?t=' ~ 'now'|date('U'),
                                                                 'single') }}
                                                         {% elseif key starts with 'is_' %}
@@ -92,14 +92,14 @@
                                                         <a
                                                             href="{{ path(route_edit, {'id': item.id}) }}"
                                                             class="dropdown-item px-3"
-                                                            title="Редактировать"
+                                                            title="{{ 'dashboard.navbar.table.action_edit_label'|trans  }}"
                                                         >
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <a
                                                             href="#"
                                                             class="dropdown-item px-3 text-danger"
-                                                            title="Удалить"
+                                                            title="{{ 'dashboard.navbar.table.action_delete_label'|trans  }}"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#confirmDeleteModal"
                                                             data-id="{{ item.id }}"
@@ -122,7 +122,7 @@
                     {% endif %}
                 {% else %}
                     <div class="d-flex mt-4 flex-wrap align-items-center">
-                        <p class="text-muted mb-sm-0">Нет данных</p>
+                        <p class="text-muted mb-sm-0">{{ 'dashboard.navbar.table.no_data_label'|trans  }}</p>
                     </div>
                 {% endif %}
             </div>

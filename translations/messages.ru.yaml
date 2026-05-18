@@ -3,6 +3,44 @@ twig:
         yes: 'Да'
         no: 'Нет'
 
+dashboard:
+    panel:
+        title: 'Панель администрирования'
+        search: 'Поиск'
+    navbar:
+        title: 'Дневник растений'
+        table:
+            column_show_label: 'Выбрать колонки'
+            route_index_label: 'Показать все записи'
+            route_pagination_label: 'Показать записи с пагинацией'
+            qr_code_list_label: 'Лист qr-кодов'
+            avatar_label: 'Аватар'
+            qr_code_label: 'QR Код'
+            create_button_label: 'Создать'
+            action_label: 'Действия'
+            action_edit_label: 'Редактировать'
+            action_delete_label: 'Удалить'
+            no_data_label: 'Нет данных'
+        form:
+            save_button_labe: 'Сохранить'
+            cancel_button_labe: 'Отменить'
+        pagination:
+            show_label: 'Показано с'
+            show_to_label: 'по'
+            show_of_label: 'из'
+            show_entry_label: 'записей'
+            elements_per_page_label: 'Элементов на странице'
+            first_page_label: 'Первая страница'
+            prev_page_label: 'Предыдущая страница'
+            next_page_label: 'Последующая страница'
+            last_page_label: 'Последняя страница'
+
+        plant:
+            title: 'Растения'
+            list: 'Список растений'
+            edit_page_title: 'Редактировать растение'
+            create_page_title: 'Создать растение'
+
 menu:
     panel: 'Панель'
     plants: 'Растения'

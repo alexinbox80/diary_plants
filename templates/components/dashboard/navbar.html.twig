@@ -4,7 +4,7 @@
         <a class="navbar-brand brand-logo" href="{{ path('dashboard.index') }}">
 {#            <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" class="logo-dark" />#}
 {#            <img src="{{ asset('assets/images/logo-light.svg') }}" alt="logo-light" class="logo-light">#}
-            <h5 class="mb-0 font-weight-medium d-none d-lg-flex text-white">Дневник растений</h5>
+            <h5 class="mb-0 font-weight-medium d-none d-lg-flex text-white">{{ 'dashboard.navbar.title'|trans  }}</h5>
         </a>
         <a class="navbar-brand brand-logo-mini" href="{{ path('dashboard.index') }}">
             <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
@@ -14,11 +14,11 @@
         </button>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center">
-        <h5 class="mb-0 font-weight-medium d-none d-lg-flex">Панель администрирования {% if title is defined %} - {{ title }} {% endif %}</h5>
+        <h5 class="mb-0 font-weight-medium d-none d-lg-flex">{{ 'dashboard.panel.title'|trans }} {% if title is defined %} - {{ title }} {% endif %}</h5>
         <ul class="navbar-nav navbar-nav-right">
             <form class="search-form d-none d-md-block" action="#">
                 <i class="icon-magnifier"></i>
-                <input type="search" class="form-control" placeholder="Поиск" title="Поиск">
+                <input type="search" class="form-control" placeholder="{{ 'dashboard.panel.search'|trans }}" title="{{ 'dashboard.panel.search'|trans }}">
             </form>
             <li class="nav-item"><a href="#" class="nav-link"><i class="icon-basket-loaded"></i></a></li>
             <li class="nav-item"><a href="#" class="nav-link"><i class="icon-chart"></i></a></li>

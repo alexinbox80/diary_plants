@@ -1,7 +1,7 @@
 {% macro show(header) %}
     <div class="dropdown ms-auto">
         <div class="dropdown-toggle" type="button" id="dropdown-table-column" data-bs-toggle="dropdown" aria-expanded="false">
-            Выбрать колонки
+            {{ 'dashboard.navbar.table.column_show_label'|trans }}
         </div>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-table-column" id="dropdown-table-column-toggle">
             {% for key, title in header %}

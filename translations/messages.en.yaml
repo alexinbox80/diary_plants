@@ -3,6 +3,44 @@ twig:
         yes: 'Yes'
         no: 'No'
 
+dashboard:
+    panel:
+        title: 'Administration panel'
+        search: 'Search'
+    navbar:
+        title: 'Plant diary'
+        table:
+            column_show_label: 'Select columns'
+            route_index_label: 'Show all entries'
+            route_pagination_label: 'Show entries with pagination'
+            qr_code_list_label: 'QR codes sheet'
+            avatar_label: 'Avatar'
+            qr_code_label: 'QR Code'
+            create_button_label: 'Create'
+            action_label: 'Actions'
+            action_edit_label: 'Edit'
+            action_delete_label: 'Delete'
+            no_data_label: 'No data'
+        form:
+            save_button_labe: 'Save'
+            cancel_button_labe: 'Cancel'
+        pagination:
+            show_label: 'Showing'
+            show_to_label: 'to'
+            show_of_label: 'of'
+            show_entry_label: 'entries'
+            elements_per_page_label: 'Items per page'
+            first_page_label: 'First page'
+            prev_page_label: 'Previous page'
+            next_page_label: 'Next page'
+            last_page_label: 'Last page'
+
+        plant:
+            title: 'Plants'
+            list: 'Plant list'
+            edit_page_title: 'Edit plant'
+            create_page_title: 'Create plant'
+
 menu:
     panel: 'Dashboard'
     plants: 'Plants'

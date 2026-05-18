@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Растения'} %}
+    {% include 'components/dashboard/navbar.html.twig' with {'title': 'dashboard.navbar.plant.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список растений',
+                            'title': 'dashboard.navbar.plant.list'|trans,
                             'array': plants,
                             'pagination': pagination,
                             'route_index': 'dashboard.plants.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список растений',
+                            'title': 'dashboard.navbar.plant.list'|trans,
                             'array': plants,
                             'route_index': 'dashboard.plants.index',
                             'route_pagination': 'dashboard.plants_paginated.index',
