@@ -9,6 +9,11 @@ dashboard:
         search: 'Search'
     navbar:
         title: 'Plant diary'
+        language:
+            russian_label: 'Russian'
+            english_label: 'English'
+            french_label: 'French'
+            arabic_label: 'Arabic'
         table:
             column_show_label: 'Select columns'
             route_index_label: 'Show all entries'

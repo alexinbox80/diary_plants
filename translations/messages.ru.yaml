@@ -9,6 +9,11 @@ dashboard:
         search: 'Поиск'
     navbar:
         title: 'Дневник растений'
+        language:
+            russian_label: 'Русский'
+            english_label: 'Английский'
+            french_label: 'Французский'
+            arabic_label: 'Арабский'
         table:
             column_show_label: 'Выбрать колонки'
             route_index_label: 'Показать все записи'

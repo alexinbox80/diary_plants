@@ -5,13 +5,13 @@
             <div class="d-inline-flex me-1">
                 <i class="flag-icon flag-icon-us"></i>
             </div>
-            <span class="profile-text font-weight-normal">English</span>
+            <span class="profile-text font-weight-normal">{{ 'dashboard.navbar.language.english_label'|trans }}</span>
         {% endif %}
         {% if app.request.locale == 'ru' %}
             <div class="d-inline-flex me-1">
                 <i class="flag-icon flag-icon-ru"></i>
             </div>
-            <span class="profile-text font-weight-normal">Русский</span>
+            <span class="profile-text font-weight-normal">{{ 'dashboard.navbar.language.russian_label'|trans }}</span>
         {% endif %}
     </a>
 
@@ -19,25 +19,25 @@
         {# Английский язык (активный) #}
         <a class="dropdown-item d-flex align-items-center {% if app.request.locale == 'en' %}active{% endif %}"
            href="{{ path('app.switch.language', {'locale': 'en'}) }}">
-            <i class="flag-icon flag-icon-us me-2"></i> Английский
+            <i class="flag-icon flag-icon-us me-2"></i>{{ 'dashboard.navbar.language.english_label'|trans }}
         </a>
 
         {# Французский язык (не используется)
         <a class="dropdown-item d-flex align-items-center">
-            <i class="flag-icon flag-icon-fr me-2"></i> Французский
+            <i class="flag-icon flag-icon-fr me-2"></i>{{ 'dashboard.navbar.language.french_label'|trans }}
         </a>
         #}
 
         {# Арабский язык (не используется)
         <a class="dropdown-item d-flex align-items-center">
-            <i class="flag-icon flag-icon-ae me-2"></i> Арабский
+            <i class="flag-icon flag-icon-ae me-2"></i>{{ 'dashboard.navbar.language.arabic_label'|trans }}
         </a>
         #}
 
         {# Русский язык (активный) #}
         <a class="dropdown-item d-flex align-items-center {% if app.request.locale == 'ru' %}active{% endif %}"
            href="{{ path('app.switch.language', {'locale': 'ru'}) }}">
-            <i class="flag-icon flag-icon-ru me-2"></i> Русский
+            <i class="flag-icon flag-icon-ru me-2"></i>{{ 'dashboard.navbar.language.russian_label'|trans }}
         </a>
     </div>
 </li>
