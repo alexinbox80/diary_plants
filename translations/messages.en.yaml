@@ -8,7 +8,7 @@ menu:
     plants: 'Plants'
     repotting: 'Repotting'
     offsprings: 'Offsprings'
-    diaries: 'Diaries'
+    diaries: 'Weekly'
     usages: 'Usages'
     markers: 'Markers'
     pests: 'Pests'
@@ -19,67 +19,155 @@ menu:
     users: 'Users'
     groups: 'Groups'
 
+timezone:
+    utc: 'UTC'
+    kaliningrad: 'Kaliningrad'
+    moscow: 'Moscow'
+    kiev: 'Kyiv'
+    minsk: 'Minsk'
+    yekaterinburg: 'Yekaterinburg'
+    omsk: 'Omsk'
+    novosibirsk: 'Novosibirsk'
+    krasnoyarsk: 'Krasnoyarsk'
+    irkutsk: 'Irkutsk'
+    yakutsk: 'Yakutsk'
+    vladivostok: 'Vladivostok'
+    magadan: 'Magadan'
+    kamchatka: 'Kamchatka'
+    london: 'London'
+    paris: 'Paris'
+    berlin: 'Berlin'
+    dubai: 'Dubai'
+    shanghai: 'Shanghai'
+    tokyo: 'Tokyo'
+    sydney: 'Sydney'
+    new_york: 'New York'
+    chicago: 'Chicago'
+    denver: 'Denver'
+    los_angeles: 'Los Angeles'
+    sao_paulo: 'São Paulo'
+
+user_role:
+    user: 'User'
+    admin: 'Administrator'
+    manager: 'Manager'
+    guest: 'Guest'
+    unknown: 'Unknown'
+
+repot_type:
+    potting_up: 'Potting up'
+    repot_full: 'Full repotting'
+    division: 'Division'
+    top_dressing: 'Top dressing'
+    pricking_out: 'Pricking out'
+    planting: 'Planting sapling'
+    root_pruning: 'Root pruning'
+    emergency: 'Emergency repotting'
+
+pot_material:
+    plastic: 'Plastic'
+    ceramic: 'Ceramic'
+    terracotta: 'Terracotta (clay)'
+    textile: 'Textile bag'
+    peat: 'Peat pot'
+
 page:
     login:
-        title: 'Sign In'
-        header_form: 'Sign in to continue.'
-        enter_as: 'You are signed in as'
-        enter_as_exit_label: 'Sign out?'
+        title: 'Authentication'
+        header_form: 'Please sign in to continue.'
+        enter_as: 'You are logged in as'
+        enter_as_exit_label: 'Log out?'
         authenticate_button_text: 'Authentication'
         email: 'Email address'
         password: 'Password'
-        button_sign_in_label: 'Sign In'
+        button_sign_in_label: 'Sign in'
         checkbox_remember_me_label: 'Remember me'
         forgot_password_label: 'Forgot password?'
 
 group:
     label:
         format: '%title% :: %id%'
+    flash:
+        created: 'Group created successfully.'
+        updated: 'Group updated successfully.'
+        deleted: 'Group deleted successfully.'
 
 security:
     access_denied:
         edit: 'You do not have permission to edit this record.'
         delete: 'You do not have permission to delete this record.'
-        not_auth: 'Access denied: user is not authorized.'
+        not_auth: 'Access denied: user is not authenticated.'
         create: 'You do not have permission to create a new record.'
 
 plant:
+    label:
+        format: '%title% :: %id%'
     flash:
-        created: 'Plant successfully created.'
-        updated: 'Plant successfully updated.'
-        deleted: 'Plant successfully deleted.'
+        created: 'Plant created successfully.'
+        updated: 'Plant updated successfully.'
+        deleted: 'Plant deleted successfully.'
 
 repotting:
     flash:
-        created: 'Repotting successfully created.'
-        updated: 'Repotting successfully updated.'
-        deleted: 'Repotting successfully deleted.'
+        created: 'Repotting entry created successfully.'
+        updated: 'Repotting entry updated successfully.'
+        deleted: 'Repotting entry deleted successfully.'
 
 offspring:
     flash:
-        created: 'Offspring successfully created.'
-        updated: 'Offspring successfully updated.'
-        deleted: 'Offspring successfully deleted.'
+        created: 'Offspring created successfully.'
+        updated: 'Offspring updated successfully.'
+        deleted: 'Offspring deleted successfully.'
 
 usage:
     flash:
-        created: 'Usage successfully created.'
-        updated: 'Usage successfully updated.'
-        deleted: 'Usage successfully deleted.'
+        created: 'Usage entry created successfully.'
+        updated: 'Usage entry updated successfully.'
+        deleted: 'Usage entry deleted successfully.'
 
 marker:
     flash:
-        created: 'Marker successfully created.'
-        updated: 'Marker successfully updated.'
-        deleted: 'Marker successfully deleted.'
+        created: 'Marker created successfully.'
+        updated: 'Marker updated successfully.'
+        deleted: 'Marker deleted successfully.'
     label:
         format: '%letter% (%description%)'
 
 pest:
     flash:
-        created: 'Pest successfully created.'
-        updated: 'Pest successfully updated.'
-        deleted: 'Pest successfully deleted.'
+        created: 'Pest entry created successfully.'
+        updated: 'Pest entry updated successfully.'
+        deleted: 'Pest entry deleted successfully.'
+
+stimulant:
+    flash:
+        created: 'Stimulant created successfully.'
+        updated: 'Stimulant updated successfully.'
+        deleted: 'Stimulant deleted successfully.'
+
+fertilizer:
+    flash:
+        created: 'Fertilizer created successfully.'
+        updated: 'Fertilizer updated successfully.'
+        deleted: 'Fertilizer deleted successfully.'
+
+watering:
+    flash:
+        created: 'Watering entry created successfully.'
+        updated: 'Watering entry updated successfully.'
+        deleted: 'Watering entry deleted successfully.'
+
+image:
+    flash:
+        created: 'Image saved successfully.'
+        updated: 'Image updated successfully.'
+        deleted: 'Image deleted successfully.'
+
+user:
+    flash:
+        created: 'User created successfully.'
+        updated: 'User updated successfully.'
+        deleted: 'User deleted successfully.'
 
 table:
     plant:
@@ -115,6 +203,51 @@ table:
             offsprings: 'Offsprings'
             created_at: 'Created At'
             updated_at: 'Updated At'
+    repotting:
+        header:
+            id: '#'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            plant_id: 'Plant ID'
+            plant_title: 'Plant name'
+            repotted_at: 'Repotting date'
+            type: 'Repotting type'
+            pot_material: 'Pot material'
+            pot_size: 'Pot size'
+            comment: 'Comment'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    offspring:
+        header:
+            id: '#'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            plant_id: 'Plant ID'
+            plant_title: 'Plant'
+            img_gallery: 'Image'
+            fruiting_date: 'Harvest date'
+            flowering_date: 'Flowering date'
+            mass: 'Weight, g'
+            color: 'Color'
+            flavor: 'Flavor'
+            quantity: 'Quantity'
+            comment: 'Comment'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    usage:
+        header:
+            id: '#'
+            icon_tag: 'Marker'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            use_date: 'Usage date'
+            plant_id: 'Plant ID'
+            plant_title: 'Plant'
+            usable_id: 'Entity ID'
+            usable_name: 'Entity type'
+            comment: 'Comments'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
     marker:
         header:
             id: '#'
@@ -145,21 +278,173 @@ table:
             comment: 'Comment'
             created_at: 'Created At'
             updated_at: 'Updated At'
+    stimulant:
+        header:
+            id: '#'
+            icon_tag: 'Marker'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            marker_id: 'Marker ID'
+            marker_letter: 'Marker sign'
+            marker_color: 'Color'
+            title: 'Title'
+            amount: 'Amount'
+            application_rate: 'Application rate'
+            manufacturer: 'Manufacturer'
+            description: 'Description'
+            comment: 'Comment'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    fertilizer:
+        header:
+            id: '#'
+            icon_tag: 'Marker'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            marker_id: 'Marker ID'
+            marker_letter: 'Marker sign'
+            marker_color: 'Color'
+            title: 'Title'
+            amount: 'Amount'
+            application_rate: 'Application rate'
+            manufacturer: 'Manufacturer'
+            description: 'Description'
+            comment: 'Comment'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    watering:
+        header:
+            id: '#'
+            icon_tag: 'Marker'
+            group_id: 'Group ID'
+            group_title: 'Group'
+            marker_id: 'Abbreviation ID'
+            marker_letter: 'Marker sign'
+            marker_color: 'Color'
+            amount: 'Amount'
+            water_type: 'Watering type'
+            watering_method: 'Watering method'
+            temperature: 'Temperature'
+            description: 'Description'
+            comment: 'Comment'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    attachment:
+        header:
+            id: '#'
+            group_id: 'Group ID'
+            group_title: 'Group name'
+            img_tag: 'Image'
+            is_shown_label: 'Publish'
+            filename: 'Filename'
+            path: 'File path'
+            mime_type: 'File type'
+            alt: 'Alternative text'
+            title: 'Title'
+            description: 'Description'
+            file_date: 'File date'
+            attachable_id: 'Entity ID'
+            attachable_type: 'Entity type'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    user:
+        header:
+            id: '#'
+            group_id: 'Group ID'
+            group_title: 'Group name'
+            img_tag: 'Avatar'
+            avatar_link: 'Avatar link'
+            email: 'Email address'
+            roles: 'User role'
+            is_active: 'User is active'
+            mail_confirmed: 'Email is confirmed'
+            phone_confirmed: 'Phone is confirmed'
+            time_zone: 'Timezone'
+            last_name: 'Last name'
+            first_name: 'First name'
+            middle_name: 'Middle name'
+            refresh_token: 'Token'
+            refresh_token_expires_at: 'Token expiration'
+            phone: 'Phone number'
+            email_code: 'Email confirmation code'
+            phone_code: 'Phone confirmation code'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+    group:
+        header:
+            id: '#'
+            title: 'Title'
+            is_active: 'Group is active'
+            description: 'Description'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
 
 form:
     plant:
         field:
-            placeholder: 'Select group'
+            placeholder: 'Select a group'
             price: 'Format: "100.00 RUB"'
-            is_shown: 'Display plant on site'
+            is_shown: 'Show plant on website'
             is_sold: 'Plant is sold'
 
+    repotting:
+        field:
+            placeholder: 'Select a group'
+            plant_title_label: 'Select a plant'
+    offspring:
+        field:
+            placeholder: 'Select a group'
+            plant_title_label: 'Select a plant'
+    usage:
+        field:
+            placeholder: 'Select a group'
+            plant_title_label: 'Select a plant'
     marker:
         field:
-            placeholder: 'Select group'
-            label_type: 'Select symbol type'
+            placeholder: 'Select a group'
+            label_type: 'Select marker type'
+            reppoting_type_label: 'Select repotting type'
+            pot_material_label: 'Select pot material'
 
     pest:
         field:
-            placeholder: 'Select group'
-            marker_placeholder: 'Select marker'
+            placeholder: 'Select a group'
+            marker_placeholder: 'Select a marker'
+
+    stimulant:
+        field:
+            placeholder: 'Select a group'
+            marker_placeholder: 'Select a marker'
+
+    fertilizer:
+        field:
+            placeholder: 'Select a group'
+            marker_placeholder: 'Select a marker'
+
+    watering:
+        field:
+            placeholder: 'Select a group'
+            marker_placeholder: 'Select a marker'
+            water_type_placeholder: 'Select water type'
+            watering_method_placeholder: 'Select watering method'
+
+    attachment:
+        field:
+            placeholder: 'Select a group'
+            is_shown_label: 'Show image on website'
+            image_file_label: 'Image'
+            attachable_type_label: 'Select image type'
+
+    user:
+        field:
+            avatar_image_label: 'Avatar'
+            placeholder: 'Select a group'
+            password_label: 'Password'
+            is_active_label: 'User is active'
+            email_label: 'Email is confirmed'
+            phone_is_comfirmed_label: 'Phone is confirmed'
+            timezone_label: 'Select timezone'
+
+    group:
+        field:
+            is_active_label: 'Deactivate user'
