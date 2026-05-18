@@ -21,6 +21,12 @@ dashboard:
             action_edit_label: 'Редактировать'
             action_delete_label: 'Удалить'
             no_data_label: 'Нет данных'
+        user_menu:
+            profile: 'Мой Профиль'
+            messages: 'Сообщения'
+            activities: 'Активности'
+            faq: 'FAQ'
+            logout: 'Выйти'
         form:
             save_button_labe: 'Сохранить'
             cancel_button_labe: 'Отменить'
@@ -35,11 +41,20 @@ dashboard:
             next_page_label: 'Последующая страница'
             last_page_label: 'Последняя страница'
 
-        plant:
-            title: 'Растения'
-            list: 'Список растений'
-            edit_page_title: 'Редактировать растение'
-            create_page_title: 'Создать растение'
+    plant:
+        title: 'Растения'
+        list: 'Список растений'
+        edit_page_title: 'Редактировать растение'
+        create_page_title: 'Создать растение'
+        registry:
+            title: 'Реестр растений и QR-кодов'
+            table:
+                qr_codes_column_header: 'QR-код'
+                plant_header: 'Название растения'
+                room_header: 'Комната / Расположение'
+                button_pdf_label: 'Выгрузить в pdf'
+                button_close_label: 'Закрыть'
+
 
 menu:
     panel: 'Панель'

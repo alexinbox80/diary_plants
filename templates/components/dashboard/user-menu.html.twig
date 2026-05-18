@@ -12,10 +12,10 @@
             <p class="mb-1 mt-3">{{ app.user.getShortName }}</p>
             <p class="font-weight-light text-muted mb-0">{{ app.user.getUserIdentifier }}</p>
         </div>
-        <a class="dropdown-item"><i class="dropdown-item-icon icon-user text-primary"></i> Мой Профиль <span class="badge badge-pill badge-danger">1</span></a>
-        <a class="dropdown-item"><i class="dropdown-item-icon icon-speech text-primary"></i> Сообщения</a>
-        <a class="dropdown-item"><i class="dropdown-item-icon icon-energy text-primary"></i> Активности</a>
-        <a class="dropdown-item"><i class="dropdown-item-icon icon-question text-primary"></i> FAQ</a>
-        <a class="dropdown-item" href="{{ path('dashboard.logout') }}"><i class="dropdown-item-icon icon-power text-primary"></i> Выйти</a>
+        <a class="dropdown-item"><i class="dropdown-item-icon icon-user text-primary"></i>{{ 'dashboard.navbar.user_menu.profile'|trans }} <span class="badge badge-pill badge-danger">1</span></a>
+        <a class="dropdown-item"><i class="dropdown-item-icon icon-speech text-primary"></i>{{ 'dashboard.navbar.user_menu.messages'|trans }}</a>
+        <a class="dropdown-item"><i class="dropdown-item-icon icon-energy text-primary"></i>{{ 'dashboard.navbar.user_menu.activities'|trans }}</a>
+        <a class="dropdown-item"><i class="dropdown-item-icon icon-question text-primary"></i>{{ 'dashboard.navbar.user_menu.faq'|trans }}</a>
+        <a class="dropdown-item" href="{{ path('dashboard.logout') }}"><i class="dropdown-item-icon icon-power text-primary"></i>{{ 'dashboard.navbar.user_menu.logout'|trans }}</a>
     </div>
 </li>

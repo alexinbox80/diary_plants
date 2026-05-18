@@ -3,7 +3,7 @@
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Реестр растений и QR-кодов</h5>
+                    <h5 class="modal-title">{{ 'dashboard.plant.registry.title'|trans }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body modal-margin">
@@ -11,9 +11,9 @@
                         <table class="table align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th scope="col" style="width: 180px;">QR-код</th>
-                                    <th scope="col">Название растения</th>
-                                    <th scope="col">Комната / Расположение</th>
+                                    <th scope="col" style="width: 180px;">{{ 'dashboard.plant.registry.table.qr_codes_column_header'|trans }}</th>
+                                    <th scope="col">{{ 'dashboard.plant.registry.table.plant_header'|trans }}</th>
+                                    <th scope="col">{{ 'dashboard.plant.registry.table.room_header'|trans }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,11 +32,11 @@
                         </table>
                     </div>
                     <div class="pt-3">
-                        <a type="button" class="btn btn-secondary" data-bs-dismiss="modal" href="#">Выгрузить в pdf</a>
+                        <a type="button" class="btn btn-secondary" data-bs-dismiss="modal" href="#">{{ 'dashboard.plant.registry.table.button_pdf_label'|trans }}</a>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dashboard.plant.registry.table.button_close_label'|trans }}</button>
                 </div>
             </div>
         </div>

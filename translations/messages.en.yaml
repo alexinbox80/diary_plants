@@ -21,6 +21,12 @@ dashboard:
             action_edit_label: 'Edit'
             action_delete_label: 'Delete'
             no_data_label: 'No data'
+        user_menu:
+            profile: 'My Profile'
+            messages: 'Messages'
+            activities: 'Activities'
+            faq: 'FAQ'
+            logout: 'Log out'
         form:
             save_button_labe: 'Save'
             cancel_button_labe: 'Cancel'
@@ -35,11 +41,19 @@ dashboard:
             next_page_label: 'Next page'
             last_page_label: 'Last page'
 
-        plant:
-            title: 'Plants'
-            list: 'Plant list'
-            edit_page_title: 'Edit plant'
-            create_page_title: 'Create plant'
+    plant:
+        title: 'Plants'
+        list: 'Plant list'
+        edit_page_title: 'Edit plant'
+        create_page_title: 'Create plant'
+        registry:
+            title: 'Plant and QR Code Registry'
+            table:
+                qr_codes_column_header: 'QR code'
+                plant_header: 'Plant name'
+                room_header: 'Room / Location'
+                button_pdf_label: 'Export to PDF'
+                button_close_label: 'Close'
 
 menu:
     panel: 'Dashboard'
