@@ -59,6 +59,85 @@ dashboard:
                 room_header: 'Room / Location'
                 button_pdf_label: 'Export to PDF'
                 button_close_label: 'Close'
+        profile:
+            title: 'Plant profile'
+            label: 'Plant'
+            update_label: 'Updated'
+            empty_label: 'not specified'
+            button_back_label: 'Back'
+            button_close_label: 'Close'
+            qr_code: 'QR code'
+
+    diary:
+        title: 'Weekly'
+        empty: 'No data'
+        year_label: 'year'
+
+    repotting:
+        title: 'Repotting'
+        list: 'Repotting list'
+        edit_page_title: 'Edit repotting'
+        create_page_title: 'Create repotting'
+
+    offspring:
+        title: 'Offsprings'
+        list: 'Offspring list'
+        edit_page_title: 'Edit offspring'
+        create_page_title: 'Create offspring'
+
+    usage:
+        title: 'Usages'
+        list: 'Usage list'
+        edit_page_title: 'Edit usage'
+        create_page_title: 'Create usage'
+
+    marker:
+        title: 'Markers'
+        list: 'Marker list'
+        edit_page_title: 'Edit marker'
+        create_page_title: 'Create marker'
+
+    pest:
+        title: 'Pests'
+        list: 'Pest list'
+        edit_page_title: 'Edit pest'
+        create_page_title: 'Create pest'
+
+    stimulant:
+        title: 'Stimulants'
+        list: 'Stimulant list'
+        edit_page_title: 'Edit stimulant'
+        create_page_title: 'Create stimulant'
+
+    fertilizer:
+        title: 'Fertilizers'
+        list: 'Fertilizer list'
+        edit_page_title: 'Edit fertilizer'
+        create_page_title: 'Create fertilizer'
+
+    watering:
+        title: 'Watering'
+        list: 'Watering list'
+        edit_page_title: 'Edit watering'
+        create_page_title: 'Create watering'
+
+    image:
+        title: 'Image gallery'
+        list: 'Image list'
+        edit_page_title: 'Edit image'
+        create_page_title: 'Create image'
+
+    user:
+        title: 'Users'
+        list: 'User list'
+        edit_page_title: 'Edit user'
+        create_page_title: 'Create user'
+
+    group:
+        title: 'User groups'
+        list: 'Group list'
+        edit_page_title: 'Edit group'
+        create_page_title: 'Create group'
 
 menu:
     panel: 'Dashboard'
@@ -414,7 +493,7 @@ table:
             email: 'Email address'
             roles: 'User role'
             is_active: 'User is active'
-            mail_confirmed: 'Email is confirmed'
+            email_confirmed: 'Email is confirmed'
             phone_confirmed: 'Phone is confirmed'
             time_zone: 'Timezone'
             last_name: 'Last name'

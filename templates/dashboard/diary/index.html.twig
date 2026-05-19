@@ -7,7 +7,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Ежедневник'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.diary.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -29,7 +29,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <h4 class="mb-sm-0"> {{ month.human_month(title.month) }} {{ title.year }} года </h4>
+                                        <h4 class="mb-sm-0"> {{ month.human_month(title.month) }} {{ title.year }} {{ 'dashboard.diary.year_label'|trans }} </h4>
                                     </div>
                                     {{ button.clear_save('top') }}
                                 </div>
@@ -48,7 +48,7 @@
                     </div>
                 {% else %}
                     <div class="d-flex mt-4 flex-wrap align-items-center">
-                        <p class="text-muted mb-sm-0">Нет данных</p>
+                        <p class="text-muted mb-sm-0">{{ 'dashboard.diary.empty'|trans }}</p>
                     </div>
                 {% endif %}
             </div>

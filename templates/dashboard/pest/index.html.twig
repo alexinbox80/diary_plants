@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Вредители'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.pest.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список вредителей',
+                            'title': 'dashboard.pest.list'|trans,
                             'array': pests,
                             'pagination': pagination,
                             'route_index': 'dashboard.pests.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список вредителей',
+                            'title': 'dashboard.pest.list'|trans,
                             'array': pests,
                             'route_index': 'dashboard.pests.index',
                             'route_pagination': 'dashboard.pests_paginated.index',

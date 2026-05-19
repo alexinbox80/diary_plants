@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Плоды'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.offspring.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список плодов',
+                            'title': 'dashboard.offspring.list'|trans,
                             'array': offsprings,
                             'pagination': pagination,
                             'route_index': 'dashboard.offsprings.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список плодов',
+                            'title': 'dashboard.offspring.list'|trans,
                             'array': offsprings,
                             'route_index': 'dashboard.offsprings.index',
                             'route_pagination': 'dashboard.offsprings_paginated.index',

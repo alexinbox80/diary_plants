@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Сокращения'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.marker.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список сокращений',
+                            'title': 'dashboard.marker.list'|trans,
                             'array': markers,
                             'pagination': pagination,
                             'route_index': 'dashboard.markers.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список сокращений',
+                            'title': 'dashboard.marker.list'|trans,
                             'array': markers,
                             'route_index': 'dashboard.markers.index',
                             'route_pagination': 'dashboard.markers_paginated.index',

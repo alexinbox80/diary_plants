@@ -8,7 +8,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Профиль растения'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.plant.profile.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -19,14 +19,14 @@
                     <div class="card-header bg-success text-white d-flex justify-content-between">
                         <div class="d-flex align-items-center">
                             <span class="badge bg-light text-dark me-4">ID: {{ plant.profile_body.id }}</span>
-                            <h5 class="mb-0">Растение: {{ plant.profile_body.title }}</h5>
+                            <h5 class="mb-0">{{ 'dashboard.plant.profile.label'|trans }}: {{ plant.profile_body.title }}</h5>
                         </div>
 
                         <button type="button"
                                 class="btn-close btn-close-white"
                                 aria-label="Close"
                                 onclick="history.back()"
-                                title="Назад">
+                                title="{{ 'dashboard.plant.profile.button_back_label'|trans }}">
                         </button>
                     </div>
                     <div class="card-body profile-scroll-container">
@@ -39,7 +39,7 @@
                                     {% set value = plant.profile_body[key] %}
 
                                     {% if key == 'img_qr_code_link' and value %}
-                                        {{ image_tag.image(plant.profile_body.id, 'table-image-qr', 'QR код', 'QR', value, 'single') }}
+                                        {{ image_tag.image(plant.profile_body.id, 'table-image-qr', 'dashboard.plant.profile.qr_code'|trans, 'QR', value, 'single') }}
                                     {% elseif key == 'oid' %}
                                         <code class="small text-muted">{{ value }}</code>
 
@@ -49,7 +49,7 @@
                                         </span>
 
                                     {% elseif value is null or value == "" or value is empty %}
-                                        <span class="text-muted small"><em>не указано</em></span>
+                                        <span class="text-muted small"><em>{{ 'dashboard.plant.profile.empty_label'|trans }}</em></span>
 
                                     {% elseif key == 'img_gallery' %}
                                         {{ plant_gal.plant_gallery(value) }}
@@ -84,9 +84,9 @@
                         <button type="button"
                                 class="btn btn-secondary btn-sm"
                                 onclick="history.back()">
-                            Закрыть
+                            {{ 'dashboard.plant.profile.button_close_label'|trans }}
                         </button>
-                        <small class="text-muted">Обновлено: {{ plant.profile_body.updated_at }}</small>
+                        <small class="text-muted">{{ 'dashboard.plant.profile.update_label'|trans }}: {{ plant.profile_body.updated_at }}</small>
                     </div>
                 </div>
             </div>

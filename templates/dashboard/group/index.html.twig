@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Группы пользователей'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.group.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список групп',
+                            'title': 'dashboard.group.list'|trans,
                             'array': groups,
                             'pagination': pagination,
                             'route_index': 'dashboard.groups.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список групп',
+                            'title': 'dashboard.group.list'|trans,
                             'array': groups,
                             'route_index': 'dashboard.groups.index',
                             'route_pagination': 'dashboard.groups_paginated.index',

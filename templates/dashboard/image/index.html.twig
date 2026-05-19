@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Галерея изображений'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.image.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список изображений',
+                            'title': 'dashboard.image.list'|trans,
                             'array': images,
                             'pagination': pagination,
                             'route_index': 'dashboard.images.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список изображений',
+                            'title': 'dashboard.image.list'|trans,
                             'array': images,
                             'route_index': 'dashboard.images.index',
                             'route_pagination': 'dashboard.images_paginated.index',

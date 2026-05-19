@@ -59,7 +59,85 @@ dashboard:
                 room_header: 'Комната / Расположение'
                 button_pdf_label: 'Выгрузить в pdf'
                 button_close_label: 'Закрыть'
+        profile:
+            title: 'Профиль растения'
+            label: 'Растение'
+            update_label: 'Обновлено'
+            empty_label: 'не указано'
+            button_back_label: 'Назад'
+            button_close_label: 'Закрыть'
+            qr_code: 'QR код'
 
+    diary:
+        title: 'Ежедневник'
+        empty: 'Нет данных'
+        year_label: 'года'
+
+    repotting:
+        title: 'Пересадка'
+        list: 'Список пересадок'
+        edit_page_title: 'Редактировать пересадку'
+        create_page_title: 'Создать пересадку'
+
+    offspring:
+        title: 'Плоды'
+        list: 'Список плодов'
+        edit_page_title: 'Редактировать плод'
+        create_page_title: 'Создать плод'
+
+    usage:
+        title: 'Использование'
+        list: 'Список использований'
+        edit_page_title: 'Редактировать использование'
+        create_page_title: 'Создать использование'
+
+    marker:
+        title: 'Сокращения'
+        list: 'Список сокращений'
+        edit_page_title: 'Редактировать сокращение'
+        create_page_title: 'Создать сокращение'
+
+    pest:
+        title: 'Вредители'
+        list: 'Список вредителей'
+        edit_page_title: 'Редактировать вредителя'
+        create_page_title: 'Создать вредителя'
+
+    stimulant:
+        title: 'Стимуляторы'
+        list: 'Список стимуляторов'
+        edit_page_title: 'Редактировать стимулятор'
+        create_page_title: 'Создать стимулятор'
+
+    fertilizer:
+        title: 'Удобрения'
+        list: 'Список удобрений'
+        edit_page_title: 'Редактировать удобрение'
+        create_page_title: 'Создать удобрение'
+
+    watering:
+        title: 'Поливы'
+        list: 'Список поливов'
+        edit_page_title: 'Редактировать полив'
+        create_page_title: 'Создать полив'
+
+    image:
+        title: 'Галерея изображений'
+        list: 'Список изображений'
+        edit_page_title: 'Редактировать изображение'
+        create_page_title: 'Создать изображение'
+
+    user:
+        title: 'Пользователи'
+        list: 'Список пользователей'
+        edit_page_title: 'Редактировать пользователя'
+        create_page_title: 'Создать пользователя'
+
+    group:
+        title: 'Группы пользователей'
+        list: 'Список групп'
+        edit_page_title: 'Редактировать группу'
+        create_page_title: 'Создать группу'
 
 menu:
     panel: 'Панель'
@@ -447,14 +525,17 @@ form:
         field:
             placeholder: 'Выберите группу'
             plant_title_label: 'Выберите растение'
+
     offspring:
         field:
             placeholder: 'Выберите группу'
             plant_title_label: 'Выберите растение'
+
     usage:
         field:
             placeholder: 'Выберите группу'
             plant_title_label: 'Выберите растение'
+
     marker:
         field:
             placeholder: 'Выберите группу'

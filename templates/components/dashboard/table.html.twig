@@ -60,8 +60,10 @@
                                                                 item['alt'] ??  'dashboard.navbar.table.qr_code_label'|trans,
                                                                 item[key] ~ '?t=' ~ 'now'|date('U'),
                                                                 'single') }}
-                                                        {% elseif key starts with 'is_' %}
+                                                        {% elseif key starts with 'is_' or key ends with '_confirmed' %}
                                                             {{ item[key] ? 'twig.label.yes'|trans : 'twig.label.no'|trans }}
+                                                        {% elseif key == 'type' or key == 'pot_material' or key == 'roles' or key == 'time_zone' %}
+                                                            {{ item[key]|trans }}
                                                         {% else %}
                                                             {{ item[key] }}
                                                         {% endif %}

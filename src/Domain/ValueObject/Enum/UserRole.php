@@ -43,7 +43,7 @@ enum UserRole: string
     }
 
     /**
-     * Преобразует массив с ролями (например, "ROLE_USER,ROLE_ADMIN") в строку ролей.
+     * Преобразует массив с ролями (например, "ROLE_USER, ROLE_ADMIN") в строку ролей.
      *
      * @return string
      */

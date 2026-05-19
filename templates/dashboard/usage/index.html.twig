@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Использование'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.usage.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список использований',
+                            'title': 'dashboard.usage.list'|trans,
                             'array': usages,
                             'pagination': pagination,
                             'route_index': 'dashboard.usages.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список использований',
+                            'title': 'dashboard.usage.list'|trans,
                             'array': usages,
                             'route_index': 'dashboard.usages.index',
                             'route_pagination': 'dashboard.usages_paginated.index',

@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Стимуляторы'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.stimulant.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список стимуляторов',
+                            'title': 'dashboard.stimulant.list'|trans,
                             'array': stimulants,
                             'pagination': pagination,
                             'route_index': 'dashboard.stimulants.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список стимуляторов',
+                            'title': 'dashboard.stimulant.list'|trans,
                             'array': stimulants,
                             'route_index': 'dashboard.stimulants.index',
                             'route_pagination': 'dashboard.stimulants_paginated.index',

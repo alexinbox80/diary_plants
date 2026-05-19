@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Удобрения'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.fertilizer.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список удобрений',
+                            'title': 'dashboard.fertilizer.list'|trans,
                             'array': fertilizers,
                             'pagination': pagination,
                             'route_index': 'dashboard.fertilizers.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список удобрений',
+                            'title': 'dashboard.fertilizer.list'|trans,
                             'array': fertilizers,
                             'route_index': 'dashboard.fertilizers.index',
                             'route_pagination': 'dashboard.fertilizers_paginated.index',

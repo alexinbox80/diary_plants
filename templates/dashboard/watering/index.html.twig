@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Поливы'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.watering.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список поливов',
+                            'title': 'dashboard.watering.list'|trans,
                             'array': waterings,
                             'pagination': pagination,
                             'route_index': 'dashboard.waterings.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список поливов',
+                            'title': 'dashboard.watering.list'|trans,
                             'array': waterings,
                             'route_index': 'dashboard.waterings.index',
                             'route_pagination': 'dashboard.waterings_paginated.index',

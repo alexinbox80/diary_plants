@@ -1,7 +1,7 @@
 {% extends 'layout/dashboard.html.twig' %}
 
 {% block header %}
-    {% include 'components/dashboard/navbar.html.twig' with {'title': 'Пользватели'} %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.user.title'|trans } %}
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {% if pagination is defined %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список пользователей',
+                            'title': 'dashboard.user.list'|trans,
                             'array': users,
                             'pagination': pagination,
                             'route_index': 'dashboard.users.index',
@@ -25,7 +25,7 @@
                 {% else %}
                     {% include 'components/dashboard/table.html.twig' with
                         {
-                            'title': 'Список пользователей',
+                            'title': 'dashboard.user.list'|trans,
                             'array': users,
                             'route_index': 'dashboard.users.index',
                             'route_pagination': 'dashboard.users_paginated.index',
