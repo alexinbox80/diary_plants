@@ -4,18 +4,18 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Подтвердите удаление</h5>
+                    <h5 class="modal-title">{{ 'dashboard.modal.delete.title'|trans }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    Вы действительно хотите удалить "<span id="deleteItemTitle"></span>"?
+                    {{ 'dashboard.modal.delete.question_prefix'|trans }} "<span id="deleteItemTitle"></span>"?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dashboard.modal.delete.button_cancel_label'|trans }}</button>
                     <form id="deleteForm" method="post" style="display:inline;">
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="_token" value="">
-                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <button type="submit" class="btn btn-danger">{{ 'dashboard.modal.delete.button_submit_label'|trans }}</button>
                     </form>
                 </div>
             </div>

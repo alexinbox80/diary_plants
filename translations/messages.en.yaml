@@ -4,9 +4,21 @@ twig:
         no: 'No'
 
 dashboard:
+    title: 'Site Administration Page'
     panel:
         title: 'Administration panel'
         search: 'Search'
+    modal:
+        title: 'Image Preview'
+        button_close_label: 'Close'
+        img_published: 'Published'
+        img_unpublished: 'Draft'
+        img_edit: 'Edit'
+        delete:
+            title: 'Confirm Delete'
+            question_prefix: 'Are you sure you want to delete'
+            button_cancel_label: 'Cancel'
+            button_submit_label: 'Delete'
     navbar:
         title: 'Plant diary'
         language:

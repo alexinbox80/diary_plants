@@ -3,8 +3,8 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content" style="min-height: 70vh;">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="PreviewImageModalLabel{{ id }}">Предпросмотр изображений</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    <h5 class="modal-title" id="PreviewImageModalLabel{{ id }}">{{ 'dashboard.modal.title'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'dashboard.modal.button_close_label'|trans }}" title="{{ 'dashboard.modal.button_close_label'|trans }}"></button>
                 </div>
                 <div class="modal-body p-0 d-flex align-items-center justify-content-center" style="min-height: 70vh">
                     <div class="position-absolute top-50 start-0 translate-middle-y d-flex justify-content-center align-items-center" style="z-index: 11; margin-left: 16px;">
@@ -44,7 +44,7 @@
                                     <span class="d-block rounded-circle"
                                           id="carouselStatusIndicator_{{ id }}"
                                           style="width: 12px; height: 12px; background-color: {{ images[0].is_shown ? '#28a745' : '#dc3545' }};"
-                                          title="{{ images[0].is_shown ? 'Опубликовано' : 'Черновик' }}">
+                                          title="{{ (images[0].is_shown ? 'dashboard.modal.img_published' : 'dashboard.modal.img_unpublished')|trans }}">
                                     </span>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                                 href="#"
                                 class="position-absolute bottom-0 start-0 m-2"
                                 id="carouselEditLink_{{ id }}"
-                                title="Редактировать"
+                                title="{{ 'dashboard.modal.img_edit'|trans }}"
                                 style="z-index: 10;">
                                 <i class="fas fa-edit text-white bg-dark bg-opacity-50 rounded p-1" style="width: 100%"></i>
                             </a>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dashboard.modal.button_close_label'|trans }}</button>
                 </div>
             </div>
         </div>

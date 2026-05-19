@@ -33,7 +33,7 @@
                     <span class="d-block rounded-circle"
                         id="statusIndicator_{{ galleryId }}"
                         style="width: 12px; height: 12px; background-color: {{ validImages[0].is_shown ? '#28a745' : '#dc3545' }};"
-                        title="{{ validImages[0].is_shown ? 'Опубликовано' : 'Черновик' }}">
+                        title="{{ (validImages[0].is_shown ? 'dashboard.modal.img_published' : 'dashboard.modal.img_unpublished')|trans }}">
                     </span>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                 href="#"
                 class="position-absolute bottom-0 start-0 m-2"
                 id="editLink_{{ galleryId }}"
-                title="Редактировать"
+                title="{{ 'dashboard.modal.img_edit'|trans }}"
                 style="z-index: 10;">
                 <i class="fas fa-edit text-white bg-dark bg-opacity-50 rounded p-1" style="width: 100%"></i>
             </a>

@@ -4,9 +4,21 @@ twig:
         no: 'Нет'
 
 dashboard:
+    title: 'Страница администрирования сайта'
     panel:
         title: 'Панель администрирования'
         search: 'Поиск'
+    modal:
+        title: 'Предпросмотр изображений'
+        button_close_label: 'Закрыть'
+        img_published: 'Опубликовано'
+        img_unpublished: 'Черновик'
+        img_edit: 'Редактировать'
+        delete:
+            title: 'Подтвердите удаление'
+            question_prefix: 'Вы действительно хотите удалить'
+            button_cancel_label: 'Отмена'
+            button_submit_label: 'Удалять'
     navbar:
         title: 'Дневник растений'
         language:

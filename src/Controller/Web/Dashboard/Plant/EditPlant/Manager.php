@@ -33,24 +33,24 @@ final class Manager
         $groupId = $plant->getGroup()->getId();
 
         $formData = new EditPlantDTO(
-            $groupId,
-            $plant->getTitle(),
-            $plant->getRoom(),
-            $plant->isShown(),
-            $plant->getDescription(),
-            $plant->getPurchaseInfo()->getPurchaseDate(),
-            $plant->getLifeCycle()->getVaccinationDate(),
-            $plant->getLifeCycle()->getPlantingDate(),
-            $plant->getPurchaseInfo()->getSeller(),
-            $plant->getPurchaseInfo()->getNursery(),
-            $plant->getPurchaseInfo()->getPrice(),
-            $plant->getPurchaseInfo()->getShippingCost(),
-            $plant->getPurchaseInfo()->getPackagingCost(),
-            $plant->getLifeCycle()->getSoil(),
-            $plant->getSalesInfo()->isSold(),
-            $plant->getSalesInfo()->getSellingDate(),
-            $plant->getSalesInfo()->getSellingPrice(),
-            $plant->getComment()
+            groupId: $groupId,
+            title: $plant->getTitle(),
+            room: $plant->getRoom(),
+            isShown: $plant->isShown(),
+            description: $plant->getDescription(),
+            purchaseDate: $plant->getPurchaseInfo()->getPurchaseDate(),
+            vaccinationDate: $plant->getLifeCycle()->getVaccinationDate(),
+            plantingDate: $plant->getLifeCycle()->getPlantingDate(),
+            seller: $plant->getPurchaseInfo()->getSeller(),
+            nursery: $plant->getPurchaseInfo()->getNursery(),
+            price: $plant->getPurchaseInfo()->getPrice(),
+            shippingCost: $plant->getPurchaseInfo()->getShippingCost(),
+            packagingCost: $plant->getPurchaseInfo()->getPackagingCost(),
+            soil: $plant->getLifeCycle()->getSoil(),
+            isSold: $plant->getSalesInfo()->isSold(),
+            sellingDate: $plant->getSalesInfo()->getSellingDate(),
+            sellingPrice: $plant->getSalesInfo()->getSellingPrice(),
+            comment: $plant->getComment()
         );
 
         $form = $this->formFactory->create(PlantType::class, $formData);

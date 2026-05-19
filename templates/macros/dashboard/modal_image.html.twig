@@ -4,7 +4,7 @@
             <div class="modal-content modal-dialog-centered">
                 <div class="modal-header">
                     <h5 class="modal-title" id="PreviewImageModalLabel{{ id }}">{{ title }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'dashboard.modal.button_close_label'|trans }}"></button>
                 </div>
                 {% if single == 'single' %}
                     <div class="modal-body">
@@ -12,7 +12,7 @@
                         <img src="{{ asset(src) }}" alt="{{ alt }}" class="img-fluid">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dashboard.modal.button_close_label'|trans }}</button>
                     </div>
                 {% endif %}
             </div>
