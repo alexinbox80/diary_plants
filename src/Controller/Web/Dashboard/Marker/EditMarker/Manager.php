@@ -33,12 +33,12 @@ class Manager
         $groupId = $marker->getGroup()->getId();
 
         $formData = new EditMarkerDTO(
-            $groupId,
-            $marker->getLetter(),
-            $marker->getColor(),
-            $marker->getType()->value,
-            $marker->getDescription(),
-            $marker->getColorDescription(),
+            groupId: $groupId,
+            letter: $marker->getLetter(),
+            color: $marker->getColor(),
+            type: $marker->getType()->value,
+            description: $marker->getDescription(),
+            colorDescription: $marker->getColorDescription(),
         );
 
         $form = $this->formFactory->create(MarkerType::class, $formData);

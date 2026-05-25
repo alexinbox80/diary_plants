@@ -23,7 +23,7 @@ class EditOffspringDTO
         public ?int $mass = null,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:64)]
-        public ?string $color = null,
+        public ?string $wordColor = null,
         #[Assert\Length(min:2)]
         #[Assert\Length(max:64)]
         public ?string $flavor = null,

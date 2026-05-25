@@ -178,7 +178,7 @@ class AttachmentModel
             'group_id' => $this->getGroupId(),
             'group_title' => $this->getGroup()?->getTitle(),
             'img_tag' => (!empty($this->getPath()) && !empty($this->getFilename())) ? $this->getPath() . $this->getFilename() : null,
-            'is_shown_label' => $this->isShown() ? 'Да' : 'Нет',
+            'is_shown_label' => $this->isShown(),
             'is_shown' => $this->isShown(),
             'filename' => $this->getFilename(),
             'path' => $this->getPath(),

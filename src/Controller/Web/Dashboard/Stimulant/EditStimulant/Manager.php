@@ -33,14 +33,14 @@ final class Manager
         $groupId = $stimulant->getGroup()->getId();
 
         $formData = new EditStimulantDTO(
-            $groupId,
-            $stimulant->getMarker()->getId(),
-            $stimulant->getTitle(),
-            $stimulant->getVolume()->getAmount(),
-            $stimulant->getDetails()->getManufacturer(),
-            $stimulant->getVolume()->getApplicationRate(),
-            $stimulant->getDetails()->getDescription(),
-            $stimulant->getDetails()->getComment()
+            groupId: $groupId,
+            markerId: $stimulant->getMarker()->getId(),
+            title: $stimulant->getTitle(),
+            amount: $stimulant->getVolume()->getAmount(),
+            manufacturer: $stimulant->getDetails()->getManufacturer(),
+            applicationRate: $stimulant->getVolume()->getApplicationRate(),
+            description: $stimulant->getDetails()->getDescription(),
+            comment: $stimulant->getDetails()->getComment()
         );
 
         $form = $this->formFactory->create(StimulantType::class, $formData, ['group_id' => $groupId]);

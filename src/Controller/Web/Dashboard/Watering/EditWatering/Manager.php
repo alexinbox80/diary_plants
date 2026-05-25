@@ -33,14 +33,14 @@ final class Manager
         $groupId = $watering->getGroup()->getId();
 
         $formData = new EditWateringDTO(
-            $groupId,
-            $watering->getMarker()->getId(),
-            $watering->getDetails()->getAmount(),
-            $watering->getDetails()->getType()->value,
-            $watering->getDetails()->getMethod()->value,
-            $watering->getDetails()->getTemperature(),
-            $watering->getDescription(),
-            $watering->getComment()
+            groupId: $groupId,
+            markerId: $watering->getMarker()->getId(),
+            amount: $watering->getDetails()->getAmount(),
+            waterType: $watering->getDetails()->getType()->value,
+            wateringMethod: $watering->getDetails()->getMethod()->value,
+            temperature: $watering->getDetails()->getTemperature(),
+            description: $watering->getDescription(),
+            comment: $watering->getComment()
         );
 
         $form = $this->formFactory->create(WateringType::class, $formData, ['group_id' => $groupId]);

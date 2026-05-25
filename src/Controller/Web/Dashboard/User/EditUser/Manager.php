@@ -34,22 +34,22 @@ final class Manager
         $groupId = $user->getGroup()->getId();
 
         $formData = new EditUserDTO(
-            $groupId,
-            $user->getEmail(),
-            $user->getPassword(),
-            UserRole::toString($user->getRoles()),
-            $user->isActive(),
-            $user->isEmailConfirmed(),
-            $user->isPhoneConfirmed(),
-            $user->getTimeZone(),
-            $user->getName()->getLast(),
-            $user->getName()->getFirst(),
-            $user->getName()->getMiddle(),
-            $user->getRefreshToken()->getToken(),
-            $user->getPhone(),
-            $user->getAvatarLink(),
-            $user->getEmailCode(),
-            $user->getPhoneCode()
+            groupId: $groupId,
+            email: $user->getEmail(),
+            password: $user->getPassword(),
+            roles: UserRole::toString($user->getRoles()),
+            isActive: $user->isActive(),
+            emailConfirmed: $user->isEmailConfirmed(),
+            phoneConfirmed: $user->isPhoneConfirmed(),
+            timeZone: $user->getTimeZone(),
+            lastName: $user->getName()->getLast(),
+            firstName: $user->getName()->getFirst(),
+            middleName: $user->getName()->getMiddle(),
+            refreshToken: $user->getRefreshToken()->getToken(),
+            phone: $user->getPhone(),
+            avatarLink: $user->getAvatarLink(),
+            emailCode: $user->getEmailCode(),
+            phoneCode: $user->getPhoneCode()
         );
 
         $form = $this->formFactory->create(UserType::class, $formData, ['group_id' => $groupId]);

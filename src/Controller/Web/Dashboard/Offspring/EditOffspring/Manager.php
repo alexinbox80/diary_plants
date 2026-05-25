@@ -33,15 +33,15 @@ class Manager
         $groupId = $offspring->getGroup()->getId();
 
         $formData = new EditOffspringDTO(
-            $groupId,
-            $offspring->getPlant()->getId(),
-            $offspring->getPhenology()->getFruitingDate(),
-            $offspring->getPhenology()->getFloweringDate(),
-            $offspring->getFruitMetrics()->getMass(),
-            $offspring->getFruitMetrics()->getColor(),
-            $offspring->getFruitMetrics()->getFlavor(),
-            $offspring->getFruitMetrics()->getQuantity(),
-            $offspring->getComment()
+            groupId: $groupId,
+            plantId: $offspring->getPlant()->getId(),
+            fruitingDate: $offspring->getPhenology()->getFruitingDate(),
+            floweringDate: $offspring->getPhenology()->getFloweringDate(),
+            mass: $offspring->getFruitMetrics()->getMass(),
+            wordColor: $offspring->getFruitMetrics()->getColor(),
+            flavor: $offspring->getFruitMetrics()->getFlavor(),
+            quantity: $offspring->getFruitMetrics()->getQuantity(),
+            comment: $offspring->getComment()
         );
 
         $form = $this->formFactory->create(OffspringType::class, $formData, ['group_id' => $groupId]);

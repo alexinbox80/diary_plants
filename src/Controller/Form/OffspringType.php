@@ -69,8 +69,8 @@ class OffspringType extends AbstractType
                 'label' => $labels['mass'],
                 'required' => false,
             ])
-            ->add('color', TextType::class, [
-                'label' => $labels['color'],
+            ->add('wordColor', TextType::class, [
+                'label' => $labels['word_color'],
                 'required' => false,
             ])
             ->add('flavor', TextType::class, [

@@ -22,9 +22,9 @@ final class Manager
     public function editFormData(Request $request, Group $group): array
     {
         $formData = new EditGroupDTO(
-            $group->isActive(),
-            $group->getTitle(),
-            $group->getDescription()
+            isActive: $group->isActive(),
+            title: $group->getTitle(),
+            description: $group->getDescription()
         );
 
         $form = $this->formFactory->create(GroupType::class, $formData);

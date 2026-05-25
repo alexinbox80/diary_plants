@@ -33,18 +33,18 @@ final class Manager
         $groupId = $attachment->getGroup()->getId();
 
         $formData = new EditImageDTO(
-            $groupId,
-            $attachment->getDisplaySettings()->isShown(),
-            $attachment->getFileInfo()->getFilename(),
-            $attachment->getFileInfo()->getPath(),
-            $attachment->getFileInfo()->getMimeType(),
-            $attachment->getDisplaySettings()->getAlt(),
-            $attachment->getDisplaySettings()->getTitle(),
-            $attachment->getFileInfo()->getFileDate(),
-            $attachment->getDisplaySettings()->getDescription(),
-            (int) $attachment->getTarget()->getAttachableId(),
-            $attachment->getTarget()->getAttachableType()->value,
-            null
+            groupId: $groupId,
+            isShown: $attachment->getDisplaySettings()->isShown(),
+            filename: $attachment->getFileInfo()->getFilename(),
+            path: $attachment->getFileInfo()->getPath(),
+            mimeType: $attachment->getFileInfo()->getMimeType(),
+            alt: $attachment->getDisplaySettings()->getAlt(),
+            title: $attachment->getDisplaySettings()->getTitle(),
+            fileDate: $attachment->getFileInfo()->getFileDate(),
+            description: $attachment->getDisplaySettings()->getDescription(),
+            attachableId: (int) $attachment->getTarget()->getAttachableId(),
+            attachableType: $attachment->getTarget()->getAttachableType()->value,
+            imageFile: null
         );
 
         $form = $this->formFactory->create(ImageType::class, $formData);

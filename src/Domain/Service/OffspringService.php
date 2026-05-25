@@ -162,7 +162,7 @@ class OffspringService
             $dto->fruitingDate,
             $dto->floweringDate,
             (int) $dto->mass,
-            $dto->color,
+            $dto->wordColor,
             $dto->flavor,
             (int) $dto->quantity,
             $dto->comment,
@@ -221,7 +221,7 @@ class OffspringService
             $dto->fruitingDate,
             $dto->floweringDate,
             $dto->mass,
-            $dto->color,
+            $dto->wordColor,
             $dto->flavor,
             $dto->quantity,
             $dto->comment

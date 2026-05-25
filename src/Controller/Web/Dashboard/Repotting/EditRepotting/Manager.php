@@ -33,13 +33,13 @@ final class Manager
         $groupId = $repotting->getGroup()->getId();
 
         $formData = new EditRepottingDTO(
-            $groupId,
-            $repotting->getPlant()->getId(),
-            $repotting->getRepottedAt(),
-            $repotting->getDetails()->getType()->value,
-            $repotting->getDetails()->getMaterial()->value,
-            $repotting->getDetails()->getPotSize(),
-            $repotting->getComment()
+            groupId: $groupId,
+            plantId: $repotting->getPlant()->getId(),
+            repottedAt: $repotting->getRepottedAt(),
+            type: $repotting->getDetails()->getType()->value,
+            potMaterial: $repotting->getDetails()->getMaterial()->value,
+            potSize: $repotting->getDetails()->getPotSize(),
+            comment: $repotting->getComment()
         );
 
         $form = $this->formFactory->create(RepottingType::class, $formData, ['group_id' => $groupId]);
