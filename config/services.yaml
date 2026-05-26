@@ -30,8 +30,8 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Controller\Cli\ConvertCSVCommand:
-        class: App\Controller\Cli\ConvertCSVCommand
+    App\Infrastructure\Console\ConvertCSVCommand:
+        class: App\Infrastructure\Console\ConvertCSVCommand
         tags: [ 'console.command' ]
         arguments:
             $csvFilePrefix: '%csvFilePrefix%'

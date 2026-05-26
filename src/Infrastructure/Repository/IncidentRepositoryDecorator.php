@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use Exception;
+use DateTimeImmutable;
 use InvalidArgumentException;
 use App\Domain\Entity\Incident;
 use App\Domain\Model\Incident\IncidentModel;
@@ -130,5 +131,14 @@ class IncidentRepositoryDecorator implements IncidentRepositoryInterface
     public function toModel(Incident $incident): IncidentModel
     {
         return IncidentModel::fromEntity($incident);
+    }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return int
+     */
+    public function deleteOlderThan(DateTimeImmutable $date): int
+    {
+        return $this->incidentRepository->deleteOlderThan($date);
     }
 }

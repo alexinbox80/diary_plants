@@ -2,6 +2,7 @@
 
 namespace App\Domain\Repository;
 
+use DateTimeImmutable;
 use App\Domain\Entity\Incident;
 use App\Domain\Model\Incident\IncidentModel;
 
@@ -17,4 +18,5 @@ interface IncidentRepositoryInterface
     public function update(): void;
     public function remove(Incident $incident): void;
     public function toModel(Incident $incident): IncidentModel;
+    public function deleteOlderThan(DateTimeImmutable $date): int;
 }

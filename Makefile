@@ -16,7 +16,7 @@ test-cover:
 	$(DOCKER_BIN) exec -e XDEBUG_MODE=coverage -it -u www-data $(PHP_CONT) vendor/bin/phpunit --coverage-text
 
 convert:
-	$(PHP_CONSOLE) database:convert:csv
+	$(PHP_CONSOLE) app:database:convert:csv
 	$(PHP_CONSOLE) app:stats:init-watering
 
 analytic:

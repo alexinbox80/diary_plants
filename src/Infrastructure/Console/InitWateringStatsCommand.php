@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Controller\Cli;
+namespace App\Infrastructure\Console;
 
+use App\Domain\Model\Analytic\CreateAnalyticModel;
+use App\Domain\Model\Usage\UsageModel;
+use App\Domain\Service\AnalyticsCalculator;
+use App\Domain\Service\AnalyticService;
 use App\Domain\Service\PlantService;
 use App\Domain\Service\UsageService;
-use App\Domain\Model\Usage\UsageModel;
-use App\Domain\Service\AnalyticService;
-use App\Domain\Service\AnalyticsCalculator;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use App\Domain\Model\Analytic\CreateAnalyticModel;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use App\Domain\ValueObject\Analytic\IntervalMetrics;
-use Symfony\Component\Console\Output\OutputInterface;
 use App\Domain\ValueObject\Enum\Usage\AttachableType;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:stats:init-watering',

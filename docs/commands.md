@@ -90,6 +90,13 @@ curl -o /dev/null -s -w 'Total: %{time_total}s\n' http://localhost:8080/en/dashb
 #docker build
 docker compose up --build -d 
 
+#Scheduler
+php bin/console debug:scheduler
+php bin/console debug:scheduler default
+
+#Test run
+php bin/console messenger:consume scheduler_default -vv
+
 #show prev version from old commit
 bash-3.2$ git show HEAD~3:composer.lock | grep -A 2 '"name": "phpunit/phpunit"'
 "name": "phpunit/phpunit",

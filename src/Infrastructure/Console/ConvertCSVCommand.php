@@ -1,18 +1,21 @@
 <?php
 
-namespace App\Controller\Cli;
+namespace App\Infrastructure\Console;
 
 use App\Domain\Service\Csv\CsvService;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: self::CONVERT_CSV_COMMAND_NAME, hidden: false)]
+#[AsCommand(
+    name: self::CONVERT_CSV_COMMAND_NAME,
+    description: self::CONVERT_CSV_DESCRIPTION,
+)]
 final class ConvertCSVCommand extends Command
 {
-    public const CONVERT_CSV_COMMAND_NAME = 'database:convert:csv';
-    public const CONVERT_CSV_DESCRIPTION = 'Convert CSV files to corresponding entities';
+    public const string CONVERT_CSV_COMMAND_NAME = 'app:database:convert:csv';
+    public const string CONVERT_CSV_DESCRIPTION = 'Convert CSV files to corresponding entities';
 
     public function __construct(
         private readonly string $csvFilePrefix,
@@ -20,11 +23,6 @@ final class ConvertCSVCommand extends Command
     )
     {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription(self::CONVERT_CSV_DESCRIPTION);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -3,6 +3,7 @@
 namespace App\Domain\Service;
 
 use Throwable;
+use DateTimeImmutable;
 use App\Domain\Entity\Incident;
 use App\Domain\ValueObject\RequestDetails;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -133,5 +134,14 @@ class IncidentService
         if ($incident !== null) {
             $this->incidentRepository->remove($incident);
         }
+    }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return int
+     */
+    public function deleteOlderThan(DateTimeImmutable $date): int
+    {
+        return $this->incidentRepository->deleteOlderThan($date);
     }
 }

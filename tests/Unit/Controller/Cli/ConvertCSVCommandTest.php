@@ -2,9 +2,9 @@
 
 namespace Unit\Controller\Cli;
 
-use PHPUnit\Framework\TestCase;
 use App\Domain\Service\Csv\CsvService;
-use App\Controller\Cli\ConvertCSVCommand;
+use App\Infrastructure\Console\ConvertCSVCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ConvertCSVCommandTest extends TestCase

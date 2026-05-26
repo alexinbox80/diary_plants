@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use Exception;
+use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 use App\Domain\Entity\Incident;
 
@@ -116,5 +117,17 @@ class IncidentRepository extends AbstractRepository
     {
         $incident->setDeletedAt();
         $this->flush();
+    }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return int
+     */
+    public function deleteOlderThan(DateTimeImmutable $date): int
+    {
+        return $this->entityManager
+            ->createQuery('DELETE FROM App\Domain\Entity\Incident i WHERE i.createdAt < :dateLimit')
+            ->setParameter('dateLimit', $date)
+            ->execute();
     }
 }
