@@ -1,0 +1,46 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+    Произошла ошибка на сервере
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard/style.css') }}">
+{% endblock %}
+
+{% block favicon %}
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="content-wrapper d-flex align-items-center auth">
+                <div class="col-lg-4 mx-auto">
+                    <div class="auth-form-light text-left p-5 shadow-sm bg-white rounded error-container d-flex flex-column">
+
+                        <div class="brand-logo text-center mb-4">
+                            <h1 class="text-success font-weight-bold">Упс! Что-то пошло не так (500)</h1>
+                        </div>
+
+                        <p class="font-weight-light mb-3 text-center">{{ message }}</p>
+
+                        {% if error_code %}
+                            <div class="text-danger text-center mb-4">
+                                Код ошибки для поддержки: <strong>{{ error_code }}</strong>
+                            </div>
+                        {% endif %}
+
+                        <div class="text-center">
+                            <a href="#" class="auth-link text-black small">Вернуться обратно</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

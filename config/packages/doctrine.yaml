@@ -13,6 +13,8 @@ doctrine:
             price: App\Infrastructure\Doctrine\Types\PriceType
             email: App\Infrastructure\Doctrine\Types\EmailType
             phone: App\Infrastructure\Doctrine\Types\PhoneType
+            request_details_json: App\Infrastructure\Doctrine\Types\RequestDetailsType
+
         options:
             1002: "SET timezone='UTC'"
 

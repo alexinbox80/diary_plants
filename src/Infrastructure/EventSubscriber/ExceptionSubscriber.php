@@ -4,6 +4,7 @@ namespace App\Infrastructure\EventSubscriber;
 
 use Throwable;
 use Twig\Environment;
+use App\Domain\Service\IncidentService;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Response;
 use App\Domain\Exception\UserNotFoundException;
@@ -22,14 +23,15 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private Environment $twig,
-        private readonly bool $debug
+        private readonly bool $debug,
+        private readonly IncidentService $incidentService,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
-        //return [KernelEvents::EXCEPTION => ['onKernelException', 10]];
-        return [];
+        return [KernelEvents::EXCEPTION => ['onKernelException', 10]];
+        //return [];
     }
 
     public function onKernelException(ExceptionEvent $event): void
@@ -40,15 +42,21 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         // 1. Определяем HTTP статус-код
         $statusCode = $this->mapExceptionToCode($exception);
 
-        // 2. Проверяем, нужно ли отдавать JSON (для API или заголовка Accept: application/json)
+        // 2. Если это 5xx ошибка на проде (не debug), логируем инцидент в БД
+        $publicErrorCode = null;
+        if ($statusCode >= 500 && $statusCode <= 599 && !$this->debug) {
+            $publicErrorCode = $this->incidentService->createFromException($exception, $request, $statusCode);
+        }
+
+        // 3. Проверяем формат ответа (JSON или HTML)
         $isJsonRequest = $request->getContentTypeFormat() === 'json'
             || str_contains($request->getPathInfo(), '/api')
             || $request->headers->get('Accept') === 'application/json';
 
         if ($isJsonRequest) {
-            $response = $this->createJsonResponse($exception, $statusCode);
+            $response = $this->createJsonResponse($exception, $statusCode, $publicErrorCode);
         } else {
-            $response = $this->createHtmlResponse($exception, $statusCode);
+            $response = $this->createHtmlResponse($exception, $statusCode, $publicErrorCode);
         }
 
         $event->setResponse($response);
@@ -67,7 +75,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         };
     }
 
-    private function createJsonResponse(Throwable $exception, int $statusCode): JsonResponse
+    private function createJsonResponse(Throwable $exception, int $statusCode, ?string $publicErrorCode): JsonResponse
     {
         if ($exception instanceof ValidationFailedException) {
             $errors = [];
@@ -78,48 +86,61 @@ final class ExceptionSubscriber implements EventSubscriberInterface
             return new JsonResponse(['errors' => $errors], $statusCode);
         }
 
+        // Защита информации на проде: скрываем системный текст ошибки для 5xx
+        $message = $exception->getMessage();
+        if ($statusCode >= 500 && $statusCode <= 599 && !$this->debug) {
+            $message = 'Внутренняя ошибка сервера. Пожалуйста, передайте код ошибки в службу поддержки.';
+        }
+
         $data = [
             'status' => 'error',
             'code' => $statusCode,
             'message' => ($exception instanceof HttpCompliantExceptionInterface)
                 ? $exception->getHttpResponseBody()
-                : $exception->getMessage()
+                : $message
         ];
 
-        // Добавляем детализацию ТОЛЬКО в режиме debug (dev)
+        // Добавляем публичный код инцидента в ответ клиенту
+        if ($publicErrorCode !== null) {
+            $data['error_code'] = $publicErrorCode;
+        }
+
         if ($this->debug) {
             $data['debug'] = [
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
                 'class' => get_class($exception),
-                'trace' => array_slice($exception->getTrace(), 0, 10), // берем первые 10 шагов
+                'trace' => array_slice($exception->getTrace(), 0, 10),
             ];
         }
 
         return new JsonResponse($data, $statusCode);
     }
 
-    private function createHtmlResponse(Throwable $exception, int $statusCode): Response
+    private function createHtmlResponse(Throwable $exception, int $statusCode, ?string $publicErrorCode): Response
     {
-        // Определяем шаблон для конкретного кода (404, 500 и т.д.) или дефолтный
         $template = sprintf('bundles/TwigBundle/Exception/error%s.html.twig', $statusCode);
 
         if (!$this->twig->getLoader()->exists($template)) {
             $template = 'bundles/TwigBundle/Exception/error.html.twig';
         }
 
+        $message = $exception->getMessage();
+        if ($statusCode >= 500 && $statusCode <= 599 && !$this->debug) {
+            $message = 'На сервере произошел непредвиденный сбой. Мы уже работаем над его устранением.';
+        }
+
         try {
             $content = $this->twig->render($template, [
                 'status_code' => $statusCode,
-                'message'     => $exception->getMessage(),
+                'message'     => $message,
                 'exception'   => $exception,
+                'error_code'  => $publicErrorCode,
             ]);
-        } catch (Throwable $e) {
-            // Запасной вариант, если Twig упал (показываем детали только в debug)
-            $content = "<h1>Error $statusCode</h1><p>{$exception->getMessage()}</p>";
-            if ($this->debug) {
-                $content .= "<hr><p>Critical: Twig failed to render error page.</p>";
-                $content .= "<p>Original error in <b>{$exception->getFile()}</b> on line <b>{$exception->getLine()}</b></p>";
+        } catch (Throwable) {
+            $content = "<h1>Ошибка $statusCode</h1><p>{$message}</p>";
+            if ($publicErrorCode) {
+                $content .= "<p><b>Код инцидента:</b> {$publicErrorCode}</p>";
             }
         }
 
