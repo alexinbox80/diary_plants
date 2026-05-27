@@ -7,5 +7,7 @@ namespace App\Application\Message;
  */
 final readonly class ClearOldIncidentsMessage
 {
-    // Здесь могут быть параметры, например, сколько дней хранить
+    public function __construct(
+        public int $daysToKeep = 30 // 30 дней по умолчанию
+    ) {}
 }

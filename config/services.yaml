@@ -6,6 +6,7 @@
 parameters:
     locale: 'ru'
     app.supported_locales: 'ru|en'
+    app.incidents_days_to_keep: 30
     csvFilePrefix: 'var/data/entities/'
     csvSeparator: ';'
     csvImageFilePrefix: 'var/data/images/'
@@ -39,6 +40,14 @@ services:
     App\Domain\Service\PlantService:
         arguments:
             $webURL: '%webURL%'
+
+    App\Infrastructure\Console\ClearIncidentsCommand:
+        arguments:
+            $incidentsDaysToKeep: '%app.incidents_days_to_keep%'
+
+    App\Infrastructure\Scheduler\AppScheduleProvider:
+        arguments:
+            $incidentsDaysToKeep: '%app.incidents_days_to_keep%'
 
     App\Infrastructure\Storage\LocalFileStorage:
         arguments:
