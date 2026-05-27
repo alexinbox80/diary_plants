@@ -1,18 +1,18 @@
 <?php
 
-namespace Unit\Controller\Cli;
+namespace Unit\Infrastructure\Console;
 
-use App\Domain\Model\Analytic\AnalyticModel;
+use PHPUnit\Framework\TestCase;
+use App\Domain\Service\PlantService;
+use App\Domain\Service\UsageService;
 use App\Domain\Model\Group\GroupModel;
 use App\Domain\Model\Plant\PlantModel;
 use App\Domain\Model\Usage\UsageModel;
-use App\Domain\Service\AnalyticsCalculator;
 use App\Domain\Service\AnalyticService;
-use App\Domain\Service\PlantService;
-use App\Domain\Service\UsageService;
-use App\Infrastructure\Console\InitWateringStatsCommand;
-use PHPUnit\Framework\TestCase;
+use App\Domain\Service\AnalyticsCalculator;
+use App\Domain\Model\Analytic\AnalyticModel;
 use Symfony\Component\Console\Tester\CommandTester;
+use App\Infrastructure\Console\InitWateringStatsCommand;
 
 class InitWateringStatsCommandTest extends TestCase
 {

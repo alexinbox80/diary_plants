@@ -1,10 +1,10 @@
 <?php
 
-namespace Unit\Controller\Cli;
+namespace Unit\Infrastructure\Console;
 
+use PHPUnit\Framework\TestCase;
 use App\Domain\Service\Csv\CsvService;
 use App\Infrastructure\Console\ConvertCSVCommand;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ConvertCSVCommandTest extends TestCase
@@ -82,7 +82,7 @@ class ConvertCSVCommandTest extends TestCase
         // 5. Проверяем вывод в консоли
         $output = $commandTester->getDisplay();
 
-        $this->assertStringContainsString('Run command database:convert:csv', $output);
+        $this->assertStringContainsString('Run command app:database:convert:csv', $output);
         $this->assertStringContainsString('From file 01.plant.csv 10 records were created', $output);
         $this->assertStringContainsString('From file 02.group.csv 5 records were created', $output);
 

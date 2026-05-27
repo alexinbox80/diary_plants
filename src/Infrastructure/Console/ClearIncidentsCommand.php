@@ -11,12 +11,11 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Application\Message\ClearOldIncidentsMessage;
 
-
 #[AsCommand(
     name: 'app:incidents:clear',
     description: 'Deletes incidents older than a specified number of days'
 )]
-class ClearIncidentsCommand extends Command
+final class ClearIncidentsCommand extends Command
 {
     public function __construct(
         private readonly int $incidentsDaysToKeep,

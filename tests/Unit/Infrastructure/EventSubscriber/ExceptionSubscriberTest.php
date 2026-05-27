@@ -8,6 +8,7 @@ use Twig\Environment;
 use PHPUnit\Framework\TestCase;
 use Twig\Loader\LoaderInterface;
 use PHPUnit\Framework\Attributes\Test;
+use App\Domain\Service\IncidentService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,12 +21,16 @@ use App\Infrastructure\EventSubscriber\ExceptionSubscriber;
 class ExceptionSubscriberTest extends TestCase
 {
     private $twig;
+    private $incidentService;
     private $subscriber;
 
     protected function setUp(): void
     {
         $this->twig = $this->createMock(Environment::class);
-        $this->subscriber = new ExceptionSubscriber($this->twig, true);
+
+        $this->incidentService = $this->createMock(IncidentService::class);
+
+        $this->subscriber = new ExceptionSubscriber($this->twig, true, $this->incidentService);
     }
 
     #[Test]
@@ -118,5 +123,43 @@ class ExceptionSubscriberTest extends TestCase
         $this->subscriber->onKernelException($event);
 
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $event->getResponse()->getStatusCode());
+    }
+
+    #[Test]
+    public function testOnKernelExceptionLogsIncidentOnProduction(): void
+    {
+        // Создаем подписчик в режиме ПРОДАКШЕНА (debug = false)
+        $subscriber = new ExceptionSubscriber($this->twig, false, $this->incidentService);
+
+        $exception = new RuntimeException('Critical DB Error');
+        $request = Request::create('/api/v1/data');
+        $request->headers->set('Accept', 'application/json');
+
+        $event = new ExceptionEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MAIN_REQUEST,
+            $exception
+        );
+
+        // Ожидаем, что сервис инцидентов будет вызван ОДИН раз и вернет фейковый UUID инцидента
+        $this->incidentService->expects($this->once())
+            ->method('createFromException')
+            ->with($exception, $request, Response::HTTP_INTERNAL_SERVER_ERROR)
+            ->willReturn('INC-12345');
+
+        // Действие
+        $subscriber->onKernelException($event);
+
+        // Проверка ответа
+        $response = $event->getResponse();
+        $data = json_decode($response->getContent(), true);
+
+        // Проверяем скрытие системного текста ошибки на проде
+        $this->assertEquals('Внутренняя ошибка сервера. Пожалуйста, передайте код ошибки в службу поддержки.', $data['message']);
+
+        // Проверяем, что публичный код инцидента подставился в JSON
+        $this->assertArrayHasKey('error_code', $data);
+        $this->assertEquals('INC-12345', $data['error_code']);
     }
 }

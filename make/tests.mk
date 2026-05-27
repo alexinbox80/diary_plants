@@ -29,7 +29,7 @@ event-test:
 
 cli-test:
 	@echo "--- Running Command Line Tests ---"
-	$(PHPUNIT) tests/Unit/Controller/Cli
+	$(PHPUNIT) tests/Unit/Infrastructure/Console
 
 form-test:
 	@echo "--- Running Form Tests ---"
