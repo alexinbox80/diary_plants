@@ -23,7 +23,9 @@
                                 <span id="" class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#qrModal">{{ 'dashboard.navbar.table.qr_code_list_label'|trans }}</span>
                                 {{ qrlist.modal_qrlist(array.table_body) }}
                             {% endif %}
-                            <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">{{ 'dashboard.navbar.table.create_button_label'|trans }}</a>
+                            {% if not(is_granted('ROLE_ADMIN')) %}
+                                <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">{{ 'dashboard.navbar.table.create_button_label'|trans }}</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -91,13 +93,15 @@
                                                     aria-labelledby="dropdownMenuButton{{ loop.index }}"
                                                 >
                                                     <div class="d-flex">
-                                                        <a
-                                                            href="{{ path(route_edit, {'id': item.id}) }}"
-                                                            class="dropdown-item px-3"
-                                                            title="{{ 'dashboard.navbar.table.action_edit_label'|trans  }}"
-                                                        >
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
+                                                        {% if not(is_granted('ROLE_ADMIN')) %}
+                                                            <a
+                                                                href="{{ path(route_edit, {'id': item.id}) }}"
+                                                                class="dropdown-item px-3"
+                                                                title="{{ 'dashboard.navbar.table.action_edit_label'|trans  }}"
+                                                            >
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                        {% endif %}
                                                         <a
                                                             href="#"
                                                             class="dropdown-item px-3 text-danger"

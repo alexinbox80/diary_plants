@@ -11,15 +11,16 @@ use App\Domain\Entity\Traits\DeletedAtTrait;
 use App\Domain\Entity\Traits\UpdatedAtTrait;
 use Webmozart\Assert\Assert as WebmozartAssert;
 use App\Domain\Entity\Interfaces\EntityInterface;
-use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
+use App\Domain\Entity\Interfaces\GroupOwnedInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
+use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
 
 #[ORM\Table(name: 'incident')]
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'incident__created_at__ind', columns: ['created_at'])]
 #[ORM\UniqueConstraint(name: 'incident__public_code__uniq', columns: ['public_code'], options: ['where' => '(deleted_at IS NULL)'])]
-final class Incident implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
+final class Incident implements EntityInterface, GroupOwnedInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
     use CreatedAtTrait, UpdatedAtTrait, DeletedAtTrait;
 
@@ -103,5 +104,20 @@ final class Incident implements EntityInterface, HasMetaTimestampsInterface, Sof
     public function getStackTrace(): array
     {
         return $this->stackTrace;
+    }
+
+    public function getGroup(): Group
+    {
+
+    }
+
+    public function getGroupId(): int
+    {
+        return 0;
+    }
+
+    public function moveToGroup(Group $group): GroupOwnedInterface
+    {
+        return $this;
     }
 }
