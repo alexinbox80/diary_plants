@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\EventSubscriber;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 use Twig\Environment;
 use App\Domain\Service\IncidentService;
@@ -25,6 +26,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         private Environment $twig,
         private readonly bool $debug,
         private readonly IncidentService $incidentService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -89,7 +91,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         // Защита информации на проде: скрываем системный текст ошибки для 5xx
         $message = $exception->getMessage();
         if ($statusCode >= 500 && $statusCode <= 599 && !$this->debug) {
-            $message = 'Внутренняя ошибка сервера. Пожалуйста, передайте код ошибки в службу поддержки.';
+            $message = $this->translator->trans('exception.subscriber.5xx.json');
         }
 
         $data = [
@@ -127,7 +129,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
 
         $message = $exception->getMessage();
         if ($statusCode >= 500 && $statusCode <= 599 && !$this->debug) {
-            $message = 'На сервере произошел непредвиденный сбой. Мы уже работаем над его устранением.';
+            $message = $this->translator->trans('exception.subscriber.5xx.html');
         }
 
         try {
@@ -138,9 +140,11 @@ final class ExceptionSubscriber implements EventSubscriberInterface
                 'error_code'  => $publicErrorCode,
             ]);
         } catch (Throwable) {
-            $content = "<h1>Ошибка $statusCode</h1><p>{$message}</p>";
+            $errorLabel = $this->translator->trans('exception.subscriber.label.error');
+            $errorContent = $this->translator->trans('exception.subscriber.label.content');
+            $content = "<h1>$errorLabel $statusCode</h1><p>{$message}</p>";
             if ($publicErrorCode) {
-                $content .= "<p><b>Код инцидента:</b> {$publicErrorCode}</p>";
+                $content .= "<p><b>$errorContent:</b> {$publicErrorCode}</p>";
             }
         }
 

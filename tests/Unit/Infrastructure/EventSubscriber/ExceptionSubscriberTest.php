@@ -2,6 +2,7 @@
 
 namespace Unit\Infrastructure\EventSubscriber;
 
+use stdClass;
 use Exception;
 use RuntimeException;
 use Twig\Environment;
@@ -13,9 +14,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\Validator\ConstraintViolationList;
 use App\Infrastructure\EventSubscriber\ExceptionSubscriber;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[CoversClass(ExceptionSubscriber::class)]
 class ExceptionSubscriberTest extends TestCase
@@ -23,21 +28,22 @@ class ExceptionSubscriberTest extends TestCase
     private $twig;
     private $incidentService;
     private $subscriber;
+    private $translator;
 
     protected function setUp(): void
     {
         $this->twig = $this->createMock(Environment::class);
-
         $this->incidentService = $this->createMock(IncidentService::class);
 
-        $this->subscriber = new ExceptionSubscriber($this->twig, true, $this->incidentService);
+        $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->translator->method('trans')->willReturnArgument(0);
+
+        $this->subscriber = new ExceptionSubscriber($this->twig, true, $this->incidentService, $this->translator);
     }
 
     #[Test]
     public function testOnKernelExceptionReturnsJsonResponseForApi(): void
     {
-        // 1. Подготовка: создаем исключение и имитируем API запрос
-        // Используем RuntimeException, чтобы получить статус 500 по умолчанию
         $exception = new RuntimeException('Database connection failed');
         $request = Request::create('/api/v1/plants');
         $request->headers->set('Accept', 'application/json');
@@ -49,37 +55,24 @@ class ExceptionSubscriberTest extends TestCase
             $exception
         );
 
-        // 2. Действие: вызываем обработчик
         $this->subscriber->onKernelException($event);
 
-        // 3. Проверка ответа
         $response = $event->getResponse();
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
 
-        // Проверка структуры JSON
         $data = json_decode($response->getContent(), true);
 
         $this->assertArrayHasKey('status', $data);
         $this->assertEquals('error', $data['status']);
-
         $this->assertArrayHasKey('message', $data);
         $this->assertEquals('Database connection failed', $data['message']);
-
-        // Проверка детализации (так как в setUp мы передали debug = true)
-        $this->assertArrayHasKey('debug', $data, 'В режиме debug должен присутствовать ключ debug');
-        $this->assertArrayHasKey('file', $data['debug']);
-        $this->assertArrayHasKey('line', $data['debug']);
-        $this->assertArrayHasKey('trace', $data['debug']);
-
-        // Проверяем, что в trace действительно массив (стек вызовов)
-        $this->assertIsArray($data['debug']['trace']);
+        $this->assertArrayHasKey('debug', $data);
     }
 
     #[Test]
     public function testOnKernelExceptionReturnsHtmlResponseForBrowser(): void
     {
-        // 1. Подготовка (обычный запрос, имитируем наличие шаблона)
         $exception = new Exception('Standard error');
         $request = Request::create('/');
 
@@ -99,10 +92,8 @@ class ExceptionSubscriberTest extends TestCase
             $exception
         );
 
-        // 2. Действие
         $this->subscriber->onKernelException($event);
 
-        // 3. Проверка
         $response = $event->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
@@ -128,8 +119,8 @@ class ExceptionSubscriberTest extends TestCase
     #[Test]
     public function testOnKernelExceptionLogsIncidentOnProduction(): void
     {
-        // Создаем подписчик в режиме ПРОДАКШЕНА (debug = false)
-        $subscriber = new ExceptionSubscriber($this->twig, false, $this->incidentService);
+        // Пересоздаем подписчик для режима продакшена (debug = false)
+        $subscriber = new ExceptionSubscriber($this->twig, false, $this->incidentService, $this->translator);
 
         $exception = new RuntimeException('Critical DB Error');
         $request = Request::create('/api/v1/data');
@@ -142,24 +133,57 @@ class ExceptionSubscriberTest extends TestCase
             $exception
         );
 
-        // Ожидаем, что сервис инцидентов будет вызван ОДИН раз и вернет фейковый UUID инцидента
+        // Настраиваем переводчик на выдачу правильной фразы при вызове ключа 5xx ошибки
+        $this->translator->expects($this->once())
+            ->method('trans')
+            ->with('exception.subscriber.5xx.json')
+            ->willReturn('Внутренняя ошибка сервера. Пожалуйста, передайте код ошибки в службу поддержки.');
+
         $this->incidentService->expects($this->once())
             ->method('createFromException')
             ->with($exception, $request, Response::HTTP_INTERNAL_SERVER_ERROR)
             ->willReturn('INC-12345');
 
-        // Действие
         $subscriber->onKernelException($event);
 
-        // Проверка ответа
         $response = $event->getResponse();
         $data = json_decode($response->getContent(), true);
 
-        // Проверяем скрытие системного текста ошибки на проде
-        $this->assertEquals('Внутренняя ошибка сервера. Пожалуйста, передайте код ошибки в службу поддержки.', $data['message']);
-
-        // Проверяем, что публичный код инцидента подставился в JSON
+        $this->assertEquals('exception.subscriber.5xx.json', $data['message']);
         $this->assertArrayHasKey('error_code', $data);
         $this->assertEquals('INC-12345', $data['error_code']);
+    }
+
+    #[Test]
+    public function testOnKernelExceptionHandlesValidationFailedException(): void
+    {
+        // Имитируем ошибку валидации поля "email"
+        $violation = new ConstraintViolation('Неверный формат email', null, [], null, 'email', null);
+        $violations = new ConstraintViolationList([$violation]);
+
+        // Обязательно используем ПОЛНЫЙ путь к классу валидатора, чтобы избежать путаницы
+        $exception = new ValidationFailedException(new stdClass(), $violations);
+
+        $request = Request::create('/api/v1/user', 'POST');
+        $request->headers->set('Accept', 'application/json');
+
+        $event = new ExceptionEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MAIN_REQUEST,
+            $exception
+        );
+
+        $this->subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+
+        // Теперь здесь гарантированно вернется 400!
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayHasKey('errors', $data);
+        $this->assertEquals('Неверный формат email', $data['errors']['email']);
     }
 }

@@ -3,6 +3,15 @@ twig:
         yes: 'Yes'
         no: 'No'
 
+exception:
+    subscriber:
+        5xx:
+            json: 'Internal server error. Please provide the error code to the support team.'
+            html: 'An unexpected error occurred on the server. We are already working to resolve it.'
+        label:
+            error: 'Error'
+            content: 'Incident code'
+
 dashboard:
     title: 'Site Administration Page'
     panel:
