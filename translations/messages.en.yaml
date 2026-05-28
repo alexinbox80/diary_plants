@@ -28,6 +28,13 @@ dashboard:
             question_prefix: 'Are you sure you want to delete'
             button_cancel_label: 'Cancel'
             button_submit_label: 'Delete'
+        incident:
+            button:
+                main_label: 'View'
+                close_label: 'Close'
+            header: 'Incident'
+            copy_buffer: 'Copy to Clipboard'
+
     navbar:
         title: 'Plant diary'
         language:
@@ -160,6 +167,12 @@ dashboard:
         edit_page_title: 'Edit group'
         create_page_title: 'Create group'
 
+    incident:
+        title: 'Incident Log'
+        list: 'Incident List'
+        edit_page_title: 'Edit Incident'
+        create_page_title: 'Create Incident'
+
 menu:
     panel: 'Dashboard'
     plants: 'Plants'
@@ -175,6 +188,10 @@ menu:
     images: 'Gallery'
     users: 'Users'
     groups: 'Groups'
+    incidents: 'Incidents'
+    swagger:
+        ui: 'API Docs'
+        json: 'JSON Specification'
 
 timezone:
     utc: 'UTC'
@@ -325,6 +342,9 @@ user:
         created: 'User created successfully.'
         updated: 'User updated successfully.'
         deleted: 'User deleted successfully.'
+incident:
+    flash:
+        deleted: 'Incident deleted successfully.'
 
 table:
     plant:
@@ -533,6 +553,21 @@ table:
             title: 'Title'
             is_active: 'Group is active'
             description: 'Description'
+            created_at: 'Creation date'
+            updated_at: 'Update date'
+
+    incident:
+        header:
+            id: '#'
+            user_id: 'User ID'
+            public_code: 'Error Code'
+            uri: 'Request URI'
+            method: 'Method'
+            client_ip: 'Client IP'
+            payload: 'Payload'
+            status_code: 'Status Code'
+            error_message: 'Error Message'
+            stack_trace: 'Stack Trace'
             created_at: 'Creation date'
             updated_at: 'Update date'
 

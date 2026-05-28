@@ -100,7 +100,7 @@ final class IncidentModel
             'payload' => 'table.incident.header.payload',
             'status_code' => 'table.incident.header.status_code',
             'error_message' => 'table.incident.header.error_message',
-            //'stack_trace' => 'table.incident.header.stack_trace',
+            'stack_trace' => 'table.incident.header.stack_trace',
             'created_at' => 'table.incident.header.created_at',
             'updated_at' => 'table.incident.header.updated_at'
         ];
@@ -124,7 +124,7 @@ final class IncidentModel
             'payload' => $this->getRequestDetails()->getPayload(),
             'status_code' => $this->getStatusCode(),
             'error_message' => $this->getErrorMessage(),
-            //'stack_trace' => $this->getStackTrace(),
+            'stack_trace' => $this->getStackTrace(),
             'created_at' => $this->getCreatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s'),
             'updated_at' => $this->getUpdatedAt()->setTimezone($timezone)->format('d.m.Y H:i:s')
         ];

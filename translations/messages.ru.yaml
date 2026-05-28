@@ -28,6 +28,13 @@ dashboard:
             question_prefix: 'Вы действительно хотите удалить'
             button_cancel_label: 'Отмена'
             button_submit_label: 'Удалять'
+        incident:
+            button:
+                main_label: 'Посмотреть'
+                close_label: 'Закрыть'
+            header: 'Инцидент'
+            copy_buffer: 'Копировать в буфер'
+
     navbar:
         title: 'Дневник растений'
         language:
@@ -160,6 +167,12 @@ dashboard:
         edit_page_title: 'Редактировать группу'
         create_page_title: 'Создать группу'
 
+    incident:
+        title: 'Журнал инцидентов'
+        list: 'Список инцидентов'
+        edit_page_title: 'Редактировать инцидент'
+        create_page_title: 'Создать инцидент'
+
 menu:
     panel: 'Панель'
     plants: 'Растения'
@@ -175,6 +188,10 @@ menu:
     images: 'Галерея'
     users: 'Пользователи'
     groups: 'Группы'
+    incidents: 'Журнал инцидентов'
+    swagger:
+        ui: 'Интерфейс API'
+        json: 'Спецификация JSON'
 
 timezone:
     utc: 'UTC'
@@ -323,6 +340,9 @@ user:
         created: 'Пользователь успешно создан.'
         updated: 'Пользователь успешно обновлен.'
         deleted: 'Пользователь успешно удален.'
+incident:
+    flash:
+        deleted: 'Инцидент успешно удален.'
 
 table:
     plant:
@@ -531,6 +551,20 @@ table:
             title: 'Заголовок'
             is_active: 'Группа активна'
             description: 'Описание'
+            created_at: 'Дата создания'
+            updated_at: 'Дата обновления'
+    incident:
+        header:
+            id: '#'
+            user_id: 'Идентификатор пользователя'
+            public_code: 'Код ошибки'
+            uri: 'Адрес ресурса'
+            method: 'Метод'
+            client_ip: 'Адрес клиента'
+            payload: 'Данные запроса'
+            status_code: 'Код ошибки'
+            error_message: 'Сообщение об ошибке'
+            stack_trace: 'Стэк ошибки'
             created_at: 'Дата создания'
             updated_at: 'Дата обновления'
 

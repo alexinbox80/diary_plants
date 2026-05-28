@@ -4,6 +4,7 @@
 {% import 'macros/dashboard/modal_delete.html.twig' as modal_del %}
 {% import 'macros/dashboard/marker.html.twig' as icon_tag %}
 {% import 'macros/dashboard/modal_qrlist.html.twig' as qrlist %}
+{% import 'macros/dashboard/modal_stack_trace.html.twig' as modal_trace %}
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -23,7 +24,7 @@
                                 <span id="" class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#qrModal">{{ 'dashboard.navbar.table.qr_code_list_label'|trans }}</span>
                                 {{ qrlist.modal_qrlist(array.table_body) }}
                             {% endif %}
-                            {% if not(is_granted('ROLE_ADMIN')) %}
+                            {% if not(is_granted('ROLE_ADMIN') and app.request.attributes.get('_route') starts with 'dashboard.incidents') %}
                                 <a class="btn btn-success ms-auto" href="{{ path(route_create) }}">{{ 'dashboard.navbar.table.create_button_label'|trans }}</a>
                             {% endif %}
                         </div>
@@ -58,14 +59,16 @@
                                                             {{ image_tag.image(
                                                                 row_number,
                                                                 'table-image-qr',
-                                                                item['title'] ??  'dashboard.navbar.table.qr_code_label'|trans,
-                                                                item['alt'] ??  'dashboard.navbar.table.qr_code_label'|trans,
+                                                                item['title'] ?? 'dashboard.navbar.table.qr_code_label'|trans,
+                                                                item['alt'] ?? 'dashboard.navbar.table.qr_code_label'|trans,
                                                                 item[key] ~ '?t=' ~ 'now'|date('U'),
                                                                 'single') }}
                                                         {% elseif key starts with 'is_' or key ends with '_confirmed' %}
                                                             {{ item[key] ? 'twig.label.yes'|trans : 'twig.label.no'|trans }}
                                                         {% elseif key == 'type' or key == 'pot_material' or key == 'roles' or key == 'time_zone' %}
                                                             {{ item[key]|trans }}
+                                                        {% elseif key == 'stack_trace' %}
+                                                            {{ modal_trace.modal_stack_trace(item.id, item[key]) }}
                                                         {% else %}
                                                             {{ item[key] }}
                                                         {% endif %}
@@ -93,7 +96,7 @@
                                                     aria-labelledby="dropdownMenuButton{{ loop.index }}"
                                                 >
                                                     <div class="d-flex">
-                                                        {% if not(is_granted('ROLE_ADMIN')) %}
+                                                        {% if not(is_granted('ROLE_ADMIN') and app.request.attributes.get('_route') starts with 'dashboard.incidents') %}
                                                             <a
                                                                 href="{{ path(route_edit, {'id': item.id}) }}"
                                                                 class="dropdown-item px-3"

@@ -1,0 +1,39 @@
+{% macro modal_stack_trace(id, data) %}
+    <button type="button"
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#stackTraceModal-{{ id }}">
+        <i class="fas fa-code"></i> {{ 'dashboard.modal.incident.button.main_label'|trans }} Stack Trace
+    </button>
+
+    <div class="modal fade" id="stackTraceModal-{{ id }}" tabindex="-1" aria-labelledby="stackTraceModalLabel-{{ id }}" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="stackTraceModalLabel-{{ id }}">
+                        <i class="fas fa-bug"></i> Stack Trace ({{ 'dashboard.modal.incident.header'|trans }} #{{ id }})
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <pre class="m-0 p-3 bg-dark text-light border-0" style="max-height: 70vh; overflow: auto; font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.875rem; line-height: 1.5;"><code class="text-wrap-none">
+                            {%- if data is iterable -%}
+                                {%- for line in data -%}
+                                    {{- line|trim -}}{% if not loop.last %}{{ "\n" }}{% endif %}
+                                {%- endfor -%}
+                            {%- else -%}
+                                {{- data|trim -}}
+                            {%- endif -%}
+                        </code>
+                    </pre>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dashboard.modal.incident.button.close_label'|trans }}</button>
+                    <button type="button" class="btn btn-inverse-success btn-copy-trace" data-trace-id="trace-code-{{ id }}">
+                        <i class="fas fa-copy"></i> {{ 'dashboard.modal.incident.copy_buffer'|trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
