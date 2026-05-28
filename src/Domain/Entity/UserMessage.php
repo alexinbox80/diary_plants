@@ -1,4 +1,4 @@
-<?php
+<?php // сущность для хранения сообщений пользователю
 
 namespace App\Domain\Entity;
 
@@ -13,6 +13,7 @@ use App\Domain\Entity\Interfaces\EntityInterface;
 use App\Domain\Entity\Interfaces\SoftDeletableInterface;
 use App\Domain\ValueObject\Enum\UserMessage\TransportType;
 use App\Domain\Entity\Interfaces\HasMetaTimestampsInterface;
+use App\Domain\ValueObject\Enum\UserMessage\MessageSenderType;
 use App\Domain\ValueObject\Enum\UserMessage\NotificationStatus;
 
 #[ORM\Table(name: '`user_message`')]
@@ -20,6 +21,7 @@ use App\Domain\ValueObject\Enum\UserMessage\NotificationStatus;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(name: 'user_message__user_id__ind', columns: ['user_id'])]
 #[ORM\Index(name: 'user_message__group_id__ind', columns: ['group_id'])]
+#[ORM\Index(name: 'user_message__sender_id__ind', columns: ['sender_id'])]
 #[ORM\Index(name: 'user_message__status__ind', columns: ['status'])]
 final class UserMessage implements EntityInterface, HasMetaTimestampsInterface, SoftDeletableInterface
 {
@@ -38,6 +40,14 @@ final class UserMessage implements EntityInterface, HasMetaTimestampsInterface, 
     #[ORM\Column(name: 'group_id', type: 'integer', nullable: true)]
     private ?int $groupId = null;
 
+    // Идентификатор отправителя-пользователя (NULL для системы)
+    #[ORM\Column(name: 'sender_id', type: 'integer', nullable: true)]
+    private ?int $senderId = null;
+
+    // Тип отправителя: 'system' или 'user' или 'bot' или еще что-то ...
+    #[ORM\Column(type: 'string', length: 16, enumType: MessageSenderType::class)]
+    private MessageSenderType $senderType = MessageSenderType::SYSTEM;
+
     // ключ шаблона сообщения из message.<lang>.yaml
     #[ORM\Column(name: 'translation_key', type: 'string', length: 255)]
     private string $translationKey;
@@ -46,7 +56,7 @@ final class UserMessage implements EntityInterface, HasMetaTimestampsInterface, 
     #[ORM\Column(name: 'parameter', type: 'json')]
     private array $parameters = [];
 
-    // дефолтная локаль для групповой рассылки
+    // дефолтная локаль для групповой рассылки (если в групповой рассылке локаль null берем нужного пользователя)
     #[ORM\Column(name: 'locale', type: 'string', length: 7, nullable: true)]
     private ?string $locale = null;
 
@@ -74,15 +84,13 @@ final class UserMessage implements EntityInterface, HasMetaTimestampsInterface, 
         int $userId,
         string $translationKey,
         array $parameters,
-        string $locale,
-        TransportType $transportType
+        TransportType $transportType,
+        string $locale = 'ru',
+        ?int $senderId = null
     ): self {
         $message = new self();
         $message->userId = $userId;
-        $message->translationKey = $translationKey;
-        $message->parameters = $parameters;
-        $message->locale = $locale;
-        $message->transportType = $transportType;
+        $message->populateCommonFields($translationKey, $parameters, $transportType, $locale, $senderId);
 
         return $message;
     }
@@ -93,16 +101,32 @@ final class UserMessage implements EntityInterface, HasMetaTimestampsInterface, 
         string $translationKey,
         array $parameters,
         TransportType $transportType,
-        ?string $defaultLocale = 'ru'
+        ?string $locale = null,
+        ?int $senderId = null
     ): self {
         $message = new self();
         $message->groupId = $groupId;
-        $message->translationKey = $translationKey;
-        $message->parameters = $parameters;
-        $message->locale = $defaultLocale;
-        $message->transportType = $transportType;
+        $message->populateCommonFields($translationKey, $parameters, $transportType, $locale, $senderId);
 
         return $message;
+    }
+
+    private function populateCommonFields(
+        string $translationKey,
+        array $parameters,
+        TransportType $transportType,
+        ?string $locale,
+        ?int $senderId
+    ): void {
+        $this->translationKey = $translationKey;
+        $this->parameters = $parameters;
+        $this->locale = $locale;
+        $this->transportType = $transportType;
+        $this->senderId = $senderId;
+
+        $this->senderType = ($senderId === null)
+            ? MessageSenderType::SYSTEM
+            : MessageSenderType::USER;
     }
 
     public function getId(): int

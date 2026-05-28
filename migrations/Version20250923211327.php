@@ -66,6 +66,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS incident__created_at__ind ON incident (created_at)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user_message__user_id__ind ON "user_message" (user_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user_message__group_id__ind ON "user_message" (group_id)');
+        $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user_message__sender_id__ind ON "user_message" (sender_id)');
         $this->addSql('CREATE INDEX CONCURRENTLY IF NOT EXISTS user_message__status__ind ON "user_message" (status)');
     }
 
@@ -112,6 +113,7 @@ final class Version20250923211327 extends AbstractMigration
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS incident__created_at__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user_message__user_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user_message__group_id__ind');
+        $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user_message__sender_id__ind');
         $this->addSql('DROP INDEX CONCURRENTLY IF EXISTS user_message__status__ind');
     }
 }
