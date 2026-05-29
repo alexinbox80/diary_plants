@@ -7,7 +7,6 @@ use DateTimeImmutable;
 use App\Domain\Entity\Incident;
 use App\Domain\ValueObject\Enum\Timezone;
 use App\Domain\ValueObject\RequestDetails;
-use App\Domain\ValueObject\Enum\Usage\AttachableType;
 
 final class IncidentModel
 {

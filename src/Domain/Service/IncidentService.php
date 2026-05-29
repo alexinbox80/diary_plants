@@ -69,6 +69,12 @@ class IncidentService
         return $this->incidentRepository->getIncidentsPaginated($page, $perPage);
     }
 
+    /**
+     * @param Throwable $exception
+     * @param Request $request
+     * @param int $statusCode
+     * @return string
+     */
     public function createFromException(Throwable $exception, Request $request, int $statusCode): string
     {
         $requestDetails = new RequestDetails(

@@ -69,39 +69,39 @@ php bin/console doctrine:migrations:migrate prev
 php bin/console doctrine:migrations:execute --up DoctrineMigrations\\Version20250402090731 --no-interaction
 php bin/console doctrine:migrations:execute --down DoctrineMigrations\\Version20250402090731 --no-interaction
 
-#check console command
+#check console command \
 php bin/console debug:container --tag=console.command
 
-#Registered Listeners for "kernel.controller" Event
+#Registered Listeners for "kernel.controller" Event \
 php bin/console debug:event-dispatcher kernel.controller
 
-#Создать базу данных для тестов
+#Make DB for tests \
 php bin/console --env=test doctrine:database:create
 
-#Накатить миграции
+#Make migration for testing \
 php bin/console --env=test doctrine:migrations:migrate --no-interaction
 
-#Check test environment
+#Check test environment \
 php bin/console debug:dotenv --env=test | grep DATABASE_URL
 
-#messure speed
+#messure speed \
 curl -o /dev/null -s -w 'Total: %{time_total}s\n' http://localhost:8080/en/dashboard/plants-paginated
 
-#docker build
+#docker build \
 docker compose up --build -d 
 
-#Scheduler
+#Scheduler \
 php bin/console debug:scheduler
 php bin/console debug:scheduler default
 
-#Test run
+#Test run \
 php bin/console messenger:consume scheduler_default -vv
 
-#Show message bus
+#Show message bus \
 php bin/console messenger:stats
 php bin/console dbal:run-sql "SELECT * FROM messenger_messages"
 
-#show prev version from old commit
+#show prev version from old commit \
 bash-3.2$ git show HEAD~3:composer.lock | grep -A 2 '"name": "phpunit/phpunit"'
 "name": "phpunit/phpunit",
 "version": "12.3.5",
