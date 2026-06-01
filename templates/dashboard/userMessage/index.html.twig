@@ -1,0 +1,49 @@
+{% extends 'layout/dashboard.html.twig' %}
+
+{% block header %}
+    {% include 'components/dashboard/navbar.html.twig' with { 'title': 'dashboard.user-message.title'|trans } %}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'components/dashboard/sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                {% if pagination is defined %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'dashboard.user-message.list'|trans,
+                            'array': userMessages,
+                            'pagination': pagination,
+                            'route_index': 'dashboard.user-messages.index',
+                            'route_pagination': 'dashboard.user-messages_paginated.index',
+                            'route_edit': 'dashboard.user-messages.edit',
+                            'route_create': 'dashboard.user-messages.create',
+                            'route_delete': 'dashboard.user-messages.delete'
+                        }
+                    %}
+                {% else %}
+                    {% include 'components/dashboard/table.html.twig' with
+                        {
+                            'title': 'dashboard.user-message.list'|trans,
+                            'array': userMessages,
+                            'route_index': 'dashboard.user-messages.index',
+                            'route_pagination': 'dashboard.user-messages_paginated.index',
+                            'route_edit': 'dashboard.user-messages.edit',
+                            'route_create': 'dashboard.user-messages.create',
+                            'route_delete': 'dashboard.user-messages.delete'
+                        }
+                    %}
+                {% endif %}
+            </div>
+            <!-- content-wrapper ends -->
+            {% include 'components/dashboard/footer.html.twig' %}
+        </div>
+        <!-- main-panel ends -->
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" defer src="{{ asset('assets/js/dashboard/table/main.js') }}" data-entity="user-message"></script>
+{% endblock %}

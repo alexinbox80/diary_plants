@@ -13,7 +13,7 @@ final class MessageSender
     private ?int $senderId = null;
 
     // Тип отправителя: 'system' или 'user' или 'bot' или еще что-то ...
-    #[ORM\Column(type: 'string', length: 16, enumType: MessageSenderType::class)]
+    #[ORM\Column(name: 'sender_type', type: 'string', length: 16, enumType: MessageSenderType::class)]
     private MessageSenderType $type;
 
     private function __construct(?int $senderId, MessageSenderType $type)
